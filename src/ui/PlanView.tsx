@@ -213,6 +213,11 @@ export function hitTest(page: PlanPage, p: Pt, tol: number): PlanSel {
     const f = furn[i];
     if (inRotatedRect(p, f.center, f.w, f.h, f.angle, tol / 2)) return { type: 'furniture', index: i };
   }
+  // Meubles importés (images Trikker) : sélectionnables comme le mobilier
+  for (let i = page.images.length - 1; i >= 0; i--) {
+    const im = page.images[i];
+    if (!im.background && inRotatedRect(p, im.center, im.w, im.h, im.angle, tol / 2)) return { type: 'image', index: i };
+  }
   for (let i = page.images.length - 1; i >= 0; i--) {
     const im = page.images[i];
     if (im.background && Math.abs(p.x - im.center.x) < im.w / 2 && Math.abs(p.y - im.center.y) < im.h / 2) return { type: 'image', index: i };
@@ -622,7 +627,7 @@ export function PlanView() {
                 }
             }
             const hit = hitTest(page, p, tol());
-            if (hit && hit.type !== 'image') {
+            if (hit && !(hit.type === 'image' && page.images[hit.index]?.background)) {
               setSel(hit);
               select(null);
               setItemDrag({ sel: hit, start: p, orig: page, moved: false });
@@ -662,6 +667,8 @@ export function PlanView() {
               next = translateWall(o, i, d);
             } else if (itemDrag.sel.type === 'furniture') {
               next = { ...o, furniture: (o.furniture ?? []).map((f, k) => (k === i ? { ...f, center: { x: f.center.x + d.x, y: f.center.y + d.y } } : f)) };
+            } else if (itemDrag.sel.type === 'image' && !o.images[i]?.background) {
+              next = { ...o, images: o.images.map((im, k) => (k === i ? { ...im, center: { x: im.center.x + d.x, y: im.center.y + d.y } } : im)) };
             }
             setPreview(next);
             if (!itemDrag.moved) setItemDrag({ ...itemDrag, moved: true });

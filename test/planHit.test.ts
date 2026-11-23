@@ -18,3 +18,16 @@ describe('sélection des portes et fenêtres sur le plan', () => {
   });
   it('baie vitrée coulissante sélectionnable', () => expect(hitTest(page, { x: 3900, y: 0 }, 50)).toEqual({ type: 'opening', index: 1 }));
 });
+
+describe('meubles importés de Trikker (images)', () => {
+  const page = emptyPage('t');
+  // lit de 2 m × 1,6 m tourné de 90° autour de (3000, 3000) ; fond de plan en dessous
+  page.images.push({ center: { x: 5000, y: 5000 }, w: 10000, h: 10000, angle: 0, href: 'x', background: true });
+  page.images.push({ center: { x: 3000, y: 3000 }, w: 2000, h: 1600, angle: 90, href: 'y' });
+  it('un clic sur le meuble le sélectionne, même tourné', () => {
+    expect(hitTest(page, { x: 3000, y: 3900 }, 50)).toEqual({ type: 'image', index: 1 }); // dans la longueur, après rotation
+  });
+  it('à côté du meuble : le fond de plan', () => {
+    expect(hitTest(page, { x: 3950, y: 3000 }, 50)).toEqual({ type: 'image', index: 0 });
+  });
+});

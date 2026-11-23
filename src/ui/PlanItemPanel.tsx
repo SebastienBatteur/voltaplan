@@ -158,6 +158,62 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
         <p className="muted small">{t('plan.item.furnitureHelp')}</p>
       </>
     );
+  } else if (sel.type === 'image' && page.images[sel.index] && !page.images[sel.index].background) {
+    // Meuble importé (image Trikker) : déplacer, tourner, redimensionner, ou remplacer par un pictogramme vectoriel
+    const im = page.images[sel.index];
+    const setI = (patch: Partial<typeof im>) => editPage((pg) => ({ ...pg, images: pg.images.map((x, i) => (i === sel.index ? { ...x, ...patch } : x)) }));
+    body = (
+      <>
+        <strong>{t('plan.item.importedFurniture')}</strong>
+        <label className="field">
+          <span>{t('plan.item.width')}</span>
+          <NumberField min={10} value={Number(cm(im.w))} onCommit={(n) => setI({ w: n * 10 })} />
+        </label>
+        <label className="field">
+          <span>{t('plan.item.depth')}</span>
+          <NumberField min={10} value={Number(cm(im.h))} onCommit={(n) => setI({ h: n * 10 })} />
+        </label>
+        <label className="field">
+          <span>{t('plan.item.angle')}</span>
+          <NumberField min={-360} max={360} step={15} value={Math.round(im.angle)} onCommit={(n) => setI({ angle: n })} />
+        </label>
+        <div className="row">
+          <button onClick={() => setI({ angle: (im.angle + 270) % 360 })} title="-90°">
+            ⟲ 90°
+          </button>
+          <button onClick={() => setI({ angle: (im.angle + 90) % 360 })} title="+90°">
+            ⟳ 90°
+          </button>
+          <button onClick={() => editPage((pg) => ({ ...pg, images: [...pg.images, { ...im, center: { x: im.center.x + 300, y: im.center.y + 300 } }] }))}>
+            {t('action.duplicate')}
+          </button>
+        </div>
+        <label className="field">
+          <span>{t('plan.item.replaceBy')}</span>
+          <select
+            value=""
+            onChange={(e) => {
+              const k = e.target.value as FurnitureKind;
+              if (!k) return;
+              // Même place, même orientation et même encombrement, en pictogramme vectoriel modifiable
+              editPage((pg) => ({
+                ...pg,
+                images: pg.images.filter((_, i) => i !== sel.index),
+                furniture: [...(pg.furniture ?? []), { id: Math.random().toString(36).slice(2), kind: k, center: im.center, w: im.w, h: im.h, angle: im.angle }],
+              }));
+            }}
+          >
+            <option value="">—</option>
+            {(Object.keys(FURNITURE) as FurnitureKind[]).map((k) => (
+              <option key={k} value={k}>
+                {t('furniture.' + k)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="muted small">{t('plan.item.furnitureHelp')}</p>
+      </>
+    );
   } else {
     body = <strong>{t('plan.item.image')}</strong>;
   }
