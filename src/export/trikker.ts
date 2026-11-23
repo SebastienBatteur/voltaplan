@@ -174,10 +174,11 @@ function writePage(x: Xml, pg: PlanPage, depth: number) {
     x.close('Muur', e);
   }
   for (const o of pg.openings) {
-    const tag = o.kind === 'window' ? 'Raam' : o.kind === 'garageDoor' ? 'Garagepoort' : o.kind === 'stairs' ? 'Trap' : 'Deur';
+    const tag = o.kind === 'window' || o.kind === 'slidingDoor' ? 'Raam' : o.kind === 'garageDoor' ? 'Garagepoort' : o.kind === 'stairs' ? 'Trap' : 'Deur';
     const attrs: Record<string, string | undefined> = { Breedte: o.width !== undefined ? String(o.width) : undefined };
     if (tag === 'Deur') {
-      attrs.Type = o.hinge === 'left' ? 'LinksDraaiend' : 'RechtsDraaiend';
+      // Segment inversé quand la charnière est en b : le côté gauche devient le droit
+      attrs.Type = (o.hinge === 'left') !== !!o.mirrored ? 'LinksDraaiend' : 'RechtsDraaiend';
       attrs.Gespiegeld = 'Nee';
     }
     if (tag === 'Garagepoort') attrs.Gespiegeld = ja(!!o.mirrored);

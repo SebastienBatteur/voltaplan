@@ -46,3 +46,23 @@ it('exporte un projet créé dans Voltaplan', () => {
   const bytes = toWindows1252('Église – 10 €');
   expect([...bytes]).toEqual([0xc9, 0x67, 0x6c, 0x69, 0x73, 0x65, 0x20, 0x96, 0x20, 0x31, 0x30, 0x20, 0x80]);
 });
+
+it('porte : côté d’ouverture et charnière conservés par l’aller-retour Trikker (4 positions)', () => {
+  // Position physique d'une porte : charnière (point) et côté d'ouverture (normale vers la pièce)
+  const phys = (o: { a: { x: number; y: number }; b: { x: number; y: number }; hinge?: string; mirrored?: boolean }) => {
+    const h = o.mirrored ? o.b : o.a;
+    const len = Math.hypot(o.b.x - o.a.x, o.b.y - o.a.y);
+    const side = o.hinge === 'right' ? 1 : -1;
+    const n = { x: (side * -(o.b.y - o.a.y)) / len, y: (side * (o.b.x - o.a.x)) / len };
+    return `${Math.round(h.x)},${Math.round(h.y)} ${Math.round(n.x)},${Math.round(n.y)}`;
+  };
+  for (const hinge of ['left', 'right'] as const)
+    for (const mirrored of [false, true]) {
+      const p = emptyProject();
+      p.plan.pages[0].walls.push({ a: { x: 0, y: 0 }, b: { x: 4000, y: 0 }, thickness: 200 });
+      const door = { kind: 'door' as const, a: { x: 1000, y: 0 }, b: { x: 1900, y: 0 }, width: 200, hinge, mirrored };
+      p.plan.pages[0].openings.push(door);
+      const back = importTrikker(exportTrikkerXml(p)).project.plan.pages[0].openings.find((o) => o.kind === 'door')!;
+      expect(phys(back)).toBe(phys(door));
+    }
+});

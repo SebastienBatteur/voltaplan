@@ -313,9 +313,14 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
           page.walls.push({ a, b, thickness: width ?? 150 });
           break;
         case 'Deur':
-          page.openings.push({ kind: 'door', a, b, width, hinge: e.getAttribute('Type') === 'LinksDraaiend' ? 'left' : 'right' });
-          // Trikker : charnière au point de départ ; « Gespiegeld » est déjà reflété dans les coordonnées
-          // (vérifié sur un plan réel : les battants reposent alors contre le mur voisin).
+          // Trikker : charnière au point de départ (P1) ; « LinksDraaiend » ouvre du côté gauche du segment,
+          // « Gespiegeld » (miroir par rapport au mur) ouvre de l'autre côté. Vérifié sur des plans réels :
+          // sans cette inversion, une porte « gespiegeld » du plan de référence s'ouvrait dans un mur.
+          {
+            const links = e.getAttribute('Type') === 'LinksDraaiend';
+            const mirrored = e.getAttribute('Gespiegeld') === 'Ja';
+            page.openings.push({ kind: 'door', a, b, width, hinge: links !== mirrored ? 'left' : 'right' });
+          }
           break;
         case 'Raam':
           page.openings.push({ kind: 'window', a, b, width });

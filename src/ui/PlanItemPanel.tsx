@@ -4,7 +4,7 @@ import { dist, setOpeningWidth, setWallLength } from '../plan/geometry';
 import type { PlanSel } from './PlanView';
 import { FURNITURE, type FurnitureKind } from '../plan/furniture';
 
-const OPENING_KINDS = ['door', 'doubleDoor', 'frenchDoor', 'window', 'garageDoor', 'stairs'] as const;
+const OPENING_KINDS = ['door', 'doubleDoor', 'frenchDoor', 'slidingDoor', 'window', 'garageDoor', 'stairs'] as const;
 
 /** Propriétés de l'élément de plan sélectionné (mur, ouverture, texte, fond). Valeurs en cm pour la saisie. */
 export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: NonNullable<PlanSel>; onDelete: () => void }) {
@@ -76,23 +76,25 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
             onChange={(e) => num(e.target.value) > 0 && editPage((pg) => setOpeningWidth(pg, sel.index, num(e.target.value) * 10))}
           />
         </label>
-        {door && (
-          <button
-            onClick={() =>
-              editPage((pg) => ({
-                ...pg,
-                openings: pg.openings.map((x, i) => {
-                  if (i !== sel.index) return x;
-                  // 4 positions : côté d'ouverture × extrémité de la charnière (2 pour une double porte)
-                  const k = (x.hinge === 'right' ? 1 : 0) + (x.mirrored ? 2 : 0);
-                  const n = (k + 1) % (x.kind === 'door' ? 4 : 2);
-                  return { ...x, hinge: n % 2 ? 'right' : 'left', mirrored: n >= 2 };
-                }),
-              }))
-            }
-          >
-            {t('plan.flipDoor')}
-          </button>
+        {(door || o.kind === 'slidingDoor') && (
+          <div className="row">
+            <button
+              title={t('plan.flipSideHelp')}
+              onClick={() =>
+                editPage((pg) => ({ ...pg, openings: pg.openings.map((x, i) => (i === sel.index ? { ...x, hinge: x.hinge === 'right' ? 'left' : 'right' } : x)) }))
+              }
+            >
+              ⇅ {t('plan.flipSide')}
+            </button>
+            {o.kind === 'door' && (
+              <button
+                title={t('plan.flipHingeHelp')}
+                onClick={() => editPage((pg) => ({ ...pg, openings: pg.openings.map((x, i) => (i === sel.index ? { ...x, mirrored: !x.mirrored } : x)) }))}
+              >
+                ⇆ {t('plan.flipHinge')}
+              </button>
+            )}
+          </div>
         )}
         <p className="muted small">{t('plan.item.openingHelp')}</p>
       </>

@@ -54,7 +54,8 @@ export function UnifilarView() {
         onPointerMove={pz.onPointerMove}
         onPointerUp={(e) => {
           const moved = pz.onPointerUp();
-          if (!moved && (e.target as Element).getAttribute('data-bg') === '1') select(null);
+          // Clic hors d'un élément : désélectionner (un clic sur un texte d'élément le resélectionne ensuite)
+          if (!moved && !(e.target as Element).closest('.hit')) select(null);
         }}
       >
         <rect data-bg="1" x={pz.vb.x - 1e5} y={pz.vb.y - 1e5} width={2e5 + pz.vb.w} height={2e5 + pz.vb.h} className="canvas-bg" />

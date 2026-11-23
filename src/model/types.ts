@@ -130,7 +130,7 @@ export interface PlanPage {
   id: string;
   name: string;
   walls: { a: Pt; b: Pt; thickness: number }[];
-  openings: { kind: 'door' | 'doubleDoor' | 'frenchDoor' | 'window' | 'garageDoor' | 'stairs'; a: Pt; b: Pt; width?: number; /** Porte : côté d'ouverture ('left' = -y local du segment a→b). */ hinge?: 'left' | 'right'; /** Porte : charnière en b au lieu de a. */ mirrored?: boolean }[];
+  openings: { kind: 'door' | 'doubleDoor' | 'frenchDoor' | 'slidingDoor' | 'window' | 'garageDoor' | 'stairs'; a: Pt; b: Pt; width?: number; /** Porte : côté d'ouverture ('left' = -y local du segment a→b). */ hinge?: 'left' | 'right'; /** Porte : charnière en b au lieu de a. */ mirrored?: boolean }[];
   rects: { center: Pt; w: number; h: number; angle: number }[];
   /** Images (meubles Trikker, ou fond de plan importé : `background`). */
   images: {

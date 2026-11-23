@@ -150,6 +150,14 @@ export function Walls({ page, sel }: { page: PlanPage; sel: PlanSel }) {
               </g>
             )}
             {o.kind === 'garageDoor' && <line x1={0} y1={0} x2={len} y2={0} className="plan-thin" strokeDasharray="80 40" />}
+            {o.kind === 'slidingDoor' && (
+              <g className="plan-thin">
+                {/* Baie vitrée coulissante : deux vantaux vitrés qui se chevauchent, flèche du sens de glissement */}
+                <rect x={0} y={-th / 4 - 15} width={len * 0.55} height={30} />
+                <rect x={len * 0.45} y={th / 4 - 15} width={len * 0.55} height={30} />
+                <path d={`M${len * 0.2} ${side * th * 0.9} H${len * 0.5} m-60 -40 l60 40 l-60 40`} fill="none" />
+              </g>
+            )}
           </g>
         );
       })}
@@ -170,7 +178,7 @@ export function Walls({ page, sel }: { page: PlanPage; sel: PlanSel }) {
 }
 
 /** Élément de plan sous le pointeur (outil Sélection). */
-function hitTest(page: PlanPage, p: Pt, tol: number): PlanSel {
+export function hitTest(page: PlanPage, p: Pt, tol: number): PlanSel {
   for (let i = page.labels.length - 1; i >= 0; i--) {
     const l = page.labels[i];
     const fs = (l.size ?? 3) * 90;
@@ -179,6 +187,20 @@ function hitTest(page: PlanPage, p: Pt, tol: number): PlanSel {
   for (let i = page.openings.length - 1; i >= 0; i--) {
     const o = page.openings[i];
     if (project(p, o.a, o.b).d < (o.width ?? 150) / 2 + tol) return { type: 'opening', index: i };
+    // Porte : clic sur le battant ou dans l'arc d'ouverture (quart de disque côté ouverture)
+    if (o.kind === 'door' || o.kind === 'doubleDoor' || o.kind === 'frenchDoor') {
+      const len = Math.hypot(o.b.x - o.a.x, o.b.y - o.a.y);
+      if (!len) continue;
+      const ux = (o.b.x - o.a.x) / len;
+      const uy = (o.b.y - o.a.y) / len;
+      const side = o.hinge === 'right' ? 1 : -1;
+      const along = (p.x - o.a.x) * ux + (p.y - o.a.y) * uy; // le long du mur, depuis a
+      const across = side * ((p.x - o.a.x) * -uy + (p.y - o.a.y) * ux); // vers le côté d'ouverture
+      const hx = o.mirrored ? len : 0;
+      const r = o.kind === 'door' ? len : len / 2;
+      const inSwing = (h: number) => across > 0 && Math.hypot(along - h, across) < r + tol && (h === 0 ? along > -tol : along < len + tol);
+      if (o.kind === 'door' ? inSwing(hx) : inSwing(0) || inSwing(len)) return { type: 'opening', index: i };
+    }
   }
   for (let i = page.walls.length - 1; i >= 0; i--) {
     const w = page.walls[i];
@@ -307,7 +329,7 @@ export function PlanView() {
     }
   };
 
-  const onClick = (p: Pt, e: React.PointerEvent) => {
+  const onClick = (p: Pt) => {
     switch (tool) {
       case 'wall': {
         const q = snapPoint(p, page, tol(), chain);
@@ -404,7 +426,7 @@ export function PlanView() {
       default: {
         const hit = hitTest(page, p, tol());
         setSel(hit);
-        if (hit || (e.target as Element).getAttribute('data-bg') === '1') select(null);
+        select(null); // clic ailleurs que sur un symbole : plus rien de sélectionné dans l'installation
       }
     }
   };
@@ -673,7 +695,7 @@ export function PlanView() {
           if (e.button !== 0) return;
           const p = pz.toSvg(e.clientX, e.clientY);
           if (placingId) placeSymbol(placingId, { x: Math.round(p.x), y: Math.round(p.y) });
-          else onClick(p, e);
+          else onClick(p);
         }}
         onDoubleClick={() => setChain(null)}
       >

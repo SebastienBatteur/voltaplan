@@ -363,7 +363,7 @@ export function BoardView() {
             }
             return;
           }
-          if ((e.target as Element).getAttribute('data-bg') === '1') select(null);
+          select(null); // clic hors d'un appareil : désélectionner
         }}
       >
         <rect data-bg="1" x={pz.vb.x - 1e5} y={pz.vb.y - 1e5} width={2e5 + pz.vb.w} height={2e5 + pz.vb.h} className="canvas-bg" />

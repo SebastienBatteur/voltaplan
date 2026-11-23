@@ -11,6 +11,8 @@ interface Layout {
   split: number;
   /** Largeur de la colonne (px). */
   width: number;
+  /** Colonne masquée (une fine bande permet de la rouvrir). */
+  hidden?: boolean;
 }
 
 function load(): Layout {
@@ -47,7 +49,7 @@ export function SidePanels({ tree, props }: { tree: ReactNode; props: ReactNode 
       if (!drag.current || !el) return;
       const r = el.getBoundingClientRect();
       if (drag.current === 'split') setL((x) => ({ ...x, split: Math.min(0.85, Math.max(0.15, (e.clientY - r.top) / r.height)) }));
-      else setL((x) => ({ ...x, width: Math.round(Math.min(Math.max(220, e.clientX - r.left), window.innerWidth * 0.6)) }));
+      else setL((x) => ({ ...x, width: Math.round(Math.min(Math.max(160, e.clientX - r.left), window.innerWidth * 0.6)) }));
     };
     const up = () => {
       drag.current = null;
@@ -76,8 +78,18 @@ export function SidePanels({ tree, props }: { tree: ReactNode; props: ReactNode 
     </h3>
   );
 
+  if (l.hidden)
+    return (
+      <button className="side-show" title={t('panel.show')} aria-label={t('panel.show')} onClick={() => setL((x) => ({ ...x, hidden: false }))}>
+        ›
+      </button>
+    );
+
   return (
     <aside className="side" ref={ref} style={{ width: l.width }}>
+      <button className="side-hide" title={t('panel.hide')} aria-label={t('panel.hide')} onClick={() => setL((x) => ({ ...x, hidden: true }))}>
+        ‹
+      </button>
       <section className={'side-tree' + (l.treeOpen ? '' : ' folded')} style={both ? { flex: `${l.split} 1 0` } : undefined}>
         {header('treeOpen', t('panel.tree'))}
         {l.treeOpen && tree}
