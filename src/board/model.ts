@@ -56,6 +56,23 @@ export function isModularInBoard(n: ElNode): boolean {
   return n.kind === 'relay' || n.kind === 'meter';
 }
 
+/**
+ * Éléments de l'unifilaire de ce tableau qui pourraient être sur le rail mais n'y sont pas comptés
+ * (case « Dans le tableau » décochée) : candidats pour un appareil vu sur la photo et absent du projet.
+ * Les tableaux divisionnaires (autres enveloppes) ne sont pas parcourus.
+ */
+export function boardCandidates(enc: Enclosure, all: Enclosure[]): ElNode[] {
+  const others = new Set(all.filter((e) => e !== enc).map((e) => e.board.id));
+  const out: ElNode[] = [];
+  const walk = (n: ElNode) => {
+    if (others.has(n.id)) return;
+    if (BOARD_EXTRA_KINDS.has(n.kind) && !isModularInBoard(n)) out.push(n);
+    n.children.forEach(walk);
+  };
+  enc.board.children.forEach(walk);
+  return out;
+}
+
 /** Largeur d'un appareil en modules. */
 export function moduleWidth(n: ElNode): number {
   const m = Number(n.props.modules);

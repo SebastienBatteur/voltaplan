@@ -13,7 +13,8 @@ export const PhotoDevice = z.object({
     .describe(
       'mcb = disjoncteur, rcd = interrupteur différentiel, rcbo = disjoncteur différentiel, switch = interrupteur-sectionneur, spd = parafoudre, ' +
         'contactor = contacteur ou relais, teleswitch = télérupteur, timer = horloge/minuterie, transformer = transformateur (sonnerie, sécurité), ' +
-        'meter = compteur ou module de mesure, domotic = module connecté/domotique, blank = cache/obturateur',
+        'meter = compteur ou module de mesure sans manette, domotic = module connecté/domotique sans manette, blank = cache/obturateur. ' +
+        'Un disjoncteur connecté (Zigbee, Wi-Fi, avec mesure) a une manette : c’est mcb (ou rcbo)',
     ),
   brand: z.string().nullable().describe('Marque lisible (Schneider, Hager, Legrand, ABB…)'),
   model: z.string().nullable().describe('Gamme et référence imprimées sur l’appareil (ex. « iC60N A9F79216 », « TX3 411617 »)'),
@@ -65,7 +66,9 @@ export async function readBoardPhoto(opts: {
                 `widthModules = how many ruler positions it physically covers, measured on the ruler (compact 4-pole devices can be only 2 modules wide: ` +
                 `never infer the width from the number of poles). Give its type (breakers and RCDs, but also contactors, impulse relays, timers, ` +
                 `bell or safety transformers, meters and connected modules), the brand and the model/reference printed on it, the ratings ` +
-                `(rated current, curve, residual current, RCD type) and its label text. Adjacent devices of the same type are separate devices ` +
+                `(rated current, curve, residual current, RCD type) and its label text. A connected/smart circuit breaker (Zigbee, Wi-Fi, ` +
+                `energy metering) that has a breaker toggle is a "mcb" (or "rcbo"), not "domotic"; use "meter" or "domotic" only for modules ` +
+                `without a breaker toggle. Adjacent devices of the same type are separate devices ` +
                 `when a new front face is visible. Report blanking plates as "blank" and skip empty rail. ` +
                 `Only report what you can actually read; use null when unsure. ` +
                 `Write notes in language "${opts.lang}".`

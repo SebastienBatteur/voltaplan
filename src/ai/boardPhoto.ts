@@ -82,6 +82,9 @@ export function compatible(seen: PhotoKind, n: ElNode): boolean {
     ['contactor', 'teleswitch'],
     ['mcb', 'rcbo'],
     ['meter', 'domotic'],
+    // Disjoncteur connecté (Zigbee, avec mesure) pris pour un module domotique
+    ['mcb', 'domotic'],
+    ['rcbo', 'domotic'],
   ];
   if (pairs.some((p) => p.includes(seen) && p.includes(k))) return true;
   // Relais générique du schéma : contacteur, télérupteur ou horloge sur la photo
@@ -130,13 +133,20 @@ export function compareReading(placedDevices: Placed[], reading: PhotoReadingT):
 }
 
 /** Appareils vus sur la photo à un endroit vide du projet. */
-export function extraDevices(placedDevices: Placed[], reading: PhotoReadingT): { row: number; startModule: number; kind: PhotoKind; model: string }[] {
-  const extra: { row: number; startModule: number; kind: PhotoKind; model: string }[] = [];
+export interface ExtraDevice {
+  row: number;
+  startModule: number;
+  width: number;
+  kind: PhotoKind;
+  model: string;
+}
+export function extraDevices(placedDevices: Placed[], reading: PhotoReadingT): ExtraDevice[] {
+  const extra: ExtraDevice[] = [];
   for (const r of reading.rows)
     for (const x of r.devices) {
       if (x.kind === 'blank') continue;
       const covered = placedDevices.some((d) => d.row === r.row && x.startModule >= d.col && x.startModule < d.col + d.width);
-      if (!covered) extra.push({ row: r.row, startModule: x.startModule, kind: x.kind, model: readReference(x) });
+      if (!covered) extra.push({ row: r.row, startModule: x.startModule, width: Math.max(1, Math.round(x.widthModules)), kind: x.kind, model: readReference(x) });
     }
   return extra;
 }
@@ -163,7 +173,11 @@ export function layoutFromReading(
     .sort((a, b) => a.row - b.row || a.x.startModule - b.x.startModule);
   const score = (s: PhotoDeviceT, n: ElNode, si: number, ni: number) => {
     const p = n.props;
-    let v = s.kind === projectKind(n) ? 3 : 1;
+    // Même type : 3 ; type voisin (compteur / module connecté, contacteur / télérupteur…) : 2 ;
+    // disjoncteur ↔ module connecté (disjoncteur Zigbee mal classé) : 0, en dernier recours
+    const k = projectKind(n);
+    const breaker = (x: PhotoKind) => x === 'mcb' || x === 'rcbo';
+    let v = s.kind === k ? 3 : (breaker(s.kind) && k === 'domotic') || (s.kind === 'domotic' && breaker(k)) ? 0 : 2;
     if (s.widthModules === moduleWidth(n)) v += 1;
     const ref = readReference(s);
     if (ref && p.reference) {

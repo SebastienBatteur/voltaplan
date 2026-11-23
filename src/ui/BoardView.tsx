@@ -1,12 +1,14 @@
 import { NumberField } from './NumberField';
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
-import { mapTree } from '../model/tree';
+import { ancestors, mapTree } from '../model/tree';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
 import {
   autoLayout,
+  BOARD_EXTRA_KINDS,
+  boardCandidates,
   boardSize,
   compareRow,
   enclosures,
@@ -26,7 +28,7 @@ import { loadAiSettings, getSessionKey, setSessionKey } from '../ai/settings';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
-import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff } from '../ai/boardPhoto';
+import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff, type ExtraDevice } from '../ai/boardPhoto';
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
 export const MOD = 17.5;
@@ -115,7 +117,7 @@ export function BoardView() {
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: { row: number; startModule: number; kind: string; model: string }[]; notes: string | null } | null>(
+  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: ExtraDevice[]; notes: string | null } | null>(
     null,
   );
   const lang = useStore((s) => s.lang);
@@ -326,6 +328,29 @@ export function BoardView() {
   };
 
   const dragged = drag ? enc.devices.find((d) => d.id === drag.id) : undefined;
+
+  /** Appareil vu sur la photo et absent du projet : éléments du tableau en réserve, ou de l'unifilaire hors rail. */
+  const associable = aiDiffs?.extra.length ? [...unplaced, ...boardCandidates(enc, encs)] : [];
+  /** Nom dans le menu : pour un élément hors protections, le circuit qui l'alimente (« Transformateur — Q Sonnette »). */
+  const candidateLabel = (n: ElNode) => {
+    const circuit = n.kind === 'protection' ? undefined : [...ancestors(project.roots, n.id)].reverse().find((a) => a.kind === 'protection');
+    return [nameOf(n), circuit ? nameOf(circuit) : '', n.location ?? ''].filter(Boolean).join(' — ');
+  };
+  const associate = (x: ExtraDevice, id: string) => {
+    const n = associable.find((a) => a.id === id);
+    if (!n) return;
+    const patch: Record<string, string | number | boolean> = {};
+    if (BOARD_EXTRA_KINDS.has(n.kind)) patch.inBoard = true;
+    if (x.width !== moduleWidth(n)) patch.modules = x.width;
+    if (x.model && !String(n.props.reference ?? '').trim()) patch.reference = x.model;
+    // Propriétés et place sur le rail : une seule annulation
+    applyProject((p) => ({
+      ...p,
+      roots: mapTree(p.roots, (m) => (m.id === id ? { ...m, props: { ...m.props, ...patch } } : m)),
+      boards: { ...p.boards, [enc.board.id]: { ...layout, slots: { ...layout.slots, [id]: { row: x.row, col: x.startModule } } } },
+    }));
+    setAiDiffs((d) => (d ? { ...d, extra: d.extra.filter((e) => e !== x) } : d));
+  };
   const target = drag && dragged && drag.moved ? slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged)) : null;
 
   return (
@@ -461,7 +486,17 @@ export function BoardView() {
               })}
             {aiDiffs.extra.map((x, i) => (
               <li key={'x' + i}>
-                {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}
+                {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}{' '}
+                {associable.length > 0 && (
+                  <select value="" onChange={(e) => e.target.value && associate(x, e.target.value)}>
+                    <option value="">{t('ai.associate')}</option>
+                    {associable.map((n) => (
+                      <option key={n.id} value={n.id}>
+                        {candidateLabel(n)}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </li>
             ))}
           </ul>

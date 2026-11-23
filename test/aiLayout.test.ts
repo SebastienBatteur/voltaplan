@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { layoutFromReading, type PhotoDeviceT, type PhotoReadingT } from '../src/ai/boardPhoto';
 import { createNode } from '../src/model/tree';
-import { enclosures, moduleWidth } from '../src/board/model';
+import { boardCandidates, enclosures, moduleWidth } from '../src/board/model';
 
 const dev = (props: Record<string, string | number>) => createNode('protection', props);
 const seen = (startModule: number, widthModules: number, kind: PhotoDeviceT['kind'], more: Partial<PhotoDeviceT> = {}): PhotoDeviceT => ({
@@ -120,5 +120,36 @@ describe("disposition d'après la lecture de l'IA", () => {
     board.children = [mcb];
     const e = enclosures([board])[0];
     expect(e.devices.map((n) => n.id)).toEqual([mcb.id, relay.id, trafo2.id]);
+  });
+
+  it("candidats pour un appareil en trop : éléments de l'unifilaire hors rail, sans les tableaux divisionnaires", () => {
+    const board = createNode('board');
+    const mcb = dev({ device: 'mcb' });
+    const cable = createNode('cable');
+    const bell = createNode('transformer', { inBoard: false });
+    const sub = createNode('board');
+    const subMcb = dev({ device: 'mcb' });
+    const subTrafo = createNode('transformer', { inBoard: false });
+    subMcb.children = [subTrafo];
+    sub.children = [subMcb];
+    const cable2 = createNode('cable');
+    cable2.children = [sub];
+    cable.children = [bell, cable2];
+    mcb.children = [cable];
+    board.children = [mcb];
+    const all = enclosures([board]);
+    expect(all.length).toBe(2);
+    expect(boardCandidates(all[0], all).map((n) => n.id)).toEqual([bell.id]);
+  });
+
+  it('disjoncteurs connectés (EARU) lus comme modules domotiques : les disjoncteurs du projet y vont faute de mieux', () => {
+    const T = dev({ device: 'mcb', ratedCurrent: 20 });
+    const S = dev({ device: 'mcb', ratedCurrent: 20 });
+    const reading: PhotoReadingT = {
+      rows: [{ row: 1, devices: [seen(12, 1, 'domotic', { brand: 'EARU', model: 'EAKCB-Z-M' }), seen(13, 1, 'domotic', { brand: 'EARU', model: 'EAKCB-Z-M' })] }],
+      notes: null,
+    };
+    const r = layoutFromReading([T, S], reading, 18);
+    expect(r.slots).toEqual({ [T.id]: { row: 1, col: 12 }, [S.id]: { row: 1, col: 13 } });
   });
 });
