@@ -166,8 +166,10 @@ main {
   min-height: 0;
 }
 .side {
+  position: relative;
   width: 340px;
-  min-width: 260px;
+  min-width: 220px;
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--border);
@@ -1278,4 +1280,124 @@ tr.clickable:hover td {
 .canvas.panning,
 .canvas.panning * {
   cursor: grabbing !important;
+}
+
+/* Colonne de gauche : parties repliables et redimensionnables */
+.side h3 {
+  padding: 0;
+}
+.side-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.side-toggle:hover {
+  color: var(--text);
+}
+.side-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.side .folded {
+  flex: 0 0 auto !important;
+}
+.side-splitter {
+  flex: 0 0 6px;
+  cursor: row-resize;
+  background: var(--border);
+  opacity: 0.5;
+}
+.side-splitter:hover {
+  background: var(--accent);
+  opacity: 1;
+}
+.side-resizer {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+}
+.side-resizer:hover {
+  background: var(--accent);
+  opacity: 0.5;
+}
+body.resizing {
+  user-select: none;
+}
+body.resizing-v * {
+  cursor: row-resize !important;
+}
+body.resizing-h * {
+  cursor: col-resize !important;
+}
+
+/* Ajouter un élément */
+.tree-add {
+  margin-left: auto;
+  padding: 0 6px;
+  min-height: 0;
+  line-height: 18px;
+  font-size: 13px;
+  opacity: 0;
+}
+.tree-row:hover .tree-add,
+.tree-row.selected .tree-add,
+.tree-add:focus-visible {
+  opacity: 1;
+}
+@media (hover: none) {
+  .tree-add {
+    opacity: 1;
+  }
+}
+.add-btn {
+  margin-right: 6px;
+}
+.add-menu {
+  position: fixed;
+  z-index: 50;
+  min-width: 200px;
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+.add-menu-title {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 8px;
+}
+.add-menu button {
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+.add-menu button:hover,
+.add-menu button:focus-visible {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.canvas-hint {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  z-index: 2;
 }

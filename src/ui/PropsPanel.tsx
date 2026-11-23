@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { AddMenu } from './AddMenu';
 import { useStore } from '../store';
 import { useDerived } from './derived';
 import { ALLOWED_CHILDREN, PROP_SCHEMAS, type PropDef } from '../model/schema';
@@ -64,9 +66,10 @@ export function PropsPanel() {
   const project = useStore((s) => s.project);
   const t = useStore((s) => s.t);
   const view = useStore((s) => s.view);
-  const { setLocation, addChild, remove, duplicate, move, setView, startPlacing } = useStore.getState();
+  const { setLocation, remove, duplicate, move, setView, startPlacing } = useStore.getState();
   const { find, numbering, byNode, labelFn } = useDerived();
   const node = selectedId ? find(selectedId) : undefined;
+  const [adding, setAdding] = useState<{ x: number; y: number } | null>(null);
   if (!node) return <div className="props empty">{t('panel.nothingSelected')}</div>;
 
   const placed = project.plan.pages.some((p) => p.symbols.some((s) => s.nodeId === node.id));
@@ -77,6 +80,18 @@ export function PropsPanel() {
   return (
     <div className="props">
       <div className="props-head">
+        {ALLOWED_CHILDREN[node.kind].length > 0 && (
+          <button
+            className="primary add-btn"
+            onClick={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              setAdding({ x: r.left, y: r.bottom + 4 });
+            }}
+          >
+            ＋ {t('add.button')}
+          </button>
+        )}
+        {adding && <AddMenu node={node} at={adding} onClose={() => setAdding(null)} />}
         <strong>{t('kind.' + node.kind)}</strong>
         {ref && <span className="ref">{ref}</span>}
         {node.kind !== 'protection' && labelFn.title(node) !== t('kind.' + node.kind) && <span className="title">{labelFn.title(node)}</span>}
@@ -101,21 +116,6 @@ export function PropsPanel() {
       )}
 
       <div className="props-actions">
-        {ALLOWED_CHILDREN[node.kind].length > 0 && (
-          <select
-            value=""
-            onChange={(e) => {
-              if (e.target.value) addChild(node.id, e.target.value as ElNode['kind']);
-            }}
-          >
-            <option value="">＋ {t('action.addChild')}…</option>
-            {ALLOWED_CHILDREN[node.kind].map((k) => (
-              <option key={k} value={k}>
-                {t('kind.' + k)}
-              </option>
-            ))}
-          </select>
-        )}
         <div className="row">
           <button onClick={() => move(node.id, -1)} title={t('action.moveUp')}>
             ↑

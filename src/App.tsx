@@ -11,6 +11,7 @@ import { UnifilarView } from './ui/UnifilarView';
 import { PlanView } from './ui/PlanView';
 import { BomPanel } from './ui/BomPanel';
 import { SyncDialog } from './ui/SyncDialog';
+import { SidePanels } from './ui/SidePanels';
 import { TreePanel } from './ui/TreePanel';
 import { PropsPanel } from './ui/PropsPanel';
 import { ProjectPanel } from './ui/ProjectPanel';
@@ -249,16 +250,7 @@ export function App() {
       )}
       <main className={showSide ? 'with-side' : ''}>
         {showSide && (
-          <aside className="side">
-            <section className="side-tree">
-              <h3>{t('panel.tree')}</h3>
-              <TreePanel />
-            </section>
-            <section className="side-props">
-              <h3>{t('panel.props')}</h3>
-              <PropsPanel />
-            </section>
-          </aside>
+          <SidePanels tree={<TreePanel />} props={<PropsPanel />} />
         )}
         <section className="content">
           {s.view === 'unifilar' && <UnifilarView />}

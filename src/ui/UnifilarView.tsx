@@ -1,4 +1,6 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { AddMenu } from './AddMenu';
+import type { ElNode } from '../model/types';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { layoutUnifilar } from '../unifilar/layout';
@@ -14,6 +16,12 @@ export function UnifilarView() {
   const setMeta = useStore((s) => s.setMeta);
   const { labelFn, byNode } = useDerived();
   const chain = useChain();
+  const [adding, setAdding] = useState<{ node: ElNode; at: { x: number; y: number } } | null>(null);
+  const openAdd = (e: React.MouseEvent, node: ElNode) => {
+    e.preventDefault();
+    select(node.id);
+    setAdding({ node, at: { x: e.clientX, y: e.clientY } });
+  };
   const inChain = (id?: string) => (id && chain.has(id) && id !== selectedId ? ' chain' : '');
   const up = project.meta.unifilarDirection !== 'down';
 
@@ -30,6 +38,8 @@ export function UnifilarView() {
 
   return (
     <div className="canvas-wrap">
+      {adding && <AddMenu node={adding.node} at={adding.at} onClose={() => setAdding(null)} />}
+      <div className="canvas-hint">{t('add.hint')}</div>
       <div className="canvas-tools">
         <button onClick={pz.fit}>{t('action.zoomFit')}</button>
         <button onClick={() => setMeta({ unifilarDirection: up ? 'down' : 'up' })} title={t(up ? 'unifilar.dirDown' : 'unifilar.dirUp')}>
@@ -54,7 +64,7 @@ export function UnifilarView() {
               return <line key={i} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} className={'wire' + (p.n && chain.has(p.n) ? ' chain' : '')} style={p.w ? { strokeWidth: p.w } : undefined} />;
             case 'bus':
               return (
-                <g key={i} className={'hit' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id)} onClick={() => select(p.node.id)}>
+                <g key={i} className={'hit' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id)} onClick={() => select(p.node.id)} onContextMenu={(e) => openAdd(e, p.node)}>
                   <line x1={p.x1} y1={p.y} x2={p.x2} y2={p.y} className="bus" />
                   <rect x={p.x1} y={p.y - 6} width={p.x2 - p.x1} height={12} className="hitbox" />
                 </g>
@@ -85,6 +95,7 @@ export function UnifilarView() {
                   transform={`translate(${p.x},${p.y})`}
                   className={'hit sym' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id)}
                   onClick={() => select(p.node.id)}
+                  onContextMenu={(e) => openAdd(e, p.node)}
                 >
                   <rect x={box.x} y={box.y} width={box.w} height={box.h} className="hitbox" />
                   <Symbol node={p.node} orient={p.orient} />
