@@ -1435,3 +1435,32 @@ body.resizing-h * {
   color: var(--accent);
   background: var(--accent-bg);
 }
+
+/* Menu Fichier */
+.file-menu {
+  position: relative;
+}
+.file-menu-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 260px;
+}
+.file-menu-list button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.file-menu-list kbd {
+  font-size: 11px;
+  color: var(--muted);
+  background: none;
+  font-family: inherit;
+}
+.menu-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 6px;
+}

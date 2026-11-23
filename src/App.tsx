@@ -12,6 +12,7 @@ import { PlanView } from './ui/PlanView';
 import { BomPanel } from './ui/BomPanel';
 import { SyncDialog } from './ui/SyncDialog';
 import { SidePanels } from './ui/SidePanels';
+import { FileMenu } from './ui/FileMenu';
 import { TreePanel } from './ui/TreePanel';
 import { PropsPanel } from './ui/PropsPanel';
 import { ProjectPanel } from './ui/ProjectPanel';
@@ -139,25 +140,28 @@ export function App() {
         <div className="brand">
           <span className="logo">⚡</span> {APP_NAME}
         </div>
-        <button
-          onClick={() => {
-            if (!confirmDiscard()) return;
-            resetHandle();
-            location.current = { kind: 'device' };
-            s.loadProject(emptyProject(), '');
-          }}
-        >
-          {t('menu.new')}
-        </button>
-        <button onClick={() => setStorage('open')}>{t('menu.open')}</button>
-        <button onClick={() => open('.trik')}>{t('menu.importTrikker')}</button>
-        <button onClick={() => save(false)} className={s.dirty ? 'primary' : ''}>
+        <FileMenu
+          actions={[
+            {
+              label: t('menu.new'),
+              run: () => {
+                if (!confirmDiscard()) return;
+                resetHandle();
+                location.current = { kind: 'device' };
+                s.loadProject(emptyProject(), '');
+              },
+            },
+            { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
+            { label: t('menu.importTrikker'), run: () => open('.trik') },
+            { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
+            { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
+            { label: t('menu.print'), shortcut: 'Ctrl+P', run: () => setPrintOpen(true), separatorBefore: true },
+          ]}
+        />
+        {/* Enregistrer reste visible : action fréquente, en bleu quand il y a des modifications non enregistrées */}
+        <button onClick={() => save(false)} className={s.dirty ? 'primary' : ''} title="Ctrl+S">
           {t('menu.save')}
         </button>
-        <button onClick={() => save(true)} title="Ctrl+Maj+S">
-          {t('menu.saveAs')}
-        </button>
-        <button onClick={() => setPrintOpen(true)} title="Ctrl+P">{t('menu.print')}</button>
         <button onClick={() => setSyncOpen(true)} title={t('sync.help')}>
           ⟳ {t('sync.button')}
         </button>

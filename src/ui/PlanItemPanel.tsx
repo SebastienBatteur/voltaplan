@@ -70,8 +70,16 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
                 editPage((pg) => ({ ...pg, openings: pg.openings.map((x, i) => (i === sel.index ? { ...x, hinge: x.hinge === 'right' ? 'left' : 'right' } : x)) }))
               }
             >
-              ⇅ {t('plan.flipSide')}
+              ⇅ {t(o.kind === 'slidingDoor' ? 'plan.flipSideSliding' : 'plan.flipSide')}
             </button>
+            {o.kind === 'slidingDoor' && (
+              <button
+                title={t('plan.flipSlideHelp')}
+                onClick={() => editPage((pg) => ({ ...pg, openings: pg.openings.map((x, i) => (i === sel.index ? { ...x, mirrored: !x.mirrored } : x)) }))}
+              >
+                ⇆ {t('plan.flipSlide')}
+              </button>
+            )}
             {o.kind === 'door' && (
               <button
                 title={t('plan.flipHingeHelp')}

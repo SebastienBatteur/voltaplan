@@ -152,8 +152,9 @@ export function Walls({ page, sel }: { page: PlanPage; sel: PlanSel }) {
             )}
             {o.kind === 'garageDoor' && <line x1={0} y1={0} x2={len} y2={0} className="plan-thin" strokeDasharray="80 40" />}
             {o.kind === 'slidingDoor' && (
-              <g className="plan-thin">
-                {/* Baie vitrée coulissante : deux vantaux vitrés qui se chevauchent, flèche du sens de glissement */}
+              <g className="plan-thin" transform={o.mirrored ? `translate(${len},0) scale(-1,1)` : undefined}>
+                {/* Baie vitrée coulissante : deux vantaux vitrés qui se chevauchent, flèche du sens de glissement
+                    (« mirrored » : elle coulisse dans l'autre sens) */}
                 <rect x={0} y={-th / 4 - 15} width={len * 0.55} height={30} />
                 <rect x={len * 0.45} y={th / 4 - 15} width={len * 0.55} height={30} />
                 <path d={`M${len * 0.2} ${side * th * 0.9} H${len * 0.5} m-60 -40 l60 40 l-60 40`} fill="none" />
