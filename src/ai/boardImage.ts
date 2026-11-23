@@ -46,11 +46,29 @@ export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): Comp
   };
 }
 
+/**
+ * Chargement de la photo. `img.decode()` peut ne jamais répondre pour une image déjà affichée dans la page
+ * (constaté avec une photo en data URL) : on attend `onload`, avec une limite de temps.
+ */
+function loadImage(href: string, timeoutMs = 15000): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const timer = window.setTimeout(() => reject(new Error('image')), timeoutMs);
+    img.onload = () => {
+      window.clearTimeout(timer);
+      resolve(img);
+    };
+    img.onerror = () => {
+      window.clearTimeout(timer);
+      reject(new Error('image'));
+    };
+    img.src = href;
+  });
+}
+
 /** Image composée (JPEG, data URL) à partir de la photo et du calage de chaque rangée. */
 export async function composeBoardImage(href: string, rows: { a: Pt; b: Pt }[], perRow: number): Promise<string> {
-  const img = new Image();
-  img.src = href;
-  await img.decode();
+  const img = await loadImage(href);
   const g = composedGeometry(rows, perRow);
   const c = document.createElement('canvas');
   c.width = g.width;
@@ -94,9 +112,7 @@ export async function composeBoardImage(href: string, rows: { a: Pt; b: Pt }[], 
 
 /** Sans calage : la photo réduite (côté le plus long ≤ 1600 px). */
 export async function shrinkPhoto(href: string, maxSide = 1600): Promise<string> {
-  const img = new Image();
-  img.src = href;
-  await img.decode();
+  const img = await loadImage(href);
   const k = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
   const c = document.createElement('canvas');
   c.width = Math.round(img.naturalWidth * k);

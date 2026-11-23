@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { layoutFromReading, type PhotoDeviceT, type PhotoReadingT } from '../src/ai/boardPhoto';
+import { closeKind, layoutFromReading, protectionFromReading, type PhotoDeviceT, type PhotoReadingT } from '../src/ai/boardPhoto';
 import { createNode } from '../src/model/tree';
 import { boardCandidates, enclosures, moduleWidth } from '../src/board/model';
 
@@ -151,5 +151,47 @@ describe("disposition d'après la lecture de l'IA", () => {
     };
     const r = layoutFromReading([T, S], reading, 18);
     expect(r.slots).toEqual({ [T.id]: { row: 1, col: 12 }, [S.id]: { row: 1, col: 13 } });
+  });
+
+  it("menu « Associer à… » : types proches seulement ; nouvelle protection d'après la lecture", () => {
+    const rgb = createNode('domotic', { name: 'Controleur RGBCW' });
+    const bell = createNode('transformer');
+    const earu = seen(12, 1, 'mcb', { brand: 'EARU', model: 'EAKCB-Z-M', ratedCurrentA: 16, curve: 'c', poles: '1P + N', label: 'PAC' });
+    expect(closeKind('mcb', rgb)).toBe(false);
+    expect(closeKind('mcb', a)).toBe(true);
+    expect(closeKind('transformer', bell)).toBe(true);
+    expect(closeKind('transformer', rgb)).toBe(false);
+    expect(protectionFromReading(earu)).toEqual({
+      device: 'mcb',
+      modules: 1,
+      ratedCurrent: 16,
+      curve: 'C',
+      poles: '1P+N',
+      reference: 'EARU EAKCB-Z-M',
+      circuitName: 'PAC',
+    });
+  });
+
+  it("différentiels identiques : dans l'ordre de l'unifilaire, jamais croisés", () => {
+    // Arbre : D1 (6 disjoncteurs), D2 (5), D3 (2) ; photo : 13 disjoncteurs en rangée 1, les 3 différentiels en rangée 2
+    const mk = () => dev({ device: 'rcd', poles: '2P', ratedCurrent: 40, residualCurrent: 30 });
+    const D1 = mk();
+    const D2 = mk();
+    const D3 = mk();
+    const brk = (n: number) => Array.from({ length: n }, () => dev({ device: 'mcb', ratedCurrent: 20 }));
+    const devices = [D1, ...brk(6), D2, ...brk(5), D3, ...brk(2)];
+    const reading: PhotoReadingT = {
+      rows: [
+        { row: 0, devices: Array.from({ length: 13 }, (_, i) => seen(i, 1, 'mcb', { ratedCurrentA: 20 })) },
+        { row: 1, devices: [seen(0, 2, 'rcd', { residualCurrentmA: 30 }), seen(2, 2, 'rcd', { residualCurrentmA: 30 }), seen(4, 2, 'rcd', { residualCurrentmA: 30 })] },
+      ],
+      notes: null,
+    };
+    const r = layoutFromReading(devices, reading, 18);
+    expect([D1, D2, D3].map((d) => r.slots[d.id])).toEqual([
+      { row: 1, col: 0 },
+      { row: 1, col: 2 },
+      { row: 1, col: 4 },
+    ]);
   });
 });

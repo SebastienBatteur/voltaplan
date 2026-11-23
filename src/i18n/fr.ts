@@ -174,6 +174,8 @@ export const fr = {
   'ai.diff.extra2': "{kind}{model} sur la photo (rangée {row}, module {col}), absent du projet.",
   'ai.readApplied': "Largeur ou référence reprise de la photo pour {n} appareil(s).",
   'ai.associate': "Associer à…",
+  'ai.newProtection': "＋ Nouveau {kind} dans ce tableau",
+  'ai.created': "Protection ajoutée sous le tableau d'après la photo et placée. Dans l'arborescence, déplacez-la sous son différentiel et complétez son circuit.",
   'ai.needUnlock': "Déverrouillez d'abord la clé de l'IA (bouton ⚙ IA).",
   'ai.reading': "Lecture de la photo par l'IA…",
   'ai.readPlaced': "Appareils disposés d'après la photo : {placed} placés, {left} en réserve (Ctrl+Z pour annuler).",

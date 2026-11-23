@@ -174,6 +174,8 @@ export const nl: Partial<Dict> = {
   'ai.diff.extra2': "{kind}{model} op de foto (rij {row}, module {col}), niet in het project.",
   'ai.readApplied': "Breedte of referentie van de foto overgenomen voor {n} toestel(len).",
   'ai.associate': "Koppelen aan…",
+  'ai.newProtection': "＋ Nieuwe {kind} in dit verdeelbord",
+  'ai.created': "Beveiliging toegevoegd onder het verdeelbord volgens de foto en geplaatst. Verplaats ze in de boomstructuur onder haar verliesstroomschakelaar en vul haar kring aan.",
   'ai.needUnlock': "Ontgrendel eerst de AI-sleutel (knop ⚙ AI).",
   'ai.reading': "De AI leest de foto…",
   'ai.readPlaced': "Toestellen geplaatst volgens de foto: {placed} geplaatst, {left} in reserve (Ctrl+Z om ongedaan te maken).",

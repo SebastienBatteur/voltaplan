@@ -1,7 +1,7 @@
 import { NumberField } from './NumberField';
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
-import { ancestors, mapTree } from '../model/tree';
+import { ancestors, createNode, insertChild, mapTree } from '../model/tree';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
@@ -28,7 +28,20 @@ import { loadAiSettings, getSessionKey, setSessionKey } from '../ai/settings';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
-import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff, type ExtraDevice } from '../ai/boardPhoto';
+import {
+  closeKind,
+  compareReading,
+  extraDevices,
+  layoutFromReading,
+  PROTECTION_KINDS,
+  protectionFromReading,
+  readBoardPhoto,
+  type DeviceDiff,
+  type ExtraDevice,
+} from '../ai/boardPhoto';
+
+/** Valeur du menu « Associer à… » pour créer une nouvelle protection. */
+const NEW = '__new';
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
 export const MOD = 17.5;
@@ -351,6 +364,18 @@ export function BoardView() {
     }));
     setAiDiffs((d) => (d ? { ...d, extra: d.extra.filter((e) => e !== x) } : d));
   };
+  /** Protection vue sur la photo et absente de l'unifilaire : créée sous ce tableau d'après la lecture, et placée. */
+  const createFromPhoto = (x: ExtraDevice) => {
+    const node = createNode('protection', protectionFromReading(x.seen));
+    applyProject((p) => ({
+      ...p,
+      roots: insertChild(p.roots, enc.board.id, node),
+      boards: { ...p.boards, [enc.board.id]: { ...layout, slots: { ...layout.slots, [node.id]: { row: x.row, col: x.startModule } } } },
+    }));
+    setAiDiffs((d) => (d ? { ...d, extra: d.extra.filter((e) => e !== x) } : d));
+    select(node.id);
+    setMsg(t('ai.created'));
+  };
   const target = drag && dragged && drag.moved ? slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged)) : null;
 
   return (
@@ -487,14 +512,17 @@ export function BoardView() {
             {aiDiffs.extra.map((x, i) => (
               <li key={'x' + i}>
                 {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}{' '}
-                {associable.length > 0 && (
-                  <select value="" onChange={(e) => e.target.value && associate(x, e.target.value)}>
+                {(PROTECTION_KINDS.has(x.kind) || associable.some((n) => closeKind(x.kind, n))) && (
+                  <select value="" onChange={(e) => (e.target.value === NEW ? createFromPhoto(x) : e.target.value && associate(x, e.target.value))}>
                     <option value="">{t('ai.associate')}</option>
-                    {associable.map((n) => (
-                      <option key={n.id} value={n.id}>
-                        {candidateLabel(n)}
-                      </option>
-                    ))}
+                    {PROTECTION_KINDS.has(x.kind) && <option value={NEW}>{t('ai.newProtection', { kind: t('ai.kind.' + x.kind) })}</option>}
+                    {associable
+                      .filter((n) => closeKind(x.kind, n))
+                      .map((n) => (
+                        <option key={n.id} value={n.id}>
+                          {candidateLabel(n)}
+                        </option>
+                      ))}
                   </select>
                 )}
               </li>

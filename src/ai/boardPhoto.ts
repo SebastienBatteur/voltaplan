@@ -91,6 +91,13 @@ export function compatible(seen: PhotoKind, n: ElNode): boolean {
   return n.kind === 'relay' && (n.props.relayType ?? 'relay') === 'relay' && (seen === 'contactor' || seen === 'teleswitch' || seen === 'timer');
 }
 
+/** Pour le menu « Associer à… » : types compatibles, sans le dernier recours disjoncteur ↔ module connecté. */
+export function closeKind(seen: PhotoKind, n: ElNode): boolean {
+  const k = projectKind(n);
+  const breaker = (x: PhotoKind) => x === 'mcb' || x === 'rcbo';
+  return compatible(seen, n) && !((breaker(seen) && k === 'domotic') || (seen === 'domotic' && breaker(k)));
+}
+
 const norm = (s: string) =>
   s
     .normalize('NFD')
@@ -101,6 +108,25 @@ const compact = (s: string) => norm(s).replace(/[^a-z0-9]/g, '');
 /** Marque et modèle lus, en une référence (« Hager MBN116 »). */
 export function readReference(s: PhotoDeviceT): string {
   return [s.brand, s.model].filter((x) => x && x.trim()).join(' ').trim();
+}
+
+/** Types lus qui correspondent à une protection du projet (créable sous le tableau). */
+export const PROTECTION_KINDS = new Set<PhotoKind>(['mcb', 'rcd', 'rcbo', 'fuse', 'switch']);
+const POLE_VALUES = ['1P', '1P+N', '2P', '3P', '3P+N', '4P'];
+
+/** Propriétés d'une nouvelle protection créée d'après la photo. */
+export function protectionFromReading(x: PhotoDeviceT): Record<string, PropValue> {
+  const p: Record<string, PropValue> = { device: PROTECTION_KINDS.has(x.kind) ? x.kind : 'mcb', modules: Math.max(1, Math.round(x.widthModules)) };
+  if (x.ratedCurrentA) p.ratedCurrent = x.ratedCurrentA;
+  if (x.curve && /^[BCD]$/i.test(x.curve)) p.curve = x.curve.toUpperCase();
+  if (x.residualCurrentmA) p.residualCurrent = x.residualCurrentmA;
+  if (x.rcdType && /^(AC|A|F|B)$/i.test(x.rcdType)) p.rcdType = x.rcdType.toUpperCase();
+  const poles = x.poles?.toUpperCase().replace(/\s/g, '');
+  if (poles && POLE_VALUES.includes(poles)) p.poles = poles;
+  const ref = readReference(x);
+  if (ref) p.reference = ref;
+  if (x.label) p.circuitName = x.label;
+  return p;
 }
 
 /** Comparaison (sans IA) entre le matériel défini et ce que l'IA a lu sur la photo. */
@@ -139,6 +165,8 @@ export interface ExtraDevice {
   width: number;
   kind: PhotoKind;
   model: string;
+  /** Lecture complète (calibre, courbe, sensibilité…), pour créer l'appareil dans le projet. */
+  seen: PhotoDeviceT;
 }
 export function extraDevices(placedDevices: Placed[], reading: PhotoReadingT): ExtraDevice[] {
   const extra: ExtraDevice[] = [];
@@ -146,7 +174,7 @@ export function extraDevices(placedDevices: Placed[], reading: PhotoReadingT): E
     for (const x of r.devices) {
       if (x.kind === 'blank') continue;
       const covered = placedDevices.some((d) => d.row === r.row && x.startModule >= d.col && x.startModule < d.col + d.width);
-      if (!covered) extra.push({ row: r.row, startModule: x.startModule, width: Math.max(1, Math.round(x.widthModules)), kind: x.kind, model: readReference(x) });
+      if (!covered) extra.push({ row: r.row, startModule: x.startModule, width: Math.max(1, Math.round(x.widthModules)), kind: x.kind, model: readReference(x), seen: x });
     }
   return extra;
 }
@@ -171,6 +199,15 @@ export function layoutFromReading(
   const seen = reading.rows
     .flatMap((r) => r.devices.filter((x) => x.kind !== 'blank').map((x) => ({ row: r.row, x })))
     .sort((a, b) => a.row - b.row || a.x.startModule - b.x.startModule);
+  /** L'étiquette lue contient le repère du circuit (« A », « B2 ») ou un mot de son usage, comme mot entier. */
+  const labelHit = (s: PhotoDeviceT, n: ElNode) => {
+    if (!s.label) return false;
+    const lab = norm(s.label);
+    const words = norm(labelOf(n))
+      .split(/[^a-z0-9]+/)
+      .filter((w) => w && (w.length >= 3 || /\d/.test(w) || w.length === 1));
+    return words.some((w) => new RegExp(`(^|[^a-z0-9])${w}($|[^a-z0-9])`).test(lab));
+  };
   const score = (s: PhotoDeviceT, n: ElNode, si: number, ni: number) => {
     const p = n.props;
     // Même type : 3 ; type voisin (compteur / module connecté, contacteur / télérupteur…) : 2 ;
@@ -190,14 +227,7 @@ export function layoutFromReading(
     const res = Number(p.residualCurrent);
     if (s.residualCurrentmA != null && res) v += s.residualCurrentmA === res ? 3 : -2;
     if (s.curve && p.curve) v += s.curve.toUpperCase() === String(p.curve).toUpperCase() ? 1 : -1;
-    if (s.label) {
-      const lab = norm(s.label);
-      const words = norm(labelOf(n))
-        .split(/[^a-z0-9]+/)
-        .filter((w) => w && (w.length >= 3 || /\d/.test(w) || w.length === 1));
-      // Repère du circuit (« A », « B2 ») ou mot d'usage, comme mot entier
-      if (words.some((w) => new RegExp(`(^|[^a-z0-9])${w}($|[^a-z0-9])`).test(lab))) v += 4;
-    }
+    if (labelHit(s, n)) v += 4;
     return v - 0.01 * Math.abs(si - ni);
   };
   const pairs: { si: number; ni: number; v: number }[] = [];
@@ -219,6 +249,25 @@ export function layoutFromReading(
     bySeen.set(si, ni);
     taken.add(ni);
   });
+  // Appareils identiques (ex. trois différentiels 40 A 30 mA) que la photo ne distingue pas (pas d'étiquette
+  // reconnue) : dans l'ordre de l'unifilaire, de gauche à droite et de haut en bas. Sinon l'appariement « meilleur
+  // d'abord » peut les croiser, et chaque différentiel semble alors protéger les circuits d'un autre.
+  const signature = (n: ElNode) =>
+    [projectKind(n), n.props.ratedCurrent, n.props.residualCurrent, n.props.curve, n.props.poles, n.props.reference, n.props.relayType].map((v) => String(v ?? '')).join('|');
+  const groups = new Map<string, { si: number[]; ni: number[] }>();
+  for (const [si, ni] of bySeen) {
+    if (labelHit(seen[si].x, devices[ni])) continue;
+    const g = groups.get(signature(devices[ni])) ?? { si: [], ni: [] };
+    g.si.push(si);
+    g.ni.push(ni);
+    groups.set(signature(devices[ni]), g);
+  }
+  for (const g of groups.values()) {
+    if (g.si.length < 2) continue;
+    g.si.sort((x, y) => x - y); // `seen` est trié par rangée puis position
+    g.ni.sort((x, y) => x - y); // ordre de l'arbre
+    g.si.forEach((si, k) => bySeen.set(si, g.ni[k]));
+  }
   // Largeur et référence lues
   const props: Record<string, Record<string, PropValue>> = {};
   const widthOf = new Map<string, number>();
