@@ -166,7 +166,69 @@
     <p><strong>Importer Trikker (.trik)</strong> reprend schéma, numérotation, plan (murs, ouvertures, pièces, images), adresses et notes. <strong>Enregistrer sous… → Cet appareil → Exporter en .trik</strong> produit un fichier Trikker (Windows-1252, comme Trikker).</p>
 
     <h2 id="ia">IA (facultative)</h2>
-    <p>Tout fonctionne sans IA. Si vous le souhaitez, « ⚙ IA » permet de coller une clé API Anthropic, chiffrée par une phrase de passe et gardée <strong>uniquement sur cet ordinateur</strong>, et de choisir ce que l'IA peut faire (lecture de la photo du tableau). Les requêtes partent directement de votre navigateur vers l'API ; la clé n'est jamais mise dans le fichier du projet.</p>
+    <p>Tout fonctionne sans IA, y compris « Disposer d'après la photo », qui analyse l'image sur votre ordinateur. L'IA ajoute une seule chose aujourd'hui : <strong>lire les inscriptions des appareils</strong> sur la photo du tableau (type, calibre, courbe, sensibilité, type de différentiel, étiquette) et les comparer au projet. Elle utilise l'API d'Anthropic (modèles Claude), avec <strong>votre propre clé</strong> : Voltaplan n'a aucun serveur et ne voit jamais vos photos ni votre clé.</p>
+
+    <h3>1. Obtenir une clé API Anthropic</h3>
+    <ol>
+      <li>Créez un compte sur <a href="https://console.anthropic.com">console.anthropic.com</a> (adresse e-mail, ou compte Google).</li>
+      <li><strong>Billing</strong> (Facturation) : ajoutez un moyen de paiement et achetez des crédits. L'API est payée à l'usage, séparément d'un éventuel abonnement Claude.ai.</li>
+      <li>Conseillé : dans <strong>Limits</strong>, fixez une <strong>limite de dépense mensuelle</strong> basse. Une clé volée ou une erreur ne pourra jamais coûter plus que cette limite.</li>
+      <li><strong>API Keys</strong> → <strong>Create Key</strong> ; donnez-lui un nom (par ex. « Voltaplan – mon PC »). La clé commence par <code>sk-ant-</code> et n'est affichée <strong>qu'une seule fois</strong> : copiez-la tout de suite.</li>
+    </ol>
+    <p>Le prix dépend du modèle et de la taille de la photo ; il est publié sur <a href="https://www.anthropic.com/pricing#api">anthropic.com/pricing</a>. Chaque lecture est <strong>une</strong> requête (une photo et une courte consigne) ; le coût réel s'affiche dans la console, rubrique <strong>Usage</strong>.</p>
+
+    <h3>2. Configurer Voltaplan</h3>
+    <ol>
+      <li>Cliquez sur <strong>⚙ IA</strong> dans la barre du haut et cochez <strong>Utiliser l'IA</strong>.</li>
+      <li><strong>Modèle</strong> : <code>claude-opus-5-5</code> par défaut (le plus précis pour lire de petites inscriptions). Vous pouvez saisir un autre identifiant de modèle Claude, plus rapide ou moins cher, au prix d'une lecture moins sûre.</li>
+      <li><strong>Nouvelle clé</strong> : collez la clé <code>sk-ant-…</code>.</li>
+      <li><strong>Phrase secrète</strong> (8 caractères minimum), puis <strong>Chiffrer et enregistrer</strong>.</li>
+      <li>Sous <strong>Ce que l'IA peut générer</strong>, cochez <strong>Disposition des modules depuis une photo du tableau</strong>. Rien n'est coché au départ. Les autres cases (plan depuis une photo, unifilaire depuis un ancien dossier, suggestions de correction) sont prévues mais pas encore actives.</li>
+    </ol>
+
+    <h3>3. Lire une photo de tableau</h3>
+    <ol>
+      <li>Onglet <strong>Tableau</strong> : importez la photo et faites le <strong>cadrage</strong> (rangée par rangée) comme décrit dans <a href="#photo">Photo du tableau</a>.</li>
+      <li>Cliquez sur <strong>Lire la photo (IA)</strong>. Ce bouton n'apparaît que si l'IA est activée et autorisée pour le tableau.</li>
+      <li>Si la clé est verrouillée, Voltaplan le signale : ouvrez <strong>⚙ IA</strong>, entrez la phrase secrète puis <strong>Déverrouiller</strong>. C'est à faire une fois par session.</li>
+      <li>Le résultat liste les différences avec le projet (appareil absent, largeur, type, calibre, courbe, sensibilité, lecture incertaine). <strong>C'est une lecture automatique à vérifier</strong> : confirmez chaque appareil avec sa pastille. Rien n'est modifié dans le projet sans votre action.</li>
+    </ol>
+
+    <h3>Ce qui est envoyé, et où</h3>
+    <table>
+      <tr><td>Envoyé à Anthropic</td><td>la photo du tableau cadrée, le nombre de rangées et de modules par rangée, et la langue de l'interface. Rien d'autre : ni le nom ou l'adresse du client, ni le reste du projet.</td></tr>
+      <tr><td>Par quel chemin</td><td>directement de votre navigateur (ou de l'application de bureau) vers <code>api.anthropic.com</code>, en HTTPS, sans aucun intermédiaire.</td></tr>
+      <tr><td>Clé enregistrée</td><td>chiffrée (AES-GCM 256 bits, clé dérivée de la phrase secrète par PBKDF2-SHA-256) dans le stockage local de ce navigateur ou de l'application. <strong>Jamais</strong> dans le fichier <code>.voltaplan</code>, ni dans un fichier envoyé à un client ou à un organisme agréé.</td></tr>
+      <tr><td>Phrase secrète</td><td>n'est enregistrée nulle part. La clé déchiffrée reste en mémoire jusqu'à la fermeture de l'onglet ou de l'application.</td></tr>
+      <tr><td>Côté Anthropic</td><td>les données envoyées à l'API suivent les <a href="https://www.anthropic.com/legal/commercial-terms">conditions commerciales</a> d'Anthropic, qui excluent par défaut leur utilisation pour entraîner les modèles.</td></tr>
+    </table>
+
+    <h3>Changer ou supprimer la clé</h3>
+    <ul>
+      <li><strong>Phrase secrète oubliée</strong> : la clé ne peut pas être récupérée. Cliquez sur <strong>Effacer la clé</strong>, puis enregistrez-en une nouvelle.</li>
+      <li><strong>Nouvelle clé</strong> : <strong>Effacer la clé</strong>, puis collez la nouvelle.</li>
+      <li><strong>Clé compromise</strong> (ordinateur perdu, clé copiée par erreur) : désactivez-la dans la console Anthropic, rubrique <strong>API Keys</strong>. Elle cesse aussitôt de fonctionner partout.</li>
+      <li><strong>Autre ordinateur ou autre navigateur</strong> : la clé n'y est pas. Configurez-la à nouveau ; vous pouvez réutiliser la même clé ou en créer une par poste.</li>
+    </ul>
+
+    <h3>En cas d'erreur</h3>
+    <table>
+      <tr><td><code>401</code> / authentication</td><td>clé fausse, révoquée ou mal copiée (espace en trop). Effacez-la et collez-la de nouveau.</td></tr>
+      <tr><td>crédit insuffisant / <code>400</code> billing</td><td>crédits épuisés ou limite de dépense atteinte : voir <strong>Billing</strong> et <strong>Limits</strong> dans la console.</td></tr>
+      <tr><td><code>404</code> / model</td><td>identifiant de modèle inconnu : remettez <code>claude-opus-5-5</code> dans ⚙ IA.</td></tr>
+      <tr><td><code>429</code> / <code>529</code></td><td>trop de requêtes ou service surchargé : réessayez dans une minute.</td></tr>
+      <tr><td>« L'IA a refusé… »</td><td>la photo n'a pas été traitée. Essayez avec une photo plus nette, qui ne montre que le tableau.</td></tr>
+    </table>
+
+    <h3>Pour les développeurs</h3>
+    <p>Le code est dans <code>src/ai/</code> :</p>
+    <ul>
+      <li><code>settings.ts</code> : réglages et autorisations, tout désactivé par défaut ;</li>
+      <li><code>secureStore.ts</code> : le coffre chiffré de la clé ;</li>
+      <li><code>boardPhoto.ts</code> : la comparaison de la lecture avec le projet ;</li>
+      <li><code>boardPhotoAi.ts</code> : l'appel à l'API avec le SDK officiel <code>@anthropic-ai/sdk</code>, chargé seulement à la première utilisation.</li>
+    </ul>
+    <p>La réponse est contrainte par un schéma (sortie structurée) : rangées → appareils avec position, largeur, type, calibre, courbe, sensibilité, étiquette et niveau de confiance. Une nouvelle fonction IA doit avoir sa propre case d'autorisation, désactivée par défaut, et ne jamais envoyer de données personnelles du projet sans que l'utilisateur le sache.</p>
 
     <h2 id="pays">Pays et règlements</h2>
     <p>Le RGIE belge est le référentiel par défaut (onglet Projet → Référentiel). Le moteur est prévu pour d'autres pays : un pays = un module de règles, ses textes et ses listes (désignations des câbles…), sans modifier le reste de l'application. Une désignation qui n'existe pas dans le pays du projet est signalée.</p>
