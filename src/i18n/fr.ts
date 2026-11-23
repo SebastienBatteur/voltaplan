@@ -62,6 +62,8 @@ export const fr = {
   'plan.traceHelp': "Détecte les murs foncés et épais du fond de plan (sans IA). Vérifiez et corrigez ensuite.",
   'plan.traceReplace': "La page contient déjà {n} murs (et des ouvertures). Les remplacer par ceux détectés sur la photo ?",
   'plan.traceDone': "{n} murs, {d} portes et {w} fenêtres détectés. Vérifiez-les en superposition (curseur « Fond ») : cliquez un élément pour corriger son type, sa largeur ou son sens d'ouverture ; glissez pour le déplacer.",
+  'app.updateReady': "Une nouvelle version de Voltaplan est en ligne. Enregistrez votre projet, puis rechargez la page.",
+  'app.reload': "Recharger",
   'ai.button': "IA",
   'ai.title': "Réglages de l'IA (optionnelle)",
   'ai.intro': "L'application fonctionne entièrement sans IA. Si vous l'activez, les demandes partent directement de votre ordinateur vers le fournisseur choisi, avec votre propre clé : aucun serveur intermédiaire, et la clé n'est jamais mise dans les fichiers de projet.",

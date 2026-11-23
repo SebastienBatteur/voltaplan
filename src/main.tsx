@@ -4,6 +4,10 @@ import { App } from './App';
 import './styles.css';
 import { useStore } from './store';
 import { importTrikker } from './import/trikker';
+import { watchStaleChunks } from './appUpdate';
+
+// Nouvelle version en ligne pendant que la page est ouverte : proposer de recharger
+watchStaleChunks();
 
 // Accès de débogage en développement uniquement
 if (import.meta.env.DEV) Object.assign(window, { __store: useStore, __importTrikker: importTrikker });

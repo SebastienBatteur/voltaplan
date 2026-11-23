@@ -24,6 +24,7 @@ import { toGray } from '../plan/trace';
 import { loadAiSettings, getSessionKey, setSessionKey } from '../ai/settings';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
+import { isStaleChunk, notifyUpdate } from '../appUpdate';
 import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff } from '../ai/boardPhoto';
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
@@ -292,7 +293,10 @@ export function BoardView() {
       );
     } catch (e) {
       const m = (e as Error).message;
-      setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
+      if (isStaleChunk(e)) {
+        notifyUpdate();
+        setMsg(t('app.updateReady'));
+      } else setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
     } finally {
       window.clearInterval(tick);
       setBusy(false);
@@ -451,7 +455,9 @@ export function BoardView() {
         ref={pz.svgRef}
         className={'canvas board' + (corners ? ' placing calibrating' : '') + (pz.panning ? ' panning' : '')}
         viewBox={`${pz.vb.x} ${pz.vb.y} ${pz.vb.w} ${pz.vb.h}`}
-        onPointerDown={(e) => pz.onPointerDown(e, !!corners)}
+        // Les appareils arrêtent l'événement : ce qui arrive ici est le fond, le cadre, les rails ou la photo,
+        // donc un glisser déplace toute la vue (un simple clic désélectionne ou place un point de calage).
+        onPointerDown={(e) => pz.onPointerDown(e, true)}
         onPointerMove={(e) => {
           if (pz.onPointerMove(e)) return; // la vue se déplace (glisser sur le fond ou appui long)
           if (drag) {

@@ -62,6 +62,8 @@ export const nl: Partial<Dict> = {
   'plan.traceHelp': "Herkent de donkere, dikke muren op het achtergrondplan (zonder AI). Controleer en verbeter daarna.",
   'plan.traceReplace': "De pagina bevat al {n} muren (en openingen). Vervangen door die welke op de foto herkend zijn?",
   'plan.traceDone': "{n} muren, {d} deuren en {w} ramen herkend. Controleer ze in overlay (schuifregelaar « Achtergrond »): klik op een element om type, breedte of draairichting te verbeteren; sleep om te verplaatsen.",
+  'app.updateReady': "Er staat een nieuwe versie van Voltaplan online. Bewaar uw project en herlaad dan de pagina.",
+  'app.reload': "Herladen",
   'ai.button': "AI",
   'ai.title': "AI-instellingen (optioneel)",
   'ai.intro': "De toepassing werkt volledig zonder AI. Als u ze inschakelt, gaan de aanvragen rechtstreeks van uw computer naar de gekozen aanbieder, met uw eigen sleutel: geen tussenserver, en de sleutel komt nooit in de projectbestanden.",

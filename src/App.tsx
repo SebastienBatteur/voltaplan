@@ -5,6 +5,7 @@ import { StorageDialog } from './ui/StorageDialog';
 import { AUTOSAVE_ID, browserDelete, browserLoad, browserSave, getGithubToken, githubSave, loadGithubSettings, parseProject, type Location } from './io/storage';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
+import { onUpdate } from './appUpdate';
 import { useStore, type View } from './store';
 import { LANGS, type Lang } from './i18n';
 import { UnifilarView } from './ui/UnifilarView';
@@ -120,6 +121,9 @@ export function App() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ name: string; updated: string; data: string } | null>(null);
+  // Nouvelle version publiée pendant que la page est ouverte (src/appUpdate.ts)
+  const [updateReady, setUpdateReady] = useState(false);
+  useEffect(() => onUpdate(() => setUpdateReady(true)), []);
 
   // Brouillon automatique dans le navigateur (toutes les 20 s s'il y a des modifications), récupérable au démarrage
   useEffect(() => {
@@ -226,6 +230,15 @@ export function App() {
             void browserDelete(AUTOSAVE_ID).catch(() => undefined);
           }}
         />
+      )}
+      {updateReady && (
+        <div className="toast">
+          {t('app.updateReady')}{' '}
+          <button className="primary" onClick={() => window.location.reload()}>
+            {t('app.reload')}
+          </button>{' '}
+          <button onClick={() => setUpdateReady(false)}>✕</button>
+        </div>
       )}
       {recover && (
         <div className="toast">

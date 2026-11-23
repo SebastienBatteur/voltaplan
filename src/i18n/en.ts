@@ -62,6 +62,8 @@ export const en: Partial<Dict> = {
   'plan.traceHelp': "Detects the dark, thick walls of the background plan (no AI). Check and correct afterwards.",
   'plan.traceReplace': "This page already has {n} walls (and openings). Replace them with those detected on the photo?",
   'plan.traceDone': "{n} walls, {d} doors and {w} windows detected. Check them as an overlay (« Background » slider): click an element to fix its type, width or swing; drag to move it.",
+  'app.updateReady': "A new version of Voltaplan is online. Save your project, then reload the page.",
+  'app.reload': "Reload",
   'ai.button': "AI",
   'ai.title': "AI settings (optional)",
   'ai.intro': "The application works fully without AI. If you enable it, requests go straight from your computer to the chosen provider, with your own key: no intermediate server, and the key is never put in project files.",
