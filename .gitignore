@@ -10,3 +10,5 @@ src-tauri/gen
 *.local
 .env*
 .claude/settings.local.json
+test/fixtures/*.jpg
+test/fixtures/*.png

@@ -124,3 +124,46 @@ export function boundaries(prof: number[], modules: number, ratio = 1.6, minAbs 
     return { pos: p, strength: v, boundary: v >= minAbs && (v >= ratio * lo || v >= 0.6 * hi) };
   });
 }
+
+/**
+ * Analyse d'une rangée de la photo, module par module :
+ *  - `occupied` : un appareil est là. Un cache-module est uniforme (écart-type des gris très faible) ;
+ *    un rail nu est nettement plus sombre que la rangée. Mesuré sur de vraies photos : cache 1 à 3,
+ *    appareil 15 et plus ; rail nu ~ 1/3 de la luminosité des appareils.
+ *  - `force` : force des bords verticaux aux positions 0 … modules (voir `boundaries`).
+ */
+export interface RowAnalysis {
+  occupied: boolean[];
+  force: number[];
+}
+
+export function moduleStats(g: Gray, a: Pt, b: Pt, modules: number): { mean: number; sd: number }[] {
+  const len = Math.hypot(b.x - a.x, b.y - a.y);
+  const ppm = len / modules;
+  const ux = (b.x - a.x) / len;
+  const uy = (b.y - a.y) / len;
+  const half = ppm * 1.2; // ± 1,2 module de part et d'autre de l'axe du rail (hauteur des appareils)
+  const out: { mean: number; sd: number }[] = [];
+  for (let m = 0; m < modules; m++) {
+    const v: number[] = [];
+    for (let t = (m + 0.15) * ppm; t < (m + 0.85) * ppm; t += 2)
+      for (let k = -half; k <= half; k += 3) {
+        const x = Math.round(a.x + ux * t - uy * k);
+        const y = Math.round(a.y + uy * t + ux * k);
+        if (x >= 0 && y >= 0 && x < g.w && y < g.h) v.push(g.d[y * g.w + x]);
+      }
+    const mean = v.length ? v.reduce((p, q) => p + q, 0) / v.length : 0;
+    const sd = v.length ? Math.sqrt(v.reduce((p, q) => p + (q - mean) ** 2, 0) / v.length) : 0;
+    out.push({ mean, sd });
+  }
+  return out;
+}
+
+export function analyzeRow(prof: number[], stats: { mean: number; sd: number }[], modules: number): RowAnalysis {
+  const means = stats.map((s) => s.mean).sort((p, q) => p - q);
+  const median = means[Math.floor(means.length / 2)] ?? 0;
+  return {
+    occupied: stats.map((s) => s.sd >= 8 && s.mean >= 0.5 * median),
+    force: boundaries(prof, modules).map((b) => b.strength),
+  };
+}

@@ -4,8 +4,8 @@ import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
-import { autoLayout, boardSize, compareRow, enclosures, moduleWidth, placeDevice, placed, unplaceDevice, type Placed } from '../board/model';
-import { boundaries, rowProfile, rowTransform } from '../board/photo';
+import { autoLayout, boardSize, compareRow, enclosures, layoutFromPhotoRows, moduleWidth, placeDevice, placed, unplaceDevice, type Placed } from '../board/model';
+import { analyzeRow, boundaries, moduleStats, rowProfile, rowTransform } from '../board/photo';
 import { pickFile } from '../io/files';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
@@ -163,6 +163,29 @@ export function BoardView() {
     setMsg(t('board.photoFitted'));
   };
 
+  /** Disposition proposée d'après la photo calée (sans IA) : emplacements occupés, puis appareils par largeur. */
+  const layoutFromPhoto = async () => {
+    const ph = layout.photo;
+    if (!ph?.rows) {
+      setMsg(t('board.photoCalibrateFirst'));
+      return;
+    }
+    setBusy(true);
+    try {
+      const g = toGray(await loadRGBA(ph.href));
+      const rows = ph.rows.slice(0, size.rows).map((line) => {
+        const pxPerMm = Math.hypot(line.b.x - line.a.x, line.b.y - line.a.y) / (size.perRow * MOD);
+        return analyzeRow(rowProfile(g, line.a, line.b, 0.3 * DEV_H * pxPerMm), moduleStats(g, line.a, line.b, size.perRow), size.perRow);
+      });
+      const r = layoutFromPhotoRows(enc.devices, rows);
+      save({ ...layout, slots: r.slots, checks: undefined });
+      setDetect(null);
+      setMsg(t('board.fromPhotoDone', { placed: Object.keys(r.slots).length, reserve: r.unplaced.length, extra: r.extra.length }));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const compare = async () => {
     const ph = layout.photo;
     if (!ph?.rows) {
@@ -273,6 +296,9 @@ export function BoardView() {
               }}
             >
               {t('board.photoFit')}
+            </button>
+            <button onClick={layoutFromPhoto} disabled={busy || !layout.photo.rows} title={t('board.fromPhotoHelp')}>
+              {t('board.fromPhoto')}
             </button>
             <button onClick={compare} disabled={busy || !devs.length}>
               {t('board.compare')}

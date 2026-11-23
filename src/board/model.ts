@@ -169,3 +169,65 @@ export function compareRow(devices: Placed[], isBoundary: (p: number) => boolean
   }
   return res;
 }
+
+/**
+ * Disposition proposée d'après la photo (sans IA), rangée par rangée (voir RowAnalysis, src/board/photo.ts).
+ *  1. appareils de 2 modules ou plus, dans l'ordre de l'arbre : premier emplacement (rangée par rangée, de gauche
+ *     à droite) entièrement occupé sur la photo, bordé de deux bords francs, sans séparation franche à l'intérieur
+ *     (la jointure entre pôles est faible). Une suite de disjoncteurs d'un module ne passe donc pas pour un 4P.
+ *  2. appareils d'un module, dans l'ordre de l'arbre : modules occupés restants, de gauche à droite.
+ * Ce qui ne trouve pas de place reste en réserve ; les modules occupés sur la photo sans appareil sont signalés.
+ * C'est une proposition : la photo ne dit ni le calibre ni le type ; à vérifier et corriger à la souris.
+ */
+export function layoutFromPhotoRows(
+  devices: ElNode[],
+  rows: { occupied: boolean[]; force: number[] }[],
+): { slots: BoardLayout['slots']; unplaced: ElNode[]; extra: { row: number; col: number; width: number }[] } {
+  const used = rows.map((r) => r.occupied.map(() => false));
+  const slots: BoardLayout['slots'] = {};
+  const unplaced: ElNode[] = [];
+  const fits = (r: number, s: number, w: number) => {
+    const { occupied, force } = rows[r];
+    if (s + w > occupied.length) return false;
+    for (let c = s; c < s + w; c++) if (!occupied[c] || used[r][c]) return false;
+    const edge = Math.min(force[s] ?? 0, force[s + w] ?? 0);
+    let inner = 0;
+    for (let c = s + 1; c < s + w; c++) inner = Math.max(inner, force[c] ?? 0);
+    return edge >= 6 && inner < 0.5 * edge;
+  };
+  const take = (d: ElNode, r: number, s: number, w: number) => {
+    slots[d.id] = { row: r, col: s };
+    for (let c = s; c < s + w; c++) used[r][c] = true;
+  };
+  for (const d of devices.filter((x) => moduleWidth(x) >= 2)) {
+    const w = moduleWidth(d);
+    let done = false;
+    for (let r = 0; r < rows.length && !done; r++)
+      for (let s = 0; s + w <= rows[r].occupied.length && !done; s++)
+        if (fits(r, s, w)) {
+          take(d, r, s, w);
+          done = true;
+        }
+    if (!done) unplaced.push(d);
+  }
+  for (const d of devices.filter((x) => moduleWidth(x) < 2)) {
+    let done = false;
+    for (let r = 0; r < rows.length && !done; r++)
+      for (let c = 0; c < rows[r].occupied.length && !done; c++)
+        if (rows[r].occupied[c] && !used[r][c]) {
+          take(d, r, c, 1);
+          done = true;
+        }
+    if (!done) unplaced.push(d);
+  }
+  const extra: { row: number; col: number; width: number }[] = [];
+  rows.forEach((r, ri) => {
+    for (let c = 0; c < r.occupied.length; c++) {
+      if (!r.occupied[c] || used[ri][c]) continue;
+      const last = extra[extra.length - 1];
+      if (last && last.row === ri && last.col + last.width === c) last.width++;
+      else extra.push({ row: ri, col: c, width: 1 });
+    }
+  });
+  return { slots, unplaced: [...new Set(unplaced)], extra };
+}
