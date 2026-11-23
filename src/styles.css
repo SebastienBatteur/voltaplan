@@ -1401,3 +1401,10 @@ body.resizing-h * {
   pointer-events: none;
   z-index: 2;
 }
+
+/* Calage de la photo du tableau : photo devant, dessin estompé derrière */
+.canvas.board.calibrating .device,
+.canvas.board.calibrating .label-text,
+.canvas.board.calibrating .label-strip {
+  opacity: 0.12;
+}

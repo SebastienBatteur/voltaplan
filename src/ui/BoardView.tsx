@@ -330,7 +330,7 @@ export function BoardView() {
       )}
       <svg
         ref={pz.svgRef}
-        className={'canvas board' + (corners ? ' placing' : '') + (pz.panning ? ' panning' : '')}
+        className={'canvas board' + (corners ? ' placing calibrating' : '') + (pz.panning ? ' panning' : '')}
         viewBox={`${pz.vb.x} ${pz.vb.y} ${pz.vb.w} ${pz.vb.h}`}
         onPointerDown={(e) => pz.onPointerDown(e, !!corners)}
         onPointerMove={(e) => {
@@ -484,6 +484,18 @@ export function BoardView() {
               <DeviceFace n={dragged} width={moduleWidth(dragged)} ref_={numbering.get(dragged.id)} selected />
             </g>
           </>
+        )}
+        {/* Calage : la photo passe au premier plan (le dessin du tableau reste estompé derrière) pour cliquer ses repères */}
+        {corners && layout.photo && (
+          <image
+            href={layout.photo.href}
+            x={layout.photo.x}
+            y={layout.photo.y}
+            width={layout.photo.w}
+            height={layout.photo.h}
+            preserveAspectRatio="none"
+            style={{ pointerEvents: 'none' }}
+          />
         )}
         {corners?.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={4} className="snap" />)}
       </svg>
