@@ -686,6 +686,18 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
   }
 }
 
-export function Symbol({ node, orient }: { node: ElNode; orient: 'v' | 'h' }) {
+/**
+ * `up` : unifilaire dessiné de bas en haut (le fil arrive par le bas). Les symboles orientés — la prise de terre,
+ * dont les barres terminent la ligne — sont alors retournés pour que la tige rejoigne le fil.
+ */
+export function Symbol({ node, orient, up }: { node: ElNode; orient: 'v' | 'h'; up?: boolean }) {
+  if (orient === 'v' && up && node.kind === 'earth') {
+    const { h } = symbolSize(node, 'v');
+    return (
+      <g transform={`translate(0,${h}) scale(1,-1)`}>
+        <Vertical n={node} />
+      </g>
+    );
+  }
   return orient === 'v' ? <Vertical n={node} /> : <Horizontal n={node} />;
 }

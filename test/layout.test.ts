@@ -64,3 +64,17 @@ describe('mise en page de l’unifilaire', () => {
     }
   });
 });
+
+it('prise de terre : en dessin de bas en haut, le symbole est marqué pour être retourné (fil par le bas)', async () => {
+  const { createNode } = await import('../src/model/tree');
+  const { layoutUnifilar } = await import('../src/unifilar/layout');
+  const board = createNode('board');
+  const bar = createNode('earthBar');
+  const earth = createNode('earth');
+  bar.children = [earth];
+  board.children = [bar];
+  const L = { ref: () => undefined, protection: () => ['x'], cable: () => 'c', title: () => 't' };
+  const sym = (up: boolean) => layoutUnifilar([board], L, { up }).prims.find((p) => p.t === 'sym' && p.node.id === earth.id);
+  expect(sym(true)).toMatchObject({ up: true });
+  expect(sym(false)).toMatchObject({ up: false });
+});

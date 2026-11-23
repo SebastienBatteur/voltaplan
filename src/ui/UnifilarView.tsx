@@ -99,7 +99,7 @@ export function UnifilarView() {
                   onContextMenu={(e) => openAdd(e, p.node)}
                 >
                   <rect x={box.x} y={box.y} width={box.w} height={box.h} className="hitbox" />
-                  <Symbol node={p.node} orient={p.orient} />
+                  <Symbol node={p.node} orient={p.orient} up={p.up} />
                   {sev && <circle cx={box.x + box.w} cy={box.y} r={4} className={'mark ' + sev} />}
                 </g>
               );

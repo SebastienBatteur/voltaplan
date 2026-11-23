@@ -16,7 +16,7 @@ import { symbolSize } from './symbols';
 
 export type Prim =
   | { t: 'line'; x1: number; y1: number; x2: number; y2: number; w?: number; /** Élément dont ce fil est l'alimentation. */ n?: string }
-  | { t: 'sym'; node: ElNode; x: number; y: number; orient: 'v' | 'h' }
+  | { t: 'sym'; node: ElNode; x: number; y: number; orient: 'v' | 'h'; /** Dessin de bas en haut : fil par le bas. */ up?: boolean }
   | { t: 'text'; x: number; y: number; text: string; size?: number; anchor?: 'start' | 'middle' | 'end'; bold?: boolean; nodeId?: string; muted?: boolean }
   | { t: 'bus'; node: ElNode; x1: number; x2: number; y: number };
 
@@ -200,7 +200,7 @@ export function layoutUnifilar(
     const ax = left;
     const prims: Prim[] = [];
     const symY = at(0, H, h);
-    prims.push({ t: 'sym', node, x: ax, y: symY, orient: 'v' });
+    prims.push({ t: 'sym', node, x: ax, y: symY, orient: 'v', up: UP });
     labels.forEach((s, i) =>
       prims.push({
         t: 'text',

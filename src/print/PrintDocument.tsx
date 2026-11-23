@@ -79,7 +79,7 @@ function UnifilarPrims({ prims }: { prims: Prim[] }) {
           case 'sym':
             return (
               <g key={i} transform={`translate(${p.x},${p.y})`} className="sym">
-                <Symbol node={p.node} orient={p.orient} />
+                <Symbol node={p.node} orient={p.orient} up={p.up} />
               </g>
             );
         }
