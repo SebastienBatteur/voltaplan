@@ -16,6 +16,7 @@
     <a href="#installer">Installer</a>
     <a class="repo-link" href="#">Code source</a>
     <a class="btn primary" href="app/">Ouvrir l'application</a>
+    <span class="lang"><a href="guide.html" aria-current="true" data-lang="fr">FR</a><a href="nl/guide.html" data-lang="nl">NL</a><a href="en/guide.html" data-lang="en">EN</a></span>
   </nav>
 </div></header>
 <main class="doc">
@@ -110,7 +111,7 @@
       <li>« Caler la photo (rangées) » : pour chaque rangée, cliquez le bord gauche du premier module puis le bout de la rangée, à mi-hauteur des appareils.</li>
       <li>« Disposer d'après la photo » : sans IA, Voltaplan repère sur chaque rangée les modules occupés (un cache-module est uniforme, un rail nu plus sombre) et les séparations entre appareils, puis y pose les appareils du projet : d'abord ceux de 2 modules ou plus, là où la photo montre un appareil de cette largeur ; ensuite ceux d'un module, dans l'ordre, sur les modules occupés restants. Ce qui ne trouve pas de place reste en réserve, et les emplacements occupés sur la photo sans appareil du projet sont signalés. C'est une proposition : la photo ne dit ni le type ni le calibre ; vérifiez et déplacez à la souris (« Annuler » revient en arrière).</li>
       <li>« Comparer » : sans IA, Voltaplan mesure les séparations entre appareils et signale ceux dont la largeur ne correspond pas (ex. 1 module dans le projet, 2 sur la photo). Les appareils dessinés deviennent transparents pour comparer à l'œil.</li>
-      <li>En option, l'IA lit les calibres, courbes et sensibilités et les compare au projet (voir <a href="#ia">IA</a>).</li>
+      <li>En option, l'IA lit les calibres, courbes et sensibilités, dispose les appareils à leur place et les compare au projet (voir <a href="#ia">IA</a>).</li>
     </ol>
 
     <h2 id="maj">Mettre à jour (nouvelle installation, circuits ajoutés)</h2>
@@ -166,7 +167,7 @@
     <p><strong>Importer Trikker (.trik)</strong> reprend schéma, numérotation, plan (murs, ouvertures, pièces, images), adresses et notes. <strong>Enregistrer sous… → Cet appareil → Exporter en .trik</strong> produit un fichier Trikker (Windows-1252, comme Trikker).</p>
 
     <h2 id="ia">IA (facultative)</h2>
-    <p>Tout fonctionne sans IA, y compris « Disposer d'après la photo », qui analyse l'image sur votre ordinateur. L'IA ajoute une seule chose aujourd'hui : <strong>lire les inscriptions des appareils</strong> sur la photo du tableau (type, calibre, courbe, sensibilité, type de différentiel, étiquette) et les comparer au projet. Elle utilise l'API d'Anthropic (modèles Claude), avec <strong>votre propre clé</strong> : Voltaplan n'a aucun serveur et ne voit jamais vos photos ni votre clé.</p>
+    <p>Tout fonctionne sans IA, y compris « Disposer d'après la photo », qui analyse l'image sur votre ordinateur. L'IA ajoute une seule chose aujourd'hui : <strong>lire les inscriptions des appareils</strong> sur la photo du tableau (type, calibre, courbe, sensibilité, type de différentiel, étiquette) puis disposer les appareils du projet à leur place et les comparer. Elle utilise l'API d'Anthropic (modèles Claude), avec <strong>votre propre clé</strong> : Voltaplan n'a aucun serveur et ne voit jamais vos photos ni votre clé.</p>
 
     <h3>1. Obtenir une clé API Anthropic</h3>
     <ol>
@@ -191,7 +192,8 @@
       <li>Onglet <strong>Tableau</strong> : importez la photo et faites le <strong>cadrage</strong> (rangée par rangée) comme décrit dans <a href="#photo">Photo du tableau</a>.</li>
       <li>Cliquez sur <strong>Lire la photo (IA)</strong>. Ce bouton n'apparaît que si l'IA est activée et autorisée pour le tableau.</li>
       <li>Si la clé est verrouillée, Voltaplan le signale : ouvrez <strong>⚙ IA</strong>, entrez la phrase secrète puis <strong>Déverrouiller</strong>. C'est à faire une fois par session.</li>
-      <li>Le résultat liste les différences avec le projet (appareil absent, largeur, type, calibre, courbe, sensibilité, lecture incertaine). <strong>C'est une lecture automatique à vérifier</strong> : confirmez chaque appareil avec sa pastille. Rien n'est modifié dans le projet sans votre action.</li>
+      <li>Voltaplan <strong>dispose les appareils du projet</strong> aux places lues, y compris ceux qui étaient en réserve : chaque appareil de la photo reçoit l'appareil du projet qui lui ressemble le plus (type, calibre, sensibilité, courbe, étiquette, puis ordre de l'arbre). Ce qui ne trouve pas de place reste en réserve. <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule.</li>
+      <li>Le résultat liste ensuite les différences avec le projet (appareil absent, largeur, type, calibre, courbe, sensibilité, lecture incertaine). <strong>C'est une lecture automatique à vérifier</strong> : confirmez chaque appareil avec sa pastille. Seule la disposition change ; les caractéristiques des appareils ne sont jamais modifiées.</li>
     </ol>
 
     <h3>Ce qui est envoyé, et où</h3>

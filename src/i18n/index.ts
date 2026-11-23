@@ -32,6 +32,16 @@ export function translate(lang: Lang, key: string, params?: Record<string, strin
 }
 
 export function detectLang(): Lang {
+  // Lien depuis le site (app/?lang=nl) : la langue de la page d'où l'on vient, retenue pour la suite
+  try {
+    const q = new URLSearchParams(location.search).get('lang') as Lang | null;
+    if (q && q in DICTS) {
+      localStorage.setItem(STORAGE_PREFIX + 'lang', q);
+      return q;
+    }
+  } catch {
+    /* hors navigateur */
+  }
   try {
     const saved = localStorage.getItem(STORAGE_PREFIX + 'lang') as Lang | null;
     if (saved && saved in DICTS) return saved;

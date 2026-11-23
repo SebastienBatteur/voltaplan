@@ -11,7 +11,7 @@ import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
 import { loadAiSettings, getSessionKey } from '../ai/settings';
-import { compareReading, extraDevices, readBoardPhoto, type DeviceDiff } from '../ai/boardPhoto';
+import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff } from '../ai/boardPhoto';
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
 export const MOD = 17.5;
@@ -227,10 +227,19 @@ export function BoardView() {
     setMsg(t('ai.reading'));
     try {
       const reading = await readBoardPhoto({ apiKey: key, model: ai.model, photoDataUrl: ph.href, rows: size.rows, perRow: size.perRow, lang });
-      const diffs = compareReading(devs, reading);
-      setAiDiffs({ diffs, extra: extraDevices(devs, reading), notes: reading.notes });
+      // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
+      const { slots, unplaced: left } = layoutFromReading(enc.devices, reading, size.perRow, nameOf);
+      const next: BoardLayout = { ...layout, slots };
+      save(next);
+      const now = placed(enc, next).placed;
+      const diffs = compareReading(now, reading);
+      setAiDiffs({ diffs, extra: extraDevices(now, reading), notes: reading.notes });
       setDetect(new Map(diffs.map((d) => [d.nodeId, d.ok ? 'ok' : 'width'])));
-      setMsg(t('ai.readDone', { ok: diffs.filter((d) => d.ok).length, bad: diffs.filter((d) => !d.ok).length }));
+      setMsg(
+        t('ai.readPlaced', { placed: now.length, left: left.length }) +
+          ' ' +
+          t('ai.readDone', { ok: diffs.filter((d) => d.ok).length, bad: diffs.filter((d) => !d.ok).length }),
+      );
     } catch (e) {
       const m = (e as Error).message;
       setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));

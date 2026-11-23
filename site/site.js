@@ -1,15 +1,46 @@
 // Liens vers le dépôt et les installateurs, déduits de l'adresse GitHub Pages (<compte>.github.io/<dépôt>/).
+// Pages en néerlandais et en anglais dans nl/ et en/ ; ce script est toujours à la racine du site.
 (function () {
+  var root = new URL('./', document.currentScript.src).href;
+  var lang = document.documentElement.lang || 'fr';
   var m = location.hostname.match(/^([^.]+)\.github\.io$/);
   var repoName = location.pathname.split('/').filter(Boolean)[0];
   var repo = m && repoName ? 'https://github.com/' + m[1] + '/' + repoName : 'https://github.com/';
+  var KEY = 'voltaplan-site-lang';
+  var store = function (v) {
+    try {
+      if (v === undefined) return localStorage.getItem(KEY);
+      localStorage.setItem(KEY, v);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Accueil en français, première visite : proposer directement la langue du navigateur (nl / en)
+  if (lang === 'fr' && location.href.replace(/index\.html$/, '') === root && !store()) {
+    var nav = (navigator.language || 'fr').slice(0, 2);
+    if (nav === 'nl' || nav === 'en') {
+      location.replace(root + nav + '/');
+      return;
+    }
+  }
+
+  document.querySelectorAll('.lang a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      store(a.getAttribute('data-lang'));
+    });
+  });
   document.querySelectorAll('.repo-link').forEach(function (a) {
     a.href = repo;
   });
   document.querySelectorAll('.release-link').forEach(function (a) {
     a.href = repo + (m ? '/releases/latest' : '');
   });
+  // L'application s'ouvre dans la langue de la page
+  document.querySelectorAll('a[href$="app/"]').forEach(function (a) {
+    a.href = root + 'app/?lang=' + lang;
+  });
   document.querySelectorAll('.app-url').forEach(function (el) {
-    el.textContent = new URL('app/', location.href).href;
+    el.textContent = root + 'app/';
   });
 })();

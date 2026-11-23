@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voltaplan</title>
+<meta name="description" content="Single-line diagrams, layout plans and distribution boards compliant with the Belgian RGIE, open source, in the browser or as a desktop app.">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Guide</a>
+    <a href="guide.html#installer">Install</a>
+    <a class="repo-link" href="#">Source code</a>
+    <a class="btn primary" href="../app/">Open the app</a>
+    <span class="lang"><a href="../" data-lang="fr">FR</a><a href="../nl/" data-lang="nl">NL</a><a href="./" aria-current="true" data-lang="en">EN</a></span>
+  </nav>
+</div></header>
+<main>
+  <section class="hero">
+    <h1>The RGIE electrical file,<br>from diagram to board label.</h1>
+    <p>Voltaplan draws the single-line diagram, the layout plan and the distribution board of a domestic installation, checks it against the RGIE (Belgian electrical installation regulations) and prints the file for the approved inspection body. Free, open source, in French, Dutch and English.</p>
+    <div class="actions">
+      <a class="btn primary" href="../app/">Open in the browser</a>
+      <a class="btn release-link" href="#">Download for Windows, macOS, Linux</a>
+      <a class="btn" href="guide.html">Read the guide</a>
+    </div>
+    <p class="note" style="font-size:15px;color:inherit">Nothing to install for the web version: it runs in Chrome, Edge or Firefox, and then works offline. Your projects stay on your computer (or in the storage service you choose); no Voltaplan server ever receives them.</p>
+  </section>
+
+  <div class="grid">
+    <div class="card"><h3>Automatic single-line diagram</h3><p>Drawn bottom to top like figure 3.1 of the RGIE, with the symbols of table 2.23 and A1, A2… numbering from the protective device.</p></div>
+    <div class="card"><h3>Layout plan to scale</h3><p>Walls, doors, windows, furniture; a photo or PDF background, scaled and straightened; walls traced automatically.</p></div>
+    <div class="card"><h3>Drag-and-drop board</h3><p>DIN rails, real device widths, 1:1 labels, comparison with a photo of the board.</p></div>
+    <div class="card"><h3>RGIE check</h3><p>Blocking non-conformities for a new installation, upgrade advice for an existing one, voltage drop and short-circuit.</p></div>
+    <div class="card"><h3>Bill of materials</h3><p>By characteristics and European standards, quantities and lengths, CSV export for your quote.</p></div>
+    <div class="card"><h3>A4 / A3 file</h3><p>Full title block, legend, measurements, labels, vector PDF. Marked “DRAFT” until the check passes.</p></div>
+    <div class="card"><h3>Trikker</h3><p>Import and export .trik files: carry on with your existing files.</p></div>
+    <div class="card"><h3>Your files, wherever you want</h3><p>This computer, the browser, GitHub, Google Drive, OneDrive or Dropbox.</p></div>
+  </div>
+
+  <p class="note">Voltaplan is an aid. It replaces neither the official RGIE text nor the opinion of the approved inspection body (Vinçotte, BTV, ACA…).</p>
+</main>
+<footer>Voltaplan — <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> licence — <a class="repo-link" href="#">source code</a></footer>
+<script src="../site.js"></script>
+</body>
+</html>
