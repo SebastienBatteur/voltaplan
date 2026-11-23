@@ -38,9 +38,9 @@ export function UnifilarView() {
       </div>
       <svg
         ref={pz.svgRef}
-        className={'canvas unifilar' + (selectedId ? ' has-sel' : '')}
+        className={'canvas unifilar' + (selectedId ? ' has-sel' : '') + (pz.panning ? ' panning' : '')}
         viewBox={`${pz.vb.x} ${pz.vb.y} ${pz.vb.w} ${pz.vb.h}`}
-        onPointerDown={pz.onPointerDown}
+        onPointerDown={(e) => pz.onPointerDown(e, true)}
         onPointerMove={pz.onPointerMove}
         onPointerUp={(e) => {
           const moved = pz.onPointerUp();

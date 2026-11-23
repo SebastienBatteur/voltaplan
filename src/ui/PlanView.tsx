@@ -577,7 +577,7 @@ export function PlanView() {
       {sel && tool === 'select' && <PlanItemPanel page={page} sel={sel} onDelete={deleteSel} />}
       <svg
         ref={pz.svgRef}
-        className={'canvas plan' + (placingId || tool !== 'select' ? ' placing' : '')}
+        className={'canvas plan' + (placingId || tool !== 'select' ? ' placing' : '') + (pz.panning ? ' panning' : '')}
         viewBox={`${pz.vb.x} ${pz.vb.y} ${pz.vb.w} ${pz.vb.h}`}
         onPointerDown={(e) => {
           if ((placingId || tool !== 'select') && e.button === 0) {
@@ -603,12 +603,21 @@ export function PlanView() {
               select(null);
               setItemDrag({ sel: hit, start: p, orig: page, moved: false });
               (e.currentTarget as Element).setPointerCapture(e.pointerId);
+              // Appui long : déplacer toute la vue plutôt que l'élément
+              pz.armLongPress(e, () => {
+                setItemDrag(null);
+                setPreview(null);
+              });
               return;
             }
+            // Zone vide (fond, intérieur d'une pièce, fond de plan) : glisser déplace tout le plan
+            pz.onPointerDown(e, true);
+            return;
           }
           pz.onPointerDown(e);
         }}
         onPointerMove={(e) => {
+          if (pz.onPointerMove(e)) return; // la vue se déplace (zone vide ou appui long)
           if (itemDrag) {
             const p = pz.toSvg(e.clientX, e.clientY);
             const d = { x: Math.round((p.x - itemDrag.start.x) / 10) * 10, y: Math.round((p.y - itemDrag.start.y) / 10) * 10 };
@@ -641,10 +650,11 @@ export function PlanView() {
             return;
           }
           if (tool !== 'select') setCursor(pz.toSvg(e.clientX, e.clientY));
-          pz.onPointerMove(e);
         }}
         onPointerLeave={() => setCursor(null)}
         onPointerUp={(e) => {
+          const panned = pz.onPointerUp();
+          if (panned) return;
           if (itemDrag) {
             if (itemDrag.moved && preview) {
               const done = preview;
@@ -660,8 +670,7 @@ export function PlanView() {
             setDragging(null);
             return;
           }
-          const moved = pz.onPointerUp();
-          if (moved || e.button !== 0) return;
+          if (e.button !== 0) return;
           const p = pz.toSvg(e.clientX, e.clientY);
           if (placingId) placeSymbol(placingId, { x: Math.round(p.x), y: Math.round(p.y) });
           else onClick(p, e);
@@ -697,6 +706,7 @@ export function PlanView() {
                 const p = pz.toSvg(e.clientX, e.clientY);
                 setDragging({ id: node.id, pos: s.pos, start: { x: p.x - s.pos.x, y: p.y - s.pos.y }, moved: false });
                 (e.currentTarget.ownerSVGElement as SVGSVGElement).setPointerCapture(e.pointerId);
+                pz.armLongPress(e, () => setDragging(null));
               }}
               style={{ cursor: tool === 'select' ? 'move' : undefined }}
             >

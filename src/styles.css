@@ -1273,3 +1273,9 @@ tr.clickable {
 tr.clickable:hover td {
   background: var(--accent-bg);
 }
+
+/* Déplacement de la vue (glisser sur une zone vide ou appui long) */
+.canvas.panning,
+.canvas.panning * {
+  cursor: grabbing !important;
+}

@@ -330,18 +330,18 @@ export function BoardView() {
       )}
       <svg
         ref={pz.svgRef}
-        className={'canvas board' + (corners ? ' placing' : '')}
+        className={'canvas board' + (corners ? ' placing' : '') + (pz.panning ? ' panning' : '')}
         viewBox={`${pz.vb.x} ${pz.vb.y} ${pz.vb.w} ${pz.vb.h}`}
         onPointerDown={(e) => pz.onPointerDown(e, !!corners)}
         onPointerMove={(e) => {
+          if (pz.onPointerMove(e)) return; // la vue se déplace (glisser sur le fond ou appui long)
           if (drag) {
             const p = pz.toSvg(e.clientX, e.clientY);
             setDrag({ ...drag, pos: { x: p.x - drag.offset.x, y: p.y - drag.offset.y }, moved: true });
-            return;
           }
-          pz.onPointerMove(e);
         }}
         onPointerUp={(e) => {
+          if (pz.onPointerUp()) return;
           if (drag) {
             if (drag.moved && dragged) {
               const tgt = slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged));
@@ -354,8 +354,6 @@ export function BoardView() {
             setDrag(null);
             return;
           }
-          const moved = pz.onPointerUp();
-          if (moved) return;
           if (corners) {
             const pts = [...corners, pz.toSvg(e.clientX, e.clientY)];
             if (pts.length === 2 * size.rows) finishCalibration(pts);
@@ -428,6 +426,7 @@ export function BoardView() {
                   const p = pz.toSvg(e.clientX, e.clientY);
                   setDrag({ id: d.node.id, from: 'rail', offset: { x: p.x - x, y: p.y - y }, pos: { x, y }, moved: false });
                   (e.currentTarget.ownerSVGElement as SVGSVGElement).setPointerCapture(e.pointerId);
+                  pz.armLongPress(e, () => setDrag(null)); // appui long : déplacer la vue plutôt que l'appareil
                 }}
               >
                 <DeviceFace n={d.node} width={d.width} ref_={numbering.get(d.node.id)} selected={d.node.id === selectedId} chain={chain.has(d.node.id)} check={checkOf(d.node.id)} />
@@ -468,6 +467,7 @@ export function BoardView() {
                 const q = pz.toSvg(e.clientX, e.clientY);
                 setDrag({ id: n.id, from: 'reserve', offset: { x: q.x - p.x, y: q.y - p.y }, pos: p, moved: false });
                 (e.currentTarget.ownerSVGElement as SVGSVGElement).setPointerCapture(e.pointerId);
+                pz.armLongPress(e, () => setDrag(null));
               }}
             >
               <DeviceFace n={n} width={moduleWidth(n)} ref_={numbering.get(n.id)} selected={n.id === selectedId} chain={chain.has(n.id)} />

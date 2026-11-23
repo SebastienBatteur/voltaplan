@@ -8,16 +8,25 @@ export interface ViewBox {
 }
 
 /**
- * Zoom à la molette (centré sur la souris) et déplacement par glisser
- * (clic milieu, ou clic gauche sur le fond, ou espace + glisser).
+ * Zoom à la molette (centré sur la souris) et déplacement de toute la vue :
+ *  - glisser depuis une zone vide (ou au clic milieu) ;
+ *  - appui long (LONG_PRESS ms sans bouger) n'importe où, y compris sur un élément : la vue suit ensuite
+ *    le doigt ou la souris (utile au doigt sur tablette, et quand le plan est couvert d'éléments).
+ * La capture du pointeur n'est prise qu'une fois le geste commencé : un simple clic sélectionne toujours.
  */
+export const LONG_PRESS = 450;
+const MOVE_TOL = 5; // px : au-delà, ce n'est plus un appui long
 /** `content` : zone à afficher ; x,y = coin haut-gauche (0,0 par défaut). */
 export function usePanZoom(content: { x?: number; y?: number; w: number; h: number }, key: string) {
   const cx = content.x ?? 0;
   const cy = content.y ?? 0;
   const svgRef = useRef<SVGSVGElement>(null);
   const [vb, setVb] = useState<ViewBox>({ x: 0, y: 0, w: Math.max(content.w, 400), h: Math.max(content.h, 300) });
-  const drag = useRef<{ sx: number; sy: number; vb: ViewBox; moved: boolean } | null>(null);
+  const drag = useRef<{ sx: number; sy: number; vb: ViewBox; moved: boolean; pointerId: number } | null>(null);
+  const press = useRef<{ timer: number; sx: number; sy: number; pointerId: number; onStart?: () => void } | null>(null);
+  const vbRef = useRef<ViewBox>(vb);
+  vbRef.current = vb;
+  const [panning, setPanning] = useState(false);
 
   const fit = useCallback(() => {
     const el = svgRef.current;
@@ -79,30 +88,79 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
     return () => el.removeEventListener('wheel', onWheel);
   }, [toSvg]);
 
-  /** `anywhere` : le glisser au clic gauche déplace la vue même hors du fond (outils de dessin). */
-  const onPointerDown = (e: React.PointerEvent, anywhere = false) => {
-    const onBackground = anywhere || (e.target as Element).getAttribute('data-bg') === '1';
-    if (e.button === 1 || (e.button === 0 && onBackground)) {
-      drag.current = { sx: e.clientX, sy: e.clientY, vb, moved: false };
-      (e.currentTarget as Element).setPointerCapture(e.pointerId);
+  const cancelPress = () => {
+    if (press.current) clearTimeout(press.current.timer);
+    press.current = null;
+  };
+
+  /** Démarre le déplacement de la vue depuis ce point de l'écran. */
+  const startPan = (clientX: number, clientY: number, pointerId: number, moved = false) => {
+    cancelPress();
+    drag.current = { sx: clientX, sy: clientY, vb: vbRef.current, moved, pointerId };
+    if (moved) {
+      setPanning(true);
+      try {
+        svgRef.current?.setPointerCapture(pointerId);
+      } catch {
+        /* pointeur déjà relâché */
+      }
     }
   };
-  const onPointerMove = (e: React.PointerEvent) => {
+
+  /**
+   * Arme l'appui long : si le pointeur reste immobile LONG_PRESS ms, la vue se déplace avec lui.
+   * `onStart` permet à l'appelant d'annuler son propre geste (ex. déplacement d'un symbole).
+   */
+  const armLongPress = (e: React.PointerEvent, onStart?: () => void) => {
+    if (e.button !== 0) return;
+    cancelPress();
+    const { clientX, clientY, pointerId } = e;
+    const timer = window.setTimeout(() => {
+      const p = press.current;
+      if (!p) return;
+      p.onStart?.();
+      startPan(p.sx, p.sy, p.pointerId, true);
+      navigator.vibrate?.(15);
+    }, LONG_PRESS);
+    press.current = { timer, sx: clientX, sy: clientY, pointerId, onStart };
+  };
+
+  /** `anywhere` : le glisser au clic gauche déplace la vue même hors du fond (outils de dessin, zones vides). */
+  const onPointerDown = (e: React.PointerEvent, anywhere = false) => {
+    const onBackground = anywhere || (e.target as Element).getAttribute('data-bg') === '1';
+    if (e.button === 1 || (e.button === 0 && onBackground)) startPan(e.clientX, e.clientY, e.pointerId, e.button === 1);
+    else armLongPress(e);
+  };
+  /** Renvoie true si la vue est en train d'être déplacée (l'appelant ignore alors le mouvement). */
+  const onPointerMove = (e: React.PointerEvent): boolean => {
+    const p = press.current;
+    if (p && Math.abs(e.clientX - p.sx) + Math.abs(e.clientY - p.sy) > MOVE_TOL) cancelPress();
     const d = drag.current;
-    if (!d || !svgRef.current) return;
+    if (!d || !svgRef.current) return false;
     const r = svgRef.current.getBoundingClientRect();
     const s = Math.max(d.vb.w / r.width, d.vb.h / r.height);
-    const dx = (e.clientX - d.sx) * s;
-    const dy = (e.clientY - d.sy) * s;
-    if (Math.abs(e.clientX - d.sx) + Math.abs(e.clientY - d.sy) > 3) d.moved = true;
-    setVb({ ...d.vb, x: d.vb.x - dx, y: d.vb.y - dy });
+    if (!d.moved && Math.abs(e.clientX - d.sx) + Math.abs(e.clientY - d.sy) > 3) {
+      d.moved = true;
+      setPanning(true);
+      try {
+        svgRef.current.setPointerCapture(d.pointerId);
+      } catch {
+        /* ignore */
+      }
+    }
+    if (!d.moved) return false;
+    setVb({ ...d.vb, x: d.vb.x - (e.clientX - d.sx) * s, y: d.vb.y - (e.clientY - d.sy) * s });
+    return true;
   };
-  /** Renvoie true si le geste était un déplacement (et pas un simple clic). */
+  /** Renvoie true si le geste était un déplacement de la vue (et pas un simple clic). */
   const onPointerUp = (): boolean => {
+    cancelPress();
     const moved = drag.current?.moved ?? false;
     drag.current = null;
+    setPanning(false);
     return moved;
   };
+  const isPanning = () => !!drag.current?.moved;
 
   /** Centre la vue sur un point s'il est hors champ (ou si force). */
   const reveal = useCallback((x: number, y: number, force = false) => {
@@ -114,5 +172,5 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
     });
   }, []);
 
-  return { svgRef, vb, fit, toSvg, reveal, onPointerDown, onPointerMove, onPointerUp, setVb };
+  return { svgRef, vb, fit, toSvg, reveal, onPointerDown, onPointerMove, onPointerUp, setVb, armLongPress, startPan, isPanning, panning };
 }
