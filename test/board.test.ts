@@ -112,7 +112,7 @@ describe('comparaison avec la lecture de la photo (IA)', () => {
     expect(res.get(t.c1.id)!.issues.map((i) => i.key)).toEqual(['ai.diff.rating']);
     expect(res.get(t.c2.id)!.issues.map((i) => i.key)).toEqual(['ai.diff.width']);
     expect(res.get(t.c3.id)!.issues.map((i) => i.key)).toEqual(['ai.diff.missing']);
-    expect(extraDevices(p, reading)).toEqual([{ row: 0, startModule: 11, kind: 'mcb' }]);
+    expect(extraDevices(p, reading)).toEqual([{ row: 0, startModule: 11, kind: 'mcb', model: '' }]);
   });
 });
 

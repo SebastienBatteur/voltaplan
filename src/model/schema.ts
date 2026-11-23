@@ -78,6 +78,9 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
   meter: [
     { key: 'name', type: 'text' },
     { key: 'ean', type: 'text' },
+    { key: 'inBoard', type: 'bool', default: true },
+    { key: 'modules', type: 'number', unit: 'mod' },
+    { key: 'reference', type: 'text' },
   ],
   cable: [
     { key: 'cableType', type: 'enum', options: [...CABLE_TYPES], default: 'VOB' },
@@ -113,16 +116,36 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'applianceType', type: 'enum', options: [...APPLIANCE_TYPES], default: 'other' },
     { key: 'power', type: 'number', unit: 'W' },
   ],
-  domotic: [{ key: 'name', type: 'text' }],
+  domotic: [
+    { key: 'name', type: 'text' },
+    { key: 'inBoard', type: 'bool', default: false },
+    { key: 'modules', type: 'number', unit: 'mod' },
+    { key: 'reference', type: 'text' },
+  ],
   solarPanel: [
     { key: 'count', type: 'number' },
     { key: 'name', type: 'text' },
   ],
   inverter: [{ key: 'power', type: 'number', unit: 'W' }],
   motor: [{ key: 'power', type: 'number', unit: 'W' }],
-  relay: [{ key: 'relayType', type: 'enum', options: ['relay', 'teleswitch', 'contactor', 'timer'], default: 'relay' }],
-  transformer: [{ key: 'safety', type: 'bool', default: true }],
-  other: [{ key: 'name', type: 'text' }],
+  relay: [
+    { key: 'relayType', type: 'enum', options: ['relay', 'teleswitch', 'contactor', 'timer'], default: 'relay' },
+    { key: 'inBoard', type: 'bool', default: true },
+    { key: 'modules', type: 'number', unit: 'mod' },
+    { key: 'reference', type: 'text' },
+  ],
+  transformer: [
+    { key: 'safety', type: 'bool', default: true },
+    { key: 'inBoard', type: 'bool', default: false },
+    { key: 'modules', type: 'number', unit: 'mod' },
+    { key: 'reference', type: 'text' },
+  ],
+  other: [
+    { key: 'name', type: 'text' },
+    { key: 'inBoard', type: 'bool', default: false },
+    { key: 'modules', type: 'number', unit: 'mod' },
+    { key: 'reference', type: 'text' },
+  ],
 };
 
 /** Quels types de nœuds peuvent être ajoutés comme enfants de quel parent. */

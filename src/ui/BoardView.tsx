@@ -1,6 +1,7 @@
 import { NumberField } from './NumberField';
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
+import { mapTree } from '../model/tree';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
@@ -41,6 +42,8 @@ export function rowTop(row: number) {
 
 /** Texte court d'un appareil : calibre et sensibilité. */
 export function deviceText(n: ElNode): string[] {
+  // Relais, transformateur, compteur… : nom, sinon référence (abrégée)
+  if (n.kind !== 'protection') return [String(n.props.name ?? n.props.reference ?? '').slice(0, 14)].filter(Boolean);
   const device = String(n.props.device ?? 'mcb');
   const a = n.props.ratedCurrent ? `${n.props.curve && device !== 'rcd' ? n.props.curve : ''}${n.props.ratedCurrent}A` : '';
   const b = n.props.residualCurrent ? `${n.props.residualCurrent}mA` : '';
@@ -103,7 +106,7 @@ export function BoardView() {
   const t = useStore((s) => s.t);
   const selectedId = useStore((s) => s.selectedId);
   const chain = useChain();
-  const { select, setProps, setBoardLayout } = useStore.getState();
+  const { select, setProps, setBoardLayout, applyProject } = useStore.getState();
   const { numbering, labelFn } = useDerived();
   const encs = useMemo(() => enclosures(project.roots), [project.roots]);
   const [idx, setIdx] = useState(0);
@@ -112,7 +115,7 @@ export function BoardView() {
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: { row: number; startModule: number; kind: string }[]; notes: string | null } | null>(
+  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: { row: number; startModule: number; kind: string; model: string }[]; notes: string | null } | null>(
     null,
   );
   const lang = useStore((s) => s.lang);
@@ -279,16 +282,25 @@ export function BoardView() {
         composed: calibrated,
       });
       // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
-      const { slots, unplaced: left } = layoutFromReading(enc.devices, reading, size.perRow, nameOf);
+      const { slots, unplaced: left, props } = layoutFromReading(enc.devices, reading, size.perRow, nameOf);
       const next: BoardLayout = { ...layout, slots };
-      save(next);
-      const now = placed(enc, next).placed;
+      // Disposition, largeurs et références lues : une seule étape d'annulation
+      const changed = Object.keys(props);
+      applyProject((p) => ({
+        ...p,
+        roots: changed.length ? mapTree(p.roots, (n) => (props[n.id] ? { ...n, props: { ...n.props, ...props[n.id] } } : n)) : p.roots,
+        boards: { ...p.boards, [enc.board.id]: next },
+      }));
+      // Appareils à jour (nouvelles largeurs) pour la comparaison
+      const devsNow = enc.devices.map((n) => (props[n.id] ? { ...n, props: { ...n.props, ...props[n.id] } } : n));
+      const now = placed({ ...enc, devices: devsNow }, next).placed;
       const diffs = compareReading(now, reading);
       setAiDiffs({ diffs, extra: extraDevices(now, reading), notes: reading.notes });
       setDetect(new Map(diffs.map((d) => [d.nodeId, d.ok ? 'ok' : 'width'])));
       setMsg(
         t('ai.readPlaced', { placed: now.length, left: left.length }) +
           ' ' +
+          (changed.length ? t('ai.readApplied', { n: changed.length }) + ' ' : '') +
           t('ai.readDone', { ok: diffs.filter((d) => d.ok).length, bad: diffs.filter((d) => !d.ok).length }),
       );
     } catch (e) {
@@ -438,12 +450,19 @@ export function BoardView() {
                     <button className="link" onClick={() => select(d.nodeId)}>
                       {n ? nameOf(n) : d.nodeId}
                     </button>{' '}
-                    : {d.issues.map((i) => t(i.key, i.params)).join(' ; ')}
+                    :{' '}
+                    {d.issues
+                      .map((i) =>
+                        t(i.key, i.key === 'ai.diff.kind' && i.params ? { photo: t('ai.kind.' + i.params.photo), project: t('ai.kind.' + i.params.project) } : i.params),
+                      )
+                      .join(' ; ')}
                   </li>
                 );
               })}
             {aiDiffs.extra.map((x, i) => (
-              <li key={'x' + i}>{t('ai.diff.extra', { row: x.row + 1, col: x.startModule + 1, kind: t('enum.device.' + x.kind) })}</li>
+              <li key={'x' + i}>
+                {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}
+              </li>
             ))}
           </ul>
           {aiDiffs.notes && <p className="muted small">{aiDiffs.notes}</p>}

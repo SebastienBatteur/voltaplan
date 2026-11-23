@@ -36,17 +36,33 @@ export function enclosures(roots: ElNode[]): Enclosure[] {
     if (n.kind === 'protection') {
       if (e && !crossed) e.devices.push(n);
       else pend = [...pend, n];
-    }
+    } else if (e && isModularInBoard(n)) e.devices.push(n);
     for (const c of n.children) walk(c, e, crossed || n.kind === 'cable', n.kind === 'cable' ? [] : pend);
   };
   for (const r of roots) walk(r, null, false, []);
   return out;
 }
 
+/**
+ * Éléments autres que les protections montés sur le rail : relais, télérupteur, contacteur, horloge,
+ * transformateur, compteur divisionnaire, module domotique… Dans le schéma ils viennent souvent après
+ * une canalisation (et un transformateur peut aussi être au plafond) : la case « Dans le tableau »
+ * (`inBoard`) décide. Par défaut : relais et compteurs oui, le reste non.
+ */
+export const BOARD_EXTRA_KINDS = new Set(['relay', 'transformer', 'meter', 'domotic', 'other']);
+export function isModularInBoard(n: ElNode): boolean {
+  if (!BOARD_EXTRA_KINDS.has(n.kind)) return false;
+  if (typeof n.props.inBoard === 'boolean') return n.props.inBoard;
+  return n.kind === 'relay' || n.kind === 'meter';
+}
+
 /** Largeur d'un appareil en modules. */
 export function moduleWidth(n: ElNode): number {
   const m = Number(n.props.modules);
   if (m > 0) return Math.round(m);
+  if (n.kind === 'relay') return n.props.relayType === 'contactor' || n.props.relayType === 'timer' ? 2 : 1;
+  if (n.kind === 'transformer' || n.kind === 'meter') return 2;
+  if (n.kind !== 'protection') return 1;
   const device = String(n.props.device ?? 'mcb');
   const poles = String(n.props.poles ?? '1P+N');
   const p = poles.startsWith('4') || poles === '3P+N' ? 4 : poles.startsWith('3') ? 3 : poles.startsWith('2') ? 2 : 1;

@@ -6,6 +6,7 @@ import { ALLOWED_CHILDREN, PROP_SCHEMAS, type PropDef } from '../model/schema';
 import type { ElNode, PropValue } from '../model/types';
 import { FindingItem } from './CheckPanel';
 import { getRulePack } from '../rules';
+import { isModularInBoard } from '../board/model';
 
 function Field({ def, node }: { def: PropDef; node: ElNode }) {
   const t = useStore((s) => s.t);
@@ -17,7 +18,8 @@ function Field({ def, node }: { def: PropDef; node: ElNode }) {
   let input: JSX.Element;
   switch (def.type) {
     case 'bool':
-      input = <input type="checkbox" checked={value === true} onChange={(e) => set(e.target.checked)} />;
+      // « Dans le tableau » : valeur réellement utilisée (par défaut selon le type d'élément si absente)
+      input = <input type="checkbox" checked={def.key === 'inBoard' ? isModularInBoard(node) : value === true} onChange={(e) => set(e.target.checked)} />;
       break;
     case 'number':
       input = (
