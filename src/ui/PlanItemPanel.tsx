@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField';
 import { useStore } from '../store';
 import type { PlanPage } from '../model/types';
 import { dist, setOpeningWidth, setWallLength } from '../plan/geometry';
@@ -11,7 +12,6 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
   const t = useStore((s) => s.t);
   const editPage = useStore((s) => s.editPage);
   const cm = (mm: number) => Math.round(mm / 10);
-  const num = (v: string) => Number(v.replace(',', '.'));
 
   let body: JSX.Element | null = null;
   if (sel.type === 'wall') {
@@ -22,24 +22,15 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
         <strong>{t('plan.item.wall')}</strong>
         <label className="field">
           <span>{t('plan.item.length')}</span>
-          <input
-            type="number"
-            min={10}
-            value={cm(dist(w.a, w.b))}
-            onChange={(e) => num(e.target.value) > 0 && editPage((pg) => setWallLength(pg, sel.index, num(e.target.value) * 10))}
-          />
+          <NumberField min={10} step="any" value={Number(cm(dist(w.a, w.b)))} onCommit={(n) => editPage((pg) => setWallLength(pg, sel.index, n * 10))} />
         </label>
         <label className="field">
           <span>{t('plan.item.thickness')}</span>
-          <input
-            type="number"
+          <NumberField
             min={3}
             max={80}
-            value={cm(w.thickness)}
-            onChange={(e) =>
-              num(e.target.value) > 0 &&
-              editPage((pg) => ({ ...pg, walls: pg.walls.map((x, i) => (i === sel.index ? { ...x, thickness: num(e.target.value) * 10 } : x)) }))
-            }
+            value={Number(cm(w.thickness))}
+            onCommit={(n) => editPage((pg) => ({ ...pg, walls: pg.walls.map((x, i) => (i === sel.index ? { ...x, thickness: n * 10 } : x)) }))}
           />
         </label>
         <p className="muted small">{t('plan.item.wallHelp')}</p>
@@ -69,12 +60,7 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
         </label>
         <label className="field">
           <span>{t('plan.item.width')}</span>
-          <input
-            type="number"
-            min={20}
-            value={cm(dist(o.a, o.b))}
-            onChange={(e) => num(e.target.value) > 0 && editPage((pg) => setOpeningWidth(pg, sel.index, num(e.target.value) * 10))}
-          />
+          <NumberField min={20} value={Number(cm(dist(o.a, o.b)))} onCommit={(n) => editPage((pg) => setOpeningWidth(pg, sel.index, n * 10))} />
         </label>
         {(door || o.kind === 'slidingDoor') && (
           <div className="row">
@@ -112,7 +98,7 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
         </label>
         <label className="field">
           <span>{t('plan.item.size')}</span>
-          <input type="number" min={1} max={10} step={0.5} value={l.size ?? 3} onChange={(e) => num(e.target.value) > 0 && setL({ size: num(e.target.value) })} />
+          <NumberField min={1} max={10} step={0.5} value={l.size ?? 3} onCommit={(n) => setL({ size: n })} />
         </label>
       </>
     );
@@ -142,11 +128,11 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
         </label>
         <label className="field">
           <span>{t('plan.item.width')}</span>
-          <input type="number" min={10} value={cm(f.w)} onChange={(e) => num(e.target.value) > 0 && setF({ w: num(e.target.value) * 10 })} />
+          <NumberField min={10} value={Number(cm(f.w))} onCommit={(n) => setF({ w: n * 10 })} />
         </label>
         <label className="field">
           <span>{t('plan.item.depth')}</span>
-          <input type="number" min={10} value={cm(f.h)} onChange={(e) => num(e.target.value) > 0 && setF({ h: num(e.target.value) * 10 })} />
+          <NumberField min={10} value={Number(cm(f.h))} onCommit={(n) => setF({ h: n * 10 })} />
         </label>
         <div className="row">
           <button onClick={() => setF({ angle: (f.angle + 270) % 360 })} title="-90°">

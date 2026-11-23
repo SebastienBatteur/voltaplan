@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField';
 import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
@@ -239,11 +240,11 @@ export function BoardView() {
           ))}
         <label className="inline">
           {t('board.rows')}
-          <input type="number" min={1} max={12} value={size.rows} onChange={(e) => setProps(enc.board.id, { rows: Math.max(1, Number(e.target.value) || 1) })} />
+          <NumberField min={1} max={12} value={size.rows} onCommit={(n) => setProps(enc.board.id, { rows: Math.round(n) })} />
         </label>
         <label className="inline">
           {t('board.perRow')}
-          <input type="number" min={4} max={36} value={size.perRow} onChange={(e) => setProps(enc.board.id, { modulesPerRow: Math.max(4, Number(e.target.value) || 13) })} />
+          <NumberField min={4} max={36} value={size.perRow} onCommit={(n) => setProps(enc.board.id, { modulesPerRow: Math.round(n) })} />
         </label>
         <button
           onClick={() => {

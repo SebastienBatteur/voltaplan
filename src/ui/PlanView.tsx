@@ -1,3 +1,4 @@
+import { NumberField } from './NumberField';
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
@@ -500,7 +501,7 @@ export function PlanView() {
         {tool === 'wall' && (
           <label className="inline">
             {t('plan.thickness')}
-            <input type="number" min={50} max={600} step={10} value={thickness} onChange={(e) => setThickness(Number(e.target.value) || 200)} />
+            <NumberField min={50} max={600} step={10} value={thickness} onCommit={setThickness} />
           </label>
         )}
         <span className="sep" />
