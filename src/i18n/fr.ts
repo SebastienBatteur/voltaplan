@@ -153,6 +153,8 @@ export const fr = {
   'board.reserveHint': "{n} appareil(s) en réserve : glissez-les sur un rail, ou « Disposition automatique ».",
   'board.checkToggle': "Contrôle sur la photo : conforme / différent / non vérifié",
   'label.diff': 'Diff.',
+  'ai.badPass': "Phrase secrète incorrecte.",
+  'ai.askPass': "Entrez la phrase secrète de la clé de l'IA pour continuer.",
   'ai.needUnlock': "Déverrouillez d'abord la clé de l'IA (bouton ⚙ IA).",
   'ai.reading': "Lecture de la photo par l'IA…",
   'ai.readPlaced': "Appareils disposés d'après la photo : {placed} placés, {left} en réserve (Ctrl+Z pour annuler).",

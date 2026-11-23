@@ -8,7 +8,9 @@ import type { PhotoReadingT } from './boardPhoto';
 export const PhotoDevice = z.object({
   startModule: z.number().int().describe('Position du bord gauche, en modules depuis le début de la rangée (0 = premier module)'),
   widthModules: z.number().int().describe("Largeur de l'appareil en modules de 17,5 mm"),
-  kind: z.enum(['mcb', 'rcd', 'rcbo', 'fuse', 'switch', 'other', 'blank']).describe('mcb = disjoncteur, rcd = interrupteur différentiel, rcbo = disjoncteur différentiel, blank = cache/obturateur'),
+  kind: z
+    .enum(['mcb', 'rcd', 'rcbo', 'fuse', 'switch', 'other', 'blank'])
+    .describe('mcb = disjoncteur, rcd = interrupteur différentiel, rcbo = disjoncteur différentiel, blank = cache/obturateur'),
   poles: z.string().nullable().describe('1P, 1P+N, 2P, 3P, 4P… si lisible'),
   ratedCurrentA: z.number().nullable().describe('Calibre en ampères si lisible'),
   curve: z.string().nullable().describe('Courbe B, C ou D si lisible'),
@@ -23,10 +25,17 @@ export const PhotoReading = z.object({
   notes: z.string().nullable().describe('Remarques utiles (photo floue, appareils masqués…)'),
 });
 
-
-
-/** Appel à l'IA : la photo (JPEG en data URL) est redressée sur la zone des appareils. */
-export async function readBoardPhoto(opts: { apiKey: string; model: string; photoDataUrl: string; rows: number; perRow: number; lang: string }): Promise<PhotoReadingT> {
+/** Appel à l'IA : image composée à partir du calage (src/ai/boardImage.ts), ou photo réduite sans calage. */
+export async function readBoardPhoto(opts: {
+  apiKey: string;
+  model: string;
+  photoDataUrl: string;
+  rows: number;
+  perRow: number;
+  lang: string;
+  /** Image composée (bandes redressées + règle des modules), sinon photo brute réduite. */
+  composed: boolean;
+}): Promise<PhotoReadingT> {
   const [{ default: Anthropic }, { zodOutputFormat }] = await Promise.all([import('@anthropic-ai/sdk'), import('@anthropic-ai/sdk/helpers/zod')]);
   // Clé de l'utilisateur, utilisée seulement dans son navigateur (pas de serveur) : usage voulu côté client.
   const client = new Anthropic({ apiKey: opts.apiKey, dangerouslyAllowBrowser: true });
@@ -42,12 +51,18 @@ export async function readBoardPhoto(opts: { apiKey: string; model: string; phot
           { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data } },
           {
             type: 'text',
-            text:
-              `Photo of a residential electrical distribution board (Belgium), straightened so that the image covers ` +
-              `${opts.rows} DIN rail row(s) of ${opts.perRow} modules (17.5 mm each), top row first, with a small margin around. ` +
-              `For each row, list every modular device from left to right with its start position and width in modules, ` +
-              `its type, and the ratings printed on it (rated current, curve, residual current, RCD type) and its label text. ` +
-              `Only report what you can actually read; use null when unsure. Write notes in language "${opts.lang}".`,
+            text: opts.composed
+              ? `Residential electrical distribution board (Belgium). The image shows ${opts.rows} horizontal band(s), one per DIN rail row, ` +
+                `top row first, each straightened and scaled so that every module (17.5 mm) has the same width. ` +
+                `Above each band, a red ruler numbers the module positions of that row 0 to ${opts.perRow - 1}; the red ticks are the module limits. ` +
+                `For each row, list every modular device from left to right: startModule = the ruler number under its left edge, ` +
+                `widthModules = how many ruler positions it covers, its type, the ratings printed on it (rated current, curve, residual current, RCD type) ` +
+                `and its label text. Report blanking plates as "blank" and skip empty rail. Only report what you can actually read; use null when unsure. ` +
+                `Write notes in language "${opts.lang}".`
+              : `Photo of a residential electrical distribution board (Belgium) with ${opts.rows} DIN rail row(s) of ${opts.perRow} modules (17.5 mm each). ` +
+                `For each row (0 = top), list every modular device from left to right with its start position and width in modules, ` +
+                `its type, the ratings printed on it (rated current, curve, residual current, RCD type) and its label text. ` +
+                `Only report what you can actually read; use null when unsure. Write notes in language "${opts.lang}".`,
           },
         ],
       },

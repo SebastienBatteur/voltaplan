@@ -1,16 +1,29 @@
 import { NumberField } from './NumberField';
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
-import { autoLayout, boardSize, compareRow, enclosures, layoutFromPhotoRows, moduleWidth, placeDevice, placed, unplaceDevice, type Placed } from '../board/model';
+import {
+  autoLayout,
+  boardSize,
+  compareRow,
+  enclosures,
+  layoutFromPhotoRows,
+  moduleWidth,
+  placeDevice,
+  placed,
+  unplaceDevice,
+  type Placed,
+} from '../board/model';
 import { analyzeRow, boundaries, moduleStats, rowProfile, rowTransform } from '../board/photo';
 import { pickFile } from '../io/files';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
-import { loadAiSettings, getSessionKey } from '../ai/settings';
+import { loadAiSettings, getSessionKey, setSessionKey } from '../ai/settings';
+import { unseal } from '../ai/secureStore';
+import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { compareReading, extraDevices, layoutFromReading, readBoardPhoto, type DeviceDiff } from '../ai/boardPhoto';
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
@@ -34,7 +47,21 @@ export function deviceText(n: ElNode): string[] {
 }
 
 /** Dessin d'un appareil modulaire (face avant simplifiée), coin haut-gauche (0,0). */
-export function DeviceFace({ n, width, ref_, selected, check, chain }: { n: ElNode; width: number; ref_?: string; selected?: boolean; check?: 'ok' | 'ko' | 'width' | 'unsure'; chain?: boolean }) {
+export function DeviceFace({
+  n,
+  width,
+  ref_,
+  selected,
+  check,
+  chain,
+}: {
+  n: ElNode;
+  width: number;
+  ref_?: string;
+  selected?: boolean;
+  check?: 'ok' | 'ko' | 'width' | 'unsure';
+  chain?: boolean;
+}) {
   const w = width * MOD;
   const device = String(n.props.device ?? 'mcb');
   const rcd = device === 'rcd' || device === 'rcbo' || Number(n.props.residualCurrent) > 0;
@@ -84,8 +111,13 @@ export function BoardView() {
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: { row: number; startModule: number; kind: string }[]; notes: string | null } | null>(null);
+  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: { row: number; startModule: number; kind: string }[]; notes: string | null } | null>(
+    null,
+  );
   const lang = useStore((s) => s.lang);
+  /** Phrase secrète demandée sur place pour déverrouiller la clé de l'IA (null = champ caché). */
+  const [unlock, setUnlock] = useState<string | null>(null);
+  const unlockInput = useRef<HTMLInputElement>(null);
   const ai = loadAiSettings();
   const aiAllowed = ai.enabled && ai.permissions.boardFromPhoto;
 
@@ -220,13 +252,31 @@ export function BoardView() {
     if (!ph) return;
     const key = getSessionKey();
     if (!key) {
-      setMsg(t('ai.needUnlock'));
+      // Clé enregistrée mais verrouillée (après un rechargement) : phrase secrète demandée ici même
+      if (ai.key) {
+        setUnlock('');
+        setMsg(t('ai.askPass'));
+      } else setMsg(t('ai.needUnlock'));
       return;
     }
+    setUnlock(null);
     setBusy(true);
+    const t0 = Date.now();
     setMsg(t('ai.reading'));
+    const tick = window.setInterval(() => setMsg(`${t('ai.reading')} ${Math.round((Date.now() - t0) / 1000)} s`), 1000);
     try {
-      const reading = await readBoardPhoto({ apiKey: key, model: ai.model, photoDataUrl: ph.href, rows: size.rows, perRow: size.perRow, lang });
+      // Image composée (rangées redressées + règle des modules) si la photo est calée, sinon photo réduite
+      const calibrated = !!ph.rows && ph.rows.length >= size.rows;
+      const image = calibrated ? await composeBoardImage(ph.href, ph.rows!.slice(0, size.rows), size.perRow) : await shrinkPhoto(ph.href);
+      const reading = await readBoardPhoto({
+        apiKey: key,
+        model: ai.model,
+        photoDataUrl: image,
+        rows: size.rows,
+        perRow: size.perRow,
+        lang,
+        composed: calibrated,
+      });
       // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
       const { slots, unplaced: left } = layoutFromReading(enc.devices, reading, size.perRow, nameOf);
       const next: BoardLayout = { ...layout, slots };
@@ -244,6 +294,7 @@ export function BoardView() {
       const m = (e as Error).message;
       setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
     } finally {
+      window.clearInterval(tick);
       setBusy(false);
     }
   };
@@ -313,9 +364,41 @@ export function BoardView() {
               {t('board.compare')}
             </button>
             {aiAllowed && (
-              <button onClick={readWithAi} disabled={busy || !devs.length} title={t('ai.boardHelp')}>
+              <button onClick={readWithAi} disabled={busy || !enc.devices.length} title={t('ai.boardHelp')}>
                 {t('ai.boardRead')}
               </button>
+            )}
+            {aiAllowed && unlock !== null && (
+              <form
+                className="inline"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  try {
+                    setSessionKey(await unseal(ai.key!, unlock));
+                  } catch {
+                    setMsg(t('ai.badPass'));
+                    unlockInput.current?.select();
+                    return;
+                  }
+                  void readWithAi();
+                }}
+              >
+                <input
+                  ref={unlockInput}
+                  type="password"
+                  autoFocus
+                  autoComplete="current-password"
+                  placeholder={t('ai.passphrase')}
+                  value={unlock}
+                  onChange={(e) => setUnlock(e.target.value)}
+                />
+                <button type="submit" className="primary" disabled={!unlock}>
+                  {t('ai.unlock')}
+                </button>
+                <button type="button" onClick={() => setUnlock(null)}>
+                  ✕
+                </button>
+              </form>
             )}
             <label className="inline">
               {t('plan.bgOpacity')}
@@ -414,7 +497,13 @@ export function BoardView() {
                 <clipPath id={`rowclip${r}`}>
                   <rect x={MARGIN - 8} y={rowTop(r) - LABEL_H - 6} width={size.perRow * MOD + 16} height={DEV_H + LABEL_H + 14} />
                 </clipPath>
-                <image href={layout.photo!.href} width={layout.photo!.imgW} height={layout.photo!.imgH} transform={tf.svg} opacity={layout.photo!.opacity ?? 0.6} />
+                <image
+                  href={layout.photo!.href}
+                  width={layout.photo!.imgW}
+                  height={layout.photo!.imgH}
+                  transform={tf.svg}
+                  opacity={layout.photo!.opacity ?? 0.6}
+                />
               </g>
             );
           })}
@@ -465,7 +554,14 @@ export function BoardView() {
                   pz.armLongPress(e, () => setDrag(null)); // appui long : déplacer la vue plutôt que l'appareil
                 }}
               >
-                <DeviceFace n={d.node} width={d.width} ref_={numbering.get(d.node.id)} selected={d.node.id === selectedId} chain={chain.has(d.node.id)} check={checkOf(d.node.id)} />
+                <DeviceFace
+                  n={d.node}
+                  width={d.width}
+                  ref_={numbering.get(d.node.id)}
+                  selected={d.node.id === selectedId}
+                  chain={chain.has(d.node.id)}
+                  check={checkOf(d.node.id)}
+                />
               </g>
               {(layout.photo || layout.checks?.[d.node.id]) && (
                 <rect
@@ -513,9 +609,7 @@ export function BoardView() {
         {/* Glisser : appareil sous le pointeur et emplacement visé */}
         {drag?.moved && dragged && (
           <>
-            {target && (
-              <rect x={MARGIN + target.col * MOD} y={rowTop(target.row)} width={moduleWidth(dragged) * MOD} height={DEV_H} className="drop-target" />
-            )}
+            {target && <rect x={MARGIN + target.col * MOD} y={rowTop(target.row)} width={moduleWidth(dragged) * MOD} height={DEV_H} className="drop-target" />}
             <g transform={`translate(${drag.pos.x},${drag.pos.y})`} opacity={0.85} style={{ pointerEvents: 'none' }}>
               <DeviceFace n={dragged} width={moduleWidth(dragged)} ref_={numbering.get(dragged.id)} selected />
             </g>
@@ -533,7 +627,9 @@ export function BoardView() {
             style={{ pointerEvents: 'none' }}
           />
         )}
-        {corners?.map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={4} className="snap" />)}
+        {corners?.map((p, i) => (
+          <circle key={i} cx={p.x} cy={p.y} r={4} className="snap" />
+        ))}
       </svg>
     </div>
   );

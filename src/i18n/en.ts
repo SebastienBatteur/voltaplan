@@ -153,6 +153,8 @@ export const en: Partial<Dict> = {
   'board.reserveHint': "{n} device(s) in reserve: drag them onto a rail, or « Automatic layout ».",
   'board.checkToggle': "Photo check: matches / different / not checked",
   'label.diff': 'RCD',
+  'ai.badPass': "Wrong passphrase.",
+  'ai.askPass': "Enter the AI key passphrase to continue.",
   'ai.needUnlock': "First unlock the AI key (⚙ AI button).",
   'ai.reading': "The AI is reading the photo…",
   'ai.readPlaced': "Devices arranged from the photo: {placed} placed, {left} in reserve (Ctrl+Z to undo).",

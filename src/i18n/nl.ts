@@ -153,6 +153,8 @@ export const nl: Partial<Dict> = {
   'board.reserveHint': "{n} toestel(len) in reserve: sleep ze op een rail, of « Automatische indeling ».",
   'board.checkToggle': "Controle op de foto: conform / verschillend / niet gecontroleerd",
   'label.diff': 'Diff.',
+  'ai.badPass': "Onjuiste wachtzin.",
+  'ai.askPass': "Geef de wachtzin van de AI-sleutel in om verder te gaan.",
   'ai.needUnlock': "Ontgrendel eerst de AI-sleutel (knop ⚙ AI).",
   'ai.reading': "De AI leest de foto…",
   'ai.readPlaced': "Toestellen geplaatst volgens de foto: {placed} geplaatst, {left} in reserve (Ctrl+Z om ongedaan te maken).",
