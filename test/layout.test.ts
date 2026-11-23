@@ -65,16 +65,36 @@ describe('mise en page de l’unifilaire', () => {
   });
 });
 
-it('prise de terre : en dessin de bas en haut, le symbole est marqué pour être retourné (fil par le bas)', async () => {
+it('mise à la terre : du côté opposé aux circuits, comme l’alimentation, et reliée à la barre du tableau', async () => {
   const { createNode } = await import('../src/model/tree');
   const { layoutUnifilar } = await import('../src/unifilar/layout');
   const board = createNode('board');
+  const mcb = createNode('protection', { device: 'mcb' });
+  const cable = createNode('cable');
+  cable.children = [createNode('socket')];
+  mcb.children = [cable];
   const bar = createNode('earthBar');
   const earth = createNode('earth');
   bar.children = [earth];
-  board.children = [bar];
+  board.children = [mcb, bar];
   const L = { ref: () => undefined, protection: () => ['x'], cable: () => 'c', title: () => 't' };
-  const sym = (up: boolean) => layoutUnifilar([board], L, { up }).prims.find((p) => p.t === 'sym' && p.node.id === earth.id);
-  expect(sym(true)).toMatchObject({ up: true });
-  expect(sym(false)).toMatchObject({ up: false });
+  for (const up of [true, false]) {
+    const { prims } = layoutUnifilar([board], L, { up });
+    const bus = prims.find((p) => p.t === 'bus')!;
+    const y = (id: string) => (prims.find((p) => p.t === 'sym' && p.node.id === id) as { y: number }).y;
+    const bx = bus.t === 'bus' ? bus : null;
+    // Circuits d'un côté de la barre, terre de l'autre
+    if (up) {
+      expect(y(mcb.id)).toBeLessThan(bx!.y);
+      expect(y(bar.id)).toBeGreaterThanOrEqual(bx!.y);
+      expect(y(earth.id)).toBeGreaterThan(y(bar.id));
+    } else {
+      expect(y(mcb.id)).toBeGreaterThan(bx!.y);
+      expect(y(bar.id)).toBeLessThan(bx!.y);
+      expect(y(earth.id)).toBeLessThan(y(bar.id));
+    }
+    // La barre du tableau va jusqu'à la colonne de terre
+    const barX = (prims.find((p) => p.t === 'sym' && p.node.id === bar.id) as { x: number }).x;
+    expect(bx!.x2).toBeGreaterThanOrEqual(barX);
+  }
 });

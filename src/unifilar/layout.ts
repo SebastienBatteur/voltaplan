@@ -134,6 +134,38 @@ export function layoutUnifilar(
     return { w, h, entry: (entries[0] + entries[entries.length - 1]) / 2, prims };
   };
 
+  /** Tableau : barre et départs (sans la mise à la terre, dessinée de l'autre côté). */
+  const boardBox = (node: ElNode): Box => {
+    const title = L.title(node);
+    const others = node.children.filter((c) => c.kind !== 'earthBar' && c.kind !== 'earth');
+    const kids = others.map(down);
+    if (!kids.length) {
+      const w = Math.max(90, textWidth(title) + 10);
+      const by = UP ? 18 : 22;
+      return {
+        w,
+        h: 40,
+        entry: w / 2,
+        prims: [
+          { t: 'line', x1: w / 2, y1: UP ? 40 : 0, x2: w / 2, y2: by, n: node.id },
+          { t: 'bus', node, x1: 0, x2: w, y: by },
+          { t: 'text', x: 0, y: UP ? 32 : 14, text: title, bold: true, nodeId: node.id },
+        ],
+      };
+    }
+    const box = sideBySide(
+      kids,
+      22,
+      node,
+      others.map((c) => c.id),
+    );
+    const bus = box.prims.find((p): p is Extract<Prim, { t: 'bus' }> => p.t === 'bus' && p.node === node)!;
+    // Titre à gauche, du côté de l'arrivée (sous la barre en mode UP, au-dessus sinon)
+    box.prims.push({ t: 'text', x: bus.x1, y: UP ? bus.y + 15 : 14, text: title, bold: true, nodeId: node.id });
+    box.prims.unshift({ t: 'line', x1: box.entry, y1: my(0, box.h), x2: box.entry, y2: my(22, box.h), n: node.id });
+    return box;
+  };
+
   /** Bloc vertical (structure). */
   const down = (node: ElNode): Box => {
     // Une canalisation est toujours verticale ; ses points sont des lignes horizontales.
@@ -142,27 +174,23 @@ export function layoutUnifilar(
     const structs = node.children.filter(goesDown);
 
     if (node.kind === 'board') {
-      const title = L.title(node);
-      const kids = node.children.map(down);
-      if (!kids.length) {
-        const w = Math.max(90, textWidth(title) + 10);
-        const by = UP ? 18 : 22;
-        return {
-          w,
-          h: 40,
-          entry: w / 2,
-          prims: [
-            { t: 'line', x1: w / 2, y1: UP ? 40 : 0, x2: w / 2, y2: by, n: node.id },
-            { t: 'bus', node, x1: 0, x2: w, y: by },
-            { t: 'text', x: 0, y: UP ? 32 : 14, text: title, bold: true, nodeId: node.id },
-          ],
-        };
-      }
-      const box = sideBySide(kids, 22, node, node.children.map((c) => c.id));
-      const bus = box.prims.find((p): p is Extract<Prim, { t: 'bus' }> => p.t === 'bus' && p.node === node)!;
-      // Titre à gauche, du côté de l'arrivée (sous la barre en mode UP, au-dessus sinon)
-      box.prims.push({ t: 'text', x: bus.x1, y: UP ? bus.y + 15 : 14, text: title, bold: true, nodeId: node.id });
-      box.prims.unshift({ t: 'line', x1: box.entry, y1: my(0, box.h), x2: box.entry, y2: my(22, box.h), n: node.id });
+      const box = boardBox(node);
+      // Mise à la terre : du côté opposé aux circuits, comme l'alimentation (sous la barre en mode UP,
+      // au-dessus sinon), au bout droit de la barre pour ne pas croiser l'arrivée.
+      const earthKids = node.children.filter((c) => c.kind === 'earthBar' || c.kind === 'earth');
+      if (!earthKids.length) return box;
+      const sub = layoutUnifilar(earthKids, L, { up: !UP });
+      const first = sub.prims.find((p): p is Extract<Prim, { t: 'sym' }> => p.t === 'sym' && p.node.id === earthKids[0].id);
+      const bus = box.prims.find((p): p is Extract<Prim, { t: 'bus' }> => p.t === 'bus' && p.node === node);
+      if (!first || !bus) return box;
+      // Point d'entrée de la colonne de terre : haut du symbole (dessin vers le bas) ou bas (dessin vers le haut)
+      const entryY = UP ? first.y : first.y + symbolSize(first.node, 'v').h;
+      const ex = Math.max(bus.x2 + 16, box.w + 16);
+      const dx = ex - first.x;
+      const dy = bus.y - entryY;
+      bus.x2 = ex + 8;
+      box.prims.push(...shift(sub.prims, dx, dy));
+      box.w = Math.max(box.w, ex + (sub.w - first.x));
       return box;
     }
 
@@ -188,7 +216,14 @@ export function layoutUnifilar(
     }
     let structBox: Box | null = null;
     if (structs.length === 1) structBox = down(structs[0]);
-    else if (structs.length > 1) structBox = sideBySide(structs.map(down), 10, undefined, structs.map((c) => c.id), node.id);
+    else if (structs.length > 1)
+      structBox = sideBySide(
+        structs.map(down),
+        10,
+        undefined,
+        structs.map((c) => c.id),
+        node.id,
+      );
     const sy = y + 6;
     if (structBox) {
       left = Math.max(left, structBox.entry);
@@ -250,8 +285,11 @@ export function layoutUnifilar(
     const ownW = Math.max(SW, ...loc.map((s) => textWidth(s, 9)));
     prims.push({ t: 'sym', node, x: 0, y: cy, orient: 'h' });
     if (node.kind === 'cable') prims.push({ t: 'text', x: SW / 2, y: cy - 6, text: L.cable(node), size: 9, anchor: 'middle', muted: true, nodeId: node.id });
-    else if (ref) prims.push({ t: 'text', x: SW / 2, y: cy - symbolSize(node, 'h').h / 2 - 3, text: ref, size: 9, anchor: 'middle', bold: true, nodeId: node.id });
-    loc.forEach((s, i) => prims.push({ t: 'text', x: SW / 2, y: cy + symbolSize(node, 'h').h / 2 + 11 + i * 10, text: s, size: 9, anchor: 'middle', muted: true, nodeId: node.id }));
+    else if (ref)
+      prims.push({ t: 'text', x: SW / 2, y: cy - symbolSize(node, 'h').h / 2 - 3, text: ref, size: 9, anchor: 'middle', bold: true, nodeId: node.id });
+    loc.forEach((s, i) =>
+      prims.push({ t: 'text', x: SW / 2, y: cy + symbolSize(node, 'h').h / 2 + 11 + i * 10, text: s, size: 9, anchor: 'middle', muted: true, nodeId: node.id }),
+    );
     const ownH = cy + symbolSize(node, 'h').h / 2 + 4 + loc.length * 10 + 2;
     const kids = node.children.map(rightChain);
     if (ownW > SW && kids.length) prims.push({ t: 'line', x1: SW, y1: cy, x2: ownW, y2: cy, n: node.id });
