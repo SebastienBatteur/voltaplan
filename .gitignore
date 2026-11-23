@@ -1,0 +1,12 @@
+node_modules
+dist
+# Les fichiers de test réels contiennent des données personnelles : ne pas publier
+test/fixtures/*.trik
+test/fixtures/*.voltaplan
+test/fixtures/*.eds
+_site
+src-tauri/target
+src-tauri/gen
+*.local
+.env*
+.claude/settings.local.json

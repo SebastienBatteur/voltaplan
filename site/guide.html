@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guide de Voltaplan</title>
+<meta name="description" content="Guide d'utilisation de Voltaplan : unifilaire, plan, tableau, contrôle RGIE, impression, sauvegardes.">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Guide</a>
+    <a href="#installer">Installer</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn primary" href="app/">Ouvrir l'application</a>
+  </nav>
+</div></header>
+<main class="doc">
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#demarrer">Démarrer</a>
+    <a href="#installer">Installer</a>
+    <a href="#ecran">L'écran</a>
+    <a href="#installation">Décrire l'installation</a>
+    <a href="#unifilaire">Schéma unifilaire</a>
+    <a href="#plan">Plan de position</a>
+    <a href="#tableau">Tableau</a>
+    <a href="#photo">Photo du tableau</a>
+    <a href="#maj">Mettre à jour</a>
+    <a href="#materiel">Liste du matériel</a>
+    <a href="#controle">Contrôle RGIE</a>
+    <a href="#calculs">Chute de tension et court-circuit</a>
+    <a href="#mesures">Mesures</a>
+    <a href="#imprimer">Imprimer le dossier</a>
+    <a href="#sauver">Enregistrer et ouvrir</a>
+    <a href="#nuage">Drive, OneDrive, Dropbox</a>
+    <a href="#trikker">Trikker</a>
+    <a href="#ia">IA (facultative)</a>
+    <a href="#pays">Pays et règlements</a>
+    <a href="#raccourcis">Raccourcis</a>
+    <a href="#confidentialite">Confidentialité</a>
+    <a href="#dev">Développer</a>
+  </nav>
+  <article>
+    <h2 id="demarrer">Démarrer</h2>
+    <p>La façon la plus simple : <a href="app/">ouvrir l'application dans le navigateur</a> (<span class="app-url">app/</span>). Elle s'installe comme une application (icône « Installer » dans la barre d'adresse de Chrome ou Edge) et fonctionne ensuite sans connexion.</p>
+    <ol>
+      <li><strong>Nouveau</strong> crée un projet vide avec une origine (réseau), ou <strong>Importer Trikker</strong> reprend un dossier existant.</li>
+      <li>Remplissez l'onglet <strong>Projet</strong> : adresse, installateur, tension, EAN, type d'installation (neuve ou existante).</li>
+      <li>Ajoutez tableau, différentiels, circuits et points dans l'<strong>arborescence</strong> à gauche ; l'unifilaire se dessine tout seul.</li>
+      <li>Placez les points sur le <strong>Plan</strong>, rangez les appareils dans le <strong>Tableau</strong>, puis cliquez <strong>⟳ Mettre à jour</strong>.</li>
+      <li>Corrigez ce que signale le <strong>Contrôle RGIE</strong>, puis <strong>Imprimer / PDF</strong>.</li>
+    </ol>
+    <p class="note">Voltaplan est une aide : il ne remplace ni le texte officiel du RGIE (Livre 1) ni l'avis de l'organisme agréé.</p>
+
+    <h2 id="installer">Installer</h2>
+    <table>
+      <tr><th>Système</th><th>Fichier</th><th>Remarque</th></tr>
+      <tr><td>Windows 10 / 11</td><td><code>.msi</code> ou <code>-setup.exe</code></td><td>SmartScreen peut avertir (installateur non signé) : « Informations complémentaires » → « Exécuter quand même ».</td></tr>
+      <tr><td>macOS (Apple Silicon ou Intel)</td><td><code>.dmg</code></td><td>Première ouverture : clic droit → Ouvrir.</td></tr>
+      <tr><td>Linux</td><td><code>.AppImage</code>, <code>.deb</code>, <code>.rpm</code></td><td>AppImage : rendre exécutable puis lancer.</td></tr>
+    </table>
+    <p>Les installateurs sont sur la page <a class="release-link" href="#">Releases</a> du dépôt. La version de bureau enregistre les fichiers avec la boîte de dialogue du système ; elle est identique à la version web.</p>
+
+    <h2 id="ecran">L'écran</h2>
+    <ul>
+      <li><strong>Barre du haut</strong> : nouveau, ouvrir, importer Trikker, enregistrer, imprimer, mettre à jour, annuler / rétablir, onglets, langue (FR, NL, EN).</li>
+      <li><strong>Onglets</strong> : Unifilaire, Plan, Tableau, Matériel, Projet, Contrôle RGIE (le chiffre rouge = nombre de non-conformités).</li>
+      <li><strong>À gauche</strong> : l'arborescence de l'installation et les propriétés de l'élément sélectionné.</li>
+      <li><strong>Sélection liée</strong> : un élément choisi dans l'arborescence, l'unifilaire, le plan ou le tableau est sélectionné partout. <strong>Toute sa chaîne s'allume en orange</strong> : ce qui l'alimente jusqu'au compteur et tout ce qu'il alimente ; le reste de l'unifilaire s'estompe.</li>
+      <li>Molette = zoom, glisser le fond = déplacer, « Ajuster » = tout voir.</li>
+    </ul>
+
+    <h2 id="installation">Décrire l'installation</h2>
+    <p>L'installation est un arbre : origine → (compteur) → protections → tableau → différentiels → disjoncteurs → canalisations → points (prises, interrupteurs, points lumineux, appareils…). Le bouton <strong>+</strong> d'un élément propose seulement les enfants permis.</p>
+    <ul>
+      <li><strong>Protection</strong> : appareil (disjoncteur, différentiel, disjoncteur différentiel, fusible, interrupteur-sectionneur), calibre, pôles, courbe, pouvoir de coupure, sensibilité et type du différentiel, nombre de modules, référence fabricant, « partie ancienne » (avant le 1/10/1981).</li>
+      <li><strong>Canalisation</strong> : type (VOB, XVB…), section, nombre de conducteurs, sous tube, mode de pose, <strong>longueur</strong> (nécessaire pour les calculs).</li>
+      <li><strong>Emplacement</strong> : la pièce (ex. « Cuisine »). Il sert à poser les points sur le plan près du nom de la pièce.</li>
+      <li><strong>Numérotation RGIE</strong> (3.1.2.1) : circuits A, B, C… ; points A1, A2… dans l'ordre depuis la protection ; un interrupteur prend le numéro du point qu'il commande. Une lettre peut être imposée.</li>
+    </ul>
+
+    <h2 id="unifilaire">Schéma unifilaire</h2>
+    <p>Dessiné automatiquement <strong>de bas en haut</strong> (alimentation en bas, comme la figure 3.1 du RGIE) ; le bouton « Sens » passe en haut → bas. Les symboles suivent le tableau 2.23 du RGIE ; la légende des symboles utilisés est imprimée avec le dossier. Un point rouge ou orange sur un symbole = constat du contrôle.</p>
+
+    <h2 id="plan">Plan de position</h2>
+    <ul>
+      <li><strong>Murs</strong> (angles droits, extrémités accrochées, cotes), <strong>portes</strong>, doubles portes, portes-fenêtres, <strong>fenêtres</strong>, <strong>noms de pièces</strong>, plusieurs pages (étages).</li>
+      <li><strong>Fond de plan</strong> : photo ou PDF. <em>Mettre à l'échelle</em> : cliquez deux points et donnez leur distance réelle. <em>Redresser</em> : cliquez les 4 coins d'un rectangle connu d'une photo prise de biais. <em>Tracer les murs</em> : détection automatique des murs, portes et fenêtres, à vérifier. <em>Caler le fond</em> : superposer une photo récente sur le plan pour voir les modifications.</li>
+      <li><strong>Mobilier</strong> : pictogrammes à l'échelle (lits, canapé, cuisine, sanitaires…).</li>
+      <li><strong>Symboles électriques</strong> : « Placer sur le plan » depuis les propriétés, puis glisser, pivoter, retirer.</li>
+    </ul>
+
+    <h2 id="tableau">Tableau</h2>
+    <p>Rangées DIN (nombre de rangées et de modules par rangée dans les propriétés du tableau). Les appareils ont leur <strong>largeur réelle</strong> : un disjoncteur 1P+N peut faire 1 ou 2 modules selon la gamme, un disjoncteur 2P en fait 2, un différentiel 4P en fait 4 — à préciser dans « Modules ». Glisser-déposer entre rangées et réserve ; « Disposition automatique » range tout dans l'ordre de l'arbre. Les étiquettes (repère + usage) s'impriment à l'échelle 1:1.</p>
+
+    <h2 id="photo">Photo du tableau</h2>
+    <ol>
+      <li>« Photo du tableau… » : choisissez une photo prise de face.</li>
+      <li>« Caler la photo (rangées) » : pour chaque rangée, cliquez le bord gauche du premier module puis le bout de la rangée, à mi-hauteur des appareils.</li>
+      <li>« Comparer » : sans IA, Voltaplan mesure les séparations entre appareils et signale ceux dont la largeur ne correspond pas (ex. 1 module dans le projet, 2 sur la photo). Les appareils dessinés deviennent transparents pour comparer à l'œil.</li>
+      <li>En option, l'IA lit les calibres, courbes et sensibilités et les compare au projet (voir <a href="#ia">IA</a>).</li>
+    </ol>
+
+    <h2 id="maj">Mettre à jour (nouvelle installation, circuits ajoutés)</h2>
+    <p>Après avoir créé l'installation ou ajouté des circuits, cliquez <strong>⟳ Mettre à jour</strong> :</p>
+    <ul>
+      <li>les nouveaux appareils sont posés dans le premier emplacement libre du tableau, <strong>sans déplacer les autres</strong> (un tableau jamais disposé est rangé entièrement) ; s'il n'y a plus de place, c'est signalé ;</li>
+      <li>les nouveaux points sont posés sur le plan <strong>près du nom de leur pièce</strong> ; les autres vont dans une colonne « à placer » à gauche du plan ;</li>
+      <li>une <strong>révision</strong> est ajoutée au dossier avec la liste des circuits ajoutés (RGIE 3.1.2 : une extension doit être reportée sur les plans) ;</li>
+      <li>numérotation, étiquettes, liste du matériel et contrôle sont recalculés.</li>
+    </ul>
+    <p>« Annuler » dans la fenêtre de résultat revient en arrière en une fois.</p>
+
+    <h2 id="materiel">Liste du matériel</h2>
+    <p>Onglet <strong>Matériel</strong> : le matériel est groupé par catégorie et additionné (pièces, tronçons et longueur totale des câbles). Il est désigné par ses <strong>caractéristiques et sa norme européenne</strong> (ex. « Disjoncteur 2P C20 A 3 kA — EN 60898-1 ») : les références fabricant et même les gammes changent d'un pays à l'autre. Les câbles gardent leur désignation nationale avec l'équivalent harmonisé quand il existe (VOB ≈ H07V-U/R). Une référence fabricant peut être ajoutée à chaque élément. Export CSV pour Excel ; page « Liste du matériel » dans le dossier imprimé.</p>
+
+    <h2 id="controle">Contrôle RGIE</h2>
+    <p>Le type d'installation décide de la sévérité :</p>
+    <table>
+      <tr><th>Projet</th><th>Non-conformité</th></tr>
+      <tr><td>Installation neuve, RGIE en vigueur</td><td><strong>bloquante</strong> ; le dossier imprimé porte « PROJET — NON CONFORME »</td></tr>
+      <tr><td>Installation existante ou ancien RGIE</td><td>alerte non bloquante + conseil de mise en conformité</td></tr>
+    </table>
+    <p>Règles vérifiées, entre autres : mentions obligatoires du dossier, terre et mesures, différentiel général et 30 mA (locaux humides, lave-linge…), sélectivité, section ↔ calibre, nombre de prises par circuit, circuits spécialisés, sécurité enfant et terre des prises, <strong>disjoncteurs bipolaires en réseau 3 × 230 V</strong>, chute de tension et court-circuit. Cliquez un constat pour sélectionner l'élément.</p>
+
+    <h2 id="calculs">Chute de tension et court-circuit</h2>
+    <p>En bas de l'onglet Contrôle, un tableau donne pour chaque circuit : longueur jusqu'au point le plus éloigné, section, chute de tension, courant de court-circuit minimal et longueur maximale protégée. Méthode conventionnelle IEC 60364 : cuivre ρ = 0,0225 Ω·mm²/m, courant = calibre de la protection, 80 % de la tension pour le court-circuit ; limites 3 % (éclairage) et 5 % (autres). Remplissez la <strong>longueur</strong> de chaque canalisation pour obtenir les valeurs.</p>
+
+    <h2 id="mesures">Mesures</h2>
+    <p>Onglet Projet : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel (temps de déclenchement ≤ 300 ms, 500 ms pour un « S », circuits couverts), date et appareil de mesure. Elles sont contrôlées et imprimées sur la page « Mesures ».</p>
+
+    <h2 id="imprimer">Imprimer le dossier</h2>
+    <p><strong>Imprimer / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>) : format A4 ou A3 paysage, choix des parties (unifilaire, plans, tableaux, circuits, légende, mesures, liste du matériel, étiquettes 1:1, constats). Chaque page a le cartouche : version et date, installateur (nom, qualité, TVA), adresse, tension, EAN, cases de signature. Dans la boîte d'impression, choisissez « Enregistrer au format PDF » pour un PDF vectoriel. Pour les étiquettes, imprimez à 100 % (sans « ajuster à la page »).</p>
+
+    <h2 id="sauver">Enregistrer et ouvrir</h2>
+    <table>
+      <tr><th>Emplacement</th><th>Pour quoi</th></tr>
+      <tr><td>Cet appareil</td><td>fichier <code>.voltaplan</code> (JSON lisible) ; avec Chrome / Edge, « Enregistrer » réécrit le même fichier</td></tr>
+      <tr><td>Navigateur</td><td>projets gardés dans ce navigateur + <strong>brouillon automatique</strong> toutes les 20 s, proposé à la réouverture</td></tr>
+      <tr><td>GitHub</td><td>fichier dans un dépôt (historique des versions) ; jeton personnel chiffré par une phrase de passe</td></tr>
+      <tr><td>Drive, OneDrive, Dropbox</td><td>voir ci-dessous</td></tr>
+    </table>
+
+    <h2 id="nuage">Drive, OneDrive, Dropbox</h2>
+    <p>Voltaplan parle directement au service depuis votre navigateur ; il n'y a aucun serveur Voltaplan au milieu. Chaque service demande d'<strong>enregistrer l'application une fois</strong> pour obtenir un identifiant (public, sans secret). L'adresse de redirection à déclarer est affichée dans Voltaplan (Enregistrer sous… → Drive, OneDrive, Dropbox) : c'est l'adresse de l'application suivie de <code>oauth.html</code>.</p>
+    <ul>
+      <li><strong>OneDrive</strong> : <a href="https://entra.microsoft.com">entra.microsoft.com</a> → Inscriptions d'applications → Nouvelle inscription ; comptes de tout annuaire et comptes Microsoft personnels ; plateforme <em>Application monopage (SPA)</em> avec l'adresse de redirection ; autorisation Microsoft Graph <code>Files.ReadWrite.AppFolder</code>. Copiez l'« ID d'application (client) ».</li>
+      <li><strong>Dropbox</strong> : <a href="https://www.dropbox.com/developers/apps">dropbox.com/developers/apps</a> → Create app ; <em>Scoped access</em>, <em>App folder</em> ; onglet Permissions : <code>files.content.read</code> et <code>files.content.write</code> ; onglet Settings : Redirect URI. Copiez l'« App key ».</li>
+      <li><strong>Google Drive</strong> : <a href="https://console.cloud.google.com">console.cloud.google.com</a> → activer l'API Google Drive ; écran de consentement OAuth ; Identifiants → ID client OAuth de type <em>Application Web</em>, origine JavaScript = l'adresse du site, URI de redirection = l'adresse de <code>oauth.html</code> ; portée <code>drive.file</code>. Copiez l'« ID client ».</li>
+    </ul>
+    <p>Collez l'identifiant dans Voltaplan, puis « Lister » ou « Enregistrer ici » : une fenêtre du service s'ouvre pour vous connecter. Le jeton reste en mémoire pendant la session seulement. Pour une version publiée, l'identifiant peut être fixé à la compilation (<code>VITE_ONEDRIVE_CLIENT_ID</code>, <code>VITE_DROPBOX_CLIENT_ID</code>, <code>VITE_GOOGLE_CLIENT_ID</code>).</p>
+
+    <h2 id="trikker">Trikker</h2>
+    <p><strong>Importer Trikker (.trik)</strong> reprend schéma, numérotation, plan (murs, ouvertures, pièces, images), adresses et notes. <strong>Enregistrer sous… → Cet appareil → Exporter en .trik</strong> produit un fichier Trikker (Windows-1252, comme Trikker).</p>
+
+    <h2 id="ia">IA (facultative)</h2>
+    <p>Tout fonctionne sans IA. Si vous le souhaitez, « ⚙ IA » permet de coller une clé API Anthropic, chiffrée par une phrase de passe et gardée <strong>uniquement sur cet ordinateur</strong>, et de choisir ce que l'IA peut faire (lecture de la photo du tableau). Les requêtes partent directement de votre navigateur vers l'API ; la clé n'est jamais mise dans le fichier du projet.</p>
+
+    <h2 id="pays">Pays et règlements</h2>
+    <p>Le RGIE belge est le référentiel par défaut (onglet Projet → Référentiel). Le moteur est prévu pour d'autres pays : un pays = un module de règles, ses textes et ses listes (désignations des câbles…), sans modifier le reste de l'application. Une désignation qui n'existe pas dans le pays du projet est signalée.</p>
+
+    <h2 id="raccourcis">Raccourcis</h2>
+    <table>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Enregistrer</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Ouvrir</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>Imprimer / PDF</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Annuler / rétablir</td></tr>
+      <tr><td><kbd>Suppr</kbd></td><td>Supprimer l'élément du plan sélectionné</td></tr>
+      <tr><td><kbd>Échap</kbd></td><td>Quitter l'outil en cours</td></tr>
+    </table>
+
+    <h2 id="confidentialite">Confidentialité</h2>
+    <p>Voltaplan n'a pas de serveur. Les projets (avec les noms et adresses des clients) restent sur votre ordinateur ou dans le stockage que vous choisissez. Pas de compte, pas de suivi, pas de publicité.</p>
+
+    <h2 id="dev">Développer</h2>
+    <pre>npm install
+npm run dev        # http://localhost:5173
+npm test           # tests
+npm run build      # version web dans dist/
+npm run desktop    # application de bureau (Rust requis)</pre>
+    <p>React + TypeScript + Vite, application de bureau avec Tauri. Code sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> : toute version modifiée distribuée ou proposée en ligne doit publier son code source. Contributions bienvenues sur le <a class="repo-link" href="#">dépôt</a>.</p>
+  </article>
+</main>
+<footer>Voltaplan — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="#">code source</a></footer>
+<script src="site.js"></script>
+</body>
+</html>

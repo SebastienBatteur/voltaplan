@@ -1,0 +1,209 @@
+import { STORAGE_PREFIX } from './brand';
+import { create } from 'zustand';
+import type { BoardLayout, ElNode, NodeKind, Project, ProjectMeta, Measurements, PlanPage, Pt, PropValue } from './model/types';
+import {
+  cloneWithNewIds,
+  createNode,
+  emptyPage,
+  emptyProject,
+  findNode,
+  findParent,
+  insertChild,
+  moveSibling,
+  removeNode,
+  updateNode,
+} from './model/tree';
+import { detectLang, translate, type Lang } from './i18n';
+
+export type View = 'unifilar' | 'plan' | 'board' | 'bom' | 'project' | 'check';
+
+interface State {
+  project: Project;
+  fileName: string;
+  dirty: boolean;
+  selectedId: string | null;
+  view: View;
+  lang: Lang;
+  pageIndex: number;
+  /** Nœud en attente de placement sur le plan (clic sur le plan pour le poser). */
+  placingId: string | null;
+  past: Project[];
+  future: Project[];
+
+  t: (key: string, params?: Record<string, string | number>) => string;
+  setLang: (l: Lang) => void;
+  setView: (v: View) => void;
+  setPage: (i: number) => void;
+  select: (id: string | null) => void;
+  loadProject: (p: Project, fileName: string) => void;
+  markSaved: (fileName?: string) => void;
+
+  setProps: (id: string, patch: Record<string, PropValue>) => void;
+  setLocation: (id: string, location: string) => void;
+  addChild: (parentId: string, kind: NodeKind) => void;
+  remove: (id: string) => void;
+  duplicate: (id: string) => void;
+  move: (id: string, delta: number) => void;
+  setMeta: (patch: Partial<ProjectMeta>) => void;
+  setMeasurements: (patch: Partial<Measurements>) => void;
+  startPlacing: (id: string | null) => void;
+  placeSymbol: (nodeId: string, pos: Pt) => void;
+  moveSymbol: (nodeId: string, pos: Pt) => void;
+  rotateSymbol: (nodeId: string, deg: number) => void;
+  /** Retire le symbole du plan (le nœud reste dans l'installation). */
+  unplaceSymbol: (nodeId: string) => void;
+  /** Modifie la page de plan affichée (murs, ouvertures, textes, fond de plan). */
+  editPage: (fn: (page: PlanPage) => PlanPage) => void;
+  addPage: (name: string) => void;
+  /** Disposition d'un tableau (id du nœud tableau). */
+  setBoardLayout: (boardId: string, layout: BoardLayout) => void;
+  /** Modification globale du projet (une seule étape d'annulation). */
+  applyProject: (fn: (p: Project) => Project) => void;
+  undo: () => void;
+  redo: () => void;
+}
+
+const HISTORY = 100;
+
+export const useStore = create<State>((set, get) => {
+  /** Applique une modification du projet en l'ajoutant à l'historique. */
+  const commit = (fn: (p: Project) => Project) => {
+    const { project, past } = get();
+    const next = fn(project);
+    if (next === project) return;
+    set({ project: next, past: [...past.slice(-HISTORY + 1), project], future: [], dirty: true });
+  };
+  const lang = detectLang();
+
+  return {
+    project: emptyProject(),
+    fileName: '',
+    dirty: false,
+    selectedId: null,
+    view: 'unifilar',
+    lang,
+    pageIndex: 0,
+    placingId: null,
+    past: [],
+    future: [],
+
+    t: (key, params) => translate(get().lang, key, params),
+    setLang: (l) => {
+      try {
+        localStorage.setItem(STORAGE_PREFIX + 'lang', l);
+      } catch {
+        /* ignore */
+      }
+      document.documentElement.lang = l;
+      set({ lang: l, t: (key, params) => translate(l, key, params) });
+    },
+    setView: (view) => set({ view }),
+    setPage: (pageIndex) => set({ pageIndex }),
+    select: (selectedId) => set({ selectedId }),
+    loadProject: (project, fileName) =>
+      set({ project, fileName, dirty: false, selectedId: null, past: [], future: [], pageIndex: 0, placingId: null }),
+    markSaved: (fileName) => set((s) => ({ dirty: false, fileName: fileName ?? s.fileName })),
+
+    setProps: (id, patch) =>
+      commit((p) => {
+        const upd = (list: ElNode[]) =>
+          updateNode(list, id, (n) => {
+            const props = { ...n.props, ...patch };
+            for (const k of Object.keys(props)) if (props[k] === undefined || props[k] === '') delete props[k];
+            return { ...n, props };
+          });
+        return { ...p, roots: upd(p.roots), loose: upd(p.loose) };
+      }),
+    setLocation: (id, location) =>
+      commit((p) => {
+        const upd = (list: ElNode[]) => updateNode(list, id, (n) => ({ ...n, location: location || undefined }));
+        return { ...p, roots: upd(p.roots), loose: upd(p.loose) };
+      }),
+    addChild: (parentId, kind) => {
+      const node = createNode(kind);
+      commit((p) => ({ ...p, roots: insertChild(p.roots, parentId, node) }));
+      set({ selectedId: node.id });
+    },
+    remove: (id) => {
+      const parent = findParent(get().project.roots, id);
+      commit((p) => {
+        const ids = new Set<string>();
+        const n = findNode(p.roots, id) ?? findNode(p.loose, id);
+        const rec = (x: ElNode) => {
+          ids.add(x.id);
+          x.children.forEach(rec);
+        };
+        if (n) rec(n);
+        return {
+          ...p,
+          roots: removeNode(p.roots, id),
+          loose: removeNode(p.loose, id),
+          plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.filter((s) => !ids.has(s.nodeId)) })) },
+        };
+      });
+      set({ selectedId: parent?.id ?? null });
+    },
+    duplicate: (id) => {
+      const { project } = get();
+      const n = findNode(project.roots, id);
+      const parent = findParent(project.roots, id);
+      if (!n || !parent) return;
+      const copy = cloneWithNewIds(n);
+      const idx = parent.children.findIndex((c) => c.id === id);
+      commit((p) => ({ ...p, roots: insertChild(p.roots, parent.id, copy, idx + 1) }));
+      set({ selectedId: copy.id });
+    },
+    move: (id, delta) => commit((p) => ({ ...p, roots: moveSibling(p.roots, id, delta) })),
+    setMeta: (patch) => commit((p) => ({ ...p, meta: { ...p.meta, ...patch } })),
+    setMeasurements: (patch) => commit((p) => ({ ...p, measurements: { ...p.measurements, ...patch } })),
+    startPlacing: (placingId) => set({ placingId }),
+    placeSymbol: (nodeId, pos) => {
+      const { pageIndex } = get();
+      commit((p) => ({
+        ...p,
+        plan: {
+          ...p.plan,
+          pages: p.plan.pages.map((pg, i) =>
+            i === pageIndex ? { ...pg, symbols: [...pg.symbols.filter((s) => s.nodeId !== nodeId), { nodeId, pos, rotation: 0 }] } : { ...pg, symbols: pg.symbols.filter((s) => s.nodeId !== nodeId) },
+          ),
+        },
+      }));
+      set({ placingId: null, selectedId: nodeId });
+    },
+    moveSymbol: (nodeId, pos) =>
+      commit((p) => ({
+        ...p,
+        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, pos } : s)) })) },
+      })),
+    rotateSymbol: (nodeId, deg) =>
+      commit((p) => ({
+        ...p,
+        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, rotation: (s.rotation + deg) % 360 } : s)) })) },
+      })),
+    setBoardLayout: (boardId, layout) => commit((p) => ({ ...p, boards: { ...p.boards, [boardId]: layout } })),
+    unplaceSymbol: (nodeId) =>
+      commit((p) => ({
+        ...p,
+        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.filter((s) => s.nodeId !== nodeId) })) },
+      })),
+    editPage: (fn) => {
+      const { pageIndex } = get();
+      commit((p) => ({ ...p, plan: { ...p.plan, pages: p.plan.pages.map((pg, i) => (i === pageIndex ? fn(pg) : pg)) } }));
+    },
+    addPage: (name) => {
+      commit((p) => ({ ...p, plan: { ...p.plan, pages: [...p.plan.pages, emptyPage(name)] } }));
+      set({ pageIndex: get().project.plan.pages.length - 1 });
+    },
+    applyProject: (fn) => commit(fn),
+    undo: () => {
+      const { past, project, future } = get();
+      if (!past.length) return;
+      set({ project: past[past.length - 1], past: past.slice(0, -1), future: [project, ...future], dirty: true });
+    },
+    redo: () => {
+      const { past, project, future } = get();
+      if (!future.length) return;
+      set({ project: future[0], future: future.slice(1), past: [...past, project], dirty: true });
+    },
+  };
+});

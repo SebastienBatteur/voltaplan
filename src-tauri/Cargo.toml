@@ -1,0 +1,24 @@
+[package]
+name = "voltaplan"
+version = "0.1.0"
+description = "Voltaplan : schémas unifilaires et plans de position électriques"
+edition = "2021"
+license = "AGPL-3.0-or-later"
+
+[lib]
+name = "voltaplan_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

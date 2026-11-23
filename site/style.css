@@ -1,0 +1,235 @@
+/* Site de Voltaplan (GitHub Pages) : accueil + guide. Pas de dépendance externe. */
+:root {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --text: #1d2330;
+  --muted: #5b6474;
+  --border: #d9dde3;
+  --accent: #1d4ed8;
+  --accent-text: #ffffff;
+  --yellow: #facc15;
+  --code: #eef1f5;
+  --warn-bg: #fff7e0;
+  --warn-border: #e8b400;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --bg: #12151b;
+    --panel: #1b1f27;
+    --text: #e6e8ec;
+    --muted: #a0a8b6;
+    --border: #2f3542;
+    --accent: #5b8cff;
+    --accent-text: #0b1020;
+    --code: #252a35;
+    --warn-bg: #2e2716;
+    --warn-border: #8a6d00;
+  }
+}
+:root[data-theme='dark'] {
+  --bg: #12151b;
+  --panel: #1b1f27;
+  --text: #e6e8ec;
+  --muted: #a0a8b6;
+  --border: #2f3542;
+  --accent: #5b8cff;
+  --accent-text: #0b1020;
+  --code: #252a35;
+  --warn-bg: #2e2716;
+  --warn-border: #8a6d00;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+a {
+  color: var(--accent);
+}
+header.top {
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+header.top .in {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand img {
+  width: 28px;
+  height: 28px;
+}
+nav.links {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+nav.links a {
+  text-decoration: none;
+  color: var(--muted);
+}
+nav.links a:hover {
+  color: var(--text);
+}
+.btn {
+  display: inline-block;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+main {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+.hero {
+  padding: 40px 0 24px;
+}
+.hero h1 {
+  font-size: clamp(28px, 5vw, 44px);
+  line-height: 1.15;
+  margin: 0 0 12px;
+}
+.hero p {
+  font-size: 18px;
+  color: var(--muted);
+  max-width: 720px;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.card h3 {
+  margin: 0 0 6px;
+  font-size: 17px;
+}
+.card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+}
+.note {
+  background: var(--warn-bg);
+  border-left: 4px solid var(--warn-border);
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 16px 0;
+}
+code,
+kbd {
+  background: var(--code);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.92em;
+}
+pre {
+  background: var(--code);
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 15px;
+}
+th,
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.doc {
+  display: grid;
+  grid-template-columns: 230px 1fr;
+  gap: 32px;
+}
+.toc {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+  font-size: 14px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+}
+.toc a {
+  display: block;
+  padding: 3px 0;
+  color: var(--muted);
+  text-decoration: none;
+}
+.toc a:hover {
+  color: var(--text);
+}
+.doc h2 {
+  margin-top: 40px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.doc h2:first-child {
+  margin-top: 0;
+  border-top: 0;
+}
+footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  padding: 20px 16px;
+}
+@media (max-width: 760px) {
+  .doc {
+    grid-template-columns: 1fr;
+  }
+  .toc {
+    position: static;
+    max-height: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    background: var(--panel);
+  }
+}
