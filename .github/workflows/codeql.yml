@@ -19,20 +19,20 @@ jobs:
       actions: read
       security-events: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: github/codeql-action/init@v3
+      - uses: actions/checkout@v7
+      - uses: github/codeql-action/init@v4
         with:
           languages: javascript-typescript
           queries: security-extended
       # Dépôt privé sans « code scanning » (GitHub Advanced Security) : les résultats ne peuvent pas être envoyés
       # à l'onglet Security. Ils sont joints au run (fichier SARIF) et le job échoue s'il y a une alerte.
       # Quand le code scanning est activé (dépôt public, ou GHAS), remplacer `upload: never` par `upload: always`.
-      - uses: github/codeql-action/analyze@v3
+      - uses: github/codeql-action/analyze@v4
         with:
           category: /language:javascript-typescript
           upload: never
           output: codeql-results
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: codeql-sarif
