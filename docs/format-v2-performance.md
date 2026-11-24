@@ -27,8 +27,28 @@
 | 250 Mo | 52 | 253 Mo | 1,7 s | +0 Mo | 39 ms | +0 / +6 Mo | 17 ms | 122 ms (40 Mo) | 933 ms | 5 ms | 19 ms |
 | 500 Mo | 92 | 501 Mo | 3,8 s | +36 Mo | 46 ms | +7 / +11 Mo | 16 ms | 141 ms (40 Mo) | 1,8 s | 8 ms | 19 ms |
 
-Migration v1 → v2 d'un projet v1 de 46,7 Mo (10 photos intégrées en base64) : **662 ms**, mémoire **+319 Mo**
-(RSS).
+Migration v1 → v2 d'un projet v1 de 46,7 Mo (10 photos intégrées en base64) : voir § 2.1 (mémoire réduite de
++184 Mo à +34 Mo).
+
+### 2.1 Migration v1 → v2 : mémoire (24/11/2026)
+
+Banc dédié : `tools/perf-v2/migration.ts` (`npm run perf:v2:migration [taille en Mo]`). Projet v1 synthétique de
+46,7 Mo (10 photos aléatoires de 3,5 Mo en base64), **écrit sur le disque et lu avec `fs.openAsBlob`** comme le
+`File` du navigateur (le premier banc partait d'un `Blob` en mémoire, d'où +319 Mo : il comptait aussi la copie du
+fichier). Stockage de travail en mémoire : les 35 Mo de documents rangés sont **inclus** dans la mesure. Trois
+exécutions, Node 20.17, même machine.
+
+| Lecture | Durée | Mémoire (pic RSS) |
+|---|---|---|
+| Avant : texte complet, objet JSON, chaînes base64 et copies décodées en même temps | 474 à 646 ms | **+184 Mo** |
+| Après : lecture par tranches de 4 Mo, images décodées au fil de la lecture en `Blob` (`scanV1`) | 0,6 à 1,4 s | **+34 Mo** (dont 35 Mo de documents rangés) |
+
+- Le surcoût mémoire, hors documents rangés, devient négligeable : le texte qui reste (modèle sans ses images) est
+  petit, aucune chaîne base64 n'est créée.
+- La durée augmente (décodage base64 en JavaScript au lieu de `atob`, empreinte calculée pendant la lecture puis
+  au rangement), et reste sous l'objectif de 3 s.
+- Contenu inhabituel (échappement `\u`, caractère hors base64) : repli sur la lecture habituelle (mémoire d'avant).
+- **Mesures Node sur ordinateur, pas mobile** ; sur téléphone **[à mesurer]** (protocole du § 4).
 
 Lecture : « Lecture 1 photo » et « plus gros PDF » comprennent la vérification complète du document (taille,
 signature, SHA-256). « Ouverture » ne lit aucun document. Les valeurs varient de ±30 % d'une exécution à l'autre
@@ -43,7 +63,7 @@ signature, SHA-256). « Ouverture » ne lit aucun document. Les valeurs varient 
 | Enregistrement complet < 3 s pour 500 Mo | 3,8 s | **dépassé de peu** (débit ~130 Mo/s, limité par la lecture et l'écriture disque) |
 | Petite modification < 50 ms | 5 à 14 ms (IndexedDB simulé) | atteint ici, **[à mesurer dans un navigateur]** |
 | Ajout d'une photo de 5 Mo < 500 ms | ~20 ms (sans l'image d'affichage, qui demande un canvas) | atteint pour la partie format |
-| Migration v1 de 50 Mo < 3 s | 0,66 s | atteint ; mémoire élevée (+319 Mo : JSON et base64 en chaînes) |
+| Migration v1 de 50 Mo < 3 s | 0,6 à 1,4 s | atteint ; mémoire +34 Mo (avant : +184 Mo, § 2.1) |
 
 - **Empreintes SHA-256** : Web Crypto est environ 12 fois plus rapide que le calcul en JavaScript
   (`tools/perf-v2/sha-bench.ts` : 35 ms contre 455 ms pour 40 Mo). Il est donc utilisé jusqu'à 64 Mo (au prix
@@ -52,9 +72,9 @@ signature, SHA-256). « Ouverture » ne lit aucun document. Les valeurs varient 
   830 ms.
 - **Vérification complète** : environ 280 Mo/s ; elle n'est pas faite à l'ouverture (chaque document est vérifié
   à son premier accès, puis copié dans le stockage de travail en arrière-plan).
-- **Migration v1** : le pic de mémoire vient du format v1 lui-même (tout le projet en une chaîne JSON, images en
-  base64). Sur un appareil à peu de mémoire, un projet v1 proche de 50 Mo peut échouer **[à vérifier sur
-  mobile]** ; c'est inchangé par rapport à la lecture v1 actuelle.
+- **Migration v1** : le pic de mémoire venait du format v1 lui-même (tout le projet en une chaîne JSON, images en
+  base64) ; la lecture par tranches le supprime presque entièrement (§ 2.1). Sur un appareil à peu de mémoire :
+  **[à vérifier sur mobile]**.
 - **Plafonds (F5)** : rien dans ces mesures n'impose d'abaisser les plafonds proposés sur ordinateur. Ils
   restent **provisoires** : 2 Go est un plafond de sécurité, jamais une capacité garantie. Sur un appareil donné,
   la limite réelle est l'espace de stockage (copie de travail) et, pour les rares entrées compressées, la mémoire

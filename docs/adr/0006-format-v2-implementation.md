@@ -63,6 +63,28 @@ Les décisions F1 à F8 ([DECISIONS.md](../strategie/DECISIONS.md)) et la compar
     taille totale (≤ max(10 × taille du fichier, 200 Mo)) le permettent ; jamais les 20 dernières, ni celles
     qu'un enregistrement en attente ou un conflit désigne encore (`pinsToReleaseBySize`). Ces révisions comptent
     dans l'espace de l'utilisateur **[à vérifier]**. Avec les dossiers, seul le modèle (petit) est réécrit.
+13. **Pannes : ce qui est garanti** (testé avec des pannes et des réponses de services SIMULÉES :
+    `test/formatIntegrity.test.ts`, `formatRecovery.test.ts`, `formatConflicts.test.ts`, `formatV1Scan.test.ts`).
+
+    | Situation | Garanti (testé) | Non garanti / à vérifier |
+    |---|---|---|
+    | Erreur pendant l'écriture d'un fichier (Chrome, Edge) | `close()` jamais appelé : l'original n'est pas remplacé ; `abort()` si le flux n'est pas déjà en erreur ; erreur remontée ; brouillon gardé (supprimé seulement après réussite, App.tsx) | suppression effective du fichier temporaire par le navigateur **[à vérifier]** |
+    | Disque plein (`QuotaExceededError` de `write()`) | `StorageFullError('device')`, message « plus de place sur le disque », original intact | code d'erreur réel selon le navigateur et le système **[à vérifier]** |
+    | Écriture d'archive interrompue (`AbortSignal`) | jamais terminée (pas de répertoire central), destination jamais fermée | — |
+    | Dossier cloud coupé après quelques documents | modèle non publié ; attente mémorisée (réseau) ; reprise sans renvoyer les documents présents | — |
+    | Répertoire local coupé | fichier vide laissé par la coupure complété à l'essai suivant ; modèle jamais écrasé | Tauri (non branché) |
+    | Espace du service épuisé : OneDrive 507 `quotaLimitReached`, Dropbox 409 `insufficient_space`, Drive 403 `storageQuotaExceeded` | `StorageFullError`, version gardée dans le navigateur, **aucune mise en attente** (pas de reprise en boucle), message traduit ; dossier : documents déjà envoyés gardés, modèle non publié | réponses réelles des services **[à vérifier avec de vrais comptes]** |
+    | GitHub : archive de plus de 100 Mo | refusée avant tout envoi (`FileTooLargeError`) ; 413 ou 422 « too large » idem | message exact de GitHub **[à vérifier avec un vrai compte]** |
+    | Stockage du navigateur plein (ajout d'une photo, migration v1) | images dérivées libérées, puis un seul nouvel essai ; sinon image gardée intégrée (migration) ou réduite (ajout) : rien de ce qui existe n'est perdu | ajout d'une photo : l'utilisateur n'est pas prévenu que seule l'image réduite est gardée **[à ajouter dans l'interface]** ; quotas réels **[à mesurer]** |
+    | Fermeture brutale pendant la mise à niveau d'IndexedDB | transaction de mise à niveau annulée en entier ; refaite au lancement suivant (magasins manquants seulement), sans perte | — |
+    | Fermeture brutale entre un document et le modèle | le document est écrit et relu AVANT que le modèle le référence : aucune référence vers un absent ; un document orphelin est gardé 7 jours (délai de grâce) | — |
+    | Fermeture brutale entre le brouillon et le fichier | brouillon de l'onglet fermé proposé au lancement suivant ; envoi en attente proposé (« Reprendre ») avec sa version locale | Tauri : fichier possiblement incomplet (écriture non atomique, autre chantier) |
+    | Deux appareils, dossier | documents immuables tous gardés ; le perdant devient une copie de conflit qui référence ses documents ; **aucune suppression distante** (pas d'opération de suppression) | Google Drive, Dropbox, GitHub en dossier : non branchés |
+    | Deux appareils, archive (OneDrive, Dropbox, Drive, GitHub) | copie de conflit complète (documents compris), original de l'autre jamais réécrit | Google Drive : course pendant l'envoi (voir STOCKAGE-ET-DOMAINE § 7.1) |
+14. **Migration v1 à mémoire réduite** : le fichier v1 est lu par tranches de 4 Mo ; les images base64 sont décodées
+    au fil de la lecture en `Blob` (ni texte complet, ni chaîne base64), puis rangées ou réintégrées comme avant ;
+    repli sur la lecture habituelle pour un contenu inhabituel. Mesure : +184 Mo → +34 Mo pour 47 Mo
+    ([format-v2-performance.md](../format-v2-performance.md)).
 
 ## Conséquences
 
@@ -80,4 +102,6 @@ Les décisions F1 à F8 ([DECISIONS.md](../strategie/DECISIONS.md)) et la compar
 - Services réels (OneDrive, Drive, Dropbox, GitHub) : limites d'envoi, redirections de téléchargement et adresses de
   session d'envoi hors de la CSP actuelle (`*.files.1drv.com`, `*.sharepoint.com`).
 - Tauri : écriture atomique de l'archive.
+- Pannes réelles : réponses des services quand l'espace est épuisé, disque plein réel, suppression du fichier
+  temporaire après une erreur d'écriture (tableau du § 13, tout est simulé dans les tests).
 - Navigateurs réels : durée d'IndexedDB avec des centaines de Mo de documents, quotas, éviction.

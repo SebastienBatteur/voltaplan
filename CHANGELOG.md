@@ -47,6 +47,10 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Fonds de plan PDF et photos : l'original est conservé (avant : première page réduite seulement).
 - OneDrive : « Enregistrer comme dossier de projet » (chaque document envoyé une fois, puis seul le modèle) ; « Exporter en dossier » sur ordinateur (Chrome, Edge).
 - Google Drive : révisions conservées limitées en nombre et en taille.
+- Pannes pendant l'enregistrement (tests avec pannes et réponses simulées, [à vérifier avec de vrais comptes]) : disque plein, espace OneDrive, Dropbox ou Google Drive épuisé, archive trop grosse pour GitHub (100 Mo) → message clair, version gardée dans le navigateur, original intact, et plus de reprise automatique en boucle. Écriture interrompue : jamais de fichier ou de modèle incomplet publié ; dossier de projet repris sans renvoyer les documents déjà envoyés ; un fichier vide laissé par une coupure dans un dossier local ne bloque plus.
+- Stockage du navigateur plein à l'ajout d'une photo : les images d'affichage (régénérables) sont libérées d'abord.
+- Ouverture d'un ancien projet (JSON) avec photos : mémoire nettement réduite (lecture par tranches, images décodées au fil de l'eau ; +184 Mo → +34 Mo pour 47 Mo, mesure sur ordinateur).
+- Garanties après une fermeture brutale et entre deux appareils décrites dans [ADR-0006](docs/adr/0006-format-v2-implementation.md) § 13.
 
 ### Calculs
 - Câbles en aluminium, chute de tension cumulée depuis l'origine, méthode détaillée avec les puissances, bilan de puissance et équilibrage des phases.

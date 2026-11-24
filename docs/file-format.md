@@ -142,6 +142,8 @@ référence (`src/format/assets.ts`).
 
 - **v1 → v2** : à l'ouverture, les images intégrées sont rangées dans le stockage de travail ; un avertissement
   unique l'annonce ; le fichier d'origine n'est jamais réécrit (« Enregistrer » demande un emplacement).
+  Le fichier v1 est lu par tranches (images base64 décodées au fil de la lecture, sans garder le texte complet :
+  `scanV1`, src/format/migrateV1.ts) ; un contenu inhabituel repasse par la lecture habituelle.
 - **v2 → v1** : « Exporter au format v1… » écrit une copie JSON lisible par les anciennes versions et liste ce qui
   n'a pas pu être gardé : plan PDF d'origine (remplacé par l'image de sa première page), originaux HEIC/TIFF
   (remplacés par une image réduite), documents sources de l'assistant (seule leur description reste), documents

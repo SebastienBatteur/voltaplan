@@ -226,6 +226,11 @@ réussite.
 | Tauri (fichier) | le fichier peut rester incomplet ; le brouillon est proposé au lancement suivant |
 | OneDrive, Dropbox, Drive, GitHub | l'envoi est atomique côté serveur : l'ancienne version reste en place ; le brouillon est proposé |
 | Navigateur | transaction IndexedDB : tout ou rien |
+| Dossier de projet (format v2) | documents d'abord, modèle en dernier : jamais de modèle publié qui référence un document absent ; reprise sans renvoyer les documents présents ; dossier local : fichier vide laissé par la coupure complété ensuite |
+
+Format v2 (2026-11-24) : une erreur pendant l'écriture d'un fichier (Chrome, Edge) ne ferme jamais le fichier
+temporaire (l'original n'est pas remplacé) ; l'écriture d'une archive peut être interrompue (`AbortSignal`) sans
+rien publier. Testé avec des pannes simulées (`test/formatIntegrity.test.ts`).
 
 ### 7.4 Jetons expirés
 
@@ -263,3 +268,46 @@ Pour GitHub, un 401 donne le même comportement, et la fenêtre de déverrouilla
 
 Avec le format v2, les versions ne dupliqueront plus les photos ni les PDF (voir la séparation du stockage dans
 [SPEC-FORMAT-V2.md § 11](SPEC-FORMAT-V2.md)).
+
+- **Format v2, stockage plein pendant l'ajout d'un document** (photo, migration d'un ancien projet) : les images
+  d'affichage (cache régénérable) sont libérées d'abord, puis un seul nouvel essai ; jamais un document. Toujours
+  plein : migration → image laissée intégrée au projet (signalé) ; ajout d'une photo → image réduite intégrée
+  (comme au format v1 ; l'utilisateur n'en est pas encore prévenu **[à ajouter dans l'interface]**).
+
+### 7.7 Destination pleine (disque, espace du service, fichier trop gros)
+
+**Corrigé (2026-11-24), testé avec des réponses simulées [à vérifier avec de vrais comptes].**
+
+| Destination | Signal reconnu | Résultat |
+|---|---|---|
+| Fichier de l'appareil (Chrome, Edge) | `QuotaExceededError` pendant `write()` | « Plus de place sur le disque » ; original intact |
+| OneDrive (fichier ou dossier) | 507 Insufficient Storage, `quotaLimitReached` | « Espace OneDrive plein » |
+| Dropbox | 409 `path/insufficient_space` | « Espace Dropbox plein » (un 409 `conflict` reste un conflit) |
+| Google Drive | 403 `storageQuotaExceeded` (pas `rateLimitExceeded`) | « Espace Google Drive plein » |
+| GitHub | archive > 100 Mo (refusée avant envoi), 413, 422 « too large » | « Projet trop volumineux pour GitHub » |
+
+Dans tous les cas : la version est gardée dans le navigateur (versions locales), rien n'est remplacé, et l'envoi
+n'est **pas** mis en attente : une reprise automatique échouerait en boucle. L'utilisateur libère de la place puis
+clique sur « Enregistrer ». Dossier de projet : les documents déjà envoyés restent (immuables), le modèle n'est
+pas publié ; l'essai suivant reprend sans les renvoyer.
+
+### 7.8 Fermeture brutale et deux appareils : garanties
+
+Testé par simulation (`test/formatRecovery.test.ts`, `test/formatConflicts.test.ts`) ; tableau complet dans
+[ADR-0006 § 13](../adr/0006-format-v2-implementation.md).
+
+- **Mise à niveau d'IndexedDB interrompue** : annulée en entier par le navigateur, refaite au lancement suivant, sans
+  perte.
+- **Entre un document et le modèle** : un document est écrit et relu avant que le modèle le référence ; un modèle
+  gardé (projet, brouillon, version) ne référence donc jamais un document absent. Un document orphelin est gardé
+  7 jours.
+- **Entre le brouillon et le fichier** : le brouillon de l'onglet fermé est proposé au lancement ; un envoi en
+  attente aussi (« Reprendre »).
+- **Deux appareils, dossier** : chacun ajoute sa photo en même temps → les deux photos sont dans le dossier, le
+  perdant devient une copie de conflit qui référence la sienne. L'un retire une photo que l'autre référence encore
+  → rien n'est supprimé à distance (l'interface n'a pas d'opération de suppression), la copie de conflit la
+  retrouve.
+- **Deux appareils, archive** (OneDrive, Dropbox, Google Drive, GitHub) : la copie de conflit est une archive
+  complète, documents compris ; l'original de l'autre appareil n'est jamais réécrit.
+- **Non garanti** : Tauri (écriture non atomique, autre chantier) ; Google Drive pendant l'envoi (§ 7.1) ;
+  comportement réel des services et navigateurs **[à vérifier avec de vrais comptes et appareils]**.
