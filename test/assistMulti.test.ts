@@ -229,6 +229,21 @@ describe('plusieurs tableaux', () => {
     expect(enclosures(p.roots).map((e) => e.board.id)).toContain(added.boardId);
   });
 
+  it('circuit et câble déjà acceptés, point « tableau » en attente : un seul rattachement, sous le câble existant', () => {
+    let p = newExistingProject('X');
+    p = photo(p, 'h1', reading([dev({ startModule: 0, ratedCurrentA: 25, curve: 'C', label: 'Sous-tableau garage', circuitRef: 'A' })]), 1).project;
+    p = decide(p, { accept: pending(p).filter((x) => !(x.change.op === 'createNode' && x.change.kind === 'board')).map((x) => x.id) });
+    p = decide(p, { accept: pending(p).filter((x) => !(x.change.op === 'createNode' && x.change.kind === 'board')).map((x) => x.id) });
+    const added = addBoard(p, 'Garage');
+    const moves = pending(added.project).filter((x) => x.change.op === 'move');
+    expect(moves).toHaveLength(1);
+    const cable = nodesOf(added.project, 'cable')[0];
+    expect(moves[0].change.op === 'move' && moves[0].change.newParent).toEqual({ nodeId: cable.id });
+    const q = decide(added.project, { accept: [moves[0].id], confirm: [moves[0].id] });
+    expect(findParent(q.roots, added.boardId)!.id).toBe(cable.id);
+    expect(nodesOf(q, 'board')).toHaveLength(2); // principal + garage, pas de tableau en double
+  });
+
   it('un brouillon par tableau : lire le sous-tableau ne remplace pas le brouillon du principal', () => {
     let p = newExistingProject('X');
     p = photo(p, 'h1', reading(row0), 1).project;

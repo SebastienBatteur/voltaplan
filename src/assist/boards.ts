@@ -47,9 +47,16 @@ interface Feed {
 /** Circuits qui alimentent un sous-tableau d'après leur étiquette (arbre) ou une proposition « tableau » en attente. */
 function feeds(p: Project): Feed[] {
   const out: Feed[] = [];
+  // Câble déjà créé (proposition acceptée) : désigné par son nœud, et pas compté une seconde fois depuis l'arbre
+  const created = new Map<string, string>();
+  for (const pr of p.evidence?.proposals ?? []) if (pr.status === 'accepted' && pr.change.op === 'createNode' && pr.createdNodeId) created.set(pr.change.tempKey, pr.createdNodeId);
+  const seen = new Set<string>();
   for (const pr of p.evidence?.proposals ?? [])
-    if (pr.status === 'pending' && pr.change.op === 'createNode' && pr.change.kind === 'board' && 'tempKey' in pr.change.parent)
-      out.push({ name: `${pr.change.props.name ?? ''} ${pr.change.location ?? ''}`.trim(), parent: pr.change.parent, replaces: pr.id });
+    if (pr.status === 'pending' && pr.change.op === 'createNode' && pr.change.kind === 'board' && 'tempKey' in pr.change.parent) {
+      const id = created.get(pr.change.parent.tempKey);
+      if (id) seen.add(id);
+      out.push({ name: String(pr.change.props.name || pr.change.location || ''), parent: id ? { nodeId: id } : pr.change.parent, replaces: pr.id });
+    }
   for (const { node } of walk(p.roots)) {
     if (node.kind !== 'protection' || !node.props.circuitName) continue;
     const it = interpretLabel(String(node.props.circuitName));
@@ -57,7 +64,7 @@ function feeds(p: Project): Feed[] {
     const cable = node.children.find((c) => c.kind === 'cable');
     // Déjà un tableau en aval : alimentation connue
     const below = (n: ElNode): boolean => n.children.some((c) => c.kind === 'board' || below(c));
-    if (below(node)) continue;
+    if (below(node) || seen.has(cable?.id ?? '')) continue;
     out.push({ name: String(node.props.circuitName), parent: { nodeId: cable?.id ?? node.id } });
   }
   return out;
