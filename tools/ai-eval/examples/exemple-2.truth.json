@@ -1,0 +1,16 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "exemple-2.jpg",
+  "composed": true,
+  "rows": 2,
+  "perRow": 8,
+  "lang": "nl",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo fournie), étiquettes en néerlandais, deux rangées.",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 2, "kind": "rcd", "residualCurrentmA": 30, "rcdType": "A", "label": "E-F" },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "label": "Wasm.", "circuitRef": "E" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "label": "Stopc. badk.", "circuitRef": "F" },
+    { "row": 1, "startModule": 0, "widthModules": 2, "kind": "rcbo", "ratedCurrentA": 32, "curve": "C", "residualCurrentmA": 30, "rcdType": "A", "label": "Laadpaal", "circuitRef": "G" },
+    { "row": 1, "startModule": 2, "widthModules": 4, "kind": "mcb", "ratedCurrentA": 16, "curve": "C", "label": "Kookplaat", "circuitRef": "H" }
+  ]
+}

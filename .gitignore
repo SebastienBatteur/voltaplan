@@ -17,3 +17,7 @@ test/fixtures/*.png
 # Réglages locaux de l'outil de développement : seul launch.json (ports de dev) est partagé
 .claude/*
 !.claude/launch.json
+
+# Banc d evaluation de l IA : corpus de photos et rapports, jamais publies
+tools/ai-eval/corpus/
+rapport-evaluation.md

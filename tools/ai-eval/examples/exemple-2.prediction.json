@@ -1,0 +1,21 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "devices": [
+        { "startModule": 0, "widthModules": 2, "kind": "rcd", "brand": null, "model": null, "poles": null, "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 30, "rcdType": "A", "label": "E-F", "circuitRef": null, "confidence": "high" },
+        { "startModule": 2, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "WASM", "circuitRef": "E", "confidence": "high" },
+        { "startModule": 3, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Stopc. badk.", "circuitRef": "F", "confidence": "high" }
+      ]
+    },
+    {
+      "row": 1,
+      "devices": [
+        { "startModule": 0, "widthModules": 2, "kind": "rcbo", "brand": null, "model": null, "poles": null, "ratedCurrentA": 32, "curve": "C", "residualCurrentmA": 30, "rcdType": "A", "label": "Laadpaal", "circuitRef": "G", "confidence": "medium" },
+        { "startModule": 2, "widthModules": 2, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Kookplaat", "circuitRef": "H", "confidence": "medium" },
+        { "startModule": 4, "widthModules": 2, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": null, "circuitRef": null, "confidence": "low" }
+      ]
+    }
+  ],
+  "notes": "Lecture SIMULÉE, écrite à la main pour l'exemple (un appareil 4 modules lu comme deux de 2)."
+}
