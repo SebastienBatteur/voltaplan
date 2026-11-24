@@ -111,6 +111,9 @@ photos, dont une de plus de 10 Mo (et, si possible, un PDF de plus de 160 Mo pou
 
 ## 4. Résultats
 
+Checklist pratique des 15 scénarios F1 à F9 et D1 à D6, avec ce que fait le propriétaire et ce qui est automatisé :
+[checklist-tests-cloud.md](checklist-tests-cloud.md).
+
 | Scénario | OneDrive | Dropbox | Google Drive | GitHub |
 |---|---|---|---|---|
 | C1 à C10, G1 et G2 | non testé | non testé | non testé | non testé |
