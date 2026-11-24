@@ -13,6 +13,7 @@
     "typecheck": "tsc -p .",
     "lint": "eslint .",
     "ai-eval": "vite-node tools/ai-eval/run.ts --",
+    "perf:v2": "vite-node --options.node.execArgv=--expose-gc tools/perf-v2/run.ts",
     "tauri": "tauri",
     "desktop": "tauri dev",
     "desktop:build": "tauri build"

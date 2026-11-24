@@ -92,7 +92,7 @@ describe('SHA-256', () => {
     expect(new Sha256().update(enc.encode('abc')).digestHex()).toBe('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad');
   });
   it('Blob volumineux : calcul par tranches', async () => {
-    const big = new Uint8Array(33 * 1024 * 1024);
+    const big = new Uint8Array(65 * 1024 * 1024);
     big[12345] = 7;
     const viaBlob = await sha256Hex(new Blob([big]));
     expect(viaBlob).toBe(new Sha256().update(big).digestHex());

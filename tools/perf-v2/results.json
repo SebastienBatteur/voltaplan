@@ -1,0 +1,84 @@
+{
+ "node": "v20.17.0",
+ "cpu": "AMD Ryzen 5 PRO 5650U with Radeon Graphics     ",
+ "threads": 12,
+ "ramGb": 25,
+ "rows": [
+  {
+   "Taille visée": "10 Mo",
+   "Documents": 3,
+   "Archive": "12.5 Mo",
+   "Enregistrement complet": "294 ms",
+   "Mém. enreg. (RSS)": "+35.4 Mo",
+   "Ouverture": "83 ms",
+   "Mém. ouverture (RSS / tas)": "+7.1 / +12.7 Mo",
+   "Lecture 1 photo": "31 ms",
+   "Lecture plus gros PDF": "15 ms (3 Mo)",
+   "Vérification complète": "88 ms",
+   "Brouillon (modèle seul)": "14 ms",
+   "Ajout photo 5 Mo": "18 ms"
+  },
+  {
+   "Taille visée": "50 Mo",
+   "Documents": 12,
+   "Archive": "53.9 Mo",
+   "Enregistrement complet": "525 ms",
+   "Mém. enreg. (RSS)": "+15.8 Mo",
+   "Ouverture": "49 ms",
+   "Mém. ouverture (RSS / tas)": "+2.3 / +11.6 Mo",
+   "Lecture 1 photo": "19 ms",
+   "Lecture plus gros PDF": "57 ms (11.8 Mo)",
+   "Vérification complète": "260 ms",
+   "Brouillon (modèle seul)": "7 ms",
+   "Ajout photo 5 Mo": "20 ms"
+  },
+  {
+   "Taille visée": "100 Mo",
+   "Documents": 15,
+   "Archive": "102 Mo",
+   "Enregistrement complet": "866 ms",
+   "Mém. enreg. (RSS)": "+34.1 Mo",
+   "Ouverture": "44 ms",
+   "Mém. ouverture (RSS / tas)": "+4.5 / +10.1 Mo",
+   "Lecture 1 photo": "18 ms",
+   "Lecture plus gros PDF": "129 ms (40 Mo)",
+   "Vérification complète": "406 ms",
+   "Brouillon (modèle seul)": "5 ms",
+   "Ajout photo 5 Mo": "17 ms"
+  },
+  {
+   "Taille visée": "250 Mo",
+   "Documents": 52,
+   "Archive": "253 Mo",
+   "Enregistrement complet": "1.7 s",
+   "Mém. enreg. (RSS)": "+0 Mo",
+   "Ouverture": "39 ms",
+   "Mém. ouverture (RSS / tas)": "+0.2 / +5.6 Mo",
+   "Lecture 1 photo": "17 ms",
+   "Lecture plus gros PDF": "122 ms (40 Mo)",
+   "Vérification complète": "933 ms",
+   "Brouillon (modèle seul)": "5 ms",
+   "Ajout photo 5 Mo": "19 ms"
+  },
+  {
+   "Taille visée": "500 Mo",
+   "Documents": 92,
+   "Archive": "501.2 Mo",
+   "Enregistrement complet": "3.8 s",
+   "Mém. enreg. (RSS)": "+36.2 Mo",
+   "Ouverture": "46 ms",
+   "Mém. ouverture (RSS / tas)": "+6.5 / +11.3 Mo",
+   "Lecture 1 photo": "16 ms",
+   "Lecture plus gros PDF": "141 ms (40 Mo)",
+   "Vérification complète": "1.8 s",
+   "Brouillon (modèle seul)": "8 ms",
+   "Ajout photo 5 Mo": "19 ms"
+  }
+ ],
+ "migration": {
+  "sizeMb": 46.7,
+  "photos": 10,
+  "ms": 662,
+  "rssMb": 318.6
+ }
+}
