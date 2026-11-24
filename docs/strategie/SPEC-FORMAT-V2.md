@@ -168,3 +168,70 @@ photos de 12 Mpx (3 à 5 Mo), des PDF de 2 à 40 Mo et un modèle de 400 circuit
 | F5 | Plafonds du § 6 | à confirmer après mesures |
 | F6 | Images dérivées enregistrées dans l'archive (ouverture plus rapide) ou régénérées | enregistrées (facultatives) |
 | F7 | Avertissement unique à la première sauvegarde d'un projet v1 | oui |
+
+## 11. Révision après le retour du 2026-11-24 : séparation du stockage et cycle complet
+
+### 11.1 Séparation des données (stockage de travail local)
+
+| Catégorie | Contenu | Mutable ? | Stockage de travail (IndexedDB) | Versionné ? | Taille type |
+|---|---|---|---|---|---|
+| **Documents sources** | photos, PDF, plans originaux | **non** (immuables) | magasin `assets`, clé SHA-256, `Blob` ; **un seul exemplaire** quel que soit le nombre de versions | non (référencés par empreinte) | Mo à centaines de Mo |
+| **Modèle électrique** | `project.json` | oui | brouillon et versions | **oui** (20 versions) | 0,1 à 1 Mo |
+| **Métadonnées** | `sources.json` (preuves de l'assistant), manifest | oui | avec le modèle | oui, avec le modèle | 10 Ko à quelques Mo |
+| **Brouillons** | modèle de l'onglet en cours | oui | magasin `projects` (déjà en place) | non (dernier état) | comme le modèle |
+| **Dérivés et exports** | images d'affichage, PDF du dossier, exports Trikker | régénérables | magasin `derived` (cache) | non | variable |
+
+**Conséquence** : 20 versions d'un projet de 500 Mo occupent environ 500 Mo plus 20 × 1 Mo, et non 20 × 500 Mo.
+Une photo partagée par deux projets n'est stockée qu'une fois.
+
+**Rétention selon l'espace disponible** (prolonge ce qui est déjà en place pour les versions) :
+
+1. supprimer d'abord les **dérivés** (régénérables), les plus anciens en premier ;
+2. puis les **versions** au-delà du plafond, réduit selon l'espace (20, 10 ou 3 par projet) ;
+3. puis les **assets** qu'aucune version gardée ni aucun projet ouvert ne référence (ramasse-miettes par
+   empreinte) ;
+4. **jamais** : un asset référencé par le projet ouvert, un projet du navigateur ou un brouillon. Au-delà, on
+   demande à l'utilisateur d'enregistrer en fichier.
+
+### 11.2 Cycle complet : performances prévues
+
+**À mesurer** selon le plan du § 9. Les durées ci-dessous sont des ordres de grandeur, fondés sur le banc
+d'essai ZIP (0,08 s pour 27 Mo) et sur les débits courants.
+
+| Opération | Ce qui est lu ou écrit | Ordre de grandeur, projet de 500 Mo |
+|---|---|---|
+| Ouverture d'un fichier local | répertoire central et `project.json` ; médias en tranches du fichier, sans copie | < 1 s |
+| Modification | mémoire | instantané |
+| Sauvegarde automatique (brouillon) | `project.json` seul, dans IndexedDB | < 50 ms |
+| Enregistrement complet sur l'appareil | archive écrite en flux, médias copiés sans recompression | environ 1 à 3 s sur ordinateur (vitesse du disque) ; à mesurer sur mobile |
+| Ajout d'une photo de 5 Mo | empreinte SHA-256 et stockage dans `assets`, une fois ; image dérivée | < 0,5 s |
+| Suppression d'un document | retrait de la référence ; l'asset est libéré au prochain nettoyage | instantané |
+| Export (dossier PDF, Trikker) | régénéré depuis le modèle | inchangé |
+| **Enregistrement dans OneDrive** (archive unique) | **toute l'archive est renvoyée** | **environ 7 min à 10 Mbit/s en envoi** : inacceptable à chaque modification |
+| Récupération après interruption | brouillon (modèle) et assets immuables déjà stockés | rien n'est perdu |
+
+### 11.3 Proposition F8 : dossier de projet dans le cloud
+
+Le seul vrai problème du cycle est l'envoi complet vers le cloud. La réponse simple, **sans synchronisation
+différentielle**, consiste à stocker dans le cloud le **contenu de l'archive à plat** plutôt que l'archive :
+
+```
+OneDrive/Applications/Voltaplan/Maison Dupont/
+  manifest.json        petit, réécrit à chaque enregistrement (écriture conditionnelle déjà en place)
+  project.json         petit, réécrit à chaque enregistrement (conditionnel)
+  sources.json         petit
+  assets/<sha256>.jpg  envoyé UNE SEULE FOIS (immuable ; s'il existe déjà, on ne le renvoie pas)
+```
+
+- **Enregistrement** : les nouveaux assets sont envoyés d'abord, s'il y en a. Ensuite seulement le modèle,
+  conditionnellement. Le modèle ne référence donc jamais un asset absent, même après une coupure.
+- **Ouverture** : le modèle d'abord ; les photos sont téléchargées quand on les affiche, puis gardées dans le
+  stockage de travail.
+- **Conflit** : seul `project.json` est mutable, donc le mécanisme de conflit actuel s'applique tel quel.
+- **Ce n'est pas un moteur de synchronisation** : il n'y a ni fusion, ni suivi des modifications, ni envoi
+  différentiel d'un fichier. Des fichiers immuables nommés par leur contenu, plus un petit fichier conditionnel.
+- **Portabilité** : « Exporter en `.voltaplan` » produit à tout moment l'archive unique, pour l'envoyer par
+  courriel, la copier sur une clé USB ou l'ouvrir ailleurs. Le dossier cloud se lit aussi sans Voltaplan (des
+  fichiers normaux).
+- **Applicable à** OneDrive, Dropbox, Google Drive et GitHub. Le fichier local et Tauri gardent l'archive unique,
+  car leur écriture est rapide.

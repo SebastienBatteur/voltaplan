@@ -26,6 +26,7 @@ import { FILE_EXT } from '../brand';
 import type { Project } from '../model/types';
 import { download } from '../io/files';
 import { isConflict } from '../io/conflict';
+import { useOnline } from './UpdateBanner';
 import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
 import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, type CloudFile, type CloudId } from '../io/cloud';
 
@@ -49,6 +50,7 @@ export function StorageDialog({
   onSaved: (name: string, loc: Location) => void;
 }) {
   const t = useStore((s) => s.t);
+  const online = useOnline();
   const project = useStore((s) => s.project);
   const fileName = useStore((s) => s.fileName);
   const lang = useStore((s) => s.lang);
@@ -219,6 +221,7 @@ export function StorageDialog({
           </div>
         )}
 
+        {(tab === 'github' || tab === 'cloud') && !online && <p className="small warning-text">{t('app.needsNetwork')}</p>}
         {tab === 'github' && (
           <div>
             <p className="muted small">{t('storage.githubHelp')}</p>

@@ -2,11 +2,11 @@
  * Enregistrement sans perte silencieuse : écritures conditionnelles chez chaque fournisseur (fetch simulé),
  * copie de conflit, mise en attente hors ligne, versions locales, brouillons par onglet.
  */
-import { PROVIDERS, type CloudFile } from '../src/io/cloud';
-import { ConflictError, conflictName, isConflict } from '../src/io/conflict';
+import { PROVIDERS, revisionsBetween, withToken, setCloudTokenForTest, cloudToken, type CloudFile } from '../src/io/cloud';
+import { AuthError, ConflictError, conflictName, isConflict, isQuotaError } from '../src/io/conflict';
 import { changedSince } from '../src/io/files';
 import { saveAt, locationKey, type SaveDeps } from '../src/io/saveFlow';
-import { AUTOSAVE_ID, draftIsLive, githubSave, isDraftId, TAB_ID, versionsToDelete } from '../src/io/storage';
+import { AUTOSAVE_ID, draftIsLive, githubSave, isDraftId, listPending, retentionFor, TAB_ID, versionsToDelete } from '../src/io/storage';
 import { emptyProject } from '../src/model/tree';
 
 type Call = { url: string; init: RequestInit };
@@ -86,20 +86,110 @@ describe('Dropbox : mode update avec la révision', () => {
   });
 });
 
-describe('Google Drive : version comparée avant l’envoi', () => {
-  const file: CloudFile = { id: 'F1', name: 'Maison.voltaplan', rev: '7' };
+describe('Google Drive : contrôle avant et après l’envoi', () => {
+  const file: CloudFile = { id: 'F1', name: 'Maison.voltaplan', rev: '7|r7' };
 
   it('version changée : conflit, aucun envoi', async () => {
-    const calls = mockFetch(() => json({ version: '9' }));
+    const calls = mockFetch(() => json({ version: '9', headRevisionId: 'r9' }));
     await expect(PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file)).rejects.toBeInstanceOf(ConflictError);
     expect(calls.some((c) => c.init.method === 'PATCH')).toBe(false);
   });
 
-  it('version identique : envoi, nouvelle version renvoyée', async () => {
-    const calls = mockFetch((_u, init) => (init.method === 'PATCH' ? json({ id: 'F1', name: file.name, version: '8' }) : json({ version: '7' })));
+  it('personne d’autre pendant l’envoi : nouvelle version, pas de copie', async () => {
+    const calls = mockFetch((url, init) =>
+      init.method === 'PATCH'
+        ? json({ id: 'F1', name: file.name, version: '8', headRevisionId: 'r8' })
+        : url.includes('/revisions')
+          ? json({ revisions: [{ id: 'r6' }, { id: 'r7' }, { id: 'r8' }] })
+          : json({ version: '7', headRevisionId: 'r7' }),
+    );
     const r = await PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file);
     expect(calls.filter((c) => c.init.method === 'PATCH')).toHaveLength(1);
-    expect(r.rev).toBe('8');
+    expect(r.rev).toBe('8|r8');
+    expect(r.concurrentCopy).toBeUndefined();
+  });
+
+  it('enregistrement d’un autre appareil pendant notre envoi : sa version est recopiée (les deux sont gardées)', async () => {
+    const calls = mockFetch((url, init) => {
+      if (init.method === 'PATCH') return json({ id: 'F1', name: file.name, version: '9', headRevisionId: 'r9' });
+      if (init.method === 'POST') return json({ id: 'F2', name: 'copie', version: '1', headRevisionId: 'c1' });
+      if (url.includes('/revisions/rX')) return new Response('{"autre":true}');
+      if (url.includes('/revisions')) return json({ revisions: [{ id: 'r7' }, { id: 'rX' }, { id: 'r9' }] });
+      return json({ version: '7', headRevisionId: 'r7' });
+    });
+    const r = await PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file);
+    expect(r.concurrentCopy).toMatch(/^Maison \(conflit .*\)\.voltaplan$/);
+    const post = calls.find((c) => c.init.method === 'POST')!;
+    expect(String(post.init.body)).toContain('{"autre":true}');
+  });
+
+  it('révisions entre deux bornes', () => {
+    expect(revisionsBetween(['a', 'b', 'c', 'd'], 'a', 'd')).toEqual(['b', 'c']);
+    expect(revisionsBetween(['a', 'b'], 'a', 'b')).toEqual([]);
+    expect(revisionsBetween(['b', 'c'], 'a', 'c')).toEqual([]); // borne purgée par Drive : on ne conclut rien
+  });
+});
+
+describe('jetons expirés', () => {
+  it('401 : jeton oublié, reconnexion une fois, puis réussite', async () => {
+    setCloudTokenForTest('dropbox', 'vieux');
+    const seen: string[] = [];
+    const r = await withToken(
+      'dropbox',
+      async (t) => {
+        seen.push(t);
+        if (t === 'vieux') throw new AuthError('service');
+        return 'ok';
+      },
+      async () => 'neuf',
+    );
+    expect(r).toBe('ok');
+    expect(seen).toEqual(['vieux', 'neuf']);
+  });
+
+  it('fenêtre de connexion bloquée (pas de clic) : AuthError nommant le service, jeton oublié', async () => {
+    setCloudTokenForTest('onedrive', 'vieux');
+    const e = await withToken(
+      'onedrive',
+      async () => {
+        throw new AuthError('service');
+      },
+      async () => {
+        throw new Error('popup');
+      },
+    ).catch((x) => x);
+    expect(e).toBeInstanceOf(AuthError);
+    expect((e as AuthError).where).toBe('OneDrive');
+    expect(cloudToken('onedrive')).toBeNull();
+  });
+
+  it('OneDrive et GitHub : 401 traduit en AuthError', async () => {
+    mockFetch(() => new Response('', { status: 401 }));
+    await expect(PROVIDERS.onedrive.list('tok')).rejects.toBeInstanceOf(AuthError);
+    mockFetch(() => new Response('{"message":"Bad credentials"}', { status: 401 }));
+    await expect(githubSave('tok', { repo: 'a/b', branch: 'main', folder: 'v' }, 'v/x', emptyProject(), 'overwrite')).rejects.toBeInstanceOf(AuthError);
+  });
+});
+
+describe('stockage du navigateur', () => {
+  it('rétention adaptée à l’espace utilisé', () => {
+    expect(retentionFor(null, null)).toEqual({ perKey: 20, total: 300 });
+    expect(retentionFor(10, 100)).toEqual({ perKey: 20, total: 300 });
+    expect(retentionFor(60, 100)).toEqual({ perKey: 10, total: 150 });
+    expect(retentionFor(90, 100)).toEqual({ perKey: 3, total: 50 });
+  });
+
+  it('stockage plein reconnu (Chrome, Firefox, ancien code 22)', () => {
+    expect(isQuotaError({ name: 'QuotaExceededError' })).toBe(true);
+    expect(isQuotaError({ name: 'NS_ERROR_DOM_QUOTA_REACHED' })).toBe(true);
+    expect(isQuotaError({ code: 22 })).toBe(true);
+    expect(isQuotaError(new Error('x'))).toBe(false);
+  });
+
+  it('envois en attente : lecture tolérante', () => {
+    expect(listPending(() => null)).toEqual([]);
+    expect(listPending(() => '{oups')).toEqual([]);
+    expect(listPending(() => JSON.stringify([{ key: 'k' }]))).toHaveLength(1);
   });
 });
 
@@ -127,6 +217,7 @@ describe('GitHub : SHA mémorisé à l’ouverture', () => {
 describe('saveAt : orchestration', () => {
   function deps(over: Partial<SaveDeps> = {}) {
     const versions: { key: string; reason: string }[] = [];
+    const pending: string[] = [];
     const d: SaveDeps = {
       browserSave: async () => 1,
       cloudSave: async (_p, name) => ({ id: 'new-' + name, name, rev: 'r1' }),
@@ -135,11 +226,13 @@ describe('saveAt : orchestration', () => {
       githubSettings: () => ({ repo: 'me/d', branch: 'main', folder: 'v' }),
       deviceSave: async (_p, n) => n || 'projet.voltaplan',
       addVersion: async (key, _n, _p, reason) => void versions.push({ key, reason }),
+      setPending: (x) => void pending.push(`set:${x.reason}:${x.key}`),
+      clearPending: (k) => void pending.push(`clear:${k}`),
       newId: () => 'id2',
       now: () => new Date(2026, 10, 24, 14, 2),
       ...over,
     };
-    return { d, versions };
+    return { d, versions, pending };
   }
   const p = emptyProject();
   const cloudLoc = { kind: 'cloud' as const, provider: 'onedrive' as const, file: { id: 'ID1', name: 'Maison.voltaplan', rev: 'e1' } };
@@ -184,8 +277,8 @@ describe('saveAt : orchestration', () => {
     expect(r.status === 'conflictCopy' && r.loc.kind === 'github' && r.loc.sha).toBe('sha-copy');
   });
 
-  it('pas de réseau : en attente, version locale gardée, rien de perdu', async () => {
-    const { d, versions } = deps({
+  it('pas de réseau : en attente, version locale gardée, reprise mémorisée (survit à la fermeture)', async () => {
+    const { d, versions, pending } = deps({
       cloudSave: async () => {
         throw new TypeError('Failed to fetch');
       },
@@ -193,6 +286,26 @@ describe('saveAt : orchestration', () => {
     const r = await saveAt(cloudLoc, p, '', d);
     expect(r.status).toBe('pending');
     expect(versions[0].reason).toBe('pending');
+    expect(pending).toEqual(['set:offline:cloud:onedrive:ID1']);
+  });
+
+  it('jeton expiré : reconnexion demandée, version gardée, reprise mémorisée', async () => {
+    const { d, versions, pending } = deps({
+      cloudSave: async () => {
+        throw new AuthError('OneDrive');
+      },
+    });
+    expect((await saveAt(cloudLoc, p, '', d)).status).toBe('needsAuth');
+    expect(versions[0].reason).toBe('pending');
+    expect(pending).toEqual(['set:auth:cloud:onedrive:ID1']);
+  });
+
+  it('succès : reprise effacée ; copie faite par Drive pendant l’envoi signalée, hors de l’emplacement', async () => {
+    const { d, pending } = deps({ cloudSave: async () => ({ id: 'ID1', name: 'Maison.voltaplan', rev: 'e2', concurrentCopy: 'Maison (conflit).voltaplan' }) });
+    const r = await saveAt(cloudLoc, p, '', d);
+    expect(pending).toEqual(['clear:cloud:onedrive:ID1']);
+    expect(r.status === 'saved' && r.concurrentCopy).toBe('Maison (conflit).voltaplan');
+    expect(r.status === 'saved' && r.loc.kind === 'cloud' && 'concurrentCopy' in r.loc.file).toBe(false);
   });
 
   it('fichier de l’appareil modifié ailleurs : décision de l’utilisateur', async () => {
@@ -205,7 +318,9 @@ describe('saveAt : orchestration', () => {
   });
 
   it('GitHub verrouillé : demande de connexion ; boîte annulée : rien', async () => {
-    expect((await saveAt({ kind: 'github', repo: 'r', branch: 'b', path: 'p' }, p, '', deps({ githubToken: () => null }).d)).status).toBe('needsAuth');
+    const gh = deps({ githubToken: () => null });
+    expect((await saveAt({ kind: 'github', repo: 'r', branch: 'b', path: 'p' }, p, '', gh.d)).status).toBe('needsAuth');
+    expect(gh.pending).toEqual(['set:auth:github:r@b:p']);
     expect((await saveAt({ kind: 'device' }, p, '', deps({ deviceSave: async () => null }).d)).status).toBe('cancelled');
   });
 

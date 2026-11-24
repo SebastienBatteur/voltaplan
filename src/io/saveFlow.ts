@@ -5,15 +5,16 @@
  * 2. Conflit : la version en cours est enregistrée sous un autre nom, au même endroit (copie de conflit) ; les deux
  *    versions sont conservées. Sur l'appareil (pas d'accès au dossier), l'utilisateur choisit : copie ou
  *    remplacement.
- * 3. Pas de réseau : rien n'est perdu, la version reste dans le navigateur et l'envoi est repris plus tard.
+ * 3. Pas de réseau, ou connexion au service à refaire (jeton expiré) : rien n'est perdu, la version reste dans le
+ *    navigateur, et l'envoi en attente est mémorisé (il survit à la fermeture de l'application) pour être repris.
  * 4. Chaque enregistrement, conflit ou attente laisse une version locale (historique dans le navigateur).
  *
  * Fonctions d'accès injectables : testé sans navigateur ni réseau.
  */
 import type { Project } from '../model/types';
-import { conflictName, isConflict, isNetworkError } from './conflict';
+import { conflictName, isAuthError, isConflict, isNetworkError } from './conflict';
 import type { CloudFile, CloudId, SaveMode } from './cloud';
-import type { GithubSettings, LocalVersion, Location } from './storage';
+import type { GithubSettings, LocalVersion, Location, PendingSave } from './storage';
 
 export interface SaveDeps {
   browserSave: (id: string, name: string, project: Project, expectedRev: number | 'any') => Promise<number>;
@@ -23,12 +24,16 @@ export interface SaveDeps {
   githubSettings: () => GithubSettings;
   deviceSave: (project: Project, fileName: string) => Promise<string | null>;
   addVersion: (key: string, name: string, project: Project, reason: LocalVersion['reason']) => Promise<void>;
+  /** Enregistrement à reprendre (persistant) ; effacé dès qu'un enregistrement aboutit à cet emplacement. */
+  setPending: (p: PendingSave) => void;
+  clearPending: (key: string) => void;
   newId: () => string;
   now: () => Date;
 }
 
 export type SaveOutcome =
-  | { status: 'saved'; loc: Location; name: string }
+  /** `concurrentCopy` : Google Drive, modification faite ailleurs pendant l'envoi, recopiée sous ce nom. */
+  | { status: 'saved'; loc: Location; name: string; concurrentCopy?: string }
   /** Modifié ailleurs : notre version a été enregistrée sous `copyName` ; `loc` désigne désormais la copie. */
   | { status: 'conflictCopy'; loc: Location; name: string; copyName: string }
   /** Fichier de l'appareil modifié ailleurs : à l'utilisateur de choisir (copie ou remplacement). */
@@ -36,8 +41,11 @@ export type SaveOutcome =
   /** Pas de réseau : version gardée dans le navigateur, envoi à reprendre. */
   | { status: 'pending'; loc: Location; name: string }
   | { status: 'cancelled' }
-  /** GitHub : jeton à déverrouiller. */
-  | { status: 'needsAuth' };
+  /**
+   * Connexion à refaire (jeton GitHub verrouillé, jeton expiré, fenêtre de connexion bloquée) : version gardée,
+   * envoi en attente ; il reprend au prochain « Enregistrer » (un clic autorise la fenêtre de connexion).
+   */
+  | { status: 'needsAuth'; loc: Location; name: string };
 
 /** Clé stable d'un emplacement (versions locales, messages). */
 export function locationKey(loc: Location, fileName: string): string {
@@ -61,32 +69,45 @@ export async function saveAt(loc: Location, project: Project, fileName: string, 
   const name = loc.kind === 'cloud' ? loc.file.name : loc.kind === 'github' ? baseOf(loc.path) : fileName || project.meta.title || 'projet';
   const key = locationKey(loc, fileName);
   const keep = (reason: LocalVersion['reason']) => deps.addVersion(key, name, project, reason).catch(() => undefined);
+  /** Attente : version gardée et envoi mémorisé (survit à la fermeture). */
+  const wait = async (reason: PendingSave['reason']): Promise<SaveOutcome> => {
+    await keep('pending');
+    deps.setPending({ key, loc, fileName, name, at: deps.now().toISOString(), reason });
+    return reason === 'auth' ? { status: 'needsAuth', loc, name } : { status: 'pending', loc, name };
+  };
   try {
     const saved = await write(loc, project, fileName, deps);
     if (!saved) return { status: 'cancelled' };
-    if ('status' in saved) return saved;
+    if ('auth' in saved) return wait('auth');
     await keep('save');
-    return { status: 'saved', loc: saved.loc, name: saved.name };
+    deps.clearPending(key);
+    return { status: 'saved', loc: saved.loc, name: saved.name, concurrentCopy: saved.concurrentCopy };
   } catch (e) {
-    if (isNetworkError(e)) {
-      await keep('pending');
-      return { status: 'pending', loc, name };
-    }
+    if (isNetworkError(e)) return wait('offline');
+    if (isAuthError(e)) return wait('auth');
     if (!isConflict(e)) throw e;
     await keep('conflict');
     if (loc.kind === 'device') return { status: 'deviceConflict', name };
     const copyName = conflictName(name, deps.now());
     try {
       const copy = await writeCopy(loc, project, copyName, deps);
+      deps.clearPending(key);
       return { status: 'conflictCopy', loc: copy, name, copyName };
     } catch (e2) {
-      if (isNetworkError(e2)) return { status: 'pending', loc, name };
+      // Copie impossible pour l'instant : notre version reste dans les versions locales (raison « conflit »)
+      if (isNetworkError(e2)) return wait('offline');
+      if (isAuthError(e2)) return wait('auth');
       throw e2;
     }
   }
 }
 
-async function write(loc: Location, project: Project, fileName: string, deps: SaveDeps): Promise<{ loc: Location; name: string } | SaveOutcome | null> {
+async function write(
+  loc: Location,
+  project: Project,
+  fileName: string,
+  deps: SaveDeps,
+): Promise<{ loc: Location; name: string; concurrentCopy?: string } | { auth: true } | null> {
   switch (loc.kind) {
     case 'browser': {
       const name = fileName || project.meta.title || 'projet';
@@ -94,12 +115,12 @@ async function write(loc: Location, project: Project, fileName: string, deps: Sa
       return { loc: { ...loc, rev }, name };
     }
     case 'cloud': {
-      const file = await deps.cloudSave(loc.provider, loc.file.name, project, 'update', loc.file);
-      return { loc: { ...loc, file: { ...loc.file, ...file } }, name: file.name };
+      const { concurrentCopy, ...file } = await deps.cloudSave(loc.provider, loc.file.name, project, 'update', loc.file);
+      return { loc: { ...loc, file: { ...loc.file, ...file } }, name: file.name, concurrentCopy };
     }
     case 'github': {
       const token = deps.githubToken();
-      if (!token) return { status: 'needsAuth' };
+      if (!token) return { auth: true };
       const sha = await deps.githubSave(token, deps.githubSettings(), loc.path, project, 'update', loc.sha);
       return { loc: { ...loc, sha }, name: baseOf(loc.path) };
     }

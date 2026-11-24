@@ -8,14 +8,19 @@ import {
   addVersion,
   browserDelete,
   browserSave,
+  clearPending,
   draftId,
   getGithubToken,
   githubSave,
+  latestVersion,
+  listPending,
   loadGithubSettings,
   orphanDrafts,
   parseProject,
+  setPending,
   startTabHeartbeat,
   type Location,
+  type PendingSave,
 } from './io/storage';
 import { locationKey, saveAt, type SaveDeps, type SaveOutcome } from './io/saveFlow';
 import { conflictName } from './io/conflict';
@@ -84,6 +89,27 @@ export function App() {
   /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
   const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
+  /** Enregistrement resté en attente à la fermeture précédente. */
+  const [resume, setResume] = useState<PendingSave | null>(null);
+
+  /** Reprise : la dernière version locale de cet emplacement est rouverte, puis envoyée (toujours conditionnel). */
+  const resumePending = async (p: PendingSave) => {
+    setResume(null);
+    if (!confirmDiscard()) return;
+    try {
+      const v = await latestVersion(p.key);
+      if (!v) {
+        clearPending(p.key);
+        return;
+      }
+      s.loadProject(parseProject(v.data, p.name), p.fileName);
+      useStore.setState({ dirty: true });
+      location.current = p.loc;
+      await save(false);
+    } catch (e) {
+      setToast({ text: errorText(e, t) });
+    }
+  };
 
   const whereLabel = (loc: Location) =>
     loc.kind === 'cloud' ? loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox' : loc.kind === 'github' ? 'GitHub' : t('save.where.' + loc.kind);
@@ -96,6 +122,8 @@ export function App() {
     githubSettings: loadGithubSettings,
     deviceSave: (project, fileName) => saveProject(project, fileName, false),
     addVersion,
+    setPending,
+    clearPending,
     newId: () => Math.random().toString(36).slice(2, 10),
     now: () => new Date(),
   });
@@ -111,6 +139,7 @@ export function App() {
         location.current = r.loc;
         if (unchanged) s.markSaved(r.loc.kind === 'device' ? r.name : useStore.getState().fileName || r.name);
         setSaveState({ kind: 'saved', where: whereLabel(r.loc), at: new Date() });
+        if (r.concurrentCopy) setToast({ text: t('save.concurrentCopy', { name: r.name, copy: r.concurrentCopy }) });
         dropDraft();
         break;
       case 'conflictCopy':
@@ -129,8 +158,11 @@ export function App() {
         setToast({ text: t('save.pending', { where: whereLabel(r.loc) }) });
         break;
       case 'needsAuth':
-        setSaveState(null);
-        setStorage('save');
+        // Version gardée et envoi mémorisé : GitHub verrouillé → fenêtre de déverrouillage ; service en ligne →
+        // le prochain clic sur « Enregistrer » ouvre la connexion (le navigateur l'exige après un clic).
+        setSaveState({ kind: 'pending', where: whereLabel(r.loc) });
+        if (r.loc.kind === 'github' && !getGithubToken()) setStorage('save');
+        else setToast({ text: t('save.needsAuth', { where: whereLabel(r.loc) }) });
         break;
       case 'cancelled':
         setSaveState(null);
@@ -146,6 +178,9 @@ export function App() {
     }
     const st = useStore.getState();
     setSaveState({ kind: 'saving' });
+    // Brouillon écrit d'abord : un enregistrement interrompu (fermeture, plantage, coupure) laisse toujours une copie
+    // récupérable au prochain lancement, même si le fichier de destination est resté incomplet.
+    await browserSave(draftId(), st.fileName || st.project.meta.title, st.project, 'any').catch(() => undefined);
     try {
       applyOutcome(await saveAt(location.current, st.project, st.fileName, saveDeps()), st.project);
     } catch (e) {
@@ -258,6 +293,8 @@ export function App() {
         if (e) setRecover({ id: e.id, name: e.name, updated: e.updated, data: e.data, others: list.length - 1 });
       })
       .catch(() => undefined);
+    // Enregistrements restés en attente à la fermeture (pas de réseau, reconnexion) : proposés à la reprise
+    setResume(listPending()[0] ?? null);
     const keepDraft = () => {
       const st = useStore.getState();
       if (st.dirty) void browserSave(draftId(), st.fileName || st.project.meta.title, st.project, 'any').catch(() => undefined);
@@ -427,6 +464,15 @@ export function App() {
         </div>
       )}
       <UpdateBanner />
+      {resume && (
+        <div className="toast">
+          {t('save.resumePending', { name: resume.name, where: whereLabel(resume.loc), date: new Date(resume.at).toLocaleString() })}{' '}
+          <button className="primary" onClick={() => void resumePending(resume)}>
+            {t('save.resume')}
+          </button>{' '}
+          <button onClick={() => setResume(null)}>{t('save.later')}</button>
+        </div>
+      )}
       {recover && (
         <div className="toast">
           {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}

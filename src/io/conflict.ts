@@ -23,6 +23,26 @@ export class ConflictError extends Error {
 export const isConflict = (e: unknown): e is ConflictError => e instanceof ConflictError;
 
 /**
+ * Connexion au service à refaire : jeton expiré ou révoqué (401), ou fenêtre de connexion bloquée par le
+ * navigateur (une connexion ne peut s'ouvrir qu'après un clic). Rien n'est perdu : la version reste dans le
+ * navigateur et l'enregistrement est repris au prochain clic sur « Enregistrer ».
+ */
+export class AuthError extends Error {
+  constructor(readonly where: string) {
+    super(`Connexion à ${where} à refaire.`);
+    this.name = 'AuthError';
+  }
+}
+
+export const isAuthError = (e: unknown): e is AuthError => e instanceof AuthError;
+
+/** Espace de stockage du navigateur plein (IndexedDB, localStorage). */
+export function isQuotaError(e: unknown): boolean {
+  const n = (e as { name?: string } | null)?.name;
+  return n === 'QuotaExceededError' || n === 'NS_ERROR_DOM_QUOTA_REACHED' || (e as { code?: number } | null)?.code === 22;
+}
+
+/**
  * Erreur réseau (hors ligne, DNS, coupure) : `fetch` rejette avec une TypeError, sans réponse du serveur.
  * Dans ce cas, l'enregistrement est mis en attente et repris au retour du réseau.
  */

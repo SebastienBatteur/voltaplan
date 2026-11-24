@@ -228,3 +228,37 @@ mots) ; les originaux sont dans les assets.
 - **Fidélité** : une installation non conforme (différentiel absent, calibre trop fort) reconstruite depuis des
   observations reste non conforme. Aucune proposition `correction` dans un lot `reconstruction`.
 - Cache : même entrée, pas de nouvel appel (fetch compté).
+
+## 8. Révision après le retour du 2026-11-24 : rôle de l'IA élargi
+
+Principes validés : arbre seule source de vérité, sources conservées à part, traçabilité, aucune modification
+directe par l'IA, application contrôlée, reconstruction fidèle, RGIE après la reconstruction (et pendant la
+conception pour une installation neuve).
+
+**Changement** : l'IA ne se limite pas à lire. Elle peut aussi produire des **hypothèses**, toujours sous forme
+typée et jamais comme des faits.
+
+| Ce que l'IA fournit | Type dans le dossier de preuves | Contrôle déterministe avant d'en faire une proposition |
+|---|---|---|
+| Lecture d'un document | `Observation` (`kind: 'reading'`) | schéma zod, valeurs dans les listes du modèle |
+| Interprétation d'une étiquette (« PRISES CUIS. » → prises, cuisine) | `Observation` (`kind: 'interpretation'`, avec le texte brut) | usage et pièce dans les listes connues, sinon question |
+| Correspondance entre sources (ce disjoncteur = ce circuit du plan) | `Observation` (`kind: 'match'`, références des deux observations) | les deux observations existent ; une observation n'a pas deux correspondances contradictoires |
+| Déduction probable (section 2,5 mm² probable pour 20 A en prises) | `Observation` (`kind: 'inference'`, `basis: 'aiInferred'`, justification) | jamais appliquée sans confirmation ; signalée « probable » ; plafonnée à une confiance moyenne |
+| Regroupement de circuits proposé | `Observation` (`kind: 'grouping'`) | membres existants, pas de cycle, structure d'arbre valide |
+| Contradiction repérée | `Observation` (`kind: 'contradiction'`) | transformée en `Question` avec les options sourcées |
+| Question pertinente | `Question` brouillon | dédoublonnée ; pas de question sur une valeur déjà confirmée |
+| Solution technique suggérée (installation neuve, correction) | `Proposal` brouillon (`purpose: 'design'` ou `'correction'`) | **vérifiée par le moteur RGIE avant d'être montrée** ; refusée si elle crée une non-conformité ; jamais dans un lot de reconstruction |
+
+**Nouvelle base de connaissance** : `Basis` gagne `aiInferred` (déduit par l'IA, à confirmer), distinct de
+`deduced` (déduit par une règle du code).
+
+**Règle invariante** : `confirmed` ne peut être attribué que par une action de l'utilisateur. Cette règle est
+garantie par un test : aucune fonction de l'assistant n'écrit `basis: 'confirmed'`.
+
+**Ce que fait le code déterministe** :
+
+- valider la structure et les références ;
+- refuser ce qui est incohérent (circuit sous un appareil qui ne peut pas en avoir, valeur hors liste, cycle) ;
+- calculer la confiance affichée (jamais supérieure à celle annoncée par l'IA ; plafonnée pour `aiInferred`) ;
+- appliquer les propositions acceptées ;
+- faire vérifier par le moteur RGIE les propositions de conception et de correction.

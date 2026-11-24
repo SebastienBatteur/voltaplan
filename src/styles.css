@@ -816,6 +816,9 @@ main {
 .ok-text {
   color: var(--ok, #2e9d58);
 }
+.warning-text {
+  color: var(--warning);
+}
 .error-text {
   color: var(--error);
 }

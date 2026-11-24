@@ -26,7 +26,8 @@ import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
 import { aiReady, loadAiSettings, getSessionKey, setSessionKey, useAiUnlocked } from '../ai/settings';
-import { AiError, PROVIDERS } from '../ai/provider';
+import { AiError, isLocalUrl, PROVIDERS } from '../ai/provider';
+import { useOnline } from './UpdateBanner';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
@@ -159,7 +160,10 @@ export function BoardView() {
   const aiUnlocked = useAiUnlocked();
   // Clé exigée par le fournisseur (un modèle local n'en demande pas)
   const aiNeedsKey = PROVIDERS[ai.provider]?.needsKey(ai) ?? true;
-  const aiOk = aiReady(ai, aiUnlocked);
+  const online = useOnline();
+  // Hors ligne : seul un modèle local (sur cet ordinateur) reste utilisable
+  const aiReachable = online || (ai.provider === 'openaiCompatible' && isLocalUrl(ai.baseUrl ?? ''));
+  const aiOk = aiReady(ai, aiUnlocked) && aiReachable;
 
   const enc = encs[Math.min(idx, encs.length - 1)];
   const size = enc ? boardSize(enc.board) : { rows: 2, perRow: 13 };
@@ -554,7 +558,7 @@ export function BoardView() {
               <button
                 onClick={readWithAi}
                 disabled={busy || !enc.devices.length || !aiOk}
-                title={aiOk ? t('ai.boardHelp') : t('ai.needUnlock')}
+                title={!aiReachable ? t('app.needsNetwork') : aiOk ? t('ai.boardHelp') : t('ai.needUnlock')}
               >
                 {t('ai.boardRead')}
               </button>

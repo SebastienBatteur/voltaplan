@@ -12,7 +12,7 @@ import type { SealedSecret } from '../ai/secureStore';
 import type { CloudFile, CloudId } from './cloud';
 import { checkTextSize } from './limits';
 import { sanitizeProjectImages } from './sanitize';
-import { ConflictError } from './conflict';
+import { AuthError, ConflictError, isQuotaError } from './conflict';
 import type { SaveMode } from './cloud';
 
 export type Location =
@@ -145,13 +145,96 @@ export function versionsToDelete(list: Pick<LocalVersion, 'vid' | 'key' | 'at'>[
   return del;
 }
 
+/**
+ * Rétention adaptée à l'espace disponible (fonction pure, testée) : plus le stockage du navigateur est rempli,
+ * moins on garde de versions. Sans estimation possible : réglage par défaut.
+ */
+export function retentionFor(usage: number | null, quota: number | null): { perKey: number; total: number } {
+  if (!usage || !quota) return { perKey: VERSIONS_PER_PROJECT, total: VERSIONS_TOTAL };
+  const r = usage / quota;
+  if (r < 0.5) return { perKey: VERSIONS_PER_PROJECT, total: VERSIONS_TOTAL };
+  if (r < 0.8) return { perKey: 10, total: 150 };
+  return { perKey: 3, total: 50 };
+}
+
+async function currentRetention(): Promise<{ perKey: number; total: number }> {
+  try {
+    const e = await navigator.storage?.estimate?.();
+    return retentionFor(e?.usage ?? null, e?.quota ?? null);
+  } catch {
+    return retentionFor(null, null);
+  }
+}
+
+/**
+ * Garde une version locale. Stockage plein : les plus anciennes versions des autres projets sont supprimées (on
+ * n'en garde qu'une par projet), puis on réessaie une fois. Les projets enregistrés dans le navigateur et les
+ * brouillons ne sont jamais supprimés pour faire de la place.
+ */
 export async function addVersion(key: string, name: string, project: Project, reason: LocalVersion['reason']): Promise<void> {
   const data = JSON.stringify(project);
   const at = new Date().toISOString();
   const vid = `${at}-${Math.random().toString(36).slice(2, 8)}`;
-  await tx('readwrite', (s) => s.put({ vid, key, name, at, reason, size: data.length, data } satisfies LocalVersion), VERSIONS);
-  const all = await listVersions();
-  for (const v of versionsToDelete(all)) await tx('readwrite', (s) => s.delete(v), VERSIONS);
+  const put = () => tx('readwrite', (s) => s.put({ vid, key, name, at, reason, size: data.length, data } satisfies LocalVersion), VERSIONS);
+  try {
+    await put();
+  } catch (e) {
+    if (!isQuotaError(e)) throw e;
+    const others = (await listVersions()).filter((v) => v.key !== key);
+    for (const v of versionsToDelete(others, 1, Number.MAX_SAFE_INTEGER)) await tx('readwrite', (s) => s.delete(v), VERSIONS);
+    await put();
+  }
+  const { perKey, total } = await currentRetention();
+  for (const v of versionsToDelete(await listVersions(), perKey, total)) await tx('readwrite', (s) => s.delete(v), VERSIONS);
+}
+
+// ---------------------------------------------------------------------------
+// Enregistrements en attente (pas de réseau, reconnexion nécessaire) : gardés après fermeture
+// ---------------------------------------------------------------------------
+
+/** Enregistrement à reprendre : emplacement visé et version locale à envoyer (jamais le contenu ici). */
+export interface PendingSave {
+  key: string;
+  loc: Location;
+  fileName: string;
+  name: string;
+  at: string;
+  reason: 'offline' | 'auth';
+}
+
+const PENDING = STORAGE_PREFIX + 'pendingSaves';
+
+export function listPending(read: (k: string) => string | null = (k) => localStorage.getItem(k)): PendingSave[] {
+  try {
+    const v = JSON.parse(read(PENDING) ?? '[]') as PendingSave[];
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+}
+
+function writePending(list: PendingSave[]) {
+  try {
+    if (list.length) localStorage.setItem(PENDING, JSON.stringify(list));
+    else localStorage.removeItem(PENDING);
+  } catch {
+    /* stockage indisponible : l'attente reste en mémoire pour cette session */
+  }
+}
+
+/** Mémorise (ou remplace, pour le même emplacement) un enregistrement à reprendre. */
+export function setPending(p: PendingSave) {
+  writePending([...listPending().filter((x) => x.key !== p.key), p]);
+}
+
+export function clearPending(key: string) {
+  writePending(listPending().filter((x) => x.key !== key));
+}
+
+/** Dernière version locale d'un emplacement (pour une reprise). */
+export async function latestVersion(key: string): Promise<LocalVersion | undefined> {
+  const v = (await listVersions()).find((x) => x.key === key);
+  return v ? loadVersion(v.vid) : undefined;
 }
 
 /** Versions locales, des plus récentes aux plus anciennes (sans le contenu). */
@@ -279,6 +362,8 @@ function ghUrl(repo: string, path: string, branch?: string) {
 }
 
 async function ghError(r: Response): Promise<Error> {
+  // Jeton expiré, révoqué ou sans droit sur le dépôt : à saisir de nouveau (la version reste dans le navigateur)
+  if (r.status === 401) return new AuthError('GitHub');
   let msg = `${r.status}`;
   try {
     msg += ' ' + ((await r.json()) as { message?: string }).message;

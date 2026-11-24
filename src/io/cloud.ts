@@ -21,7 +21,7 @@
  */
 import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
-import { ConflictError } from './conflict';
+import { AuthError, ConflictError, conflictName } from './conflict';
 
 export type CloudId = 'gdrive' | 'onedrive' | 'dropbox';
 export const CLOUDS: CloudId[] = ['gdrive', 'onedrive', 'dropbox'];
@@ -36,6 +36,11 @@ export interface CloudFile {
    * version (Google Drive). L'enregistrement suivant n'aboutit que si le fichier n'a pas changé depuis.
    */
   rev?: string;
+  /**
+   * Google Drive seulement : une modification faite ailleurs pendant notre envoi a été détectée après coup ;
+   * elle a été recopiée sous ce nom (les deux versions sont conservées).
+   */
+  concurrentCopy?: string;
 }
 
 /**
@@ -89,6 +94,8 @@ export function redirectUri(): string {
 }
 
 async function check(r: Response): Promise<Response> {
+  // 401 : jeton expiré ou révoqué (reconnexion), voir withToken
+  if (r.status === 401) throw new AuthError('service');
   if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${(await r.text()).slice(0, 200)}`);
   return r;
 }
@@ -224,7 +231,8 @@ export const PROVIDERS: Record<CloudId, Provider> = {
         }),
       );
       const j = (await r.json()) as { files: { id: string; name: string; size?: string; modifiedTime: string; version?: string }[] };
-      return j.files.map((f) => ({ id: f.id, name: f.name, size: f.size ? Number(f.size) : undefined, modified: f.modifiedTime, rev: f.version }));
+      // Pas de révision dans la liste : la version complète (version|révision) est lue à l'ouverture (load)
+      return j.files.map((f) => ({ id: f.id, name: f.name, size: f.size ? Number(f.size) : undefined, modified: f.modifiedTime }));
     },
     load: async (token, f) => {
       const rev = await driveVersion(token, f.id);
@@ -233,46 +241,91 @@ export const PROVIDERS: Record<CloudId, Provider> = {
     },
     save: async (token, name, data, mode, existing) => {
       if (mode !== 'create' && existing) {
-        // L'API v3 n'a pas d'écriture conditionnelle : on compare la version juste avant l'envoi. La fenêtre de
-        // course se réduit à la durée de l'envoi ; Drive garde de toute façon l'historique des révisions.
+        // L'API v3 n'a pas d'écriture conditionnelle. Deux contrôles :
+        //  1. avant l'envoi : version et révision inchangées depuis l'ouverture (sinon conflit, rien n'est envoyé) ;
+        //  2. après l'envoi : la révision qui précède la nôtre doit être celle de l'ouverture. Sinon, quelqu'un a
+        //     enregistré pendant notre envoi : sa version (toujours dans l'historique de Drive) est recopiée en
+        //     copie de conflit. Les deux versions sont donc conservées, même dans ce cas.
         if (mode === 'update') {
           if (!existing.rev) throw new ConflictError('Google Drive : ' + name, 'version inconnue');
           const now = await driveVersion(token, existing.id);
           if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
         }
         const r = await check(
-          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&fields=id,name,size,modifiedTime,version`, {
+          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&fields=id,name,size,modifiedTime,version,headRevisionId`, {
             method: 'PATCH',
             headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: data,
           }),
         );
-        return driveFile(await r.json());
+        const saved = driveFile(await r.json());
+        const head = mode === 'update' ? existing.rev?.split('|')[1] : undefined;
+        if (head) {
+          const between = await driveRevisionsBetween(token, existing.id, head, saved.rev?.split('|')[1]);
+          if (between.length) {
+            // Recopie de la dernière version écrite par l'autre appareil (les révisions intermédiaires restent dans Drive)
+            const theirs = await (
+              await check(
+                await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(existing.id)}/revisions/${encodeURIComponent(between[between.length - 1])}?alt=media`, {
+                  headers: { Authorization: 'Bearer ' + token },
+                }),
+              )
+            ).text();
+            const copyName = conflictName(name);
+            await driveCreate(token, copyName, theirs);
+            saved.concurrentCopy = copyName;
+          }
+        }
+        return saved;
       }
       // Création : Drive admet plusieurs fichiers de même nom, un fichier existant n'est donc jamais remplacé.
-      const boundary = 'voltaplan' + Math.random().toString(36).slice(2);
-      const body =
-        `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, mimeType: 'application/json' })}\r\n` +
-        `--${boundary}\r\nContent-Type: application/json\r\n\r\n${data}\r\n--${boundary}--`;
-      const r = await check(
-        await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,size,modifiedTime,version', {
-          method: 'POST',
-          headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
-          body,
-        }),
-      );
-      return driveFile(await r.json());
+      return driveCreate(token, name, data);
     },
   },
 };
 
-async function driveVersion(token: string, id: string): Promise<string | undefined> {
-  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=version`, { headers: { Authorization: 'Bearer ' + token } }));
-  return ((await r.json()) as { version?: string }).version;
+async function driveCreate(token: string, name: string, data: string): Promise<CloudFile> {
+  const boundary = 'voltaplan' + Math.random().toString(36).slice(2);
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, mimeType: 'application/json' })}\r\n` +
+    `--${boundary}\r\nContent-Type: application/json\r\n\r\n${data}\r\n--${boundary}--`;
+  const r = await check(
+    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,size,modifiedTime,version,headRevisionId', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
+      body,
+    }),
+  );
+  return driveFile(await r.json());
 }
 
-function driveFile(j: { id: string; name: string; size?: string; modifiedTime?: string; version?: string }): CloudFile {
-  return { id: j.id, name: j.name, size: j.size ? Number(j.size) : undefined, modified: j.modifiedTime, rev: j.version };
+/** Version complète d'un fichier Drive : « version|révision de tête » (les deux changent à chaque envoi). */
+async function driveVersion(token: string, id: string): Promise<string | undefined> {
+  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=version,headRevisionId`, { headers: { Authorization: 'Bearer ' + token } }));
+  const j = (await r.json()) as { version?: string; headRevisionId?: string };
+  return j.version ? `${j.version}|${j.headRevisionId ?? ''}` : undefined;
+}
+
+/**
+ * Révisions écrites entre `from` (révision de l'ouverture) et `to` (notre envoi), exclues : vide si personne d'autre
+ * n'a enregistré pendant notre envoi. Si `from` n'est plus dans l'historique (purgé par Drive), on ne conclut rien.
+ */
+async function driveRevisionsBetween(token: string, id: string, from: string, to: string | undefined): Promise<string[]> {
+  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id)&pageSize=1000`, { headers: { Authorization: 'Bearer ' + token } }));
+  const ids = ((await r.json()) as { revisions?: { id: string }[] }).revisions?.map((x) => x.id) ?? [];
+  return revisionsBetween(ids, from, to);
+}
+
+/** Fonction pure (testée) : identifiants strictement entre `from` et `to` dans la liste chronologique. */
+export function revisionsBetween(ids: string[], from: string, to: string | undefined): string[] {
+  const a = ids.indexOf(from);
+  const b = to ? ids.indexOf(to) : ids.length;
+  if (a < 0 || b < 0 || b <= a) return [];
+  return ids.slice(a + 1, b);
+}
+
+function driveFile(j: { id: string; name: string; size?: string; modifiedTime?: string; version?: string; headRevisionId?: string }): CloudFile {
+  return { id: j.id, name: j.name, size: j.size ? Number(j.size) : undefined, modified: j.modifiedTime, rev: j.version ? `${j.version}|${j.headRevisionId ?? ''}` : undefined };
 }
 
 /** En-tête HTTP Dropbox-API-Arg : JSON en ASCII (caractères non ASCII échappés). */
@@ -363,16 +416,51 @@ export async function cloudConnect(id: CloudId): Promise<string> {
   return token;
 }
 
+/**
+ * Appel avec un jeton valide. Jeton expiré ou révoqué (401) : il est oublié et la connexion est refaite une fois.
+ * Si la fenêtre de connexion ne peut pas s'ouvrir (le navigateur l'exige après un clic : ex. reprise automatique au
+ * retour du réseau), AuthError : l'appelant garde la version et attend le prochain clic sur « Enregistrer ».
+ */
+export async function withToken<T>(id: CloudId, fn: (token: string) => Promise<T>, connect: (id: CloudId) => Promise<string> = cloudConnect): Promise<T> {
+  const label = PROVIDERS[id].label;
+  const fresh = async () => {
+    try {
+      return await connect(id);
+    } catch (e) {
+      if ((e as Error).message === 'popup') throw new AuthError(label);
+      throw e;
+    }
+  };
+  const first = cloudToken(id);
+  try {
+    return await fn(first ?? (await fresh()));
+  } catch (e) {
+    if (!(e instanceof AuthError) || !first) throw e instanceof AuthError ? new AuthError(label) : e;
+    cloudForget(id);
+    try {
+      return await fn(await fresh());
+    } catch (e2) {
+      throw e2 instanceof AuthError ? new AuthError(label) : e2;
+    }
+  }
+}
+
 export async function cloudList(id: CloudId): Promise<CloudFile[]> {
-  return PROVIDERS[id].list(cloudToken(id) ?? (await cloudConnect(id)));
+  return withToken(id, (t) => PROVIDERS[id].list(t));
 }
 
 /** Lecture : texte du projet et version du fichier (à mémoriser pour l'enregistrement suivant). */
 export async function cloudLoad(id: CloudId, f: CloudFile): Promise<{ text: string; rev?: string }> {
-  return PROVIDERS[id].load(cloudToken(id) ?? (await cloudConnect(id)), f);
+  return withToken(id, (t) => PROVIDERS[id].load(t, f));
 }
 
 /** Enregistrement (voir SaveMode) ; renvoie le fichier à jour avec sa nouvelle version. */
 export async function cloudSave(id: CloudId, name: string, project: Project, mode: SaveMode, existing?: CloudFile): Promise<CloudFile> {
-  return PROVIDERS[id].save(cloudToken(id) ?? (await cloudConnect(id)), name, JSON.stringify(project), mode, existing);
+  const data = JSON.stringify(project);
+  return withToken(id, (t) => PROVIDERS[id].save(t, name, data, mode, existing));
+}
+
+/** Pour les tests : pose un jeton en mémoire. */
+export function setCloudTokenForTest(id: CloudId, token: string, ttlMs = 3_600_000) {
+  tokens[id] = { token, expires: Date.now() + ttlMs };
 }

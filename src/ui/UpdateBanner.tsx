@@ -54,8 +54,8 @@ export function UpdateBanner() {
 }
 
 /** Hors ligne : petit repère près des actions qui ont besoin d'Internet (IA, services en ligne). */
-export function OfflineBadge() {
-  const t = useStore((s) => s.t);
+/** Connexion réseau (événements online / offline du navigateur). */
+export function useOnline(): boolean {
   const [online, setOnline] = useState(() => typeof navigator === 'undefined' || navigator.onLine !== false);
   useEffect(() => {
     const up = () => setOnline(true);
@@ -67,6 +67,12 @@ export function OfflineBadge() {
       window.removeEventListener('offline', down);
     };
   }, []);
+  return online;
+}
+
+export function OfflineBadge() {
+  const t = useStore((s) => s.t);
+  const online = useOnline();
   if (online) return null;
   return (
     <span className="offline-badge" title={t('app.offlineHelp')} role="status">

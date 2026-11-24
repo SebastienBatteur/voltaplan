@@ -189,3 +189,77 @@ origine n'affiche plus jamais Voltaplan, et ses données deviennent inaccessible
 - détection sur Tauri (droit `fs:allow-stat` ajouté, à compiler) ;
 - sauvegarde sur un fichier local quand un client de synchronisation modifie la date sans changer le contenu (faux
   conflit possible, sans perte).
+
+## 7. Vérification des six points demandés (2026-11-24)
+
+### 7.1 Écritures conditionnelles : atomiques ou non ?
+
+| Emplacement | Vérification et écriture en une opération côté serveur ? | Fenêtre de course | Si elle se produit |
+|---|---|---|---|
+| OneDrive | **oui** : `If-Match` est évalué par le serveur au moment de l'écriture | aucune | 412 : copie de conflit |
+| Dropbox | **oui** : `mode: update` avec `rev` est évalué par le serveur | aucune | 409 : copie de conflit |
+| GitHub | **oui** : le `sha` est évalué par le serveur | aucune | 409 : copie de conflit |
+| Navigateur (IndexedDB) | **oui** : lecture et écriture dans la même transaction | aucune | conflit : copie |
+| Google Drive | **non** : l'API v3 n'a pas d'écriture conditionnelle **[à vérifier]** | entre la vérification et la fin de l'envoi | **détecté après coup** : la révision qui précède la nôtre doit être celle de l'ouverture ; sinon, la version de l'autre appareil (toujours dans l'historique de Drive) est **recopiée en copie de conflit**. Les deux versions sont conservées (`src/io/cloud.ts`, testé avec des réponses simulées). |
+| Fichier local (Chrome, Edge) | **non** : aucune écriture conditionnelle sur un fichier | entre la lecture de la date et l'écriture (quelques millisecondes) | risque résiduel accepté ; écriture atomique par `createWritable` |
+| Fichier local (Tauri) | **non** | idem | idem ; écriture **non atomique** (pas de renommage, car les droits Tauri limitent l'écriture au fichier choisi) : protégée par le brouillon écrit **avant** chaque enregistrement |
+
+### 7.2 Attente persistante après fermeture
+
+**Corrigé.** Un enregistrement en attente (pas de réseau, ou reconnexion nécessaire) est mémorisé dans le stockage
+local : emplacement visé, nom et date, sans le contenu, qui est dans les versions locales.
+
+Au lancement suivant, le bandeau « Enregistrement en attente depuis le… — Reprendre / Plus tard » s'affiche.
+« Reprendre » rouvre la dernière version locale de cet emplacement et l'envoie, toujours de façon conditionnelle :
+un conflit donne une copie, jamais un écrasement.
+
+Testé : simulation dans le navigateur, et tests automatiques.
+
+### 7.3 Interruption pendant l'enregistrement
+
+**Corrigé.** Le brouillon de l'onglet est écrit **avant** chaque enregistrement ; il est supprimé seulement après la
+réussite.
+
+| Destination | Fermeture, plantage ou coupure pendant l'écriture |
+|---|---|
+| Chrome et Edge (fichier) | l'original reste intact (fichier temporaire, remplacé seulement à la fin) |
+| Tauri (fichier) | le fichier peut rester incomplet ; le brouillon est proposé au lancement suivant |
+| OneDrive, Dropbox, Drive, GitHub | l'envoi est atomique côté serveur : l'ancienne version reste en place ; le brouillon est proposé |
+| Navigateur | transaction IndexedDB : tout ou rien |
+
+### 7.4 Jetons expirés
+
+**Corrigé.** Un 401 (jeton expiré ou révoqué) efface le jeton, puis la connexion est refaite **une fois**.
+
+Si le navigateur bloque la fenêtre de connexion, ce qui arrive lors d'une reprise automatique sans clic :
+
+- la version est gardée et l'envoi mis en attente ;
+- le message « Connexion à OneDrive à refaire… cliquez sur Enregistrer » s'affiche ;
+- le clic suivant ouvre la connexion.
+
+Pour GitHub, un 401 donne le même comportement, et la fenêtre de déverrouillage s'ouvre si le jeton est verrouillé.
+
+### 7.5 Conservation des deux versions en cas de conflit
+
+| Cas | Leur version | Notre version |
+|---|---|---|
+| Conflit détecté avant l'écriture (tous les services) | intacte, au même endroit | copie datée au même endroit, plus une version locale « Conflit » |
+| Google Drive, détecté après l'envoi | recopiée en copie datée (aussi dans l'historique Drive) | à sa place, plus une version locale |
+| Copie impossible (réseau coupé entre-temps) | intacte | version locale « Conflit », envoi en attente |
+| Fichier local | intacte | choix de l'utilisateur : copie ou remplacement confirmé ; version locale dans les deux cas |
+
+### 7.6 Quotas du navigateur
+
+**Corrigé.**
+
+- **Rétention adaptée à l'espace utilisé** (`storage.estimate()`) :
+  - moins de 50 % utilisé : 20 versions par projet (300 au total) ;
+  - de 50 à 80 % : 10 (150) ;
+  - au-delà de 80 % : 3 (50).
+- **Stockage plein pendant l'ajout d'une version** : on ne garde qu'une version par **autre** projet, puis on
+  réessaie. Les projets du navigateur et les brouillons ne sont **jamais** supprimés pour faire de la place.
+- **Stockage plein pendant un enregistrement dans le navigateur** : message clair (« enregistrez le projet en
+  fichier ou supprimez d'anciennes versions »).
+
+Avec le format v2, les versions ne dupliqueront plus les photos ni les PDF (voir la séparation du stockage dans
+[SPEC-FORMAT-V2.md § 11](SPEC-FORMAT-V2.md)).

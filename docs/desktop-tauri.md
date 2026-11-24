@@ -217,3 +217,72 @@ compté ×10 par GitHub pour un dépôt privé [à vérifier] ; gratuit pour un 
 5. Plus tard : figer la version de Rust (`rust-toolchain.toml`), ajouter des tests unitaires de la
    branche bureau de `src/io/files.ts` avec `@tauri-apps/api/mocks`, décider de la signature selon
    l'usage réel.
+
+## 11. Procédure : télécharger, installer, tester (sans compétence technique)
+
+### Les cinq niveaux de validation (à ne pas confondre)
+
+| Niveau | Ce que cela prouve | Comment c'est établi | État au 2026-11-24 |
+|---|---|---|---|
+| 1. **Compilation réussie** | le code Rust et le site se construisent | CI `desktop-build.yml` | **atteint** : Windows x64, macOS arm64, Linux |
+| 2. **Paquet créé** | un installateur existe | CI `release.yml` manuel (artifacts) | **atteint** : `.msi`, `.exe`, `.dmg` (arm64 et x64), `.deb`, `.rpm`, `.AppImage` |
+| 3. **Installation réussie** | l'installateur s'exécute jusqu'au bout sur un vrai système | une personne, sur une vraie machine | **non testé** |
+| 4. **Démarrage réussi** | la fenêtre s'ouvre et affiche l'éditeur | idem | **non testé** |
+| 5. **Fonctions testées** | chaque fonction listée ci-dessous marche dans l'application installée | idem, liste de contrôle | **non testé** |
+
+**Une compilation réussie ne valide aucune fonction.**
+
+### Récupérer les paquets
+
+1. Sur GitHub : onglet **Actions** → workflow **Release** → **Run workflow** (branche `main`). Le lancement manuel
+   ne crée **pas** de release publique.
+2. Attendre la fin (environ 5 à 10 min), ouvrir le run, puis la section **Artifacts** : télécharger le paquet de
+   son système (`windows`, `macos-arm64` pour Apple Silicon, `macos-x64` pour Intel, `linux`).
+3. Décompresser le `.zip` téléchargé.
+
+### Installer (paquets non signés)
+
+| Système | Fichier | Alerte attendue | Comment passer |
+|---|---|---|---|
+| Windows 10/11 | `Voltaplan_x.y.z_x64-setup.exe` (ou `.msi`) | « Windows a protégé votre ordinateur » (SmartScreen) | « Informations complémentaires » → « Exécuter quand même » |
+| macOS 13 et 14 | `.dmg` → glisser Voltaplan dans Applications | « Voltaplan ne peut pas être ouvert car le développeur ne peut pas être vérifié » | clic droit sur l'app → Ouvrir → Ouvrir |
+| macOS 15 et plus | idem | idem, et le clic droit ne suffit plus **[à vérifier]** | Réglages Système → Confidentialité et sécurité → « Ouvrir quand même » |
+| macOS (Apple Silicon) | idem | possible « Voltaplan est endommagé » sur une app non signée téléchargée **[à vérifier]** | Terminal : `xattr -cr /Applications/Voltaplan.app` (à documenter seulement si le cas se produit) |
+| Linux Debian/Ubuntu | `.deb` | aucune | `sudo apt install ./Voltaplan_x.y.z_amd64.deb` |
+| Linux, autres | `.AppImage` | aucune | rendre exécutable (propriétés du fichier), puis double-clic |
+
+### Liste de contrôle (niveau 5) — à cocher par système
+
+| # | Test | Windows | macOS | Linux |
+|---|---|---|---|---|
+| 1 | L'application démarre ; l'éditeur s'affiche | ☐ | ☐ | ☐ |
+| 2 | Nouveau projet, ajouter un circuit, Enregistrer : boîte « Enregistrer » du système, fichier créé | ☐ | ☐ | ☐ |
+| 3 | Modifier, Ctrl+S : même fichier réécrit, sans boîte de dialogue | ☐ | ☐ | ☐ |
+| 4 | Modifier le fichier ailleurs (copier un autre `.voltaplan` par-dessus), puis Ctrl+S dans l'app : message « modifié ailleurs », choix copie / remplacer | ☐ | ☐ | ☐ |
+| 5 | Ouvrir un `.voltaplan` et un `.trik` | ☐ | ☐ | ☐ |
+| 6 | Exporter Trikker et Eendraadschema : fichiers créés | ☐ | ☐ | ☐ |
+| 7 | Imprimer le dossier : aperçu, A4 paysage, impression ou PDF, **retour à l'éditeur après impression** | ☐ | ☐ (risque connu) | ☐ |
+| 8 | Fond de plan depuis un PDF | ☐ | ☐ | ☐ |
+| 9 | IA (si clé disponible) : lecture d'une photo de tableau | ☐ | ☐ | ☐ |
+| 10 | Fermer avec des modifications : avertissement ; rouvrir : brouillon proposé | ☐ | ☐ | ☐ |
+
+Noter pour chaque échec : système et version, étape, message affiché, capture d'écran.
+
+## 12. Distribution sans coût récurrent important
+
+| Canal | Coût | Limite |
+|---|---|---|
+| **GitHub Releases** (paquets joints à une release) | gratuit | alertes SmartScreen et Gatekeeper sans signature |
+| **SignPath Foundation** : certificat de signature Windows offert aux projets open source | gratuit **[à vérifier : conditions d'éligibilité, dépôt public exigé]** | signature Windows seulement ; procédure de validation du projet |
+| Microsoft Store (développeur individuel) | inscription gratuite pour les particuliers depuis 2025 **[à vérifier]** | revue du Store ; paquet MSIX à produire |
+| winget (`winget install Voltaplan`) | gratuit (manifest dans le dépôt communautaire) | n'enlève pas SmartScreen si l'installateur n'est pas signé |
+| Homebrew Cask (macOS) | gratuit | les casks non signés sont de moins en moins acceptés **[à vérifier]** |
+| Flathub (Linux) | gratuit | empaquetage Flatpak à maintenir |
+| Apple Developer Program | environ 99 USD/an **[à vérifier]** | seule voie pour un macOS sans alerte ; aucune alternative gratuite connue |
+
+**Recommandation** : GitHub Releases en **version préliminaire**, avec la procédure d'installation ci-dessus. Il
+faut ensuite :
+
+- **demander SignPath Foundation** dès que le dépôt est public (Windows signé gratuitement) ;
+- **reporter la signature macOS** jusqu'à ce que la demande des utilisateurs de Mac la justifie. D'ici là, la PWA
+  dans Safari ou Chrome reste l'alternative sans alerte.

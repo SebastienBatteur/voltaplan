@@ -14,6 +14,8 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - **Aucun écrasement silencieux** : « Enregistrer » vérifie que le fichier n'a pas été modifié ailleurs depuis son ouverture (OneDrive : eTag ; Dropbox : révision ; Google Drive : version ; GitHub : SHA ; navigateur : révision ; fichier local : date et taille). En cas de conflit, votre version est enregistrée en copie datée, au même endroit ; les deux versions sont conservées.
 - Versions locales (20 dernières par projet) et brouillon automatique par onglet, récupérable après une fermeture ou un plantage. Pas de réseau : l'enregistrement est mis en attente et repris au retour de la connexion.
 - État de l'enregistrement affiché en permanence (enregistré, en attente, conflit, erreur).
+- Enregistrement en attente gardé après fermeture et proposé à la reprise ; brouillon écrit avant chaque enregistrement (récupération après interruption) ; jeton expiré : reconnexion, version gardée ; Google Drive : modification concurrente pendant l'envoi détectée et recopiée ; rétention des versions adaptée à l'espace du navigateur.
+- Hors ligne : fonctions indisponibles signalées sur place (IA en ligne, GitHub, services en ligne) ; un modèle d'IA local reste utilisable. Procédure de validation par plateforme : [docs/validation-plateformes.md](docs/validation-plateformes.md).
 - Suppression : plus de références orphelines (tableau, mesures, dérogations…).
 - Ouverture validée et migrable ; message clair pour un fichier tronqué, inconnu ou d'une version plus récente.
 
