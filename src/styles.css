@@ -1985,7 +1985,9 @@ body.resizing-h * {
   .legal-footer a {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     min-height: 44px;
+    min-width: 44px;
   }
   /* Pas de bulle « copier / enregistrer l'image » d'iOS pendant un appui long sur le dessin */
   .canvas {

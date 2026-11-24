@@ -112,7 +112,9 @@ Projet de départ (nouveau projet). Résultat : « petits / total ».
 | IA | 9 / 11 | 0 / 11 | 11 / 11 | 0 / 11 |
 | Ajouter ici (plan, appui long) | non mesuré | 0 / 4 | non mesuré | non mesuré |
 
-Les totaux baissent sur petit écran parce que six commandes de la barre passent dans le menu « ⋯ ». À 767 px, la
+Après l'ajout du pied de page légal (trois liens, rendus eux aussi à 44 px au doigt), nouvelle mesure à
+375 × 812 : 0 / 15 (unifilaire), 0 / 25 (plan), 0 / 19 (tableau), 0 / 13 (matériel), 0 / 54 (projet),
+0 / 17 (contrôle). Les totaux baissent sur petit écran parce que six commandes de la barre passent dans le menu « ⋯ ». À 767 px, la
 colonne était masquée avant la mesure « avant » des vues et ouverte après : comparer la ligne « colonne ouverte ».
 La largeur de 767 px est celle où l'outil simule encore un écran tactile ; le préréglage « tablette » (768 × 1024)
 simule une souris et garde donc la présentation d'ordinateur.
