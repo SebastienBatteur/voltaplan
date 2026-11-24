@@ -35,10 +35,6 @@ export function pruneReferences(project: Project, alsoDerogations = true): Proje
   const ids = nodeIds(project);
   const has = (id: string) => ids.has(id);
   let changed = false;
-  const mark = <T>(before: T, after: T): T => {
-    if (JSON.stringify(before) !== JSON.stringify(after)) changed = true;
-    return after;
-  };
   const pages = project.plan.pages.map((pg) => {
     const symbols = pg.symbols.filter((s) => has(s.nodeId));
     if (symbols.length === pg.symbols.length) return pg;
@@ -53,8 +49,15 @@ export function pruneReferences(project: Project, alsoDerogations = true): Proje
         changed = true;
         continue;
       }
-      next[boardId] = mark(layout, { ...layout, slots: filterKeys(layout.slots, has) ?? {}, checks: filterKeys(layout.checks, has) });
-      if (!layout.checks) delete next[boardId].checks;
+      // Comparaison par nombre de clés (pas de sérialisation : la disposition contient la photo du tableau)
+      const slots = filterKeys(layout.slots, has) ?? {};
+      const checks = filterKeys(layout.checks, has);
+      const same = Object.keys(slots).length === Object.keys(layout.slots ?? {}).length && Object.keys(checks ?? {}).length === Object.keys(layout.checks ?? {}).length;
+      if (same) next[boardId] = layout;
+      else {
+        changed = true;
+        next[boardId] = { ...layout, slots, ...(checks ? { checks } : {}) };
+      }
     }
     boards = next;
   }
