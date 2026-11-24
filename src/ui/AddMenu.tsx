@@ -8,8 +8,8 @@ const COMMON: NodeKind[] = ['protection', 'cable', 'board', 'socket', 'switch', 
 
 /**
  * Menu « Ajouter » : la liste des éléments permis sous `node` (règles de src/model/schema.ts).
- * Ouvert depuis le « ＋ » d'une ligne de l'arborescence, le bouton des propriétés ou un clic droit sur
- * l'unifilaire ; l'élément ajouté est sélectionné, prêt à être rempli.
+ * Ouvert depuis le « ＋ » d'une ligne de l'arborescence, le bouton des propriétés ou un clic droit (appui long
+ * au doigt) sur l'unifilaire ; l'élément ajouté est sélectionné, prêt à être rempli.
  */
 export function AddMenu({ node, at, onClose }: { node: ElNode; at: { x: number; y: number }; onClose: () => void }) {
   const t = useStore((s) => s.t);

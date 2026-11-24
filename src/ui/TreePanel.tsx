@@ -63,6 +63,8 @@ export function TreePanel() {
         <div className={'tree-row' + (n.id === selectedId ? ' selected' : chain.has(n.id) ? ' chain' : '')} style={{ paddingLeft: 4 + depth * 12 }} onClick={() => select(n.id)}>
           <span
             className="twisty"
+            role={n.children.length ? 'button' : undefined}
+            aria-expanded={n.children.length ? open : undefined}
             onClick={(e) => {
               e.stopPropagation();
               toggle(n.id);

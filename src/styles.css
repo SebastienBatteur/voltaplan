@@ -1723,3 +1723,272 @@ body.resizing-h * {
     display: none;
   }
 }
+
+/* ---------- Ergonomie mobile (téléphone, tablette) ----------
+ * Grand écran à la souris : rien ne change (règles limitées à `pointer: coarse` ou aux petites largeurs).
+ * Voir docs/validation-plateformes.md, section « Ergonomie tactile ». */
+
+/* Barre d'outils : version compacte sous 700 px (menu « ⋯ », onglets défilants) */
+.narrow-only {
+  display: none;
+}
+.toolbar-more {
+  position: relative;
+}
+.toolbar-more-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 230px;
+}
+.toolbar-more-list button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.toolbar-more-list kbd {
+  font-size: 11px;
+  color: var(--muted);
+  background: none;
+  font-family: inherit;
+}
+.toolbar-more-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px;
+}
+.side-show-label {
+  display: none;
+}
+@media (max-width: 800px) {
+  /* Colonne empilée au-dessus du dessin : la bande « afficher » devient une barre lisible */
+  .side-show {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .side-show-label {
+    display: inline;
+    font-size: 13px;
+  }
+  /* Largeur de colonne sans objet quand elle est empilée (la largeur retenue est en style en ligne) */
+  main.with-side .side-resizer {
+    display: none;
+  }
+  main.with-side .side {
+    width: auto !important;
+  }
+}
+/* Barre compacte : petit écran, ou tablette au doigt (boutons de 44 px : la barre complète prendrait 3 lignes) */
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+  .toolbar {
+    gap: 4px;
+    padding: 4px 8px;
+  }
+  .toolbar .wide-only,
+  .toolbar .grow,
+  .brand-name {
+    display: none;
+  }
+  .toolbar .narrow-only {
+    display: block;
+  }
+  .brand {
+    margin-right: 0;
+  }
+  .toolbar .file-name {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+  .toolbar .save-state {
+    max-width: 90px;
+  }
+  /* Onglets : une seule ligne sous les actions, qui défile horizontalement */
+  .toolbar .tabs {
+    order: 10;
+    flex: 1 0 100%;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .toolbar .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .toolbar .tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+}
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+  /* Plan et tableau : réglages empilés au-dessus du dessin (plus de chevauchement), repliables */
+  .canvas-wrap.stacked {
+    display: flex;
+    flex-direction: column;
+  }
+  .canvas-wrap.stacked > .narrow-only {
+    display: flex;
+  }
+  .canvas-wrap.stacked > .stack-toggle {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--panel);
+    color: var(--muted);
+    text-align: left;
+    padding: 4px 10px;
+  }
+  .canvas-wrap.stacked > .plan-toolbar {
+    position: static;
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-wrap.stacked > .plan-toolbar.folded {
+    display: none;
+  }
+  .canvas-wrap.stacked > .canvas {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+  }
+  .canvas-wrap.stacked > .canvas-tools {
+    top: auto;
+    bottom: 8px;
+  }
+  .canvas-wrap.stacked > .hint {
+    top: auto;
+    bottom: 8px;
+    left: 8px;
+    right: 72px;
+    transform: none;
+  }
+}
+
+/* Cibles au doigt : au moins 44 × 44 px (recommandation WCAG 2.5.5, Apple et Android) */
+@media (pointer: coarse) {
+  button,
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* 16 px : iOS ne zoome plus la page à l'entrée dans un champ */
+  select,
+  textarea,
+  input[type='text'],
+  input[type='number'],
+  input[type='date'],
+  input[type='password'],
+  input[type='search'],
+  input[type='email'],
+  input[type='url'],
+  input:not([type]) {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  input[type='range'] {
+    min-height: 44px;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 20px;
+    height: 20px;
+  }
+  label:has(> input[type='checkbox']),
+  label:has(> input[type='radio']) {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  button.link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .finding-actions button {
+    padding: 4px 10px;
+  }
+  .add-menu button {
+    padding: 8px 12px;
+  }
+  /* Arborescence : lignes, dépliage et « ＋ » au doigt */
+  .tree-row {
+    min-height: 44px;
+  }
+  .tree-row .twisty {
+    width: 44px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tree-add {
+    min-height: 44px;
+    line-height: normal;
+  }
+  /* Colonne de gauche : titres, masquer / afficher, séparation à glisser */
+  .side .side-toggle {
+    min-height: 44px;
+  }
+  .side-hide {
+    top: 0;
+    right: 0;
+    min-height: 44px;
+    line-height: normal;
+  }
+  .side-show {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .side-splitter {
+    flex: 0 0 44px;
+    margin: -19px 0;
+    position: relative;
+    z-index: 4;
+    opacity: 1;
+    background: linear-gradient(var(--border), var(--border)) center / 100% 6px no-repeat;
+  }
+  .side-splitter:hover {
+    background: linear-gradient(var(--accent), var(--accent)) center / 100% 6px no-repeat;
+  }
+  .side-resizer:hover {
+    background: none;
+  }
+  .side-resizer {
+    width: 44px;
+    right: -22px;
+  }
+  .palette-group summary {
+    min-height: 44px;
+    padding: 12px 0;
+  }
+  /* Liens du pied de page : même hauteur de cible (le pied passe de 22 à 44 px de haut) */
+  .legal-footer {
+    padding-block: 0;
+  }
+  .legal-footer a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  /* Pas de bulle « copier / enregistrer l'image » d'iOS pendant un appui long sur le dessin */
+  .canvas {
+    -webkit-touch-callout: none;
+  }
+}

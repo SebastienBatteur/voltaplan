@@ -72,6 +72,14 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Protection des projets gardés dans le navigateur contre l'effacement automatique (stockage persistant), place utilisée affichée, conseil pour Safari / iPhone / iPad.
 - Repère « Hors ligne » près du bouton IA. Voir [docs/offline.md](docs/offline.md).
 
+### Téléphone et tablette (ergonomie tactile)
+- Au doigt, chaque bouton, champ, liste et case fait au moins 44 × 44 px (lignes de l'arborescence, « ＋ », dépliage, titres et bande de la colonne, séparation à glisser, menus, fenêtres). Champs en 16 px : iOS ne zoome plus à la saisie. Rien ne change à la souris.
+- Barre d'outils compacte sur petit écran (et sur tablette au doigt) : deux lignes au lieu de trois ; « Annuler », « Rétablir », « Mettre à jour », « IA » et la langue passent dans un menu « ⋯ » ; « Enregistrer » reste visible ; onglets des vues sur une ligne qui défile ; nom du fichier tronqué.
+- Plan et tableau : réglages empilés au-dessus du dessin au lieu de le recouvrir, repliables (« Réglages du tableau », « Outils du plan ») ; restent ouverts pendant le calage de la photo.
+- Appui long au doigt : ouvre le menu « Ajouter » sur un élément de l'unifilaire, et « Ajouter ici » sur le plan (comme le clic droit, absent sur iPhone et iPad). Indications « appui long » au lieu de « clic droit » sur écran tactile.
+- Zoom à deux doigts (pincement) sur l'unifilaire, le plan et le tableau.
+- Vérifié en émulation seulement (Chrome, 375 × 812 et 767 × 1024 tactiles) : [docs/validation-plateformes.md](docs/validation-plateformes.md#5-ergonomie-tactile-émulation).
+
 ### Application de bureau (Tauri)
 - Première compilation réelle (CI) : Windows, macOS (Apple Silicon et Intel) et Linux. État, risques et recommandations : [docs/desktop-tauri.md](docs/desktop-tauri.md).
 - `release.yml` échouait avant toute compilation (script npm `tauri` absent) : corrigé.

@@ -996,6 +996,13 @@ export const fr = {
   'storage.full.device': 'Plus de place sur le disque : le fichier n’a pas été modifié (l’original est intact) et votre travail est gardé dans ce navigateur. Libérez de l’espace, puis cliquez sur Enregistrer.',
   'storage.full.cloud': 'Espace {where} plein : rien n’a été remplacé, votre version est gardée dans ce navigateur (Fichier → Versions locales). Libérez de l’espace sur {where}, puis cliquez sur Enregistrer (l’envoi n’est pas retenté automatiquement).',
   'storage.tooLarge': 'Projet trop volumineux pour {where} ({size} Mo, limite {limit} Mo) : rien n’a été envoyé, votre version est gardée dans ce navigateur. Enregistrez-le sur l’appareil ou dans un autre service.',
+  // --- ergonomie mobile ---
+  'add.hintTouch': "Pour ajouter : appui long sur un élément du schéma, ou « ＋ » dans l'arborescence",
+  'plan.hint.elementTouch': "Touchez le plan pour placer : {name}. Vous choisirez ensuite où il se branche dans l'unifilaire. (Appui long sur le plan : même chose, pour n'importe quel élément.)",
+  'menu.more': "Plus d'actions",
+  'menu.language': 'Langue',
+  'board.settings': 'Réglages du tableau',
+  'plan.tools': 'Outils du plan',
 };
 
 export type Dict = typeof fr;

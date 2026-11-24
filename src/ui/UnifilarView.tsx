@@ -6,6 +6,7 @@ import { useChain, useDerived } from './derived';
 import { layoutUnifilar } from '../unifilar/layout';
 import { Symbol, symbolSize } from '../unifilar/symbols';
 import { usePanZoom } from './usePanZoom';
+import { useCoarsePointer } from './touch';
 
 export function UnifilarView() {
   const project = useStore((s) => s.project);
@@ -26,7 +27,9 @@ export function UnifilarView() {
   const up = project.meta.unifilarDirection !== 'down';
 
   const layout = useMemo(() => layoutUnifilar(project.roots, labelFn, { up }), [project.roots, labelFn, up]);
-  const pz = usePanZoom({ w: layout.w, h: layout.h }, fileName + '|' + project.roots[0]?.id + '|' + up);
+  // Au doigt, l'appui long sur un élément ouvre le menu « Ajouter » (comme le clic droit)
+  const pz = usePanZoom({ w: layout.w, h: layout.h }, fileName + '|' + project.roots[0]?.id + '|' + up, { holdMenu: true });
+  const coarse = useCoarsePointer();
 
   // Lien plan ↔ unifilaire : centrer sur l'élément sélectionné
   useEffect(() => {
@@ -39,7 +42,7 @@ export function UnifilarView() {
   return (
     <div className="canvas-wrap">
       {adding && <AddMenu node={adding.node} at={adding.at} onClose={() => setAdding(null)} />}
-      <div className="canvas-hint">{t('add.hint')}</div>
+      <div className="canvas-hint">{t(coarse ? 'add.hintTouch' : 'add.hint')}</div>
       <div className="canvas-tools">
         <button onClick={pz.fit}>{t('action.zoomFit')}</button>
         <button onClick={() => setMeta({ unifilarDirection: up ? 'down' : 'up' })} title={t(up ? 'unifilar.dirDown' : 'unifilar.dirUp')}>

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
+import { useCoarsePointer } from './touch';
 import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
 import type { ElNode, PlanPage, Pt } from '../model/types';
 import { uid } from '../model/tree';
@@ -244,7 +245,11 @@ export function PlanView() {
 
   const page = project_.plan.pages[Math.min(pageIndex, project_.plan.pages.length - 1)];
   const bounds = planBounds(page, project_.plan);
-  const pz = usePanZoom(bounds, fileName + '|' + page.id);
+  // Au doigt, l'appui long sur le fond ouvre « Ajouter ici » (comme le clic droit)
+  const pz = usePanZoom(bounds, fileName + '|' + page.id, { holdMenu: true });
+  const coarse = useCoarsePointer();
+  /** Petit écran : outils empilés au-dessus du dessin, repliables (le bouton n'apparaît que là). */
+  const [toolsOpen, setToolsOpen] = useState(true);
   const [dragging, setDragging] = useState<{ id: string; pos: Pt; start: Pt; moved: boolean } | null>(null);
   const draggingRef = useRef(dragging);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
@@ -473,7 +478,7 @@ export function PlanView() {
     tool === 'furniture'
       ? t('plan.hint.furniture', { name: furnKind ? t('furniture.' + furnKind) : '' })
       : tool === 'element'
-      ? t('plan.hint.element', { name: elementKind ? t('kind.' + elementKind) : '' })
+      ? t(coarse ? 'plan.hint.elementTouch' : 'plan.hint.element', { name: elementKind ? t('kind.' + elementKind) : '' })
       : tool === 'align'
       ? t('plan.hint.align' + scalePts.length)
       : tool === 'rectify'
@@ -488,8 +493,11 @@ export function PlanView() {
   const empty = !page.walls.length && !page.symbols.length && !page.images.length;
 
   return (
-    <div className="canvas-wrap">
-      <div className="plan-toolbar">
+    <div className="canvas-wrap stacked">
+      <button className="stack-toggle narrow-only" aria-expanded={toolsOpen} onClick={() => setToolsOpen((v) => !v)}>
+        <span className="twisty">{toolsOpen ? '▾' : '▸'}</span> {t('plan.tools')}
+      </button>
+      <div className={'plan-toolbar' + (toolsOpen ? '' : ' folded')}>
         {(['select', 'wall', 'door', 'window', 'label'] as Tool[]).map((tl) => (
           <button key={tl} className={tool === tl ? 'active' : ''} onClick={() => chooseTool(tl)} title={t('plan.hint.' + tl)}>
             {t('plan.tool.' + tl)}

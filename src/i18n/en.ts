@@ -990,4 +990,11 @@ export const en: Partial<Dict> = {
   'storage.full.device': 'No space left on the disk: the file was not modified (the original is intact) and your work is kept in this browser. Free up some space, then click Save.',
   'storage.full.cloud': '{where} storage is full: nothing was replaced, your version is kept in this browser (File → Local versions). Free up space on {where}, then click Save (the upload is not retried automatically).',
   'storage.tooLarge': 'Project too large for {where} ({size} MB, limit {limit} MB): nothing was sent, your version is kept in this browser. Save it on the device or to another service.',
+  // --- ergonomie mobile ---
+  'add.hintTouch': 'To add: long-press an element of the diagram, or "＋" in the tree',
+  'plan.hint.elementTouch': 'Tap the plan to place: {name}. You will then choose where it connects in the single-line diagram. (Long-press on the plan: same thing, for any element.)',
+  'menu.more': 'More actions',
+  'menu.language': 'Language',
+  'board.settings': 'Board settings',
+  'plan.tools': 'Plan tools',
 };

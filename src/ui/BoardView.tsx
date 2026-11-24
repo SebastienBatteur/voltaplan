@@ -147,6 +147,8 @@ export function BoardView() {
   const { numbering, labelFn } = useDerived();
   const encs = useMemo(() => enclosures(project.roots), [project.roots]);
   const [idx, setIdx] = useState(0);
+  /** Petit écran : réglages empilés au-dessus du dessin, repliables (le bouton n'apparaît que là). */
+  const [toolsOpen, setToolsOpen] = useState(true);
   const [drag, setDrag] = useState<Drag | null>(null);
   const [corners, setCorners] = useState<Pt[] | null>(null);
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
@@ -599,8 +601,12 @@ export function BoardView() {
   const target = drag && dragged && drag.moved ? slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged)) : null;
 
   return (
-    <div className="canvas-wrap">
-      <div className="plan-toolbar">
+    <div className="canvas-wrap stacked">
+      <button className="stack-toggle narrow-only" aria-expanded={toolsOpen || !!corners} onClick={() => setToolsOpen((v) => !v)}>
+        <span className="twisty">{toolsOpen || corners ? '▾' : '▸'}</span> {t('board.settings')}
+      </button>
+      {/* Calage de la photo en cours : ses réglages restent visibles */}
+      <div className={'plan-toolbar' + (toolsOpen || corners ? '' : ' folded')}>
         {encs.length > 1 &&
           encs.map((e, i) => (
             <button key={e.board.id} className={i === idx ? 'active' : ''} onClick={() => setIdx(i)}>

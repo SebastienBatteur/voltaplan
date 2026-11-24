@@ -32,7 +32,9 @@ import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
 import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
-import { useStore, type View } from './store';
+import { useStore } from './store';
+import { ToolbarMore } from './ui/ToolbarMore';
+import { ViewTabs } from './ui/ViewTabs';
 import { LANGS, type Lang } from './i18n';
 import { UnifilarView } from './ui/UnifilarView';
 import { PlanView } from './ui/PlanView';
@@ -61,8 +63,6 @@ setOpenModels(() => {
   const st = useStore.getState();
   return [st.project, ...st.past, ...st.future].map((p) => JSON.stringify(p));
 });
-
-const VIEWS: View[] = ['unifilar', 'plan', 'board', 'bom', 'project', 'check'];
 
 export function App() {
   const s = useStore();
@@ -340,7 +340,7 @@ export function App() {
     <div className="app">
       <header className="toolbar">
         <div className="brand">
-          <span className="logo">⚡</span> {APP_NAME}
+          <span className="logo">⚡</span> <span className="brand-name">{APP_NAME}</span>
         </div>
         <FileMenu
           actions={[
@@ -379,25 +379,19 @@ export function App() {
         <button onClick={() => save(false)} className={s.dirty ? 'primary' : ''} title="Ctrl+S">
           {t('menu.save')}
         </button>
-        <button onClick={() => setSyncOpen(true)} title={t('sync.help')}>
+        {/* Petit écran : ces actions secondaires passent dans le menu « ⋯ » (ToolbarMore, en fin de barre) */}
+        <button onClick={() => setSyncOpen(true)} title={t('sync.help')} className="wide-only">
           ⟳ {t('sync.button')}
         </button>
-        <span className="sep" />
-        <button onClick={s.undo} disabled={!s.past.length} title="Ctrl+Z">
+        <span className="sep wide-only" />
+        <button onClick={s.undo} disabled={!s.past.length} title="Ctrl+Z" className="wide-only">
           ↶
         </button>
-        <button onClick={s.redo} disabled={!s.future.length} title="Ctrl+Y">
+        <button onClick={s.redo} disabled={!s.future.length} title="Ctrl+Y" className="wide-only">
           ↷
         </button>
-        <span className="sep" />
-        <nav className="tabs">
-          {VIEWS.map((v) => (
-            <button key={v} className={s.view === v ? 'active' : ''} onClick={() => s.setView(v)}>
-              {t('view.' + v)}
-              {v === 'check' && (errors || warnings) ? <span className={'count ' + (errors ? 'error' : 'warning')}>{errors || warnings}</span> : null}
-            </button>
-          ))}
-        </nav>
+        <span className="sep wide-only" />
+        <ViewTabs errors={errors} warnings={warnings} />
         <span className="grow" />
         <span className="file-name" title={s.fileName}>
           {s.fileName || s.project.meta.title}
@@ -419,18 +413,37 @@ export function App() {
         <OfflineBadge />
         <button
           onClick={() => setAiOpen(true)}
-          className={aiUnlocked ? 'ai-on' : undefined}
+          className={'wide-only' + (aiUnlocked ? ' ai-on' : '')}
           title={aiUnlocked ? `${t('ai.title')} — ${t('ai.on')}` : t('ai.title')}
         >
           ⚙ {t('ai.button')}
         </button>
-        <select value={s.lang} onChange={(e) => s.setLang(e.target.value as Lang)} aria-label="Langue">
+        <select className="wide-only" value={s.lang} onChange={(e) => s.setLang(e.target.value as Lang)} aria-label="Langue">
           {LANGS.map((l) => (
             <option key={l.code} value={l.code}>
               {l.label}
             </option>
           ))}
         </select>
+        <ToolbarMore
+          actions={[
+            { label: t('menu.undo'), shortcut: 'Ctrl+Z', run: s.undo, disabled: !s.past.length },
+            { label: t('menu.redo'), shortcut: 'Ctrl+Y', run: s.redo, disabled: !s.future.length },
+            { label: '⟳ ' + t('sync.button'), run: () => setSyncOpen(true) },
+            { label: '⚙ ' + t('ai.button') + (aiUnlocked ? ` — ${t('ai.on')}` : ''), run: () => setAiOpen(true) },
+          ]}
+        >
+          <label className="toolbar-more-lang">
+            {t('menu.language')}
+            <select value={s.lang} onChange={(e) => s.setLang(e.target.value as Lang)}>
+              {LANGS.map((l) => (
+                <option key={l.code} value={l.code}>
+                  {l.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </ToolbarMore>
       </header>
 
       {aiOpen && <AiSettingsDialog onClose={() => setAiOpen(false)} />}

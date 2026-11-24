@@ -86,7 +86,7 @@ export function SidePanels({ tree, props, palette }: { tree: ReactNode; props: R
   if (l.hidden)
     return (
       <button className="side-show" title={t('panel.show')} aria-label={t('panel.show')} onClick={() => setL((x) => ({ ...x, hidden: false }))}>
-        ›
+        ›<span className="side-show-label">{t('panel.show')}</span>
       </button>
     );
 
