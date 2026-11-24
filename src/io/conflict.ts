@@ -36,10 +36,60 @@ export class AuthError extends Error {
 
 export const isAuthError = (e: unknown): e is AuthError => e instanceof AuthError;
 
-/** Espace de stockage du navigateur plein (IndexedDB, localStorage). */
-export function isQuotaError(e: unknown): boolean {
-  const n = (e as { name?: string } | null)?.name;
-  return n === 'QuotaExceededError' || n === 'NS_ERROR_DOM_QUOTA_REACHED' || (e as { code?: number } | null)?.code === 22;
+/**
+ * Espace de stockage du navigateur plein (IndexedDB, localStorage ; aussi `write()` d'un fichier File System
+ * Access, voir StorageFullError). Chrome, Safari : `QuotaExceededError` ; Firefox : `NS_ERROR_DOM_QUOTA_REACHED`
+ * (localStorage) ; anciens navigateurs : code 22. Une erreur qui en enveloppe une autre (`cause`) est examinée aussi.
+ */
+export function isQuotaError(e: unknown, depth = 0): boolean {
+  if (!e || typeof e !== 'object' || depth > 3) return false;
+  const n = (e as { name?: string }).name;
+  if (n === 'QuotaExceededError' || n === 'NS_ERROR_DOM_QUOTA_REACHED' || (e as { code?: number }).code === 22) return true;
+  return isQuotaError((e as { cause?: unknown }).cause, depth + 1);
+}
+
+/**
+ * Plus de place à la destination : disque de l'appareil plein (`where: 'device'`), espace du service épuisé
+ * (OneDrive 507 `quotaLimitReached`, Dropbox `insufficient_space`, Google Drive 403 `storageQuotaExceeded`).
+ * Rien n'est perdu : la version est gardée dans le navigateur ; l'envoi n'est PAS remis en attente (il échouerait
+ * de nouveau) : l'utilisateur libère de la place puis clique sur « Enregistrer ».
+ */
+export class StorageFullError extends Error {
+  constructor(
+    readonly where: string,
+    readonly detail?: string,
+  ) {
+    super(`Plus de place : ${where}${detail ? ` (${detail})` : ''}.`);
+    this.name = 'StorageFullError';
+  }
+}
+
+/** Fichier trop gros pour la destination (GitHub : 100 Mo par fichier avec l'API « contents »). */
+export class FileTooLargeError extends Error {
+  constructor(
+    readonly where: string,
+    readonly size: number,
+    readonly limit: number,
+  ) {
+    super(`Fichier trop gros pour ${where} : ${size} octets (limite ${limit}).`);
+    this.name = 'FileTooLargeError';
+  }
+}
+
+/** Destination pleine ou fichier trop gros : à ne jamais réessayer automatiquement. */
+export const isDestinationFull = (e: unknown): e is StorageFullError | FileTooLargeError => e instanceof StorageFullError || e instanceof FileTooLargeError;
+
+/**
+ * Réponse d'un service signalant un espace épuisé (corps lu par l'appelant, tronqué). Comportements d'après la
+ * documentation des services, testés avec des réponses simulées [à vérifier avec de vrais comptes] :
+ *  - OneDrive (Microsoft Graph) : 507 Insufficient Storage, code `quotaLimitReached` ;
+ *  - Dropbox : 409 avec `insufficient_space` dans `error_summary` (ex. « path/insufficient_space/ ») ;
+ *  - Google Drive : 403 avec la raison `storageQuotaExceeded`.
+ */
+export function cloudQuotaReached(status: number, body: string): boolean {
+  if (status === 507) return true;
+  if (/quotaLimitReached|insufficient_space|storageQuotaExceeded/.test(body)) return status === 403 || status === 409 || status === 400 || status === 413;
+  return false;
 }
 
 /**

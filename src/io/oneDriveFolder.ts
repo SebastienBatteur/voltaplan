@@ -13,7 +13,7 @@
  * session d'envoi et la redirection des téléchargements (`/content`) pointent vers un autre domaine
  * (*.files.1drv.com, *.sharepoint.com), à autoriser dans la CSP (src/security/csp.ts) si nécessaire].
  */
-import { AuthError, ConflictError } from './conflict';
+import { AuthError, cloudQuotaReached, ConflictError, StorageFullError } from './conflict';
 import type { FolderBackend, FolderEntry } from '../format/storageBackend';
 
 export const GRAPH_APPROOT = 'https://graph.microsoft.com/v1.0/me/drive/special/approot';
@@ -53,7 +53,11 @@ export class OneDriveFolderBackend implements FolderBackend {
   }
 
   private async fail(r: Response): Promise<never> {
-    throw new Error(`OneDrive : ${r.status} ${(await r.text().catch(() => '')).slice(0, 200)}`);
+    const text = (await r.text().catch(() => '')).slice(0, 2000);
+    // 507 « quotaLimitReached » : espace OneDrive épuisé ; les documents déjà envoyés restent (reprise sans renvoi),
+    // le modèle n'est pas publié [à vérifier avec un vrai compte]
+    if (cloudQuotaReached(r.status, text)) throw new StorageFullError('OneDrive', String(r.status));
+    throw new Error(`OneDrive : ${r.status} ${text.slice(0, 200)}`);
   }
 
   async readText(path: string) {

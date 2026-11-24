@@ -8,11 +8,14 @@
  * 3. Pas de réseau, ou connexion au service à refaire (jeton expiré) : rien n'est perdu, la version reste dans le
  *    navigateur, et l'envoi en attente est mémorisé (il survit à la fermeture de l'application) pour être repris.
  * 4. Chaque enregistrement, conflit ou attente laisse une version locale (historique dans le navigateur).
+ * 5. Destination pleine (disque, espace du service épuisé) ou fichier trop gros : version gardée dans le navigateur,
+ *    erreur typée remontée (message traduit) ; l'envoi n'est PAS mis en attente : il échouerait de nouveau à
+ *    chaque reprise. L'utilisateur libère de la place, puis clique sur « Enregistrer ».
  *
  * Fonctions d'accès injectables : testé sans navigateur ni réseau.
  */
 import type { Project } from '../model/types';
-import { conflictName, isAuthError, isConflict, isNetworkError } from './conflict';
+import { conflictName, isAuthError, isConflict, isDestinationFull, isNetworkError } from './conflict';
 import type { CloudFile, CloudId, SaveMode } from './cloud';
 import type { FolderLocation, GithubSettings, LocalVersion, Location, PendingSave } from './storage';
 
@@ -89,6 +92,11 @@ export async function saveAt(loc: Location, project: Project, fileName: string, 
   } catch (e) {
     if (isNetworkError(e)) return wait('offline');
     if (isAuthError(e)) return wait('auth');
+    if (isDestinationFull(e)) {
+      // Rien n'est perdu (version locale), et aucune reprise automatique : elle échouerait en boucle
+      await keep('pending');
+      throw e;
+    }
     if (!isConflict(e)) throw e;
     await keep('conflict');
     if (loc.kind === 'device') return { status: 'deviceConflict', name };

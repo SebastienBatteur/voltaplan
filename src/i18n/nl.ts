@@ -986,4 +986,8 @@ export const nl: Partial<Dict> = {
   'format.saveAsFolderHelp': 'Aanbevolen voor projecten met foto’s: elk document wordt slechts één keer verzonden, daarna enkel het model.',
   'format.folders': 'Projectmappen',
   'format.remoteAssetMismatch': 'Een document in de externe map komt niet overeen met het origineel (andere grootte): er werd niets gepubliceerd. Controleer de map « {path} ».',
+  // --- intégrité v2 ---
+  'storage.full.device': 'Geen ruimte meer op de schijf: het bestand werd niet gewijzigd (het origineel is intact) en uw werk is bewaard in deze browser. Maak ruimte vrij en klik daarna op Opslaan.',
+  'storage.full.cloud': 'Opslagruimte van {where} vol: er werd niets vervangen, uw versie is bewaard in deze browser (Bestand → Lokale versies). Maak ruimte vrij op {where} en klik daarna op Opslaan (het verzenden wordt niet automatisch opnieuw geprobeerd).',
+  'storage.tooLarge': 'Project te groot voor {where} ({size} MB, limiet {limit} MB): er werd niets verzonden, uw versie is bewaard in deze browser. Sla het op het toestel of in een andere dienst op.',
 };

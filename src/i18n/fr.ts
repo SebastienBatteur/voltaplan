@@ -992,6 +992,10 @@ export const fr = {
   'format.saveAsFolderHelp': 'Recommandé pour les projets avec photos : chaque document n’est envoyé qu’une fois, seul le modèle est renvoyé ensuite.',
   'format.folders': 'Dossiers de projet',
   'format.remoteAssetMismatch': 'Un document du dossier distant ne correspond pas à l’original (taille différente) : rien n’a été publié. Vérifiez le dossier « {path} ».',
+  // --- intégrité v2 ---
+  'storage.full.device': 'Plus de place sur le disque : le fichier n’a pas été modifié (l’original est intact) et votre travail est gardé dans ce navigateur. Libérez de l’espace, puis cliquez sur Enregistrer.',
+  'storage.full.cloud': 'Espace {where} plein : rien n’a été remplacé, votre version est gardée dans ce navigateur (Fichier → Versions locales). Libérez de l’espace sur {where}, puis cliquez sur Enregistrer (l’envoi n’est pas retenté automatiquement).',
+  'storage.tooLarge': 'Projet trop volumineux pour {where} ({size} Mo, limite {limit} Mo) : rien n’a été envoyé, votre version est gardée dans ce navigateur. Enregistrez-le sur l’appareil ou dans un autre service.',
 };
 
 export type Dict = typeof fr;

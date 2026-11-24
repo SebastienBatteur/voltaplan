@@ -11,6 +11,7 @@
  *
  * La logique est ici, testée avec un magasin en mémoire ; le magasin IndexedDB est dans assetsIdb.ts.
  */
+import { isQuotaError } from '../io/conflict';
 import { assetLimit, DEFAULT_LIMITS, type ArchiveLimits } from './limits';
 import { ASSET_TYPES, sniffType, type AssetExt } from './manifest';
 import { blobBytes, isSha256Hex, sha256Hex } from './sha256';
@@ -174,7 +175,15 @@ export class AssetStore {
     // Type MIME exact (d'après la signature) porté par le Blob lui-même
     const typed = blob.type === ASSET_TYPES[ext] ? blob : blob.slice(0, blob.size, ASSET_TYPES[ext]);
     const rec: AssetRecord = { sha256: sha, mime: ASSET_TYPES[ext], size: blob.size, addedAt: this.now().toISOString(), blob: typed, ...(name ? { name: name.slice(0, 255) } : {}) };
-    await this.backend.putAssetIfAbsent(rec);
+    try {
+      await this.backend.putAssetIfAbsent(rec);
+    } catch (e) {
+      // Stockage plein : les images dérivées (cache régénérable) sont libérées d'abord, puis un seul nouvel essai.
+      // Jamais un document. Toujours plein : l'erreur remonte (message « espace insuffisant »), rien n'est perdu
+      // (l'appelant garde l'image intégrée ou le document dans sa source).
+      if (!isQuotaError(e) || !(await this.pruneDerived().catch(() => 0))) throw e;
+      await this.backend.putAssetIfAbsent(rec);
+    }
     if (verify) {
       const back = await this.backend.getAsset(sha);
       if (!back || back.blob.size !== blob.size || (await sha256Hex(back.blob)) !== sha) {

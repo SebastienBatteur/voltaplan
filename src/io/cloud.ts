@@ -21,7 +21,7 @@
  */
 import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
-import { AuthError, ConflictError, conflictName } from './conflict';
+import { AuthError, cloudQuotaReached, ConflictError, conflictName, StorageFullError } from './conflict';
 import { MIMETYPE } from '../format/manifest';
 import { listPending } from './storage';
 
@@ -100,10 +100,15 @@ export function redirectUri(): string {
   return new URL('oauth.html', location.href).href.split('?')[0];
 }
 
-async function check(r: Response): Promise<Response> {
+async function check(r: Response, where = 'service'): Promise<Response> {
   // 401 : jeton expiré ou révoqué (reconnexion), voir withToken
   if (r.status === 401) throw new AuthError('service');
-  if (!r.ok) throw new Error(`${r.status} ${r.statusText} — ${(await r.text()).slice(0, 200)}`);
+  if (!r.ok) {
+    const text = (await r.text().catch(() => '')).slice(0, 2000);
+    // Espace du service épuisé : erreur typée, jamais remise en attente (voir saveFlow.ts)
+    if (cloudQuotaReached(r.status, text)) throw new StorageFullError(where, `${r.status}`);
+    throw new Error(`${r.status} ${r.statusText} — ${text.slice(0, 200)}`);
+  }
   return r;
 }
 
@@ -114,9 +119,11 @@ async function dropboxCheck(r: Response, name: string): Promise<Response> {
   if (r.status === 409) {
     const text = await r.text();
     if (/conflict/i.test(text)) throw new ConflictError('Dropbox : ' + name, text.slice(0, 120));
+    // « path/insufficient_space » : espace Dropbox épuisé [à vérifier avec un vrai compte]
+    if (cloudQuotaReached(409, text)) throw new StorageFullError('Dropbox', '409 insufficient_space');
     throw new Error(`409 — ${text.slice(0, 200)}`);
   }
-  return check(r);
+  return check(r, 'Dropbox');
 }
 
 export const PROVIDERS: Record<CloudId, Provider> = {
@@ -224,7 +231,8 @@ export const PROVIDERS: Record<CloudId, Provider> = {
       const r = await fetch(url, { method: 'PUT', headers, body: asBody(data) });
       // 412 : version différente (If-Match) ; 409 : un fichier de ce nom existe déjà (création)
       if (r.status === 412 || r.status === 409) throw new ConflictError('OneDrive : ' + name, String(r.status));
-      await check(r);
+      // 507 « quotaLimitReached » : espace OneDrive épuisé (StorageFullError) [à vérifier avec un vrai compte]
+      await check(r, 'OneDrive');
       const j = (await r.json()) as { id: string; name: string; size: number; eTag?: string; lastModifiedDateTime?: string };
       return { id: j.id, name: j.name, size: j.size, rev: j.eTag, modified: j.lastModifiedDateTime };
     },
@@ -276,6 +284,8 @@ export const PROVIDERS: Record<CloudId, Provider> = {
             headers: { Authorization: 'Bearer ' + token, 'Content-Type': typeof data === 'string' ? 'application/json' : MIMETYPE },
             body: asBody(data),
           }),
+          // 403 « storageQuotaExceeded » : espace Google épuisé (StorageFullError) [à vérifier avec un vrai compte]
+          'Google Drive',
         );
         const saved = driveFile(await r.json());
         const head = mode === 'update' ? existing.rev?.split('|')[1] : undefined;
@@ -323,6 +333,7 @@ async function driveCreate(token: string, name: string, data: CloudData): Promis
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
       body,
     }),
+    'Google Drive',
   );
   return driveFile(await r.json());
 }

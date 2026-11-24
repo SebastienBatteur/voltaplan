@@ -91,12 +91,17 @@ export class DirectoryBackend implements FolderBackend {
 
   async putIfAbsent(path: string, data: Blob) {
     const cur = await this.file(path);
-    if (cur) return { status: 'exists' as const, size: cur.size };
+    // Fichier VIDE : reste d'une écriture interrompue (`getFileHandle({ create: true })` crée le fichier avant que
+    // le contenu ne soit écrit, et `abort()` le laisse vide). Jamais un document (un document n'est jamais vide) :
+    // il est complété, sinon le dossier resterait bloqué (taille différente → RemoteAssetMismatchError).
+    if (cur && !(cur.size === 0 && data.size > 0)) return { status: 'exists' as const, size: cur.size };
     return { status: 'created' as const, size: (await this.write(path, data)).size };
   }
 
   async writeConditional(path: string, data: string, expected: string | null | 'any') {
-    const cur = await this.file(path);
+    let cur = await this.file(path);
+    // Modèle vide laissé par une création interrompue : considéré comme absent (rien à protéger)
+    if (cur && cur.size === 0 && expected === null) cur = null;
     // Pas d'écriture conditionnelle atomique sur un disque local : comparaison juste avant d'écrire (comme files.ts)
     if (expected === null && cur) throw new ConflictError(path, 'existe');
     if (expected !== null && expected !== 'any' && (!cur || versionOf(cur) !== expected)) throw new ConflictError(path, 'modifié');

@@ -202,19 +202,23 @@ export interface ZipInput {
  * Access, `createWritable()` : fichier temporaire, remplacement à la fermeture). Sans `sink`, renvoie un `Blob`.
  * Les entrées sont écrites sans descripteur de données quand la taille est connue (en-têtes locaux complets :
  * récupération possible d'une archive tronquée).
+ * `signal` : interruption (AbortError) ; l'archive n'est alors jamais terminée (pas de répertoire central) et la
+ * destination n'est pas fermée : à l'appelant de l'abandonner (`abort()` d'un `createWritable()`).
  */
-export async function writeZip(inputs: Iterable<ZipInput> | AsyncIterable<ZipInput>, sink?: WritableStream<Uint8Array>): Promise<Blob | null> {
+export async function writeZip(inputs: Iterable<ZipInput> | AsyncIterable<ZipInput>, sink?: WritableStream<Uint8Array>, signal?: AbortSignal): Promise<Blob | null> {
   const lib = await loadZipLib();
   const blobWriter = sink ? null : new lib.BlobWriter('application/zip');
   const writer = new lib.ZipWriter(sink ?? blobWriter!, { extendedTimestamp: false, useWebWorkers: false, keepOrder: true });
   try {
     for await (const input of inputs) {
+      signal?.throwIfAborted();
       const data = typeof input.data === 'function' ? await input.data() : input.data;
       // Textes encodés ici (UTF-8) : pas de Blob intermédiaire
       const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
       const reader = ArrayBuffer.isView(bytes) ? new lib.Uint8ArrayReader(bytes as Uint8Array) : new lib.BlobReader(bytes);
-      await writer.add(input.path, reader, { level: input.store ? 0 : 9, dataDescriptor: false, useWebWorkers: false });
+      await writer.add(input.path, reader, { level: input.store ? 0 : 9, dataDescriptor: false, useWebWorkers: false, signal });
     }
+    signal?.throwIfAborted();
     const out = await writer.close();
     return blobWriter ? (out as Blob) : null;
   } catch (e) {

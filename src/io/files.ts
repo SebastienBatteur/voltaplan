@@ -13,7 +13,7 @@ import { MIMETYPE } from '../format/manifest';
 import type { ArchiveReport } from '../format/archive';
 import type { Project } from '../model/types';
 import type { MigrationWarning } from '../model/migrate';
-import { ConflictError } from './conflict';
+import { ConflictError, isQuotaError, StorageFullError } from './conflict';
 import { openProjectData, projectToV1, serializeProject } from './projectData';
 
 export { decodeText } from './projectData';
@@ -151,7 +151,8 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
         await serializeProject(project, writable);
       } catch (e) {
         await writable.abort(e).catch(() => undefined);
-        throw e;
+        // Disque plein (QuotaExceededError de write()) : message propre au fichier, pas au navigateur
+        throw isQuotaError(e) ? new StorageFullError('device', (e as Error).message) : e;
       }
       currentHandle = handle;
       lastWritten = await handleState(handle);

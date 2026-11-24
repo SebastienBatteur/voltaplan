@@ -582,7 +582,7 @@ export async function buildLogicalFiles(input: ArchiveWriteInput): Promise<{ man
  * Écrit l'archive, en flux, dans l'ordre : mimetype, manifest.json, project.json, sources.json, README.txt,
  * assets/*, derived/*. Médias stockés sans recompression, textes en deflate 9. Sans `sink`, renvoie un `Blob`.
  */
-export async function writeArchive(input: ArchiveWriteInput, sink?: WritableStream<Uint8Array>): Promise<{ blob: Blob | null; manifest: Manifest }> {
+export async function writeArchive(input: ArchiveWriteInput, sink?: WritableStream<Uint8Array>, signal?: AbortSignal): Promise<{ blob: Blob | null; manifest: Manifest }> {
   const { manifest, texts } = await buildLogicalFiles(input);
   const byPath = new Map<string, () => Promise<Blob>>();
   for (const o of input.originals) {
@@ -613,6 +613,6 @@ export async function writeArchive(input: ArchiveWriteInput, sink?: WritableStre
       };
     }
   }
-  const blob = await writeZip(entries(), sink);
+  const blob = await writeZip(entries(), sink, signal);
   return { blob, manifest };
 }

@@ -986,4 +986,8 @@ export const en: Partial<Dict> = {
   'format.saveAsFolderHelp': 'Recommended for projects with photos: each document is uploaded only once, then only the model is sent.',
   'format.folders': 'Project folders',
   'format.remoteAssetMismatch': 'A document in the remote folder does not match the original (different size): nothing was published. Check the folder "{path}".',
+  // --- intégrité v2 ---
+  'storage.full.device': 'No space left on the disk: the file was not modified (the original is intact) and your work is kept in this browser. Free up some space, then click Save.',
+  'storage.full.cloud': '{where} storage is full: nothing was replaced, your version is kept in this browser (File → Local versions). Free up space on {where}, then click Save (the upload is not retried automatically).',
+  'storage.tooLarge': 'Project too large for {where} ({size} MB, limit {limit} MB): nothing was sent, your version is kept in this browser. Save it on the device or to another service.',
 };

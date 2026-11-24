@@ -12,7 +12,7 @@ import type { SealedSecret } from '../ai/secureStore';
 import type { CloudFile, CloudId } from './cloud';
 import { checkTextSize } from './limits';
 import { sanitizeProjectImages } from './sanitize';
-import { AuthError, ConflictError, isQuotaError } from './conflict';
+import { AuthError, ConflictError, FileTooLargeError, isQuotaError } from './conflict';
 import type { SaveMode } from './cloud';
 
 export type Location =
@@ -464,6 +464,9 @@ export async function githubLoad(token: string, s: GithubSettings, path: string)
   return { data: await r.blob(), sha };
 }
 
+/** Taille maximale d'un fichier envoyé par l'API « contents » de GitHub (100 Mo, documentation GitHub). */
+export const GITHUB_MAX_FILE = 100 * 1024 * 1024;
+
 /**
  * Enregistrement (voir SaveMode de cloud.ts) :
  *  - `update` : avec le SHA mémorisé à l'ouverture ; GitHub refuse (409) si le fichier a changé depuis ;
@@ -473,19 +476,25 @@ export async function githubLoad(token: string, s: GithubSettings, path: string)
  */
 export async function githubSave(token: string, s: GithubSettings, path: string, project: Project, mode: SaveMode = 'overwrite', expectedSha?: string): Promise<string | undefined> {
   if (mode === 'update' && !expectedSha) throw new ConflictError('GitHub : ' + path, 'version inconnue');
+  // Archive v2 (documents compris) assemblée d'abord : trop grosse pour l'API « contents » (100 Mo par fichier
+  // [à vérifier avec un vrai compte]) → FileTooLargeError, sans rien envoyer.
+  const archive = (await (await import('./projectData')).serializeProject(project))!;
+  if (archive.size > GITHUB_MAX_FILE) throw new FileTooLargeError('GitHub', archive.size, GITHUB_MAX_FILE);
   const sha = mode === 'update' ? expectedSha : mode === 'overwrite' ? await githubSha(token, s, path) : undefined;
   const body = {
     message: `Voltaplan : ${project.meta.title || path}`,
-    // Archive v2 (documents compris) ; l'API « contents » accepte jusqu'à 100 Mo [à vérifier].
-    content: bytesToBase64(await (await import('../format/sha256')).blobBytes((await (await import('./projectData')).serializeProject(project))!)),
+    content: bytesToBase64(await (await import('../format/sha256')).blobBytes(archive)),
     branch: s.branch,
     ...(sha ? { sha } : {}),
   };
   const r = await fetch(ghUrl(s.repo, path), { method: 'PUT', headers: { ...ghHeaders(token), 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   // 409 : SHA périmé (modifié ailleurs) ; 422 « sha wasn't supplied » : un fichier existe déjà (création sur un nom pris)
   if (r.status === 409) throw new ConflictError('GitHub : ' + path, '409');
+  // 413, ou 422 « too large » : fichier refusé par sa taille [à vérifier avec un vrai compte]
+  if (r.status === 413) throw new FileTooLargeError('GitHub', archive.size, GITHUB_MAX_FILE);
   if (r.status === 422) {
     const msg = await r.text();
+    if (/too (large|big)|exceeds|file size/i.test(msg)) throw new FileTooLargeError('GitHub', archive.size, GITHUB_MAX_FILE);
     if (/sha/i.test(msg)) throw new ConflictError('GitHub : ' + path, '422');
     throw new Error('GitHub : 422 ' + msg.slice(0, 200));
   }

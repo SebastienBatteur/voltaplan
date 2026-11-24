@@ -74,7 +74,8 @@ export async function saveToFolder(b: FolderBackend, projectText: string, docs: 
     const path = assetPath(d.sha256, ext);
     const name = path.slice(FOLDER_ASSETS.length + 1);
     const remote = present.get(name);
-    if (remote !== undefined) {
+    // Taille 0 : reste d'une écriture interrompue (répertoire local), complété par le service s'il le permet
+    if (remote !== undefined && !(remote === 0 && d.size > 0)) {
       // Déjà envoyé (nommé par son contenu) : jamais renvoyé, jamais remplacé
       if (remote !== d.size) throw new RemoteAssetMismatchError(path);
       skipped++;
