@@ -15,9 +15,13 @@
  * Connexion : fenêtre du service (OAuth 2, PKCE pour Dropbox et OneDrive ; jeton direct pour Google, dont le
  * flux « code » exige un secret). Le jeton d'accès reste en mémoire le temps de la session, jamais enregistré.
  * Les fichiers sont rangés dans le dossier de l'application (Dropbox, OneDrive) ou créés par elle (Drive).
+ *
+ * Enregistrement sans perte (voir conflict.ts) : la version du fichier (eTag, rev, version) est mémorisée à la
+ * lecture ; l'enregistrement suivant est conditionnel et lève une ConflictError si le fichier a changé ailleurs.
  */
 import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
+import { ConflictError } from './conflict';
 
 export type CloudId = 'gdrive' | 'onedrive' | 'dropbox';
 export const CLOUDS: CloudId[] = ['gdrive', 'onedrive', 'dropbox'];
@@ -27,7 +31,20 @@ export interface CloudFile {
   name: string;
   size?: number;
   modified?: string;
+  /**
+   * Version du fichier au moment de la lecture ou du dernier enregistrement : eTag (OneDrive), rev (Dropbox),
+   * version (Google Drive). L'enregistrement suivant n'aboutit que si le fichier n'a pas changé depuis.
+   */
+  rev?: string;
 }
+
+/**
+ * Mode d'enregistrement :
+ *  - `update` : remplace `existing` seulement s'il est encore à la version `existing.rev` (sinon ConflictError) ;
+ *  - `create` : crée un nouveau fichier, sans jamais remplacer un fichier du même nom (sinon ConflictError) ;
+ *  - `overwrite` : remplace sans condition (uniquement après confirmation explicite de l'utilisateur).
+ */
+export type SaveMode = 'update' | 'create' | 'overwrite';
 
 interface Provider {
   label: string;
@@ -36,8 +53,8 @@ interface Provider {
   scope: string;
   extraAuth?: Record<string, string>;
   list: (token: string) => Promise<CloudFile[]>;
-  load: (token: string, f: CloudFile) => Promise<string>;
-  save: (token: string, name: string, data: string, existing?: CloudFile) => Promise<CloudFile>;
+  load: (token: string, f: CloudFile) => Promise<{ text: string; rev?: string }>;
+  save: (token: string, name: string, data: string, mode: SaveMode, existing?: CloudFile) => Promise<CloudFile>;
 }
 
 const env = import.meta.env as Record<string, string | undefined>;
@@ -78,6 +95,16 @@ async function check(r: Response): Promise<Response> {
 
 const isProjectName = (n: string) => n.endsWith(FILE_EXT) || n.endsWith('.openrgie');
 
+/** Dropbox : un conflit est une erreur 409 dont le résumé contient « conflict ». */
+async function dropboxCheck(r: Response, name: string): Promise<Response> {
+  if (r.status === 409) {
+    const text = await r.text();
+    if (/conflict/i.test(text)) throw new ConflictError('Dropbox : ' + name, text.slice(0, 120));
+    throw new Error(`409 — ${text.slice(0, 200)}`);
+  }
+  return check(r);
+}
+
 export const PROVIDERS: Record<CloudId, Provider> = {
   dropbox: {
     label: 'Dropbox',
@@ -93,32 +120,56 @@ export const PROVIDERS: Record<CloudId, Provider> = {
           body: JSON.stringify({ path: '' }),
         }),
       );
-      const j = (await r.json()) as { entries: { '.tag': string; id: string; name: string; path_lower: string; size?: number; server_modified?: string }[] };
-      return j.entries.filter((e) => e['.tag'] === 'file' && isProjectName(e.name)).map((e) => ({ id: e.path_lower, name: e.name, size: e.size, modified: e.server_modified }));
+      const j = (await r.json()) as { entries: { '.tag': string; id: string; name: string; path_lower: string; size?: number; server_modified?: string; rev?: string }[] };
+      return j.entries
+        .filter((e) => e['.tag'] === 'file' && isProjectName(e.name))
+        .map((e) => ({ id: e.path_lower, name: e.name, size: e.size, modified: e.server_modified, rev: e.rev }));
     },
     load: async (token, f) => {
       const r = await check(
         await fetch('https://content.dropboxapi.com/2/files/download', {
           method: 'POST',
-          headers: { Authorization: 'Bearer ' + token, 'Dropbox-API-Arg': JSON.stringify({ path: f.id }) },
+          headers: { Authorization: 'Bearer ' + token, 'Dropbox-API-Arg': asciiJson({ path: f.id }) },
         }),
       );
-      return r.text();
+      // Révision lue : en-tête Dropbox-API-Result ; à défaut (en-tête non exposé), demandée à part.
+      let rev: string | undefined;
+      try {
+        rev = (JSON.parse(r.headers.get('Dropbox-API-Result') ?? '{}') as { rev?: string }).rev;
+      } catch {
+        /* en-tête illisible */
+      }
+      const text = await r.text();
+      if (!rev) {
+        const m = await check(
+          await fetch('https://api.dropboxapi.com/2/files/get_metadata', {
+            method: 'POST',
+            headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ path: f.id }),
+          }),
+        );
+        rev = ((await m.json()) as { rev?: string }).rev;
+      }
+      return { text, rev };
     },
-    save: async (token, name, data) => {
-      const r = await check(
+    save: async (token, name, data, mode, existing) => {
+      if (mode === 'update' && !existing?.rev) throw new ConflictError('Dropbox : ' + name, 'version inconnue');
+      const dbxMode = mode === 'update' ? { '.tag': 'update', update: existing!.rev } : mode === 'create' ? 'add' : 'overwrite';
+      const path = mode === 'update' ? existing!.id : '/' + name;
+      const r = await dropboxCheck(
         await fetch('https://content.dropboxapi.com/2/files/upload', {
           method: 'POST',
           headers: {
             Authorization: 'Bearer ' + token,
             'Content-Type': 'application/octet-stream',
-            'Dropbox-API-Arg': asciiJson({ path: '/' + name, mode: 'overwrite', mute: true }),
+            'Dropbox-API-Arg': asciiJson({ path, mode: dbxMode, autorename: false, mute: true }),
           },
           body: new TextEncoder().encode(data),
         }),
+        name,
       );
-      const j = (await r.json()) as { path_lower: string; name: string; size: number };
-      return { id: j.path_lower, name: j.name, size: j.size };
+      const j = (await r.json()) as { path_lower: string; name: string; size: number; rev?: string; server_modified?: string };
+      return { id: j.path_lower, name: j.name, size: j.size, rev: j.rev, modified: j.server_modified };
     },
   },
   onedrive: {
@@ -128,20 +179,37 @@ export const PROVIDERS: Record<CloudId, Provider> = {
     scope: 'Files.ReadWrite.AppFolder',
     list: async (token) => {
       const r = await check(await fetch('https://graph.microsoft.com/v1.0/me/drive/special/approot/children', { headers: { Authorization: 'Bearer ' + token } }));
-      const j = (await r.json()) as { value: { id: string; name: string; size: number; lastModifiedDateTime: string; file?: unknown }[] };
-      return j.value.filter((e) => e.file && isProjectName(e.name)).map((e) => ({ id: e.id, name: e.name, size: e.size, modified: e.lastModifiedDateTime }));
+      const j = (await r.json()) as { value: { id: string; name: string; size: number; lastModifiedDateTime: string; eTag?: string; file?: unknown }[] };
+      return j.value
+        .filter((e) => e.file && isProjectName(e.name))
+        .map((e) => ({ id: e.id, name: e.name, size: e.size, modified: e.lastModifiedDateTime, rev: e.eTag }));
     },
-    load: async (token, f) => (await check(await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${encodeURIComponent(f.id)}/content`, { headers: { Authorization: 'Bearer ' + token } }))).text(),
-    save: async (token, name, data) => {
-      const r = await check(
-        await fetch(`https://graph.microsoft.com/v1.0/me/drive/special/approot:/${encodeURIComponent(name)}:/content`, {
-          method: 'PUT',
-          headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-          body: data,
-        }),
-      );
-      const j = (await r.json()) as { id: string; name: string; size: number };
-      return { id: j.id, name: j.name, size: j.size };
+    load: async (token, f) => {
+      // Version d'abord, contenu ensuite : si le fichier change entre les deux, l'enregistrement suivant sera
+      // refusé (prudent), jamais l'inverse.
+      const auth = { Authorization: 'Bearer ' + token };
+      const meta = await check(await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${encodeURIComponent(f.id)}`, { headers: auth }));
+      const rev = ((await meta.json()) as { eTag?: string }).eTag;
+      const text = await (await check(await fetch(`https://graph.microsoft.com/v1.0/me/drive/items/${encodeURIComponent(f.id)}/content`, { headers: auth }))).text();
+      return { text, rev };
+    },
+    save: async (token, name, data, mode, existing) => {
+      if (mode === 'update' && !existing?.rev) throw new ConflictError('OneDrive : ' + name, 'version inconnue');
+      const headers: Record<string, string> = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' };
+      let url: string;
+      if (mode === 'update') {
+        url = `https://graph.microsoft.com/v1.0/me/drive/items/${encodeURIComponent(existing!.id)}/content`;
+        headers['If-Match'] = existing!.rev!;
+      } else {
+        const behavior = mode === 'create' ? 'fail' : 'replace';
+        url = `https://graph.microsoft.com/v1.0/me/drive/special/approot:/${encodeURIComponent(name)}:/content?@microsoft.graph.conflictBehavior=${behavior}`;
+      }
+      const r = await fetch(url, { method: 'PUT', headers, body: data });
+      // 412 : version différente (If-Match) ; 409 : un fichier de ce nom existe déjà (création)
+      if (r.status === 412 || r.status === 409) throw new ConflictError('OneDrive : ' + name, String(r.status));
+      await check(r);
+      const j = (await r.json()) as { id: string; name: string; size: number; eTag?: string; lastModifiedDateTime?: string };
+      return { id: j.id, name: j.name, size: j.size, rev: j.eTag, modified: j.lastModifiedDateTime };
     },
   },
   gdrive: {
@@ -151,40 +219,61 @@ export const PROVIDERS: Record<CloudId, Provider> = {
     list: async (token) => {
       const q = encodeURIComponent(`name contains '${FILE_EXT}' and trashed = false`);
       const r = await check(
-        await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,size,modifiedTime)&orderBy=modifiedTime desc`, { headers: { Authorization: 'Bearer ' + token } }),
+        await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,size,modifiedTime,version)&orderBy=modifiedTime desc`, {
+          headers: { Authorization: 'Bearer ' + token },
+        }),
       );
-      const j = (await r.json()) as { files: { id: string; name: string; size?: string; modifiedTime: string }[] };
-      return j.files.map((f) => ({ id: f.id, name: f.name, size: f.size ? Number(f.size) : undefined, modified: f.modifiedTime }));
+      const j = (await r.json()) as { files: { id: string; name: string; size?: string; modifiedTime: string; version?: string }[] };
+      return j.files.map((f) => ({ id: f.id, name: f.name, size: f.size ? Number(f.size) : undefined, modified: f.modifiedTime, rev: f.version }));
     },
-    load: async (token, f) => (await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(f.id)}?alt=media`, { headers: { Authorization: 'Bearer ' + token } }))).text(),
-    save: async (token, name, data, existing) => {
-      if (existing) {
+    load: async (token, f) => {
+      const rev = await driveVersion(token, f.id);
+      const text = await (await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(f.id)}?alt=media`, { headers: { Authorization: 'Bearer ' + token } }))).text();
+      return { text, rev };
+    },
+    save: async (token, name, data, mode, existing) => {
+      if (mode !== 'create' && existing) {
+        // L'API v3 n'a pas d'écriture conditionnelle : on compare la version juste avant l'envoi. La fenêtre de
+        // course se réduit à la durée de l'envoi ; Drive garde de toute façon l'historique des révisions.
+        if (mode === 'update') {
+          if (!existing.rev) throw new ConflictError('Google Drive : ' + name, 'version inconnue');
+          const now = await driveVersion(token, existing.id);
+          if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
+        }
         const r = await check(
-          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media`, {
+          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&fields=id,name,size,modifiedTime,version`, {
             method: 'PATCH',
             headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: data,
           }),
         );
-        const j = (await r.json()) as { id: string; name: string };
-        return { id: j.id, name: j.name };
+        return driveFile(await r.json());
       }
+      // Création : Drive admet plusieurs fichiers de même nom, un fichier existant n'est donc jamais remplacé.
       const boundary = 'voltaplan' + Math.random().toString(36).slice(2);
       const body =
         `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, mimeType: 'application/json' })}\r\n` +
         `--${boundary}\r\nContent-Type: application/json\r\n\r\n${data}\r\n--${boundary}--`;
       const r = await check(
-        await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+        await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,size,modifiedTime,version', {
           method: 'POST',
           headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
           body,
         }),
       );
-      const j = (await r.json()) as { id: string; name: string };
-      return { id: j.id, name: j.name };
+      return driveFile(await r.json());
     },
   },
 };
+
+async function driveVersion(token: string, id: string): Promise<string | undefined> {
+  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=version`, { headers: { Authorization: 'Bearer ' + token } }));
+  return ((await r.json()) as { version?: string }).version;
+}
+
+function driveFile(j: { id: string; name: string; size?: string; modifiedTime?: string; version?: string }): CloudFile {
+  return { id: j.id, name: j.name, size: j.size ? Number(j.size) : undefined, modified: j.modifiedTime, rev: j.version };
+}
 
 /** En-tête HTTP Dropbox-API-Arg : JSON en ASCII (caractères non ASCII échappés). */
 export function asciiJson(v: unknown): string {
@@ -278,10 +367,12 @@ export async function cloudList(id: CloudId): Promise<CloudFile[]> {
   return PROVIDERS[id].list(cloudToken(id) ?? (await cloudConnect(id)));
 }
 
-export async function cloudLoad(id: CloudId, f: CloudFile): Promise<string> {
+/** Lecture : texte du projet et version du fichier (à mémoriser pour l'enregistrement suivant). */
+export async function cloudLoad(id: CloudId, f: CloudFile): Promise<{ text: string; rev?: string }> {
   return PROVIDERS[id].load(cloudToken(id) ?? (await cloudConnect(id)), f);
 }
 
-export async function cloudSave(id: CloudId, name: string, project: Project, existing?: CloudFile): Promise<CloudFile> {
-  return PROVIDERS[id].save(cloudToken(id) ?? (await cloudConnect(id)), name, JSON.stringify(project), existing);
+/** Enregistrement (voir SaveMode) ; renvoie le fichier à jour avec sa nouvelle version. */
+export async function cloudSave(id: CloudId, name: string, project: Project, mode: SaveMode, existing?: CloudFile): Promise<CloudFile> {
+  return PROVIDERS[id].save(cloudToken(id) ?? (await cloudConnect(id)), name, JSON.stringify(project), mode, existing);
 }

@@ -11,6 +11,9 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Vérifications manuelles signalées : bornes de recharge, photovoltaïque, dispositions transitoires.
 
 ### Modèle et fichiers
+- **Aucun écrasement silencieux** : « Enregistrer » vérifie que le fichier n'a pas été modifié ailleurs depuis son ouverture (OneDrive : eTag ; Dropbox : révision ; Google Drive : version ; GitHub : SHA ; navigateur : révision ; fichier local : date et taille). En cas de conflit, votre version est enregistrée en copie datée, au même endroit ; les deux versions sont conservées.
+- Versions locales (20 dernières par projet) et brouillon automatique par onglet, récupérable après une fermeture ou un plantage. Pas de réseau : l'enregistrement est mis en attente et repris au retour de la connexion.
+- État de l'enregistrement affiché en permanence (enregistré, en attente, conflit, erreur).
 - Suppression : plus de références orphelines (tableau, mesures, dérogations…).
 - Ouverture validée et migrable ; message clair pour un fichier tronqué, inconnu ou d'une version plus récente.
 

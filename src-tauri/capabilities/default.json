@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Droits de la fenêtre principale : boîte de dialogue « Enregistrer » et écriture du fichier choisi.",
+  "description": "Droits de la fenêtre principale : boîte de dialogue « Enregistrer », écriture du fichier choisi et lecture de sa date de modification (détection d'une modification faite ailleurs avant de réécrire).",
   "windows": ["main"],
-  "permissions": ["core:default", "dialog:allow-save", "fs:allow-write-text-file", "fs:allow-write-file"]
+  "permissions": ["core:default", "dialog:allow-save", "fs:allow-write-text-file", "fs:allow-write-file", "fs:allow-stat"]
 }

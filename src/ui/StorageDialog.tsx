@@ -25,6 +25,7 @@ import { uid } from '../model/tree';
 import { FILE_EXT } from '../brand';
 import type { Project } from '../model/types';
 import { download } from '../io/files';
+import { isConflict } from '../io/conflict';
 import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, type CloudFile, type CloudId } from '../io/cloud';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
@@ -166,8 +167,8 @@ export function StorageDialog({
                     const existing = items.find((i) => i.name === name.trim());
                     const id = existing?.id ?? uid();
                     if (existing && !confirm(t('storage.overwrite', { name: name.trim() }))) return;
-                    await browserSave(id, name.trim(), project);
-                    onSaved(name.trim(), { kind: 'browser', id });
+                    const rev = await browserSave(id, name.trim(), project, 'any');
+                    onSaved(name.trim(), { kind: 'browser', id, rev });
                     onClose();
                   })
                 }
@@ -186,7 +187,7 @@ export function StorageDialog({
                         ? run(async () => {
                             const e = await browserLoad(i.id);
                             if (!e) return;
-                            onOpened(parseProject(e.data, i.name), i.name, { kind: 'browser', id: i.id });
+                            onOpened(parseProject(e.data, i.name), i.name, { kind: 'browser', id: i.id, rev: e.rev ?? 0 });
                             onClose();
                           })
                         : setName(i.name)
@@ -277,8 +278,16 @@ export function StorageDialog({
                     onClick={() =>
                       run(async () => {
                         const path = ghPath(name);
-                        await githubSave(unlocked, gh, path, project);
-                        onSaved(name.trim(), { kind: 'github', repo: gh.repo, branch: gh.branch, path });
+                        // Jamais de remplacement implicite : création, puis confirmation si le fichier existe déjà
+                        let sha: string | undefined;
+                        try {
+                          sha = await githubSave(unlocked, gh, path, project, 'create');
+                        } catch (e) {
+                          if (!isConflict(e)) throw e;
+                          if (!confirm(t('storage.overwrite', { name: name.trim() }))) return;
+                          sha = await githubSave(unlocked, gh, path, project, 'overwrite');
+                        }
+                        onSaved(name.trim(), { kind: 'github', repo: gh.repo, branch: gh.branch, path, sha });
                         onClose();
                       })
                     }
@@ -310,8 +319,8 @@ export function StorageDialog({
                       className="link"
                       onClick={() =>
                         run(async () => {
-                          const text = await githubLoad(unlocked!, gh, f.path);
-                          onOpened(parseProject(text, f.name), f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path });
+                          const { text, sha } = await githubLoad(unlocked!, gh, f.path);
+                          onOpened(parseProject(text, f.name), f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path, sha });
                           onClose();
                         })
                       }
@@ -408,7 +417,8 @@ function CloudTab({
                 setClientId(svc, cid);
                 const existing = (await cloudList(svc)).find((f) => f.name === fileName);
                 if (existing && !confirm(t('storage.overwrite', { name: fileName }))) return;
-                const f = await cloudSave(svc, fileName, project, existing);
+                // Remplacement confirmé ci-dessus, sinon création (refusée si un fichier du même nom apparaît entre-temps)
+                const f = await cloudSave(svc, fileName, project, existing ? 'overwrite' : 'create', existing);
                 onSaved(name.trim(), { kind: 'cloud', provider: svc, file: f });
                 onClose();
               })
@@ -450,8 +460,8 @@ function CloudTab({
                 className="link"
                 onClick={() =>
                   run(async () => {
-                    const text = await cloudLoad(svc, f);
-                    onOpened(parseProject(text, f.name), f.name, { kind: 'cloud', provider: svc, file: f });
+                    const { text, rev } = await cloudLoad(svc, f);
+                    onOpened(parseProject(text, f.name), f.name, { kind: 'cloud', provider: svc, file: { ...f, rev: rev ?? f.rev } });
                     onClose();
                   })
                 }

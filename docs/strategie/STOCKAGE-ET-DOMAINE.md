@@ -1,7 +1,12 @@
 # Prévention des pertes de données, contrôle de version, migration de domaine
 
-Statut : **proposition**, rien n'est implémenté. Les comportements des fournisseurs sont décrits d'après leur
-documentation, que j'ai consultée de mémoire **[à vérifier sur les pages officielles avant l'implémentation]**.
+Statut :
+
+- **§ 1 à 4 implémentés le 2026-11-24** (voir § 6) ;
+- **§ 5 (domaine) reste une proposition** : aucune migration n'est faite.
+
+Les comportements des fournisseurs sont décrits d'après leur documentation, consultée de mémoire et testée avec des
+réponses simulées **[à vérifier sur les pages officielles et avec de vrais comptes]**.
 
 ## 1. Principe
 
@@ -125,8 +130,62 @@ origine n'affiche plus jamais Voltaplan, et ses données deviennent inaccessible
 - page de transfert et tests : S à M (environ 1 semaine) ;
 - suivi : faible, sur 12 mois.
 
-### 5.3 Conséquences sur les autres chantiers
+### 5.3 Options de migration comparées
+
+| Option | Fonctionnement | Données du navigateur | Risque | Coût |
+|---|---|---|---|---|
+| **A. Domaine personnalisé sur le dépôt actuel** | réglage « Custom domain » de GitHub Pages | **perdues pour l'application** si GitHub redirige l'ancienne adresse **[à vérifier]** : l'ancienne origine n'exécute plus Voltaplan, donc rien ne peut lire ses données | élevé | minimal |
+| **B. Nouveau site à part, ancien site en transition** (recommandé) | nouveau domaine servi par un second dépôt Pages ou par Cloudflare Pages ; l'ancien site publie une version de transition | **transférées** par l'utilisateur (§ 5.2), ou exportées en fichier | faible | un second déploiement à maintenir 12 mois |
+| **C. Rester sur `github.io`** | aucun changement | conservées | origine partagée avec les autres sites du compte ; adresse liée à un compte personnel | nul |
+| **D. Redirection seule (`voltaplan.org` → `github.io`)** | le domaine renvoie vers l'adresse actuelle | conservées | ne règle ni l'origine partagée ni la dépendance au compte | environ 10 € par an |
+
+**Risques liés au stockage du navigateur, quelle que soit l'option :**
+
+- **Un stockage par origine.** Rien ne passe d'une origine à l'autre sans action de la page.
+- **Éviction.** Le stockage non persistant peut être effacé si le disque manque de place. Sur Safari, il peut l'être
+  après 7 jours sans visite pour un site non installé **[à vérifier]**.
+- **Navigation privée et effacement des données de site** : tout est perdu.
+- **PWA installée** : elle reste liée à l'ancienne origine ; il faut la réinstaller.
+- **Clés et jetons chiffrés** : le transfert garde le chiffrement, mais l'utilisateur doit se souvenir de sa phrase
+  secrète.
+
+**Mécanismes de transfert sans serveur, du plus simple au plus confortable :**
+
+1. **Export en fichier** : un `.voltaplan` par projet, ou une archive de sauvegarde globale. Il fonctionne partout,
+   y compris quand l'ancienne origine ne peut plus ouvrir de fenêtre.
+2. **`postMessage` entre fenêtres** (§ 5.2) : un clic. L'origine cible et l'origine source sont vérifiées
+   strictement, et chaque projet passe par la validation habituelle.
+3. **Fragment d'URL** (`#données`) : à exclure. La taille est limitée, et les données pourraient se retrouver dans
+   l'historique du navigateur.
+4. **BroadcastChannel ou stockage partagé** : impossible entre origines différentes.
+
+### 5.4 Conséquences sur les autres chantiers
 
 - Les identifiants OAuth « officiels » du projet ne doivent être enregistrés **qu'une fois le domaine choisi**.
 - La CSP et le manifest ne changent pas : ils utilisent des chemins relatifs.
 - Le guide, les liens du README et `site/` doivent être mis à jour au moment de la bascule.
+
+## 6. État d'implémentation (2026-11-24)
+
+| Élément | Où | Testé |
+|---|---|---|
+| Erreur de conflit, nom de copie daté | `src/io/conflict.ts` | `test/saveFlow.test.ts` |
+| OneDrive : `If-Match` (eTag), création en `conflictBehavior=fail` | `src/io/cloud.ts` | fetch simulé |
+| Dropbox : mode `update` avec `rev`, création en `add`, sans renommage automatique | `src/io/cloud.ts` | fetch simulé |
+| Google Drive : version comparée juste avant l'envoi | `src/io/cloud.ts` | fetch simulé |
+| GitHub : SHA mémorisé à l'ouverture ; création sans écrasement ; remplacement seulement après confirmation | `src/io/storage.ts`, `src/ui/StorageDialog.tsx` | fetch simulé |
+| Navigateur : révision par entrée, contrôlée dans la même transaction IndexedDB | `src/io/storage.ts` | **navigateur réel** (conflit simulé entre onglets) |
+| Fichier local : date et taille comparées avant de réécrire (Chrome et Edge, Tauri) | `src/io/files.ts` | logique testée ; Tauri non compilé ici |
+| Orchestration : copie de conflit au même endroit, attente hors ligne, version locale | `src/io/saveFlow.ts` | `test/saveFlow.test.ts` |
+| Versions locales (20 par projet, 300 au total), fenêtre « Versions locales » | `src/io/storage.ts`, `src/ui/VersionsDialog.tsx` | navigateur réel |
+| Brouillons par onglet, signal de vie, récupération après fermeture ou plantage ; « Mettre de côté » ne supprime rien | `src/io/storage.ts`, `src/App.tsx` | navigateur réel (mise à niveau de la base v1 → v2 sans perte) |
+| Indicateur d'état (enregistré, en attente, conflit, erreur) | `src/App.tsx`, `src/styles.css` | navigateur réel |
+| Nouvel essai automatique au retour du réseau | `src/App.tsx` | non testé automatiquement |
+
+**Non vérifié** :
+
+- comportement réel des API avec de vrais comptes (OneDrive, Dropbox, Drive, GitHub), en particulier
+  l'exposition CORS de l'en-tête `Dropbox-API-Result` (une solution de repli est prévue) ;
+- détection sur Tauri (droit `fs:allow-stat` ajouté, à compiler) ;
+- sauvegarde sur un fichier local quand un client de synchronisation modifie la date sans changer le contenu (faux
+  conflit possible, sans perte).

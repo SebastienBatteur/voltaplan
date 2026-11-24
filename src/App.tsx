@@ -4,7 +4,22 @@ import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
 import { PrintDialog } from './print/PrintDialog';
 import { StorageDialog } from './ui/StorageDialog';
-import { AUTOSAVE_ID, browserDelete, browserLoad, browserSave, getGithubToken, githubSave, loadGithubSettings, parseProject, type Location } from './io/storage';
+import {
+  addVersion,
+  browserDelete,
+  browserSave,
+  draftId,
+  getGithubToken,
+  githubSave,
+  loadGithubSettings,
+  orphanDrafts,
+  parseProject,
+  startTabHeartbeat,
+  type Location,
+} from './io/storage';
+import { locationKey, saveAt, type SaveDeps, type SaveOutcome } from './io/saveFlow';
+import { conflictName } from './io/conflict';
+import { VersionsDialog } from './ui/VersionsDialog';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { onUpdate } from './appUpdate';
@@ -47,6 +62,7 @@ export function App() {
       const r = await readProjectFile(file);
       s.loadProject(r.project, r.fileName);
       location.current = { kind: 'device' };
+      setSaveState(null);
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       setToast({ text: t('import.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
@@ -55,39 +71,130 @@ export function App() {
     }
   };
 
-  /** Enregistrer : au même endroit que la dernière fois (appareil, navigateur, GitHub). */
-  const save = async (saveAs = false) => {
-    const loc = location.current;
-    try {
-      if (saveAs) {
+  /** État de l'enregistrement, affiché en permanence dans la barre (voir src/io/saveFlow.ts). */
+  const [saveState, setSaveState] = useState<
+    | { kind: 'saving' }
+    | { kind: 'saved'; where: string; at: Date }
+    | { kind: 'conflict'; copy: string }
+    | { kind: 'pending'; where: string }
+    | { kind: 'error'; message: string }
+    | null
+  >(null);
+  /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
+  const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
+  const [versionsOpen, setVersionsOpen] = useState(false);
+
+  const whereLabel = (loc: Location) =>
+    loc.kind === 'cloud' ? loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox' : loc.kind === 'github' ? 'GitHub' : t('save.where.' + loc.kind);
+
+  const saveDeps = (): SaveDeps => ({
+    browserSave,
+    cloudSave: async (...a) => (await import('./io/cloud')).cloudSave(...a),
+    githubSave,
+    githubToken: getGithubToken,
+    githubSettings: loadGithubSettings,
+    deviceSave: (project, fileName) => saveProject(project, fileName, false),
+    addVersion,
+    newId: () => Math.random().toString(36).slice(2, 10),
+    now: () => new Date(),
+  });
+
+  /** Brouillon de cet onglet supprimé dès que le projet est enregistré quelque part. */
+  const dropDraft = () => void browserDelete(draftId()).catch(() => undefined);
+
+  const applyOutcome = (r: SaveOutcome, projectAtSave: unknown) => {
+    // Le projet a pu changer pendant l'envoi : il ne devient « enregistré » que s'il est resté identique
+    const unchanged = useStore.getState().project === projectAtSave;
+    switch (r.status) {
+      case 'saved':
+        location.current = r.loc;
+        if (unchanged) s.markSaved(r.loc.kind === 'device' ? r.name : useStore.getState().fileName || r.name);
+        setSaveState({ kind: 'saved', where: whereLabel(r.loc), at: new Date() });
+        dropDraft();
+        break;
+      case 'conflictCopy':
+        location.current = r.loc;
+        if (unchanged) s.markSaved(r.copyName);
+        setSaveState({ kind: 'conflict', copy: r.copyName });
+        setToast({ text: t('save.conflictCopy', { name: r.name, copy: r.copyName }) });
+        dropDraft();
+        break;
+      case 'deviceConflict':
+        setSaveState({ kind: 'conflict', copy: '' });
+        setDeviceConflict(r.name);
+        break;
+      case 'pending':
+        setSaveState({ kind: 'pending', where: whereLabel(r.loc) });
+        setToast({ text: t('save.pending', { where: whereLabel(r.loc) }) });
+        break;
+      case 'needsAuth':
+        setSaveState(null);
         setStorage('save');
-        return;
-      }
-      const st = useStore.getState();
-      if (loc.kind === 'browser') {
-        await browserSave(loc.id, st.fileName || st.project.meta.title, st.project);
-        s.markSaved(st.fileName);
-      } else if (loc.kind === 'cloud') {
-        const { cloudSave } = await import('./io/cloud');
-        await cloudSave(loc.provider, loc.file.name, st.project, loc.file);
-        s.markSaved(st.fileName);
-      } else if (loc.kind === 'github') {
-        const token = getGithubToken();
-        if (!token) {
-          setStorage('save');
-          return;
-        }
-        await githubSave(token, loadGithubSettings(), loc.path, st.project);
-        s.markSaved(st.fileName);
-      } else {
-        const name = await saveProject(st.project, st.fileName, false);
-        if (name) s.markSaved(name);
-      }
-      void browserDelete(AUTOSAVE_ID).catch(() => undefined);
-    } catch (e) {
-      setToast({ text: (e as Error).message });
+        break;
+      case 'cancelled':
+        setSaveState(null);
+        break;
     }
   };
+
+  /** Enregistrer : au même endroit que la dernière fois, sans jamais écraser une version modifiée ailleurs. */
+  const save = async (saveAs = false) => {
+    if (saveAs) {
+      setStorage('save');
+      return;
+    }
+    const st = useStore.getState();
+    setSaveState({ kind: 'saving' });
+    try {
+      applyOutcome(await saveAt(location.current, st.project, st.fileName, saveDeps()), st.project);
+    } catch (e) {
+      setSaveState({ kind: 'error', message: errorText(e, t) });
+      setToast({ text: errorText(e, t) });
+    }
+  };
+
+  /** Fichier de l'appareil modifié ailleurs : enregistrer une copie (choix de l'emplacement), ou remplacer. */
+  const resolveDeviceConflict = async (choice: 'copy' | 'overwrite') => {
+    const name = deviceConflict ?? '';
+    setDeviceConflict(null);
+    const st = useStore.getState();
+    try {
+      if (choice === 'overwrite' && !window.confirm(t('save.overwriteConfirm', { name }))) return;
+      const saved =
+        choice === 'copy'
+          ? await saveProject(st.project, st.fileName, true, { suggestedName: conflictName(name || st.fileName || 'projet') })
+          : await saveProject(st.project, st.fileName, false, { force: true });
+      if (!saved) return setSaveState(null);
+      location.current = { kind: 'device' };
+      if (useStore.getState().project === st.project) s.markSaved(saved);
+      void addVersion(locationKey({ kind: 'device' }, saved), saved, st.project, 'save').catch(() => undefined);
+      setSaveState({ kind: 'saved', where: t('save.where.device'), at: new Date() });
+      dropDraft();
+    } catch (e) {
+      setSaveState({ kind: 'error', message: errorText(e, t) });
+    }
+  };
+
+  // Enregistrement en attente (pas de réseau) : repris automatiquement au retour de la connexion, toujours
+  // de façon conditionnelle (un conflit donne une copie, jamais un écrasement).
+  useEffect(() => {
+    if (saveState?.kind !== 'pending') return;
+    const retry = () => {
+      void (async () => {
+        const st = useStore.getState();
+        try {
+          const r = await saveAt(location.current, st.project, st.fileName, saveDeps());
+          applyOutcome(r, st.project);
+          if (r.status === 'saved') setToast({ text: t('save.retried', { where: whereLabel(r.loc) }) });
+        } catch (e) {
+          setSaveState({ kind: 'error', message: errorText(e, t) });
+        }
+      })();
+    };
+    window.addEventListener('online', retry);
+    return () => window.removeEventListener('online', retry);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saveState?.kind]);
 
   // Raccourcis clavier
   useEffect(() => {
@@ -136,21 +243,36 @@ export function App() {
   const [printOpen, setPrintOpen] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
-  const [recover, setRecover] = useState<{ name: string; updated: string; data: string } | null>(null);
+  const [recover, setRecover] = useState<{ id: string; name: string; updated: string; data: string; others: number } | null>(null);
   // Nouvelle version publiée pendant que la page est ouverte (src/appUpdate.ts)
   const [updateReady, setUpdateReady] = useState(false);
   useEffect(() => onUpdate(() => setUpdateReady(true)), []);
 
-  // Brouillon automatique dans le navigateur (toutes les 20 s s'il y a des modifications), récupérable au démarrage
+  // Brouillon automatique dans le navigateur, un par onglet (toutes les 20 s s'il y a des modifications, et quand
+  // l'onglet passe en arrière-plan ou se ferme). Au démarrage, les brouillons d'onglets fermés ou interrompus
+  // (plantage, batterie, mise à jour) sont proposés à la récupération ; ceux d'onglets encore ouverts ne le sont pas.
   useEffect(() => {
-    browserLoad(AUTOSAVE_ID)
-      .then((e) => e && setRecover({ name: e.name, updated: e.updated, data: e.data }))
+    const stopBeat = startTabHeartbeat();
+    orphanDrafts()
+      .then((list) => {
+        const e = list[0];
+        if (e) setRecover({ id: e.id, name: e.name, updated: e.updated, data: e.data, others: list.length - 1 });
+      })
       .catch(() => undefined);
-    const id = setInterval(() => {
+    const keepDraft = () => {
       const st = useStore.getState();
-      if (st.dirty) void browserSave(AUTOSAVE_ID, st.fileName || st.project.meta.title, st.project).catch(() => undefined);
-    }, 20000);
-    return () => clearInterval(id);
+      if (st.dirty) void browserSave(draftId(), st.fileName || st.project.meta.title, st.project, 'any').catch(() => undefined);
+    };
+    const id = setInterval(keepDraft, 20000);
+    const onHide = () => document.visibilityState === 'hidden' && keepDraft();
+    document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('pagehide', keepDraft);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('pagehide', keepDraft);
+      stopBeat();
+    };
   }, []);
   const showSide = s.view === 'unifilar' || s.view === 'plan' || s.view === 'board';
 
@@ -169,12 +291,14 @@ export function App() {
                 resetHandle();
                 location.current = { kind: 'device' };
                 s.loadProject(emptyProject(), '');
+                setSaveState(null);
               },
             },
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
             { label: t('menu.importTrikker'), run: () => open('.trik') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
+            { label: t('menu.versions'), run: () => setVersionsOpen(true) },
             { label: t('menu.print'), shortcut: 'Ctrl+P', run: () => setPrintOpen(true), separatorBefore: true },
           ]}
         />
@@ -206,6 +330,19 @@ export function App() {
           {s.fileName || s.project.meta.title}
           {s.dirty ? ' •' : ''}
         </span>
+        {saveState && (
+          <span
+            className={'save-state ' + saveState.kind}
+            role="status"
+            title={saveState.kind === 'error' ? saveState.message : saveState.kind === 'conflict' && saveState.copy ? saveState.copy : undefined}
+          >
+            {saveState.kind === 'saving' && t('save.state.saving')}
+            {saveState.kind === 'saved' && '✓ ' + t('save.state.saved', { where: saveState.where, time: saveState.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) })}
+            {saveState.kind === 'conflict' && '⚠ ' + t('save.state.conflict')}
+            {saveState.kind === 'pending' && '⏸ ' + t('save.state.pending', { where: saveState.where })}
+            {saveState.kind === 'error' && '✕ ' + t('save.state.error')}
+          </span>
+        )}
         <button
           onClick={() => setAiOpen(true)}
           className={aiUnlocked ? 'ai-on' : undefined}
@@ -232,24 +369,62 @@ export function App() {
           onDevice={() => {
             if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
             else
-              void saveProject(useStore.getState().project, useStore.getState().fileName, true).then((name) => {
-                if (name) {
-                  location.current = { kind: 'device' };
-                  s.markSaved(name);
-                }
-              });
+              void saveProject(useStore.getState().project, useStore.getState().fileName, true)
+                .then((name) => {
+                  if (name) {
+                    location.current = { kind: 'device' };
+                    s.markSaved(name);
+                    void addVersion(locationKey({ kind: 'device' }, name), name, useStore.getState().project, 'save').catch(() => undefined);
+                    setSaveState({ kind: 'saved', where: t('save.where.device'), at: new Date() });
+                    dropDraft();
+                  }
+                })
+                .catch((e) => setToast({ text: errorText(e, t) }));
           }}
           onOpened={(p, name, loc) => {
             if (!confirmDiscard()) return;
             s.loadProject(p, name);
             location.current = loc;
+            setSaveState(null);
           }}
           onSaved={(name, loc) => {
             location.current = loc;
             s.markSaved(name);
-            void browserDelete(AUTOSAVE_ID).catch(() => undefined);
+            void addVersion(locationKey(loc, name), name, useStore.getState().project, 'save').catch(() => undefined);
+            setSaveState({ kind: 'saved', where: whereLabel(loc), at: new Date() });
+            dropDraft();
           }}
         />
+      )}
+      {versionsOpen && (
+        <VersionsDialog
+          onClose={() => setVersionsOpen(false)}
+          onOpened={(text) => {
+            resetHandle();
+            location.current = { kind: 'device' };
+            setSaveState(null);
+            setToast({ text });
+          }}
+        />
+      )}
+      {deviceConflict !== null && (
+        <div className="toast" role="alertdialog">
+          {t('save.deviceConflict', { name: deviceConflict })}{' '}
+          <button className="primary" onClick={() => void resolveDeviceConflict('copy')}>
+            {t('save.saveCopy')}
+          </button>{' '}
+          <button className="danger" onClick={() => void resolveDeviceConflict('overwrite')}>
+            {t('save.overwrite')}
+          </button>{' '}
+          <button
+            onClick={() => {
+              setDeviceConflict(null);
+              setSaveState(null);
+            }}
+          >
+            {t('save.cancel')}
+          </button>
+        </div>
       )}
       {updateReady && (
         <div className="toast">
@@ -262,11 +437,19 @@ export function App() {
       )}
       {recover && (
         <div className="toast">
-          {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}{' '}
+          {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}
+          {recover.others > 0 && <> {t('storage.recoverMore', { n: recover.others })}</>}{' '}
           <button
             onClick={() => {
               try {
                 s.loadProject(parseProject(recover.data), recover.name);
+                // Récupéré : non enregistré tant que l'utilisateur ne l'a pas fait ; le brouillon devient celui de cet onglet
+                useStore.setState({ dirty: true });
+                resetHandle();
+                location.current = { kind: 'device' };
+                void browserSave(draftId(), recover.name, useStore.getState().project, 'any')
+                  .then(() => browserDelete(recover.id))
+                  .catch(() => undefined);
               } catch (e) {
                 setToast({ text: errorText(e, t) });
               }
@@ -277,7 +460,16 @@ export function App() {
           </button>{' '}
           <button
             onClick={() => {
-              void browserDelete(AUTOSAVE_ID).catch(() => undefined);
+              // Mis de côté, jamais supprimé : le brouillon rejoint les versions locales
+              const r = recover;
+              void (async () => {
+                try {
+                  await addVersion(`draft:${r.name}`, r.name, parseProject(r.data), 'pending');
+                  await browserDelete(r.id);
+                } catch {
+                  /* brouillon illisible : laissé en place */
+                }
+              })();
               setRecover(null);
             }}
           >
