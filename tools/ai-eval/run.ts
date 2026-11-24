@@ -13,7 +13,7 @@
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, extname, join, resolve } from 'node:path';
-import { readBoardPhoto } from '../../src/ai/boardPhotoAi';
+import { PhotoReading, readBoardPhoto } from '../../src/ai/boardPhotoAi';
 import type { PhotoReadingT } from '../../src/ai/boardPhoto';
 import type { ProviderId } from '../../src/ai/provider';
 import { checkTruth, report, scorePhoto, type GroundTruth, type PhotoScore } from './score';
@@ -158,7 +158,10 @@ async function main() {
         latencyMs = performance.now() - t0;
         if (args.savePredictions) {
           mkdirSync(args.savePredictions, { recursive: true });
-          writeFileSync(join(args.savePredictions, `${name}.prediction.json`), JSON.stringify(reading, null, 2) + '\n');
+          // Réponse de l'IA revalidée par le schéma avant écriture (seuls les champs attendus, types contrôlés) ; nom de
+          // fichier dérivé de la photo locale, jamais de la réponse (voir .github/codeql-accepted.txt)
+          const safe = PhotoReading.parse(reading);
+          writeFileSync(join(args.savePredictions, `${name}.prediction.json`), JSON.stringify(safe, null, 2) + '\n');
         }
       } else {
         const pf = join(args.predictions!, `${name}.prediction.json`);

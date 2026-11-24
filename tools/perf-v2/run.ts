@@ -19,7 +19,7 @@
  */
 import 'fake-indexeddb/auto';
 import { createHash, randomFillSync } from 'node:crypto';
-import { createWriteStream, mkdirSync, openAsBlob, rmSync, statSync, writeFileSync } from 'node:fs';
+import { createWriteStream, mkdirSync, mkdtempSync, openAsBlob, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir, cpus, totalmem } from 'node:os';
 import { join } from 'node:path';
 import { Writable } from 'node:stream';
@@ -36,7 +36,9 @@ const MB = 1024 * 1024;
 const args = process.argv.slice(2);
 const SIZES = (args.find((a) => /^[\d,]+$/.test(a)) ?? '10,50,100,250,500').split(',').map(Number);
 const KEEP = args.includes('--keep');
-const DIR = join(tmpdir(), 'voltaplan-perf-v2-' + process.pid);
+// Dossier temporaire au nom imprévisible, créé atomiquement avec des droits réservés à l'utilisateur (mkdtemp) :
+// pas de collision ni de fichier préparé à l'avance par un autre utilisateur (alerte CodeQL js/insecure-temporary-file)
+const DIR = mkdtempSync(join(tmpdir(), 'voltaplan-perf-v2-'));
 
 /** Générateur pseudo-aléatoire déterministe (tailles reproductibles d'une exécution à l'autre). */
 let seed = 42;

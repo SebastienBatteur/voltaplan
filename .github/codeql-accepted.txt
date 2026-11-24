@@ -5,3 +5,16 @@
 # (aucun script exécuté, rien n'est inséré dans la page) ; les DTD sont refusées avant (hasDtd) et seules les images
 # base64 validées sont reprises. Faux positif.
 js/xss-through-dom src/import/trikker.ts
+
+# Envoi de la photo du tableau au service d'IA (src/ai/provider.ts) : c'est la fonction elle-même. L'image choisie
+# par l'utilisateur part uniquement vers le fournisseur QU'IL a configuré (Anthropic, API compatible OpenAI ou modèle
+# local), après activation de l'IA, autorisation de l'usage « photo du tableau » et affichage du service destinataire ;
+# la CSP limite les destinations possibles (src/security/csp.ts). Dans l'outil d'évaluation (tools/ai-eval), l'appel
+# n'a lieu qu'avec --live, lancé par le propriétaire sur son propre corpus. Flux voulu, documenté dans PRIVACY.md.
+js/file-access-to-http src/ai/provider.ts
+
+# Outil d'évaluation (tools/ai-eval/run.ts, développeur seulement, jamais livré dans l'application) : la lecture
+# renvoyée par l'IA est revalidée par le schéma zod (PhotoReading.parse) puis écrite dans le dossier local choisi par
+# le propriétaire (--save-predictions), sous un nom dérivé de la photo locale et non de la réponse. Pas de chemin ni
+# de contenu exécutable contrôlé par le service distant.
+js/http-to-file-access tools/ai-eval/run.ts
