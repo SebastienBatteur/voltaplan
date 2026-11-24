@@ -25,12 +25,14 @@ consentement et pour sortir du mode « test » **[à vérifier]**.
 | Adresse d'assistance | une adresse dédiée au projet (à créer par le propriétaire ; pas d'adresse personnelle si possible) |
 | Logo | [`docs/assets/logo-google-oauth-120.png`](assets/logo-google-oauth-120.png) (120 × 120 px, PNG, dérivé de l'icône de l'application) |
 | Page d'accueil | `https://voltaplan.org/` : décrit l'application et renvoie vers la confidentialité et les conditions, en pied de page |
-| Règles de confidentialité | `https://voltaplan.org/en/privacy.html` (version anglaise, pour les vérificateurs) ; français `https://voltaplan.org/confidentialite.html`, néerlandais `https://voltaplan.org/nl/privacy.html` |
-| Conditions d'utilisation | `https://voltaplan.org/en/terms.html` ; français `https://voltaplan.org/conditions.html`, néerlandais `https://voltaplan.org/nl/voorwaarden.html` |
+| Règles de confidentialité | `https://voltaplan.org/privacy.html` (français) ; anglais `https://voltaplan.org/en/privacy.html` (à privilégier pour les vérificateurs), néerlandais `https://voltaplan.org/nl/privacy.html` |
+| Conditions d'utilisation | `https://voltaplan.org/terms.html` (français) ; anglais `https://voltaplan.org/en/terms.html`, néerlandais `https://voltaplan.org/nl/terms.html` |
 | Domaines autorisés | `voltaplan.org` |
 | Coordonnées du développeur | adresse du propriétaire (visible seulement de Google) |
 
-La page de confidentialité contient la mention exigée sur l'**utilisation limitée** (« Limited Use ») des données
+Les pages sont publiques, sans authentification, sur le domaine vérifié, et liées en pied de page du site et de
+l'application. La section « Google Drive » détaille la portée `drive.file`, chaque opération, le jeton en mémoire et
+le retrait de l'accès. La page de confidentialité contient aussi la mention exigée sur l'**utilisation limitée** (« Limited Use ») des données
 reçues des API Google, avec le lien vers la *Google API Services User Data Policy*.
 
 ## 3. Propriété du domaine

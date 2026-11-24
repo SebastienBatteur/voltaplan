@@ -6,7 +6,7 @@ Application **gratuite et open source** de création de schémas électriques �
 
 **En ligne** : https://voltaplan.org (guide et application). **Soutenir le projet** (facultatif) : bouton *Sponsor* du dépôt.
 
-> ⚠️ **Aide à la vérification, pas de certification.** Les vérifications RGIE ne remplacent ni le texte officiel du RGIE ni le contrôle par un organisme agréé. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée **parmi les règles vérifiées**, avec les informations saisies. Voir [les conditions d'utilisation](https://voltaplan.org/conditions.html) et [la politique de confidentialité](https://voltaplan.org/confidentialite.html).
+> ⚠️ **Aide à la vérification, pas de certification.** Les vérifications RGIE ne remplacent ni le texte officiel du RGIE ni le contrôle par un organisme agréé. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée **parmi les règles vérifiées**, avec les informations saisies. Voir [les conditions d'utilisation](https://voltaplan.org/terms.html) et [la politique de confidentialité](https://voltaplan.org/privacy.html).
 
 ## Ce qui fonctionne (v0.1)
 

@@ -17,7 +17,7 @@
     <a href="guide.html#installer">Install</a>
     <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Source code</a>
     <a class="btn primary" href="../app/">Open the app</a>
-    <span class="lang"><a href="../confidentialite.html" data-lang="fr">FR</a><a href="../nl/privacy.html" data-lang="nl">NL</a><a href="../en/privacy.html" aria-current="true" data-lang="en">EN</a></span>
+    <span class="lang"><a href="../privacy.html" data-lang="fr">FR</a><a href="../nl/privacy.html" data-lang="nl">NL</a><a href="../en/privacy.html" aria-current="true" data-lang="en">EN</a></span>
   </nav>
 </div></header>
 <main class="doc legal">
@@ -43,7 +43,23 @@
 <li><strong>Website hosting</strong> (GitHub Pages): the usual requests to download the application (IP address, browser), as for any website. No cookies or trackers are added by Voltaplan.</li>
 </ul>
 <p>The application's content security policy blocks connections to any other service.</p>
-<h2>Use of Google user data</h2>
+<h2>Google Drive: permission requested and use of data</h2>
+<p>Google Drive is <strong>optional</strong>. If you choose to save or open your projects there:</p>
+<ul>
+<li><strong>One permission only</strong>: <code>https://www.googleapis.com/auth/drive.file</code>, i.e. access <strong>only to the files and folders that Voltaplan created or that you open with Voltaplan</strong>. Voltaplan has no access to the other files in your Drive, nor to your name, email address, contacts or calendar.</li>
+<li><strong>What Voltaplan does with this permission</strong>, only at your request:
+<ul>
+<li>create your project file (<code>.voltaplan</code>) or its folder (the <code>project.json</code> model and the photos and plans you added);</li>
+<li>list and open these projects, including a file you open from Drive with “Open with Voltaplan”;</li>
+<li>save your changes;</li>
+<li>read the version number and revision history of these files to <strong>detect a change made elsewhere</strong> (another device) and never overwrite it: in case of conflict, a copy is created;</li>
+<li>mark the replaced version “keep forever” in Drive's revision history so that you can recover it. These kept versions use space in your Drive; Voltaplan releases the oldest ones beyond a threshold (without deleting them itself).</li>
+</ul></li>
+<li><strong>What Voltaplan does not do</strong>: it deletes no file in your Drive; it reads no other file; it sends your Google data to no Voltaplan server and to no third party; it does not use it for advertising or to train any artificial intelligence model.</li>
+<li><strong>Access token</strong>: obtained through Google's sign-in window, kept in memory for the session, never stored and never sent anywhere other than Google.</li>
+<li><strong>Revoke access</strong> at any time: <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Your files stay in your Drive.</li>
+</ul>
+<h3>Limited Use</h3>
 <p>Data obtained through Google APIs (Voltaplan files in your Drive) is only used to open and save your projects, at your request. It is not shared with third parties, not used for any other purpose, and not stored anywhere other than your device and your Drive. Voltaplan's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, including the Limited Use requirements.</p>
 <h2>Other processing</h2>
 <ul>

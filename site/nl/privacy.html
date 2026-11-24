@@ -17,7 +17,7 @@
     <a href="guide.html#installer">Installeren</a>
     <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Broncode</a>
     <a class="btn primary" href="../app/">Toepassing openen</a>
-    <span class="lang"><a href="../confidentialite.html" data-lang="fr">FR</a><a href="../nl/privacy.html" aria-current="true" data-lang="nl">NL</a><a href="../en/privacy.html" data-lang="en">EN</a></span>
+    <span class="lang"><a href="../privacy.html" data-lang="fr">FR</a><a href="../nl/privacy.html" aria-current="true" data-lang="nl">NL</a><a href="../en/privacy.html" data-lang="en">EN</a></span>
   </nav>
 </div></header>
 <main class="doc legal">
@@ -43,7 +43,23 @@
 <li><strong>Hosting van de website</strong> (GitHub Pages): de gewone verzoeken om de toepassing te downloaden (IP-adres, browser), zoals bij elke website. Voltaplan voegt geen cookies of trackers toe.</li>
 </ul>
 <p>Het inhoudsbeveiligingsbeleid van de toepassing blokkeert elke verbinding met een andere dienst.</p>
-<h2>Gebruik van Google-gegevens</h2>
+<h2>Google Drive: gevraagde machtiging en gebruik van gegevens</h2>
+<p>Google Drive is <strong>facultatief</strong>. Als u er uw projecten opslaat of opent:</p>
+<ul>
+<li><strong>Eén enkele machtiging</strong>: <code>https://www.googleapis.com/auth/drive.file</code>, d.w.z. toegang <strong>alleen tot de bestanden en mappen die Voltaplan heeft gemaakt of die u met Voltaplan opent</strong>. Voltaplan heeft geen toegang tot de andere bestanden in uw Drive, noch tot uw naam, e-mailadres, contacten of agenda.</li>
+<li><strong>Wat Voltaplan met deze machtiging doet</strong>, alleen op uw verzoek:
+<ul>
+<li>het projectbestand (<code>.voltaplan</code>) of de projectmap (het model <code>project.json</code> en de foto's en plannen die u toevoegde) aanmaken;</li>
+<li>deze projecten oplijsten en openen, ook een bestand dat u vanuit Drive opent met « Openen met Voltaplan »;</li>
+<li>uw wijzigingen opslaan;</li>
+<li>het versienummer en de revisiegeschiedenis van deze bestanden lezen om <strong>een elders gemaakte wijziging te detecteren</strong> (ander toestel) en ze nooit te overschrijven: bij een conflict wordt een kopie gemaakt;</li>
+<li>de vervangen versie in de revisiegeschiedenis van Drive markeren als « bewaren », zodat u ze kunt terughalen. Deze bewaarde versies nemen ruimte in uw Drive in; Voltaplan geeft de oudste vrij boven een drempel (zonder ze zelf te verwijderen).</li>
+</ul></li>
+<li><strong>Wat Voltaplan niet doet</strong>: het verwijdert geen enkel bestand uit uw Drive; het leest geen andere bestanden; het stuurt uw Google-gegevens naar geen enkele Voltaplan-server of derde; het gebruikt ze niet voor reclame of om een AI-model te trainen.</li>
+<li><strong>Toegangstoken</strong>: verkregen via het aanmeldvenster van Google, tijdens de sessie in het geheugen bewaard, nooit opgeslagen of elders dan naar Google verzonden.</li>
+<li><strong>Toegang intrekken</strong> op elk moment: <a href="https://myaccount.google.com/permissions">myaccount.google.com/permissions</a>. Uw bestanden blijven in uw Drive.</li>
+</ul>
+<h3>Beperkt gebruik</h3>
 <p>Gegevens die via Google-API's worden verkregen (Voltaplan-bestanden in uw Drive) dienen alleen om uw projecten op uw verzoek te openen en op te slaan. Ze worden niet aan derden doorgegeven, niet voor andere doeleinden gebruikt en nergens anders bewaard dan op uw toestel en in uw Drive. Het gebruik door Voltaplan van informatie die van Google-API's wordt ontvangen, volgt het <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, inclusief de vereisten voor beperkt gebruik.</p>
 <h2>Andere verwerkingen</h2>
 <ul>
@@ -57,7 +73,7 @@
 
 </div>
 </main>
-<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="privacy.html">Privacy</a> — <a href="voorwaarden.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
+<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
 <script src="../site.js"></script>
 </body>
 </html>
