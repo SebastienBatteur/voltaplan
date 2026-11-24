@@ -5,6 +5,7 @@ import { useSyncExternalStore } from 'react';
  */
 import { STORAGE_PREFIX } from '../brand';
 import type { SealedSecret } from './secureStore';
+import { PROVIDERS, type ProviderId } from './provider';
 
 /** Ce que l'utilisateur autorise l'IA à générer. Tout est désactivé par défaut. */
 export interface AiPermissions {
@@ -20,8 +21,10 @@ export interface AiPermissions {
 
 export interface AiSettings {
   enabled: boolean;
-  provider: 'anthropic';
+  provider: ProviderId;
   model: string;
+  /** API compatible OpenAI : adresse (ex. https://api.openai.com/v1, http://localhost:11434/v1 pour Ollama). */
+  baseUrl?: string;
   key?: SealedSecret;
   permissions: AiPermissions;
 }
@@ -71,3 +74,8 @@ export const subscribeSessionKey = (l: () => void) => {
 };
 /** Vrai tant que la clé de l'IA est déverrouillée pour cette session ; l'interface se met à jour d'elle-même. */
 export const useAiUnlocked = () => useSyncExternalStore(subscribeSessionKey, () => sessionKey !== null);
+
+/** L'IA peut-elle être appelée ? (activée, et clé déverrouillée si le fournisseur en exige une) */
+export function aiReady(s: AiSettings, unlocked: boolean): boolean {
+  return s.enabled && (unlocked || !PROVIDERS[s.provider]?.needsKey(s));
+}

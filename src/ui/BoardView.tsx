@@ -25,7 +25,8 @@ import { importErrorText } from '../io/limits';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
-import { loadAiSettings, getSessionKey, setSessionKey, useAiUnlocked } from '../ai/settings';
+import { aiReady, loadAiSettings, getSessionKey, setSessionKey, useAiUnlocked } from '../ai/settings';
+import { AiError, PROVIDERS } from '../ai/provider';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
@@ -156,6 +157,9 @@ export function BoardView() {
   const ai = loadAiSettings();
   const aiAllowed = ai.enabled && ai.permissions.boardFromPhoto;
   const aiUnlocked = useAiUnlocked();
+  // Clé exigée par le fournisseur (un modèle local n'en demande pas)
+  const aiNeedsKey = PROVIDERS[ai.provider]?.needsKey(ai) ?? true;
+  const aiOk = aiReady(ai, aiUnlocked);
 
   const enc = encs[Math.min(idx, encs.length - 1)];
   const size = enc ? boardSize(enc.board) : { rows: 2, perRow: 13 };
@@ -359,7 +363,7 @@ export function BoardView() {
     const ph = layout.photo;
     if (!ph) return;
     const key = getSessionKey();
-    if (!key) {
+    if (!aiReady(ai, !!key)) {
       // Clé enregistrée mais verrouillée (après un rechargement) : phrase secrète demandée ici même
       if (ai.key) {
         setUnlock('');
@@ -377,8 +381,7 @@ export function BoardView() {
       const calibrated = !!ph.rows && ph.rows.length >= size.rows;
       const image = calibrated ? await composeBoardImage(ph.href, ph.rows!.slice(0, size.rows), size.perRow) : await shrinkPhoto(ph.href);
       const reading = await readBoardPhoto({
-        apiKey: key,
-        model: ai.model,
+        config: { provider: ai.provider, model: ai.model, baseUrl: ai.baseUrl, apiKey: key ?? undefined },
         photoDataUrl: image,
         rows: size.rows,
         perRow: size.perRow,
@@ -412,7 +415,8 @@ export function BoardView() {
       if (isStaleChunk(e)) {
         notifyUpdate();
         setMsg(t('app.updateReady'));
-      } else setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
+      } else if (e instanceof AiError) setMsg(e.code === 'refusal' ? t('ai.refused') : t('ai.error.' + e.code, { detail: e.detail }));
+      else setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
     } finally {
       window.clearInterval(tick);
       setBusy(false);
@@ -549,13 +553,13 @@ export function BoardView() {
               // Grisé tant que la clé n'est pas déverrouillée : le cadenas à côté la déverrouille sur place
               <button
                 onClick={readWithAi}
-                disabled={busy || !enc.devices.length || !aiUnlocked}
-                title={aiUnlocked ? t('ai.boardHelp') : t('ai.needUnlock')}
+                disabled={busy || !enc.devices.length || !aiOk}
+                title={aiOk ? t('ai.boardHelp') : t('ai.needUnlock')}
               >
                 {t('ai.boardRead')}
               </button>
             )}
-            {aiAllowed && !aiUnlocked && ai.key && unlock === null && (
+            {aiAllowed && aiNeedsKey && !aiUnlocked && ai.key && unlock === null && (
               <button
                 onClick={() => {
                   setUnlock('');
@@ -567,7 +571,7 @@ export function BoardView() {
                 🔒
               </button>
             )}
-            {aiAllowed && !aiUnlocked && unlock !== null && (
+            {aiAllowed && aiNeedsKey && !aiUnlocked && unlock !== null && (
               <form
                 className="inline"
                 onSubmit={async (e) => {

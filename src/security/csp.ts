@@ -14,6 +14,15 @@
 /** Services distants appelés par fetch (src/ai, src/io/storage.ts, src/io/cloud.ts). */
 export const CONNECT_HOSTS = [
   'https://api.anthropic.com',
+  // IA par API compatible OpenAI : OpenAI, Gemini (point d'accès compatible), Mistral, et modèles locaux (Ollama, LM Studio).
+  // Une autre adresse est bloquée par la CSP de la version publiée : à ajouter ici si besoin.
+  'https://api.openai.com',
+  'https://generativelanguage.googleapis.com',
+  'https://api.mistral.ai',
+  'http://localhost:11434',
+  'http://127.0.0.1:11434',
+  'http://localhost:1234',
+  'http://127.0.0.1:1234',
   'https://api.github.com',
   'https://api.dropboxapi.com',
   'https://content.dropboxapi.com',

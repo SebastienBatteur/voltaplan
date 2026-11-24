@@ -1,3 +1,4 @@
+import { PROVIDERS, isLocalUrl, type ProviderId } from '../ai/provider';
 import { useState } from 'react';
 import { useStore } from '../store';
 import { loadAiSettings, saveAiSettings, getSessionKey, setSessionKey, type AiPermissions, type AiSettings } from '../ai/settings';
@@ -78,14 +79,31 @@ export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
           <legend>{t('ai.provider')}</legend>
           <label className="field">
             <span>{t('ai.provider')}</span>
-            <select value={s.provider} onChange={() => update({ provider: 'anthropic' })}>
+            <select
+              value={s.provider}
+              onChange={(e) => {
+                const provider = e.target.value as ProviderId;
+                const p = PROVIDERS[provider];
+                update({ provider, model: p.defaultModel || s.model, baseUrl: provider === 'openaiCompatible' ? s.baseUrl || p.defaultBaseUrl : undefined });
+              }}
+            >
               <option value="anthropic">Anthropic (Claude)</option>
+              <option value="openaiCompatible">{t('ai.provider.openaiCompatible')}</option>
             </select>
           </label>
+          {s.provider === 'openaiCompatible' && (
+            <label className="field">
+              <span>{t('ai.baseUrl')}</span>
+              <input value={s.baseUrl ?? ''} placeholder="http://localhost:11434/v1" onChange={(e) => update({ baseUrl: e.target.value.trim() })} />
+            </label>
+          )}
           <label className="field">
             <span>{t('ai.model')}</span>
             <input value={s.model} onChange={(e) => update({ model: e.target.value.trim() })} />
           </label>
+          <p className="muted small">
+            {s.provider === 'openaiCompatible' && isLocalUrl(s.baseUrl) ? t('ai.privacyLocal') : t('ai.privacyRemote', { host: providerHost(s) })}
+          </p>
         </fieldset>
 
         <fieldset disabled={!s.enabled}>
@@ -166,4 +184,14 @@ export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
       </div>
     </div>
   );
+}
+
+/** Service qui reçoit les données (affiché avant tout envoi). */
+function providerHost(s: { provider: ProviderId; baseUrl?: string }): string {
+  if (s.provider === 'anthropic') return 'api.anthropic.com (Anthropic)';
+  try {
+    return new URL(s.baseUrl || '').host;
+  } catch {
+    return s.baseUrl || '?';
+  }
 }

@@ -407,7 +407,7 @@ export function layoutFromReading(
 }
 
 /** Appel à l'IA (module chargé seulement quand on s'en sert). */
-export async function readBoardPhoto(opts: { apiKey: string; model: string; photoDataUrl: string; rows: number; perRow: number; lang: string; composed: boolean }): Promise<PhotoReadingT> {
+export async function readBoardPhoto(opts: Parameters<typeof import('./boardPhotoAi').readBoardPhoto>[0]): Promise<PhotoReadingT> {
   const m = await import('./boardPhotoAi');
   return m.readBoardPhoto(opts);
 }

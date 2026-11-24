@@ -17,4 +17,4 @@ Statuts : À analyser · Confirmé · En cours · Implémenté · Testé · Term
 | T-3 Calculs | P3 | A-3.1 à A-3.4 | Testé | 4e716d4, 3785c87 | Estimation, pas une étude de protection (docs/calc.md) |
 | T-4 Exports et dossier | P4 | A-4.3, A-4.4 | Implémenté | (lot 4) | Liste des données non exportées vers Eendraadschema à afficher ; pas de test visuel du PDF |
 | T-6 Sécurité et CI | P6 | A-6.1, A-6.4, A-6.5 | Testé | 6297a2a…113b5ec, 4648a90 | CSP Tauri non testée dans la fenêtre native ; vulnérabilités dev (vite 5, vitest 2) laissées à Dependabot |
-| T-7 IA et langues | P7 | A-7.1, A-7.3 | Confirmé | | |
+| T-7 IA et langues | P7 | A-7.1, A-7.3 | Testé | (lot 7) | Fournisseurs OpenAI/Gemini/Ollama testés avec réponses simulées seulement ; allemand toujours partiel (repli anglais) |
