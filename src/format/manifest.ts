@@ -227,6 +227,33 @@ export function buildManifest(files: ManifestFile[], appVersion: string, created
   };
 }
 
+/** README.txt d'un DOSSIER de projet (pas une archive) : récupération sans Voltaplan (FR, NL, EN). */
+export function folderReadmeText(title: string): string {
+  const t = title.replace(/[\r\n]+/g, ' ').slice(0, 200);
+  return [
+    `${APP_NAME} — ${t || 'projet'}`,
+    '',
+    '[FR] Ce dossier est un projet Voltaplan. Vos données restent lisibles sans Voltaplan :',
+    '  - project.json : le projet (installation, plan, tableaux), en JSON lisible ;',
+    '  - assets/ : les documents originaux (photos, PDF), nommés par leur empreinte SHA-256 ;',
+    '  - « project (conflit …).json » : une autre version enregistrée en même temps ailleurs (rien n’est écrasé).',
+    'Ne renommez ni ne déplacez les fichiers de assets/ : project.json les désigne par leur nom.',
+    '',
+    '[NL] Deze map is een Voltaplan-project. Uw gegevens blijven leesbaar zonder Voltaplan: project.json (het',
+    'project, leesbare JSON), assets/ (originele foto’s en PDF’s, genoemd naar hun SHA-256), « project (conflit …).json »',
+    '(een andere versie die tegelijk elders werd opgeslagen; niets wordt overschreven). Hernoem of verplaats de',
+    'bestanden in assets/ niet: project.json verwijst ernaar met hun naam.',
+    '',
+    '[EN] This folder is a Voltaplan project. Your data stays readable without Voltaplan: project.json (the project,',
+    'readable JSON), assets/ (original photos and PDFs, named by SHA-256), "project (conflit …).json" (another version',
+    'saved elsewhere at the same time; nothing is overwritten). Do not rename or move the files in assets/:',
+    'project.json refers to them by name.',
+    '',
+    'Format : voltaplan v2, dossier (documentation : docs/file-format.md du dépôt Voltaplan).',
+    '',
+  ].join('\r\n');
+}
+
 /** README.txt : récupération des données sans Voltaplan (FR, NL, EN). */
 export function readmeText(title: string): string {
   const t = title.replace(/[\r\n]+/g, ' ').slice(0, 200);

@@ -13,6 +13,26 @@ Qui fait quoi :
   second appareil remplacé par un second onglet). Les mêmes 15 scénarios existent déjà en **simulé**
   (`test/cloudFolders.test.ts`, `test/driveOpenWith.test.ts`) : ils ne remplacent pas ces essais.
 
+## Séance commune (à jour au 2026-11-25)
+
+Déjà fait en réel : F1 sur les trois services ; F2 et F7 sur Dropbox et Google Drive (avec photo et PDF). Une
+séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens qu'aux étapes marquées **toi**.
+
+1. **toi** : ouvrir `https://voltaplan.org/app/` dans le navigateur intégré, accepter « Recharger » si proposé, me
+   dire « go ». **moi** : je place la mesure de la connexion OneDrive (O1) avant ta connexion.
+2. **toi**, 3 clics de connexion d'affilée (Google Drive, OneDrive, Dropbox). **moi** : puis, seul :
+   - revérifier F2 sur Google Drive (faux conflit corrigé, B1) et le README / les dates sur les trois services ;
+   - F1, F2, F7 sur OneDrive ; F8 (transfert Dropbox → Drive) ;
+   - surveiller la connexion OneDrive toutes les 5 minutes (O1).
+3. **toi**, à mon signal, **couper le Wi-Fi** 10 secondes puis le rétablir, deux fois : F3 (coupure pendant les
+   photos) et F5 (gros PDF ; je te demande avant d'envoyer 160 à 260 Mo dans tes comptes).
+4. **toi**, sur ton **téléphone** : ouvrir le dossier d'essai Dropbox, ajouter une photo, enregistrer (F4, F9).
+5. **toi**, dans **drive.google.com** : clic droit sur un `.voltaplan` → « Ouvrir avec » → Voltaplan (D1, D2), puis
+   « Nouveau » → Voltaplan dans un sous-dossier (D5). **moi** : D3 et la vérification.
+6. **toi**, avec un **second compte Google** : partager un fichier en lecture seule (D4) et ouvrir depuis ce compte
+   (D6).
+7. Plus tard, séparément : F6 (compte d'essai presque plein, jamais ton compte principal).
+
 ## Avant de commencer (toi)
 
 - [ ] Google Cloud : onglet « Drive UI integration » rempli, `drive.install` déclarée, ton compte dans les

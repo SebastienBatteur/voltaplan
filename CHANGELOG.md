@@ -2,7 +2,20 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Stockage en ligne : corrections issues des essais réels (2026-11-25)
+
+- **Google Drive : faux conflit corrigé.** Le 2ᵉ enregistrement d'un projet créé dans la session créait une copie
+  de conflit : Drive change le numéro de version sans changer le contenu. Seule la révision de tête compte.
+- **README.txt des dossiers de projet** : texte propre aux dossiers (et non plus à l'archive), envoyé seulement
+  s'il manque ou si son texte a changé, au lieu de repartir à chaque enregistrement.
+- **Dates des dossiers** : même présentation pour Google Drive, OneDrive et Dropbox (date du projet, le plus
+  récent d'abord), sans une requête par dossier.
+
 ### Site et publication
+
+- **GitHub Sponsors** : bouton « ♥ Soutenir » dans l'en-tête du site, encart sur la page d'accueil (FR, NL, EN),
+  lien dans le pied de page et le menu « ⋯ » de l'application. Simples liens : aucun contenu de GitHub n'est
+  chargé par les pages (pas de cadre intégré, donc ni cookie ni requête vers un tiers avant le clic).
 - Pages publiques Confidentialité et Conditions d'utilisation (FR, NL, EN) sur voltaplan.org, liées depuis toutes les pages ; mention « utilisation limitée » des données Google.
 - Liens « Code source » corrigés sur le domaine voltaplan.org (ils pointaient vers github.com sans dépôt) ; plus de bouton « Télécharger » tant qu'aucune version de bureau n'est publiée (installation de la version web comme application expliquée).
 - Dossier de validation OAuth Google (`docs/google-oauth-verification.md`) et logo 120 × 120.

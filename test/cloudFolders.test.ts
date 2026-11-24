@@ -265,7 +265,8 @@ describe('Dropbox : détails de l’API', () => {
     expect((await b.list('assets')).map((e) => e.name).sort()).toEqual(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg', 'e.jpg']);
     expect(fake.calls.some((c) => c.url.endsWith('list_folder/continue'))).toBe(true);
     expect(await b.list('vide')).toEqual([]);
-    expect(await listDropboxFolders('tok', fake.fetch)).toEqual([{ name: 'Maison' }]);
+    // Dossier listé avec la date de son modèle (voir cloudFolderDates.test.ts)
+    expect(await listDropboxFolders('tok', fake.fetch)).toEqual([{ name: 'Maison', modified: fake.files.get('/maison/project.json')!.modified }]);
   });
 });
 

@@ -14,6 +14,7 @@
 import { asciiJson } from './cloud';
 import { AuthError, cloudQuotaReached, ConflictError, StorageFullError } from './conflict';
 import type { FolderBackend, FolderEntry } from '../format/storageBackend';
+import { FOLDER_MODEL } from '../format/folder';
 
 const API = 'https://api.dropboxapi.com/2';
 const CONTENT = 'https://content.dropboxapi.com/2';
@@ -28,6 +29,8 @@ interface Meta {
   name: string;
   size?: number;
   rev?: string;
+  path_lower?: string;
+  server_modified?: string;
 }
 
 export class DropboxFolderBackend implements FolderBackend {
@@ -202,17 +205,28 @@ export class DropboxFolderBackend implements FolderBackend {
 }
 
 /** Dossiers de projet présents dans le dossier de l'application Dropbox. */
-export async function listDropboxFolders(token: string, fetchFn: Fetch = (...a) => fetch(...a)): Promise<{ name: string }[]> {
-  const out: { name: string }[] = [];
+/**
+ * Dossiers de projet du dossier de l'application, avec la date de leur project.json. Dropbox ne date pas les
+ * dossiers : une seule liste récursive (mêmes appels qu'une liste simple, plus de pages seulement s'il y a beaucoup
+ * de documents) donne les dossiers et la date de leur modèle.
+ */
+export async function listDropboxFolders(token: string, fetchFn: Fetch = (...a) => fetch(...a)): Promise<{ name: string; modified?: string }[]> {
+  const names = new Map<string, string>();
+  const dates = new Map<string, string>();
   const post = (endpoint: string, arg: unknown) =>
     fetchFn(`${API}/${endpoint}`, { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(arg) });
-  let r = await post('files/list_folder', { path: '', limit: 2000 });
+  let r = await post('files/list_folder', { path: '', recursive: true, limit: 2000 });
   for (;;) {
     if (r.status === 401) throw new AuthError('Dropbox');
     if (!r.ok) throw new Error(`Dropbox : ${r.status}`);
     const j = (await r.json()) as { entries: Meta[]; cursor: string; has_more: boolean };
-    for (const e of j.entries) if (e['.tag'] === 'folder') out.push({ name: e.name });
-    if (!j.has_more) return out;
+    for (const e of j.entries) {
+      const parts = (e.path_lower ?? '').split('/').filter(Boolean);
+      if (e['.tag'] === 'folder' && parts.length === 1) names.set(parts[0], e.name);
+      else if (e['.tag'] === 'file' && parts.length === 2 && parts[1] === FOLDER_MODEL && e.server_modified) dates.set(parts[0], e.server_modified);
+    }
+    if (!j.has_more) break;
     r = await post('files/list_folder/continue', { cursor: j.cursor });
   }
+  return [...names].map(([k, name]) => ({ name, ...(dates.has(k) ? { modified: dates.get(k) } : {}) }));
 }

@@ -31,7 +31,7 @@ function wrap(f: { handle: (url: string, init?: RequestInit) => Promise<Response
 // ---------------------------------------------------------------------------
 
 export class FakeDropbox {
-  files = new Map<string, { data: Uint8Array; rev: string; path?: string }>();
+  files = new Map<string, { data: Uint8Array; rev: string; path?: string; modified?: string }>();
   sessions = new Map<string, Uint8Array>();
   calls: Call[] = [];
   /** Panne injectée : appelée avant chaque requête ; lever une TypeError simule une coupure réseau. */
@@ -54,7 +54,7 @@ export class FakeDropbox {
     const key = (p: string) => p.toLowerCase();
     const meta = (p: string) => {
       const f = this.files.get(key(p))!;
-      return { '.tag': 'file', name: (f.path ?? p).split('/').pop(), path_lower: key(p), size: f.data.length, rev: f.rev };
+      return { '.tag': 'file', name: (f.path ?? p).split('/').pop(), path_lower: key(p), size: f.data.length, rev: f.rev, ...(f.modified ? { server_modified: f.modified } : {}) };
     };
     const notFound = () => json({ error_summary: 'path/not_found/..' }, 409);
     const commit = async (path: string, mode: unknown, data: Uint8Array, strict?: boolean) => {
@@ -67,7 +67,7 @@ export class FakeDropbox {
       }
       if (tag === 'update' && (cur ? cur.rev !== (mode as { update: string }).update : strict)) return json({ error_summary: 'path/conflict/file/..' }, 409);
       if (this.full) return json({ error_summary: 'path/insufficient_space/..' }, 409);
-      this.files.set(key(path), { data, rev: 'r' + ++this.n, path });
+      this.files.set(key(path), { data, rev: 'r' + ++this.n, path, modified: new Date(Date.UTC(2026, 10, 24, 12, 0, this.n)).toISOString().replace('.000', '') });
       return json(meta(path));
     };
     switch (ep) {
@@ -81,22 +81,29 @@ export class FakeDropbox {
         return this.files.has(key(arg.path)) ? json(meta(arg.path)) : notFound();
       case 'files/list_folder':
       case 'files/list_folder/continue': {
-        const dir = ep.endsWith('continue') ? JSON.parse(atob(arg.cursor)).dir : key(arg.path);
-        const page = ep.endsWith('continue') ? JSON.parse(atob(arg.cursor)).page : 0;
+        const cur = ep.endsWith('continue') ? JSON.parse(atob(arg.cursor)) : { dir: key(arg.path), page: 0, recursive: !!arg.recursive };
+        const { dir, page, recursive } = cur as { dir: string; page: number; recursive: boolean };
         const prefix = dir ? dir + '/' : '/';
         const all = new Map<string, unknown>();
         for (const p of this.files.keys())
           if (p.startsWith(prefix)) {
             const rest = p.slice(prefix.length);
+            const segs = rest.split('/');
+            const display = (this.files.get(p)!.path ?? p).slice(prefix.length).split('/');
             if (!rest.includes('/')) all.set(rest, meta(p));
-            else all.set(rest.split('/')[0], { '.tag': 'folder', name: (this.files.get(p)!.path ?? p).slice(prefix.length).split('/')[0] });
+            else if (!recursive) all.set(segs[0], { '.tag': 'folder', name: display[0], path_lower: prefix + segs[0] });
+            else {
+              // Liste récursive : chaque dossier intermédiaire, puis le fichier (Dropbox ne date pas les dossiers)
+              for (let i = 1; i < segs.length; i++) all.set(segs.slice(0, i).join('/'), { '.tag': 'folder', name: display[i - 1], path_lower: prefix + segs.slice(0, i).join('/') });
+              all.set(rest, meta(p));
+            }
           }
         if (!all.size && dir) return notFound();
         const entries = [...all.values()];
         // Deux éléments par page : la pagination est exercée
         const slice = entries.slice(page * 2, page * 2 + 2);
         const more = entries.length > page * 2 + 2;
-        return json({ entries: slice, has_more: more, cursor: btoa(JSON.stringify({ dir, page: page + 1 })) });
+        return json({ entries: slice, has_more: more, cursor: btoa(JSON.stringify({ dir, page: page + 1, recursive })) });
       }
       case 'files/upload_session/start': {
         const id = 's' + ++this.n;
@@ -151,6 +158,11 @@ export class FakeDrive {
   token = 'tok';
   private n = 0;
   private sessions = new Map<string, { meta: Partial<DFile>; target?: string; data: Uint8Array; size: number }>();
+  /**
+   * Comme le vrai service (constaté le 2026-11-24) : `version` augmente aussi sans changement de contenu, juste après
+   * une création et à chaque marquage d'une révision. Désactivable pour les tests qui comptent les versions.
+   */
+  bumpsVersionOnMetadata = true;
   /** Écriture « concurrente » injectée juste après le prochain envoi de contenu sur ce fichier (course). */
   raceAfterUpload?: { id: string; data: string };
 
@@ -230,7 +242,10 @@ export class FakeDrive {
     const f: DFile = { id: this.newId(), name: meta.name!, mimeType: meta.mimeType ?? 'application/octet-stream', parents: meta.parents ?? ['root'], appProperties: meta.appProperties, createdTime: this.tick(), revisions: [], version: 0 };
     this.addRevision(f, data, keep);
     this.files.set(f.id, f);
-    return json(this.view(f));
+    const res = json(this.view(f));
+    // Traitement interne de Drive après la création : la version lue ensuite n'est plus celle de la réponse
+    if (this.bumpsVersionOnMetadata) f.version++;
+    return res;
   }
 
   handle = async (url: string, init: RequestInit = {}): Promise<Response> => {
@@ -304,6 +319,7 @@ export class FakeDrive {
       if (!r) return json({}, 404);
       if (method === 'PATCH') {
         r.keepForever = JSON.parse(String(init.body)).keepForever;
+        if (this.bumpsVersionOnMetadata) f.version++;
         return json({ id: r.id, keepForever: r.keepForever });
       }
       return new Response(new Blob([r.data as BlobPart]));

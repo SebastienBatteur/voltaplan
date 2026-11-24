@@ -46,11 +46,21 @@ export interface ProjectFolder {
 
 /** Dossiers de projet du service (dossier de l'application ; Drive : dossiers créés par Voltaplan). */
 export async function listProjectFolders(provider: CloudId): Promise<ProjectFolder[]> {
-  return withToken(provider, async (token): Promise<ProjectFolder[]> => {
+  const list = await withToken(provider, async (token): Promise<ProjectFolder[]> => {
     if (provider === 'onedrive') return listOneDriveFolders(token);
     if (provider === 'dropbox') return listDropboxFolders(token);
     return listDriveFolders(token);
   });
+  return sortByModified(list);
+}
+
+/**
+ * Même présentation pour les trois services : le plus récemment modifié d'abord, puis les dossiers sans date, par
+ * nom. Date = celle du modèle (Dropbox, Google Drive) ou du dossier, qui suit son contenu (OneDrive).
+ */
+export function sortByModified<T extends { name: string; modified?: string }>(list: T[]): T[] {
+  const t = (x: T) => (x.modified ? Date.parse(x.modified) || 0 : 0);
+  return [...list].sort((a, b) => t(b) - t(a) || a.name.localeCompare(b.name));
 }
 
 /**
@@ -83,7 +93,7 @@ export async function folderSave(loc: FolderLocation, project: Project, mode: Sa
   // Dans un dossier, le modèle porte aussi le dossier de preuves : un seul fichier modifiable (voir folder.ts)
   const text = JSON.stringify(project);
   const expected = mode === 'update' ? loc.rev! : mode === 'create' ? null : 'any';
-  const r = await run((b) => saveToFolder(b, text, docs, project.meta.title, { modelPath: loc.modelPath, expected }));
+  const r = await run((b) => saveToFolder(b, text, docs, project.meta.title, { modelPath: loc.modelPath, expected, readmeKey: `${loc.provider}:${loc.folderId ?? loc.folder}` }));
   return { ...r, rev: r.version };
 }
 

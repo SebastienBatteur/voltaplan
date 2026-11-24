@@ -137,12 +137,57 @@ requêtes du navigateur, site du service).
 | F2 | Dropbox | ⚠️ réel partiel : seul le modèle change, mais `README.txt` est renvoyé à chaque enregistrement (mode `add`, contenu identique : Dropbox répond 200). Sans photo, la non-réexpédition des documents reste à vérifier | 1 `list_folder` (409, pas de `assets/`), 2 `upload` |
 | D1 | Google Drive | ⏳ autorisation `drive.install` accordée par le propriétaire ; apparition dans « Ouvrir avec » à vérifier | message de Voltaplan |
 
+**2026-11-25 (nuit), même configuration, sans le propriétaire** : connexions de la veille encore valides (Google
+Drive, Dropbox) ; documents de test **synthétiques** générés dans la page (photo JPEG de 13,7 Mo, PDF valide de
+7,3 Mo) et donnés au sélecteur de fichiers de l'application.
+
+| # | Service | Type | Résultat | Preuve |
+|---|---|---|---|---|
+| F1 | Dropbox | réel | ✅ 2 documents puis `README.txt` et `project.json` envoyés (17 s) | requêtes 409 (pas encore de `assets/`) puis 4 `upload` 200 |
+| F2 | Dropbox | réel | ✅ schéma modifié : **aucun document renvoyé** ; seuls `README.txt` et `project.json` (1 s) | 1 `list_folder` 200, 2 `upload` |
+| F1 | Google Drive | réel | ✅ nouveau dossier, photo de 13,7 Mo envoyée par tranches (308 puis 200), PDF, README, modèle | 18 requêtes, toutes 200 ou 308 |
+| F2 | Google Drive | réel | ❌ **faux conflit** au 2ᵉ enregistrement : copie « project (conflit …).json » créée alors que personne d'autre n'avait modifié le projet. Rien de perdu. **Corrigé** (voir B1), à revérifier en réel | journal des versions Drive |
+| F7 | Dropbox | réel | ✅ archive `.voltaplan` de 21 Mo (exportée par l'application) importée dans un nouveau dossier ; projet rouvert avec son plan PDF et la photo du tableau | 2 documents, README, modèle, relecture : toutes 200 |
+| F7 | Google Drive | réel | ✅ même archive, nouveau dossier ; projet rouvert | 22 requêtes, toutes 200 ou 308 |
+| F1, F2, F7 | OneDrive | — | ⏳ connexion perdue (voir O1) : à faire avec le propriétaire | — |
+
+**B1. Faux conflit Google Drive (corrigé).** Mesure sur le vrai service : la réponse de création donne
+`version` 1 ; relu une minute plus tard, `version` 2, avec **la même révision de tête** (contenu identique). Drive
+augmente `version` pour des traitements internes et pour le marquage « à conserver » d'une révision. Voltaplan
+comparait « version|révision » en entier : chaque 2ᵉ enregistrement d'un projet créé dans la session devenait un
+conflit. Correction : seule la révision de tête désigne le contenu (`sameDriveContent`, `src/io/drive.ts`). Le
+service simulé reproduit maintenant ce comportement ; sans la correction, 7 tests échouent.
+
+**O1. Perte de la connexion OneDrive : analyse (cause non établie, code non modifié).**
+
+- Faits relevés dans la page : jeton obtenu à 22:50:51 UTC ; dernier appel Graph réussi à 22:54:47 (200) ;
+  vers 22:57:30, plus de jeton en mémoire (bouton « Se déconnecter » absent, connexion demandée sans aucun appel
+  Graph). Aucun 401 ni autre erreur Graph, aucun rechargement de la page (même chargement depuis 22:46:55).
+  Google Drive et Dropbox, obtenus dans la même page, restaient valides.
+- Code : le jeton n'est gardé qu'en mémoire (aucune persistance locale, par choix : voir la politique de
+  confidentialité) ; pas de renouvellement automatique (ni `offline_access`, ni jeton de rafraîchissement). Il
+  n'est oublié qu'à deux endroits : le bouton « Se déconnecter » et une réponse 401 (aucune observée). Il est
+  considéré expiré à `expires_in − 60` secondes après son obtention.
+- Il ne reste donc que deux explications : une durée `expires_in` très courte renvoyée par Microsoft (moins de
+  7 minutes environ ; d'ordinaire une heure **[à vérifier]**) ou un clic involontaire sur « Se déconnecter » (dans
+  la fenêtre d'enregistrement, ce bouton prend la place de « Ajouter à « Ouvrir avec » de Drive » quand on passe de
+  Google Drive à OneDrive). Le propriétaire n'a pas cliqué sur « Se déconnecter ».
+- Mesure prévue à la prochaine connexion : relevé de `expires_in`, `scope` et `token_type` de la réponse de
+  Microsoft (jamais le jeton), puis vérification de la connexion toutes les quelques minutes.
+
 Observations :
 
 - **O1** : environ 7 minutes après la connexion OneDrive, le jeton n'était plus en mémoire (bouton « Se déconnecter »
   absent, nouvelle connexion demandée), alors que Google Drive et Dropbox restaient connectés. Cause inconnue : à
   reproduire (déconnexion manuelle ? durée du jeton ?).
-- **O2** : `README.txt` renvoyé à chaque enregistrement Dropbox (une petite requête, sans nouveau fichier). Confirme
-  que Dropbox accepte un `add` de contenu identique. Amélioration possible : ne l'écrire que s'il manque.
-- **O3** : la liste des dossiers Dropbox n'affiche pas de date (Google Drive oui). Cosmétique.
+- **O2** (corrigé) : `README.txt` renvoyé à chaque enregistrement Dropbox. Confirme que Dropbox accepte un `add` de
+  contenu identique. De plus, son texte était celui de l'archive (« renommez-le en .zip »), faux pour un dossier.
+  Désormais : texte propre aux dossiers, écrit s'il manque ou si son texte a changé (titre), au plus une lecture par
+  dossier et par session (`syncReadme`, `src/format/folder.ts`).
+- **O3** (corrigé) : dates harmonisées. Date affichée = celle du modèle `project.json` (Dropbox ne date pas les
+  dossiers, Drive ne change pas la date d'un dossier quand son contenu change ; OneDrive : date du dossier, qui
+  suit son contenu, constaté sur `Apps`). Coût : Dropbox, une liste récursive au lieu d'une liste simple ; Drive,
+  une requête de plus pour tous les dossiers. Même tri partout : le plus récent d'abord.
+- **O4** : l'archive téléchargée par « Cet appareil » (sans sélecteur de fichiers du système) est typée
+  `application/zip` au lieu de `application/vnd.voltaplan+zip`. Sans effet sur l'ouverture ; à harmoniser.
 

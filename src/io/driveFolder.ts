@@ -16,6 +16,7 @@
 import { ConflictError, conflictName } from './conflict';
 import { DRIVE_FOLDER_MIME, driveCreate, driveCreateFolder, driveFind, driveGet, driveMedia, driveRename, driveUpdate, qstr, type DriveCtx, type DriveItem, type Fetch } from './drive';
 import type { FolderBackend, FolderEntry } from '../format/storageBackend';
+import { FOLDER_MODEL } from '../format/folder';
 
 /** Marque des dossiers créés par Voltaplan (recherche des dossiers de projet). */
 export const DRIVE_APP_PROP = 'voltaplan';
@@ -144,7 +145,14 @@ export async function listDriveFolders(token: string, fetchFn?: Fetch): Promise<
     `mimeType = ${qstr(DRIVE_FOLDER_MIME)} and appProperties has { key=${qstr(DRIVE_APP_PROP)} and value='project' } and trashed = false`,
     'id,name,modifiedTime,createdTime',
   );
-  return items.map((f) => ({ id: f.id, name: f.name, modified: f.modifiedTime })).reverse();
+  // Date du projet = celle de son project.json (Drive ne change pas la date d'un dossier quand son contenu change) :
+  // une seule requête pour tous les dossiers, quel que soit leur nombre
+  const models = items.length
+    ? await driveFind({ token, fetch: fetchFn }, `name = ${qstr(FOLDER_MODEL)} and trashed = false`, 'parents,modifiedTime').catch(() => [])
+    : [];
+  const latest = new Map<string, string>();
+  for (const m of models) for (const p of m.parents ?? []) if (m.modifiedTime && (latest.get(p) ?? '') < m.modifiedTime) latest.set(p, m.modifiedTime);
+  return items.map((f) => ({ id: f.id, name: f.name, modified: latest.get(f.id) ?? f.modifiedTime })).reverse();
 }
 
 /** Nouveau dossier de projet (à la racine de « Mon Drive », ou dans le dossier choisi depuis Drive). */

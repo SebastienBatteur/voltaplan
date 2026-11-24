@@ -4,7 +4,8 @@
  *   project.json          modèle ET dossier de preuves (Project complet, JSON) : le SEUL fichier modifiable,
  *                         écrit en dernier et de façon conditionnelle (conflits : src/io/conflict.ts) ;
  *   assets/<sha256>.<ext> documents originaux, immuables, envoyés une seule fois ;
- *   README.txt            explication en clair (écrit une fois).
+ *   README.txt            explication en clair : écrit s'il manque ou si son texte a changé (titre, version de
+ *                         Voltaplan), une seule vérification par dossier et par session (voir syncReadme).
  *
  * Différence avec l'archive : pas de manifest.json ni de sources.json séparés, car ce seraient des fichiers
  * modifiables de plus, impossibles à écrire en même temps que le modèle de façon atomique. Les documents se
@@ -16,7 +17,7 @@
  * aucun document. Rien n'est jamais supprimé.
  */
 import { referencedShas } from './assets';
-import { ASSET_TYPES, assetPath, extForMime, readmeText, sniffType, typeMatches, type AssetExt } from './manifest';
+import { ASSET_TYPES, assetPath, extForMime, folderReadmeText, sniffType, typeMatches, type AssetExt } from './manifest';
 import { blobBytes, sha256Hex } from './sha256';
 import type { DocSource } from './session';
 import type { FolderBackend } from './storageBackend';
@@ -51,6 +52,11 @@ export interface FolderSaveOptions {
   verify?: 'size' | 'download';
   onProgress?: (done: number, total: number) => void;
   signal?: AbortSignal;
+  /**
+   * Identifiant stable du dossier (service + dossier) : le README déjà vérifié pendant cette session n'est plus
+   * relu ni renvoyé. Sans identifiant (répertoire local), il est relu à chaque fois (lecture locale, sans coût).
+   */
+  readmeKey?: string;
 }
 
 export interface FolderSaveResult {
@@ -59,6 +65,36 @@ export interface FolderSaveResult {
   concurrentCopy?: string;
   uploaded: number;
   skipped: number;
+}
+
+const normEol = (t: string) => t.split(String.fromCharCode(13)).join('');
+
+/** README vérifiés pendant cette session : identifiant du dossier → texte présent dans le dossier. */
+const readmeSeen = new Map<string, string>();
+
+/**
+ * README.txt à jour, sans le renvoyer à chaque enregistrement : déjà vérifié avec ce texte pendant la session →
+ * rien ; sinon une lecture, puis une écriture seulement s'il manque (création) ou si son texte a changé
+ * (remplacement conditionnel). Purement informatif : un échec n'empêche jamais l'enregistrement du projet.
+ */
+export async function syncReadme(b: FolderBackend, text: string, key?: string): Promise<'unchanged' | 'created' | 'updated' | 'cached'> {
+  if (key && readmeSeen.get(key) === text) return 'cached';
+  const cur = await b.readText('README.txt');
+  let r: 'unchanged' | 'created' | 'updated' = 'unchanged';
+  if (!cur) {
+    await b.putIfAbsent('README.txt', new Blob([text], { type: 'text/plain' }));
+    r = 'created';
+  } else if (normEol(cur.text) !== normEol(text)) {
+    await b.writeConditional('README.txt', text, cur.version ?? 'any');
+    r = 'updated';
+  }
+  if (key) readmeSeen.set(key, text);
+  return r;
+}
+
+/** Pour les tests : oublie les README vérifiés. */
+export function resetReadmeCache() {
+  readmeSeen.clear();
 }
 
 /** Enregistre un projet dans un dossier : documents d'abord (vérifiés), modèle ensuite (conditionnel). */
@@ -92,7 +128,7 @@ export async function saveToFolder(b: FolderBackend, projectText: string, docs: 
     }
     opts.onProgress?.(++done, docs.length);
   }
-  await b.putIfAbsent('README.txt', new Blob([readmeText(title)], { type: 'text/plain' })).catch(() => undefined);
+  await syncReadme(b, folderReadmeText(title), opts.readmeKey).catch(() => undefined);
   // Modèle publié en dernier : il ne référence que des documents présents et vérifiés
   const w = await b.writeConditional(opts.modelPath ?? FOLDER_MODEL, projectText, opts.expected);
   return { version: w.version, ...(w.concurrentCopy ? { concurrentCopy: w.concurrentCopy } : {}), uploaded, skipped };

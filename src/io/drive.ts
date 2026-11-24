@@ -102,11 +102,26 @@ export async function driveMedia(c: DriveCtx, id: string): Promise<Blob> {
   return (await call(c, `${DRIVE_API}/files/${encodeURIComponent(id)}?alt=media&supportsAllDrives=true`)).blob();
 }
 
-/** Version complète d'un fichier Drive : « version|révision de tête » (les deux changent à chaque envoi). */
+/**
+ * Version complète d'un fichier Drive : « version|révision de tête ». `version` change aussi SANS modification du
+ * contenu (traitements internes de Drive juste après la création, marquage « à conserver » d'une révision : constaté
+ * sur un vrai compte le 2026-11-24, version 1 → 2, révision de tête identique). Pour détecter une modification faite
+ * ailleurs, seule la révision de tête compte : voir sameDriveContent.
+ */
 export async function driveVersion(c: DriveCtx, id: string): Promise<string | undefined> {
   const r = await call(c, `${DRIVE_API}/files/${encodeURIComponent(id)}?fields=version,headRevisionId`);
   const j = (await r.json()) as { version?: string; headRevisionId?: string };
   return j.version ? `${j.version}|${j.headRevisionId ?? ''}` : undefined;
+}
+
+/**
+ * Même contenu ? Compare la révision de tête (elle change à chaque envoi de contenu, par n'importe quel appareil ou
+ * logiciel) ; à défaut (ancienne version mémorisée sans révision), la version complète.
+ */
+export function sameDriveContent(a: string | undefined, b: string | undefined): boolean {
+  const ha = a?.split('|')[1];
+  const hb = b?.split('|')[1];
+  return ha && hb ? ha === hb : a === b;
 }
 
 /** Début de la partie manquante d'après l'en-tête Range d'une réponse 308 (« bytes=0-N » → N+1 ; absent → 0). */
@@ -274,7 +289,7 @@ export async function driveUpdate(
   const now = await driveVersion(c, existing.id);
   if (mode === 'update') {
     if (!existing.rev) throw new ConflictError('Google Drive : ' + name, 'version inconnue');
-    if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
+    if (!sameDriveContent(now, existing.rev)) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
   }
   const current = now?.split('|')[1];
   // Révisions jamais libérées : celle que nous remplaçons, celle de l'ouverture, celles qu'un enregistrement en
