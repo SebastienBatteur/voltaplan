@@ -3,6 +3,11 @@
 Date : 2026-11-24. Base : dépôt `SebastienBatteur/voltaplan`, branche `main` (commit `d90f555`).
 Document de discussion : **aucune implémentation** n'a été faite pour ces orientations.
 
+> **Suite** : les décisions prises après ce document sont dans [DECISIONS.md](DECISIONS.md). Études détaillées :
+> - [FORMAT-V2.md](FORMAT-V2.md) : format v2 ; ZIP plutôt que 7z, avec mesures ;
+> - [STOCKAGE-ET-DOMAINE.md](STOCKAGE-ET-DOMAINE.md) : conflits, versions, migration de domaine ;
+> - [ASSISTANT.md](ASSISTANT.md) : assistant de création de projets.
+
 Convention : les points marqués **[à vérifier]** sont des faits externes (navigateurs, fournisseurs, prix, droit)
 que je n'ai pas vérifiés à la source pendant cette analyse. Ils doivent l'être avant toute décision ou
 communication publique.
