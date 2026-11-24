@@ -146,6 +146,7 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - `release.yml` échouait avant toute compilation (script npm `tauri` absent) : corrigé.
 - Nouveau workflow `desktop-build.yml` : construction sans publication (manuelle et sur les demandes de fusion touchant `src-tauri` ou les paquets npm), cache Rust.
 - `Cargo.lock` versionné et vérifié ; `@tauri-apps/plugin-fs` aligné sur la crate (2.7.1) ; Dependabot regroupe les mises à jour Tauri.
+- Enregistrement atomique et vérifié : l'archive est écrite en flux (morceaux de 4 Mo) dans un fichier temporaire du même dossier, relue et vérifiée, puis renommée ; la version précédente d'un projet est gardée en `<nom>.voltaplan.bak`. Une coupure ou un disque plein laisse l'ancien fichier intact. Boîte « Enregistrer » ouverte côté Rust : la page ne peut écrire qu'aux chemins choisis par l'utilisateur et aux extensions de l'application (`.voltaplan`, `.trik`, `.eds`, `.csv`, `.jpg`) ; droits `dialog` et `fs` retirés de la page. Compilé et testé (`cargo test`) sur Windows, macOS et Linux ; essai dans l'application installée à faire. Détails : [docs/desktop-tauri.md](docs/desktop-tauri.md), section 13.
 - Droit `core:webview:allow-print` : sur macOS, l'impression du dossier était refusée sans lui.
 
 ### Sécurité
