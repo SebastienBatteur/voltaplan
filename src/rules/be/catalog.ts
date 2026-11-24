@@ -93,6 +93,7 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     r('R-PV-MANUAL', { kind: 'manualCheck', hazard: 'medium' }),
     // Calculs (méthode conventionnelle : estimation)
     r('R-VDROP', { kind: 'warning', hazard: 'low' }),
+    r('R-VDROP-RATING', { kind: 'recommendation', hazard: 'low' }),
     r('R-ICC-LMAX', { kind: 'warning', hazard: 'high' }),
     r('R-COUNTRY-OPTION', { kind: 'warning', hazard: 'none' }),
   ].map((m) => [m.id, m]),
