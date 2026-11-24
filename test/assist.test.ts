@@ -3,7 +3,7 @@
  * limitée aux propositions sûres et non critiques, fidélité d'une installation non conforme, relevé figé.
  */
 import type { PhotoReadingT } from '../src/ai/boardPhoto';
-import { answer, answerUsage, bulkAcceptable, decide, noteManualEdit, snapshotSurvey, surveyFrozen, unconfirmed } from '../src/assist/apply';
+import { answer, answerUsage, bulkAcceptable, decide, needsReview, noteManualEdit, snapshotSurvey, surveyFrozen, unconfirmed } from '../src/assist/apply';
 import { bindBoard, boardDraft } from '../src/assist/boardDraft';
 import { emptyEvidence, purgeEvidence, type Evidence } from '../src/assist/evidence';
 import { interpretLabel } from '../src/assist/labels';
@@ -13,6 +13,8 @@ import { parseProjectText } from '../src/model/migrate';
 import { findNode, walk } from '../src/model/tree';
 import type { Project } from '../src/model/types';
 import { checkProject } from '../src/rules';
+import { paramsText } from '../src/ui/CheckPanel';
+import { translate } from '../src/i18n';
 
 const dev = (o: Partial<PhotoReadingT['rows'][number]['devices'][number]>) => ({
   startModule: 0,
@@ -120,11 +122,40 @@ describe('brouillon depuis une photo de tableau', () => {
     expect(d.proposals.every((x) => x.purpose === 'reconstruction' && x.basis !== 'confirmed')).toBe(true);
   });
 
-  it('validation groupée : seulement les propositions sûres et non critiques', () => {
+  it('validation groupée : d’abord les différentiels (critiques) un par un, puis le reste en bloc', () => {
     const { p } = draftProject();
-    const bulk = bulkAcceptable(p.evidence);
-    expect(bulk.length).toBeGreaterThan(0);
+    // Tout dépend des différentiels, toujours à voir individuellement : rien en bloc tant qu'ils ne sont pas vus
+    expect(bulkAcceptable(p.evidence)).toHaveLength(0);
+    const rcds = needsReview(p.evidence).filter((x) => x.change.op === 'createNode' && x.change.props.device === 'rcd');
+    expect(rcds).toHaveLength(2);
+    const q = decide(p, { accept: rcds.map((x) => x.id), confirm: rcds.map((x) => x.id) });
+    const bulk = bulkAcceptable(q.evidence);
+    expect(bulk.length).toBeGreaterThan(5);
     expect(bulk.every((x) => !x.critical && x.confidence >= 0.8)).toBe(true);
+  });
+
+  it('ordre : les dépendances d’une proposition à vérifier attendent, puis suivent (rien d’abandonné)', () => {
+    const { p } = draftProject();
+    // 1. Accepter seulement les sûres : le câble du circuit D (sous un disjoncteur critique) reste en attente
+    let q = decide(p, { accept: bulkAcceptable(p.evidence).map((x) => x.id) });
+    expect(q.evidence!.proposals.some((x) => x.status === 'superseded')).toBe(false);
+    const rest = needsReview(q.evidence);
+    expect(rest.length).toBeGreaterThan(0);
+    expect(rest.every((x) => x.critical || x.confidence < 0.8)).toBe(true);
+    // 2. Accepter les propositions à vérifier une par une, puis de nouveau les sûres : tout est appliqué
+    q = decide(q, { accept: rest.map((x) => x.id), confirm: rest.map((x) => x.id) });
+    q = decide(q, { accept: bulkAcceptable(q.evidence).map((x) => x.id) });
+    q = decide(q, { accept: q.evidence!.proposals.filter((x) => x.status === 'pending').map((x) => x.id) });
+    expect(q.evidence!.proposals.filter((x) => x.status === 'pending' || x.status === 'superseded')).toHaveLength(0);
+    expect(nodesOf(q, 'cable')).toHaveLength(4);
+  });
+
+  it('refus d’un différentiel : ses circuits dépendants sont abandonnés, pas rattachés ailleurs', () => {
+    const { p } = draftProject();
+    const rcd = p.evidence!.proposals.find((x) => x.change.op === 'createNode' && x.change.props.residualCurrent === 300)!;
+    const q = decide(p, { reject: [rcd.id], accept: p.evidence!.proposals.filter((x) => x.id !== rcd.id).map((x) => x.id) });
+    expect(nodesOf(q, 'protection').some((n) => n.props.residualCurrent === 300)).toBe(false);
+    expect(q.evidence!.proposals.filter((x) => x.status === 'superseded').length).toBeGreaterThan(0);
   });
 
   it('tout accepter : arbre construit, rien de « confirmé », valeurs signalées au contrôle (A3, A6)', () => {
@@ -233,6 +264,14 @@ describe('questions, relevé, corrections tracées', () => {
     const cited = new Set(e.proposals.flatMap((x) => x.observations));
     for (const id of cited) expect(e.observations.some((o) => o.id === id)).toBe(true);
     expect(e.history.at(-1)!.action).toBe('purge');
+  });
+});
+
+describe('affichage des valeurs non confirmées', () => {
+  it('noms de propriétés traduits (contrôle et dossier)', () => {
+    const t = (k: string) => translate('fr', k);
+    const txt = paramsText({ ruleId: 'R-UNCONFIRMED', severity: 'info', params: { props: '@parent, ratedCurrent' } }, t);
+    expect(txt.props).toBe('raccordement (différentiel amont), Calibre');
   });
 });
 

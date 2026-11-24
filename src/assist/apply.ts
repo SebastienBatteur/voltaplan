@@ -11,9 +11,41 @@ import { emptyEvidence, type Basis, type Evidence, type HistoryEntry, type Propo
 
 const ev = (p: Project): Evidence => p.evidence ?? emptyEvidence();
 
-/** Propositions acceptables « en bloc » : en attente, non critiques, assez sûres. Les autres doivent être vues. */
+/** Clés temporaires dont dépend une proposition (parent ou cible encore à créer). */
+function dependsOn(p: Proposal): string[] {
+  const c = p.change;
+  const out: string[] = [];
+  if (c.op === 'createNode' && 'tempKey' in c.parent) out.push(c.parent.tempKey);
+  if ((c.op === 'setProp' || c.op === 'place') && 'tempKey' in c.target) out.push(c.target.tempKey);
+  return out;
+}
+
+/**
+ * Propositions acceptables « en bloc » : en attente, non critiques, assez sûres, et dont le parent n'attend pas
+ * lui-même une décision individuelle (sinon elles le seront après lui). Les autres doivent être vues une par une.
+ */
 export function bulkAcceptable(e: Evidence | undefined, batch?: string, minConfidence = 0.8): Proposal[] {
-  return (e?.proposals ?? []).filter((p) => p.status === 'pending' && (!batch || p.batch === batch) && !p.critical && p.confidence >= minConfidence);
+  const pending = (e?.proposals ?? []).filter((p) => p.status === 'pending' && (!batch || p.batch === batch));
+  const ok = new Set(pending.filter((p) => !p.critical && p.confidence >= minConfidence).map((p) => p.id));
+  const createdBy = new Map<string, Proposal>();
+  for (const p of pending) if (p.change.op === 'createNode') createdBy.set(p.change.tempKey, p);
+  // Exclusion transitive : un enfant d'une proposition à voir individuellement attend aussi
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const p of pending)
+      if (ok.has(p.id) && dependsOn(p).some((k) => createdBy.has(k) && !ok.has(createdBy.get(k)!.id))) {
+        ok.delete(p.id);
+        changed = true;
+      }
+  }
+  return pending.filter((p) => ok.has(p.id));
+}
+
+/** Propositions à voir une par une (critiques, incertaines) ; leurs dépendances suivent quand elles sont acceptées. */
+export function needsReview(e: Evidence | undefined): Proposal[] {
+  const bulk = new Set(bulkAcceptable(e).map((p) => p.id));
+  return (e?.proposals ?? []).filter((p) => p.status === 'pending' && !bulk.has(p.id) && !dependsOn(p).some((k) => (e?.proposals ?? []).some((x) => x.status === 'pending' && x.change.op === 'createNode' && x.change.tempKey === k)));
 }
 
 /**
@@ -36,6 +68,9 @@ export function decide(
   const temp = new Map<string, string>(); // tempKey → nodeId (déjà créés)
   for (const p of e0.proposals) if (p.status === 'accepted' && p.createdNodeId && p.change.op === 'createNode') temp.set(p.change.tempKey, p.createdNodeId);
   const resolve = (t: { nodeId: string } | { tempKey: string }) => ('nodeId' in t ? t.nodeId : temp.get(t.tempKey));
+  // Parent ou cible encore en attente de décision (et pas accepté maintenant) : la proposition attend aussi
+  const waiting = (t: { nodeId: string } | { tempKey: string }) =>
+    'tempKey' in t && !temp.has(t.tempKey) && e0.proposals.some((x) => x.status === 'pending' && x.change.op === 'createNode' && x.change.tempKey === t.tempKey && !accept.has(x.id) && !reject.has(x.id));
 
   const provenance: Provenance[] = [...e0.provenance];
   const history: HistoryEntry[] = [...e0.history];
@@ -57,6 +92,7 @@ export function decide(
     const basis: Basis = edited || confirm.has(p.id) ? 'confirmed' : p.basis;
     const c = p.change;
     if (c.op === 'createNode') {
+      if (waiting(c.parent)) return p;
       const parentId = resolve(c.parent);
       if (!parentId || !findNode(roots, parentId)) return { ...p, status: 'superseded', decidedAt: now };
       // Uniquement les propriétés observées ou déduites : AUCUNE valeur par défaut (A2)
@@ -71,6 +107,7 @@ export function decide(
       return { ...p, status: 'accepted', decidedAt: now, createdNodeId: node.id };
     }
     if (c.op === 'setProp') {
+      if (waiting(c.target)) return p;
       const id = resolve(c.target);
       const target = id ? findNode(roots, id) : undefined;
       if (!id || !target) return { ...p, status: 'superseded', decidedAt: now };
@@ -82,6 +119,7 @@ export function decide(
       return { ...p, status: 'accepted', decidedAt: now };
     }
     // place : position dans le tableau
+    if (waiting(c.target)) return p;
     const id = resolve(c.target);
     if (!id || !findNode(roots, id)) return { ...p, status: 'superseded', decidedAt: now };
     const layout: BoardLayout = boards?.[c.boardId] ?? { slots: {} };

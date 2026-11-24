@@ -215,3 +215,58 @@ Ce chemin s'appuie sur ce qui existe déjà :
 
 **Sa condition** : que la spécification du modèle de l'assistant soit validée d'abord, pour que le prototype n'ait
 pas à être réécrit.
+
+## 8. Prototype du premier parcours : état (2026-11-24)
+
+**Implémenté**, testé automatiquement (28 tests) et parcouru dans le navigateur avec une lecture de photo
+**simulée** :
+
+1. **Fichier → Nouveau relevé (installation existante)** : origine, compteur et tableau seulement, sans protection
+   générale inventée.
+2. **Tableau** : rangées et modules, photo, calage des rangées (existant), puis « Lire avec l'IA ». Quand le tableau
+   est vide, la lecture devient un **brouillon** : rien n'est appliqué.
+3. **Assistant**, en 4 étapes :
+   - accepter ce qui est sûr ;
+   - vérifier une par une les propositions critiques (différentiels, raccordements devinés, lectures incertaines) ;
+     les « probables » (usages déduits des étiquettes) s'acceptent ensemble mais restent « à vérifier » ;
+   - répondre aux questions (calibre, courbe, sensibilité, section, raccordement, usage), toujours avec
+     « Je ne sais pas » ;
+   - figer le relevé.
+4. **Analyse RGIE** : les valeurs non confirmées sont signalées et les constats qui en dépendent sont marqués
+   « à vérifier ».
+
+**Ce que le prototype ne fait pas encore :**
+
+- plusieurs photos d'un même tableau, tableaux divisionnaires, plans ou documents (objectifs 2 et 3) ;
+- placement des points sur le plan de position ;
+- appareils non protecteurs (télérupteurs, parafoudres) : signalés, mais pas ajoutés au schéma, car leur
+  raccordement est inconnu ;
+- cache des lectures de l'IA (le dossier de preuves garde déjà l'empreinte de la photo) ;
+- partie « Sources et hypothèses » détaillée dans le dossier imprimé. Les valeurs non confirmées y figurent déjà
+  par les constats.
+
+**Constat lors de l'essai : la règle « Aucune prise de terre n'est dessinée »** est bloquante. Dans un relevé, elle
+reflète l'absence dans le dessin, pas forcément dans la réalité. Pour une installation existante relevée par photo,
+il faudrait plutôt une **question** (« prise de terre vue sur place ? »). C'est à décider : cela touche le moteur
+RGIE et la terminologie.
+
+## 9. Tester sur une vraie installation (procédure)
+
+**Prérequis** : IA activée avec ta clé (ou un modèle local) et autorisation « Disposition des modules depuis une
+photo du tableau ». Utilise une photo de ton propre tableau, ou d'un tableau d'essai, jamais celle d'un client sans
+son accord.
+
+1. Fichier → **Nouveau relevé (installation existante)**.
+2. Onglet **Tableau** : nombre de rangées et de modules par rangée ; **ajouter la photo** ; **caler** chaque
+   rangée (2 clics par rangée).
+3. **Lire avec l'IA** : l'assistant s'ouvre avec le brouillon.
+4. Suivre les 4 étapes, puis **Analyse RGIE**.
+5. **À noter** pour chaque essai :
+   - nombre d'appareils lus ;
+   - erreurs de lecture (calibre, type, étiquette) ;
+   - raccordements faux ;
+   - questions inutiles ou manquantes ;
+   - temps total ;
+   - points d'ergonomie gênants.
+
+Ces retours servent à régler les seuils de confiance, les mots-clés des étiquettes et les questions.

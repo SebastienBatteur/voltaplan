@@ -25,6 +25,9 @@ import {
 import { locationKey, saveAt, type SaveDeps, type SaveOutcome } from './io/saveFlow';
 import { conflictName } from './io/conflict';
 import { VersionsDialog } from './ui/VersionsDialog';
+import { AssistPanel } from './ui/AssistPanel';
+import { ASSIST_EVENT } from './assist/ui';
+import { newExistingProject } from './assist/project';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
@@ -89,6 +92,13 @@ export function App() {
   /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
   const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
+  // Assistant : ouvert après la lecture d'une photo de tableau (src/assist/ui.ts) ou depuis le menu
+  const [assistOpen, setAssistOpen] = useState(false);
+  useEffect(() => {
+    const on = () => setAssistOpen(true);
+    window.addEventListener(ASSIST_EVENT, on);
+    return () => window.removeEventListener(ASSIST_EVENT, on);
+  }, []);
   /** Enregistrement resté en attente à la fermeture précédente. */
   const [resume, setResume] = useState<PendingSave | null>(null);
 
@@ -330,11 +340,24 @@ export function App() {
                 setSaveState(null);
               },
             },
+            {
+              label: t('menu.newSurvey'),
+              run: () => {
+                if (!confirmDiscard()) return;
+                resetHandle();
+                location.current = { kind: 'device' };
+                s.loadProject(newExistingProject(t('assist.newSurveyTitle')), '');
+                setSaveState(null);
+                s.setView('board');
+                setToast({ text: t('assist.newSurveyHelp') });
+              },
+            },
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
             { label: t('menu.importTrikker'), run: () => open('.trik') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },
+            { label: t('menu.assistant'), run: () => setAssistOpen(true), separatorBefore: true },
             { label: t('menu.print'), shortcut: 'Ctrl+P', run: () => setPrintOpen(true), separatorBefore: true },
           ]}
         />
@@ -433,6 +456,7 @@ export function App() {
           }}
         />
       )}
+      {assistOpen && <AssistPanel onClose={() => setAssistOpen(false)} />}
       {versionsOpen && (
         <VersionsDialog
           onClose={() => setVersionsOpen(false)}

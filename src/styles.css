@@ -816,6 +816,35 @@ main {
 .ok-text {
   color: var(--ok, #2e9d58);
 }
+.assist-panel {
+  max-width: 760px;
+  max-height: 85vh;
+  overflow: auto;
+}
+.assist-panel h3 {
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+.assist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.assist-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border, #8883);
+}
+.assist-list .row {
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.assist-critical {
+  color: var(--warning);
+}
+.assist-high > div:first-child {
+  font-weight: 600;
+}
 .warning-text {
   color: var(--warning);
 }

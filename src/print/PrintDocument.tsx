@@ -17,6 +17,7 @@ import { Walls, PlanSymbol, S, planBounds } from '../ui/PlanView';
 import { DeviceFace, DEV_H, LABEL_H, MARGIN, MOD, ROW_PITCH, rowTop } from '../ui/BoardView';
 import { boardSize, enclosures, placed } from '../board/model';
 import type { Finding } from '../rules';
+import { paramsText } from '../ui/CheckPanel';
 import { APP_NAME } from '../brand';
 import type { Lang } from '../i18n';
 import { billOfMaterials } from '../bom/bom';
@@ -493,7 +494,7 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
                   </td>
                   <td>{f.nodeId ? numbering.get(f.nodeId) ?? '' : ''}</td>
                   <td>
-                    {t('rule.' + f.ruleId, f.params as Record<string, string | number>)}
+                    {t('rule.' + f.ruleId, paramsText(f, t))}
                     {f.derogation ? ' — ' + t('status.derogation') + ' : ' + f.derogation.reason + (f.derogation.reference ? ' (' + f.derogation.reference + ')' : '') : ''}
                   </td>
                   <td className="small">{f.ruleId}</td>

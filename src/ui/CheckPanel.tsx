@@ -7,8 +7,15 @@ import { calcProject, roundTo } from '../calc/electrical';
 import { balanceProject, PHASES } from '../calc/balance';
 import { fmtNum } from './labels';
 
-function paramsText(f: Finding, t: (k: string) => string): Record<string, string | number> {
+/** Paramètres d'un constat traduits pour l'affichage (contrôle et dossier imprimé). */
+export function paramsText(f: Finding, t: (k: string) => string): Record<string, string | number> {
   const p: Record<string, string | number> = { ...(f.params ?? {}) };
+  // Valeurs non confirmées (assistant) : noms de propriétés lisibles
+  if (f.ruleId === 'R-UNCONFIRMED' && typeof p.props === 'string')
+    p.props = p.props
+      .split(', ')
+      .map((k) => (k === '@parent' ? t('assist.prop.parent') : t('prop.' + k)))
+      .join(', ');
   if (typeof p.appliance === 'string') p.appliance = t('enum.applianceType.' + p.appliance);
   if (typeof p.reason === 'string') {
     const k = p.reason === 'wetRoom' ? 'reason.wetRoom' : 'enum.applianceType.' + p.reason;

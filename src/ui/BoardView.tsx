@@ -1,7 +1,7 @@
 import { NumberField } from './NumberField';
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
-import { ancestors, createNode, insertChild, insertInSeries, isCircuit, mapTree } from '../model/tree';
+import { ancestors, createNode, insertChild, insertInSeries, isCircuit, mapTree, uid } from '../model/tree';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
@@ -30,6 +30,7 @@ import { AiError, isLocalUrl, PROVIDERS } from '../ai/provider';
 import { useOnline } from './UpdateBanner';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
+import { draftFromReading, openAssistant } from '../assist/ui';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
 import {
   closeKind,
@@ -392,6 +393,13 @@ export function BoardView() {
         lang,
         composed: calibrated,
       });
+      if (!enc.devices.length) {
+        // Tableau encore vide (relevé d'une installation existante) : premier brouillon proposé, rien n'est appliqué
+        const summary = await draftFromReading({ reading, boardId: enc.board.id, photoHref: ph.href, engine: { provider: ai.provider, model: ai.model, promptVersion: 'board-photo-1' } });
+        setMsg(t('assist.draftReady', { devices: summary.devices, questions: summary.questions }));
+        openAssistant();
+        return;
+      }
       // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
       const { slots, unplaced: left, props, proposals } = layoutFromReading(enc.devices, reading, size.perRow, nameOf, circuitsOf);
       const next: BoardLayout = { ...layout, slots };
@@ -463,7 +471,8 @@ export function BoardView() {
   };
   /** Protection vue sur la photo et absente de l'unifilaire : créée sous ce tableau d'après la lecture, et placée. */
   const createFromPhoto = (x: ExtraDevice) => {
-    const node = createNode('protection', protectionFromReading(x.seen));
+    // Seulement les valeurs lues : aucune valeur par défaut (calibre, courbe…) qui passerait pour une observation
+    const node: ElNode = { id: uid(), kind: 'protection', props: protectionFromReading(x.seen), children: [] };
     applyProject((p) => ({
       ...p,
       roots: insertChild(p.roots, enc.board.id, node),
@@ -557,7 +566,7 @@ export function BoardView() {
               // Grisé tant que la clé n'est pas déverrouillée : le cadenas à côté la déverrouille sur place
               <button
                 onClick={readWithAi}
-                disabled={busy || !enc.devices.length || !aiOk}
+                disabled={busy || !aiOk}
                 title={!aiReachable ? t('app.needsNetwork') : aiOk ? t('ai.boardHelp') : t('ai.needUnlock')}
               >
                 {t('ai.boardRead')}

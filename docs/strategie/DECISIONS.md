@@ -26,6 +26,21 @@ Documents liés :
 | D10 | Domaine propre envisagé (`voltaplan.org` ou `voltaplan.eu`) ; adresse publique inchangée pour l'instant | plan de migration dans [STOCKAGE-ET-DOMAINE.md](STOCKAGE-ET-DOMAINE.md) |
 | D11 | Terminologie réglementaire en 6 niveaux, aucune certification revendiquée | voir § 3 |
 
+## 1 bis. Décisions du 2026-11-24 (suite)
+
+| # | Décision | État |
+|---|---|---|
+| A1 à A6 | Modèle de l'assistant : dossier de preuves, inconnus, rôle de l'IA (élargi), relevé figé, plafonds, sources dans le dossier | **validées** ; implémentées ([ADR-0005](../adr/0005-dossier-de-preuves-assistant.md)) |
+| F1 | Entrée `mimetype` en tête | validée |
+| F2 | Bibliothèque ZIP | **en attente** : comparaison mesurée ([F2-COMPARAISON-ZIP.md](F2-COMPARAISON-ZIP.md)), zip.js recommandé |
+| F3 | Lecture sélective (fichier déplacé ou modifié pendant la session à gérer) | validée |
+| F4 | IndexedDB : documents immuables dédupliqués, modèle versionné, dérivés ; jamais de suppression d'un document référencé | validée |
+| F5 | Plafonds provisoires, à confirmer par les mesures ; limites adaptées à l'appareil | validée provisoirement |
+| F6 | Images dérivées régénérables, originaux toujours conservés | validée |
+| F7 | Migration v1 → v2 sans écraser l'original ; export v1 avec la liste de ce qui est perdu | validée |
+| F8 | Répertoire (cloud et local quand c'est possible) et archive portable, avec un modèle logique commun | validée |
+| — | Passage en public, domaine, dépenses, licence, opérations destructives sur l'historique | **attendent une validation explicite** |
+
 ## 2. Format : 7z ou ZIP — **ZIP validé**
 
 Vous avez demandé 7z avec un niveau de compression élevé. **Après mesure, je recommande de rester sur ZIP.** Le
