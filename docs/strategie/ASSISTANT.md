@@ -1,7 +1,8 @@
 # Assistant de création de projets — état du code et plan
 
-Statut : **analyse**, rien n'est implémenté. Objectif fixé : un premier **brouillon** de dossier en quelques
-minutes, à partir des documents dont dispose l'utilisateur.
+Statut : **prototype** du premier parcours (photo(s) de tableau → brouillon), voir § 8 ; le reste est à l'état
+d'analyse. Objectif fixé : un premier **brouillon** de dossier en quelques minutes, à partir des documents dont
+dispose l'utilisateur.
 
 ## 0. L'essentiel
 
@@ -27,7 +28,7 @@ Ces trois éléments doivent être conçus **avant** le format v2 (voir [DECISIO
 
 | # | Sujet | Existant | Manque |
 |---|---|---|---|
-| 1 | **Photos de tableaux** | **Le plus avancé.** Calage des rangées à la main (`src/board/photo.ts`), détection des séparations entre appareils **sans IA** par les bords verticaux, image composée redressée avec une règle de modules (`src/ai/boardImage.ts`) qui rend la lecture par l'IA plus fiable et moins chère, schéma de réponse strict (`src/ai/boardPhotoAi.ts`), affectation aux appareils du projet, comparaison, propositions de valeurs et **création d'appareils** à partir de la photo (`src/ai/boardPhoto.ts`, `src/ui/BoardView.tsx` : `createFromPhoto`) | les circuits **en aval** (prises, points lumineux) ne sont pas créés ; une seule photo par tableau ; pas de lien durable entre une valeur et la photo ; lecture des étiquettes en texte brut, sans interprétation (« PRISES CUISINE » → pièce cuisine, type prises) |
+| 1 | **Photos de tableaux** | **Le plus avancé.** Calage des rangées à la main (`src/board/photo.ts`), détection des séparations entre appareils **sans IA** par les bords verticaux, image composée redressée avec une règle de modules (`src/ai/boardImage.ts`) qui rend la lecture par l'IA plus fiable et moins chère, schéma de réponse strict (`src/ai/boardPhotoAi.ts`), affectation aux appareils du projet, comparaison, propositions de valeurs et **création d'appareils** à partir de la photo (`src/ai/boardPhoto.ts`, `src/ui/BoardView.tsx` : `createFromPhoto`) | les circuits **en aval** (prises, points lumineux) ne sont pas créés ; une seule photo par tableau ; pas de lien durable entre une valeur et la photo ; lecture des étiquettes en texte brut, sans interprétation (« PRISES CUISINE » → pièce cuisine, type prises). *Depuis : traité par le prototype (§ 8)* |
 | 2 | **Plans d'architecte** | import d'un fond de plan, photo ou PDF (**1re page seulement**, réduite à 2 400 px en JPEG : `src/io/background.ts`) ; redressement par 4 points et détection des murs et portes **sans IA** (`src/plan/trace.ts`) | lecture des **pièces** (noms, surfaces), des étages, du **texte vectoriel** des PDF (pdf.js le permet : `getTextContent`, non utilisé), des symboles ; plusieurs pages ; conservation de l'original |
 | 3 | **Plusieurs documents par projet** | plusieurs pages de plan, chacune avec ses images de fond ; une photo par tableau | pas de bibliothèque de documents (PDF, rapports, anciens schémas, notes) ; pas de conservation des originaux |
 | 4 | **Croisement des sources** | uniquement photo ↔ projet (comparaison des appareils) | aucun croisement entre plan, photo, ancien schéma et rapport ; aucune résolution de contradictions |
@@ -235,15 +236,58 @@ pas à être réécrit.
 4. **Analyse RGIE** : les valeurs non confirmées sont signalées et les constats qui en dépendent sont marqués
    « à vérifier ».
 
+### Ajouts du 2026-11-24 (suite)
+
+- **Plusieurs photos d'un même tableau** (une par rangée, ou des prises qui se recouvrent) :
+  - chaque photo est une source (`SourceDoc` : empreinte SHA-256, libellé « Photo du tableau 2 », rangée de départ
+    pour une photo partielle) ; ses observations sont rangées par **position sur le tableau** (rangée, module) ;
+  - la **fusion** (`src/assist/boardDraft.ts`, code déterministe) regroupe un même appareil vu sur plusieurs photos
+    (même module, ou recouvrement d'au moins la moitié) : valeurs d'accord → certitude accrue, plafonnée à 0,97 ;
+    valeur illisible sur une photo et lue sur l'autre → complétée ; **désaccord → aucune valeur proposée et une
+    seule question de contradiction**, avec une option par valeur et ses photos ;
+  - **doublons** (`src/assist/survey.ts`) : même empreinte → même source ; même image envoyée, même modèle, même
+    consigne → lecture réutilisée **sans nouvel appel** (cache) ; lecture identique à une autre photo du tableau →
+    doublon signalé, rien d'ajouté (une même lecture ne compte pas deux fois) ;
+  - une nouvelle photo **remplace le brouillon en attente** du tableau, **ne repropose pas** ce qui est accepté
+    (seulement ce qui manque, et les désaccords avec l'arbre non confirmés) et **ne repose aucune question** ;
+  - interface : « Rangées sur cette photo : de … à … » pendant le calage.
+- **Plusieurs tableaux** (`src/assist/boards.ts`) :
+  - un brouillon par tableau (lots et clés propres au tableau) ;
+  - **« Ajouter un tableau »** dans l'onglet Tableau : sous-tableau créé à la racine de l'arbre, alimentation
+    inconnue (rien d'inventé) ;
+  - un circuit étiqueté « Sous-tableau garage », « Onderverdeling tuinhuis »… (ou un point « tableau » déduit) dont le
+    nom concorde → **proposition critique de rattachement** (déplacement sous son câble) **et question liée** ;
+    jamais de cycle, jamais deux rattachements.
+- **Étiquettes** (`src/assist/labels.ts`) : abréviations belges FR, NL, EN (« PC cuis. », « Ecl. », « SDB »,
+  « Ch.1 », « Slpk 2 », « LL », « LV », « S-L », « Stopc. », « Verl. »…), étiquettes mixtes (plusieurs usages),
+  plusieurs pièces (aucune pièce unique inventée), « Réserve » et « Général » reconnus.
+- **Questions pertinentes et non redondantes** :
+  - une question par fait inconnu, jamais deux fois ;
+  - section des câbles **groupée par usage** (« Section des câbles des 3 circuits « Prise » : la même pour tous ? »,
+    boutons 2,5 / 4 mm², « chacun séparément ») ;
+  - rien pour un disjoncteur de réserve ou de tête, ni pour un appareil non protecteur (signalé dans le résumé) ;
+  - question de raccordement deviné close d'office quand la proposition est vérifiée une par une ;
+  - priorité (calibre et sensibilité d'abord) ; **« Tout à vérifier plus tard »** (questions mises de côté, valeurs
+    inconnues, signalées au contrôle) et reprise.
+- **Correction facile** : chaque proposition à vérifier peut être corrigée avant d'être acceptée (calibre, courbe,
+  sensibilité, usage, pièce, nom du sous-tableau, **différentiel amont** choisi dans une liste). Un clic = une étape
+  d'annulation ; la valeur retenue est confirmée et la correction tracée dans l'historique.
+- **Évaluation réelle** : banc `tools/ai-eval/` et guide [assistant-evaluation.md](../assistant-evaluation.md).
+  **Aucune mesure réelle n'a encore été faite** : tous les tests de l'assistant utilisent des lectures simulées.
+- **Originaux** : la photo reste stockée comme avant (disposition du tableau) ; `registerOriginal`
+  (`src/assist/ui.ts`) est le point d'accroche du futur magasin de fichiers (format v2).
+
 **Ce que le prototype ne fait pas encore :**
 
-- plusieurs photos d'un même tableau, tableaux divisionnaires, plans ou documents (objectifs 2 et 3) ;
-- placement des points sur le plan de position ;
+- plans, anciens schémas et rapports (voir § 10) ;
+- placement des points sur le plan de position (voir § 10) ;
 - appareils non protecteurs (télérupteurs, parafoudres) : signalés, mais pas ajoutés au schéma, car leur
   raccordement est inconnu ;
-- cache des lectures de l'IA (le dossier de preuves garde déjà l'empreinte de la photo) ;
 - partie « Sources et hypothèses » détaillée dans le dossier imprimé. Les valeurs non confirmées y figurent déjà
-  par les constats.
+  par les constats ;
+- photo partielle **décalée en modules** (prise d'une moitié de rangée) : le moteur sait la fusionner, mais
+  l'interface ne propose que le choix des rangées ;
+- mesure réelle de la lecture (banc prêt, corpus à constituer).
 
 **Constat lors de l'essai : la règle « Aucune prise de terre n'est dessinée »** est bloquante. Dans un relevé, elle
 reflète l'absence dans le dessin, pas forcément dans la réalité. Pour une installation existante relevée par photo,
@@ -258,9 +302,13 @@ son accord.
 
 1. Fichier → **Nouveau relevé (installation existante)**.
 2. Onglet **Tableau** : nombre de rangées et de modules par rangée ; **ajouter la photo** ; **caler** chaque
-   rangée (2 clics par rangée).
+   rangée (2 clics par rangée). Pour une photo par rangée : choisir « Rangées sur cette photo » pendant le calage.
 3. **Lire avec l'IA** : l'assistant s'ouvre avec le brouillon.
-4. Suivre les 4 étapes, puis **Analyse RGIE**.
+4. **Autres photos** du même tableau (autre rangée, autre angle) : ajouter la photo, caler, relire. Le brouillon est
+   fusionné ; les désaccords deviennent des questions.
+5. **Sous-tableau** : « Ajouter un tableau », puis même chose dans son onglet. Le rattachement au circuit qui
+   l'alimente est proposé si une étiquette le désigne.
+6. Suivre les 4 étapes (corriger une proposition au besoin avant de l'accepter), puis **Analyse RGIE**.
 5. **À noter** pour chaque essai :
    - nombre d'appareils lus ;
    - erreurs de lecture (calibre, type, étiquette) ;
@@ -269,4 +317,36 @@ son accord.
    - temps total ;
    - points d'ergonomie gênants.
 
-Ces retours servent à régler les seuils de confiance, les mots-clés des étiquettes et les questions.
+Ces retours servent à régler les seuils de confiance, les mots-clés des étiquettes et les questions. Pour une mesure
+chiffrée et répétable de la lecture (par champ, par modèle), utiliser le banc d'évaluation :
+[assistant-evaluation.md](../assistant-evaluation.md).
+
+## 10. Notes de conception : documents importés et plan de position (à venir)
+
+### Import d'anciens schémas et de PDF (emplacement prévu)
+
+- **Source** : `SourceDoc` de type `oldSchema`, `planPdf`, `report` ; l'original est enregistré par
+  `registerOriginal` (magasin de fichiers du format v2) ; pages comptées.
+- **Extraction locale d'abord** : texte vectoriel des PDF (pdf.js `getTextContent`) → observations `reading`
+  (`method: 'deterministic'`, région = page et zone). Les PDF scannés passent par l'IA, **page par page** et **zone
+  par zone**, avec le même cache par empreinte que les photos.
+- **Ancien unifilaire** : l'IA produit des observations typées (`reading` pour un appareil lu, `match` pour « ce
+  disjoncteur du schéma = cet appareil de la photo », `grouping` pour « ces circuits sous ce différentiel »). La
+  fusion existante s'applique telle quelle : clé de sujet commune (repère du circuit « A », « B2 »), accord →
+  certitude accrue, désaccord avec la photo → question de contradiction avec les deux sources. Le schéma ancien ne
+  prime jamais sur la photo : ce sont deux sources, l'utilisateur tranche.
+- **Interface** : « Ajouter un document » dans l'assistant ; chaque proposition affiche déjà ses sources.
+
+### Plan de position à partir des pièces déduites
+
+- Les points d'utilisation proposés portent déjà leur **pièce** (`location`, déduite de l'étiquette : « Cuisine »,
+  « Chambre 2 ») — seulement si l'étiquette n'en cite qu'une.
+- « Mettre à jour » (`src/model/sync.ts`) pose déjà chaque nouveau point **près du texte de sa pièce** sur le plan
+  (`planByRoom`), sinon dans la colonne « à placer ». Il suffit donc, après acceptation, que le plan contienne les
+  noms des pièces : sans plan, une page simple pourrait être générée avec une étiquette par pièce déduite (une ligne
+  de pièces à placer), puis « Mettre à jour » range les points autour.
+- **Pas de type de proposition « placer sur le plan » pour l'instant** : la position exacte d'un point n'est jamais
+  observée sur une photo de tableau ; la placer serait inventer. Le placement par pièce reste une aide de dessin,
+  à déplacer par l'utilisateur, et sans effet sur le contrôle.
+- Les noms de pièces de `labels.ts` sont alignés sur ceux qu'on attend sur le plan (« Salle de bain », « Salle à
+  manger »…) ; un plan importé avec d'autres noms (« Living ») nécessitera une table de correspondance (même module).

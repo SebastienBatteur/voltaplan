@@ -14,6 +14,12 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Fichier → Nouveau relevé (installation existante) ; photo du tableau lue par l'IA → brouillon de tableau, protections, circuits et unifilaire, avec des questions pour ce qui n'est pas lisible. Rien n'est inventé ni appliqué sans accord ; acceptation groupée de ce qui est sûr ; relevé figé daté (non certifié).
 - Valeurs reprises d'une photo et non confirmées : signalées au contrôle RGIE ; les constats qui en dépendent sont marqués « à vérifier ».
 - « Créer depuis la photo » n'ajoute plus de valeurs par défaut (calibre, courbe, pouvoir de coupure) aux valeurs lues.
+- Plusieurs photos d'un même tableau (une par rangée, ou des prises qui se recouvrent) : fusion par position ; valeurs d'accord plus sûres ; désaccord → une seule question avec les valeurs de chaque photo ; même photo relue → lecture réutilisée sans nouvel appel à l'IA ; lecture identique à une autre photo → doublon signalé, rien d'ajouté. Une nouvelle photo ne repropose pas ce qui est déjà accepté et ne repose aucune question.
+- Plusieurs tableaux : « Ajouter un tableau » (sous-tableau, alimentation inconnue) ; un brouillon par tableau ; rattachement proposé sous le circuit étiqueté « sous-tableau … » (à vérifier une par une).
+- Étiquettes : abréviations belges FR, NL, EN reconnues (PC, Ecl., SDB, Ch.1, Slpk, LL, LV, Stopc., Verl.…), étiquettes à plusieurs usages, réserve et général.
+- Questions : section groupée par usage (une réponse pour tous, ou chacun séparément), rien pour une réserve ou un appareil non protecteur, « Tout à vérifier plus tard ».
+- Correction d'une proposition avant de l'accepter : calibre, courbe, sensibilité, usage, pièce, différentiel amont.
+- Banc d'évaluation de la lecture par l'IA, à lancer avec sa propre clé ou un modèle local (`tools/ai-eval/`, [docs/assistant-evaluation.md](docs/assistant-evaluation.md)). Les tests automatiques utilisent des lectures simulées et ne mesurent pas la qualité réelle de la reconnaissance.
 
 ### Modèle et fichiers
 - **Aucun écrasement silencieux** : « Enregistrer » vérifie que le fichier n'a pas été modifié ailleurs depuis son ouverture (OneDrive : eTag ; Dropbox : révision ; Google Drive : version ; GitHub : SHA ; navigateur : révision ; fichier local : date et taille). En cas de conflit, votre version est enregistrée en copie datée, au même endroit ; les deux versions sont conservées.
