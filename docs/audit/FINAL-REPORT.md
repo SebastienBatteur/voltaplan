@@ -182,6 +182,7 @@ remplace pas le contrôle par un organisme agréé. Pas encore comme outil de co
 
 - Activer le **code scanning** (dépôt public, ou GitHub Advanced Security) : passer alors `upload: never` à
   `upload: always` dans `codeql.yml`.
-- Les **15 demandes de fusion Dependabot** ouvertes avant le réglage « mineures et correctifs seulement ». Elles
-  contiennent des versions majeures (React 19, Vite 8, Vitest 5, zustand 5, actions) ; aucune n'a été fusionnée.
+- ~~Les demandes de fusion Dependabot de versions majeures~~ : **fermées** à la demande du propriétaire (React 19,
+  Vite 8, Vitest 5, zustand 5, jsdom 31, actions). Les majeures npm et actions sont ignorées dans
+  `.github/dependabot.yml` ; restent ouvertes 4 mises à jour mineures (#9, #15, #18, #20), à examiner.
 - La **relecture réglementaire** par un expert.
