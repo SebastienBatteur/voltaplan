@@ -180,6 +180,8 @@ export interface BoardLayout {
     imgH?: number;
     /** Calage : pour chaque rangée, bord gauche du 1er module (a) et bout de la rangée (b), en pixels de la photo. */
     rows?: { a: { x: number; y: number }; b: { x: number; y: number } }[];
+    /** Photo partielle (une photo par rangée) : rangée du tableau de la 1re rangée calée (0 par défaut). */
+    firstRow?: number;
   };
   /** Contrôle de l'appareil sur la photo : confirmé par l'utilisateur, ou différence relevée. */
   checks?: Record<string, 'ok' | 'ko'>;

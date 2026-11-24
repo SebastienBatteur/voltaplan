@@ -6,8 +6,9 @@
  * d'annulation (A1).
  */
 import type { BoardLayout, ElNode, Project, PropValue } from '../model/types';
-import { findNode, insertChild, mapTree, uid } from '../model/tree';
-import { emptyEvidence, type Basis, type Evidence, type HistoryEntry, type Proposal, type Provenance } from './evidence';
+import { ALLOWED_CHILDREN } from '../model/schema';
+import { ancestors, findNode, insertChild, mapTree, removeNode, uid } from '../model/tree';
+import { emptyEvidence, evidenceId, type Basis, type Evidence, type HistoryEntry, type Proposal, type Provenance, type Question } from './evidence';
 
 const ev = (p: Project): Evidence => p.evidence ?? emptyEvidence();
 
@@ -17,7 +18,23 @@ function dependsOn(p: Proposal): string[] {
   const out: string[] = [];
   if (c.op === 'createNode' && 'tempKey' in c.parent) out.push(c.parent.tempKey);
   if ((c.op === 'setProp' || c.op === 'place') && 'tempKey' in c.target) out.push(c.target.tempKey);
+  if (c.op === 'move' && 'tempKey' in c.newParent) out.push(c.newParent.tempKey);
   return out;
+}
+
+/**
+ * Modification d'une proposition par l'utilisateur AVANT de l'accepter (calibre, courbe, usage, pièce,
+ * différentiel amont…). La proposition acceptée avec une modification devient « confirmée ».
+ *  - props : valeurs remplacées (null : retirée) ;
+ *  - kind : type du point d'utilisation (prise, éclairage, appareil…) ;
+ *  - location : pièce (null : retirée) ;
+ *  - parent : autre parent (ex. un autre différentiel du même tableau).
+ */
+export interface ProposalEdit {
+  props?: Record<string, PropValue | null>;
+  kind?: string;
+  location?: string | null;
+  parent?: { nodeId: string } | { tempKey: string };
 }
 
 /**
@@ -56,7 +73,7 @@ export function needsReview(e: Evidence | undefined): Proposal[] {
  */
 export function decide(
   project: Project,
-  opts: { accept?: string[]; reject?: string[]; values?: Record<string, PropValue>; confirm?: string[] },
+  opts: { accept?: string[]; reject?: string[]; values?: Record<string, PropValue>; confirm?: string[]; edits?: Record<string, ProposalEdit> },
   now = new Date().toISOString(),
 ): Project {
   const e0 = ev(project);
@@ -88,23 +105,56 @@ export function decide(
       return { ...p, status: 'rejected', decidedAt: now };
     }
     if (!accept.has(p.id)) return p;
-    const edited = Object.prototype.hasOwnProperty.call(opts.values ?? {}, p.id);
+    const edit = opts.edits?.[p.id];
+    const edited = Object.prototype.hasOwnProperty.call(opts.values ?? {}, p.id) || !!edit;
     const basis: Basis = edited || confirm.has(p.id) ? 'confirmed' : p.basis;
     const c = p.change;
     if (c.op === 'createNode') {
-      if (waiting(c.parent)) return p;
-      const parentId = resolve(c.parent);
+      const parentRef = edit?.parent ?? c.parent;
+      if (waiting(parentRef)) return p;
+      const parentId = resolve(parentRef);
       if (!parentId || !findNode(roots, parentId)) return { ...p, status: 'superseded', decidedAt: now };
-      // Uniquement les propriétés observées ou déduites : AUCUNE valeur par défaut (A2)
-      const node: ElNode = { id: uid(), kind: c.kind as ElNode['kind'], props: { ...c.props }, children: [], ...(c.location ? { location: c.location } : {}) };
+      // Uniquement les propriétés observées ou déduites (ou corrigées par l'utilisateur) : AUCUNE valeur par défaut (A2)
+      const props: Record<string, PropValue> = { ...c.props };
+      for (const [k, v] of Object.entries(edit?.props ?? {})) {
+        if (v === null || v === undefined || v === '') delete props[k];
+        else props[k] = v;
+      }
+      const kind = (edit?.kind ?? c.kind) as ElNode['kind'];
+      if (kind !== 'appliance') delete props.applianceType;
+      const location = edit && 'location' in edit ? (edit.location ?? undefined) : c.location;
+      const node: ElNode = { id: uid(), kind, props, children: [], ...(location ? { location } : {}) };
       roots = insertChild(roots, parentId, node);
       temp.set(c.tempKey, node.id);
       setProv(node.id, '@node', basis, p);
       // Raccordement (quel différentiel protège ce circuit) : incertain si la proposition est critique
       setProv(node.id, '@parent', basis === 'confirmed' ? basis : p.critical ? 'deduced' : basis, p);
-      for (const k of Object.keys(c.props)) setProv(node.id, k, basis, p);
+      for (const k of Object.keys(props)) setProv(node.id, k, basis, p);
       history.push({ at: now, actor: 'user', action: 'accept', refs: { proposal: p.id, nodeId: node.id, batch: p.batch } });
+      // Corrections avant acceptation : tracées (valeur proposée → valeur retenue)
+      if (edit) {
+        for (const k of Object.keys(edit.props ?? {}))
+          if (c.props[k] !== props[k]) history.push({ at: now, actor: 'user', action: 'edit', refs: { proposal: p.id, nodeId: node.id, prop: k }, before: c.props[k] ?? null, after: props[k] ?? null });
+        if (kind !== c.kind) history.push({ at: now, actor: 'user', action: 'edit', refs: { proposal: p.id, nodeId: node.id, prop: '@kind' }, before: c.kind, after: kind });
+        if (location !== c.location) history.push({ at: now, actor: 'user', action: 'edit', refs: { proposal: p.id, nodeId: node.id, prop: '@location' }, before: c.location ?? null, after: location ?? null });
+        if (edit.parent && JSON.stringify(edit.parent) !== JSON.stringify(c.parent))
+          history.push({ at: now, actor: 'user', action: 'edit', refs: { proposal: p.id, nodeId: node.id, prop: '@parent' }, after: parentId });
+      }
       return { ...p, status: 'accepted', decidedAt: now, createdNodeId: node.id };
+    }
+    if (c.op === 'move') {
+      if (waiting(c.newParent)) return p;
+      const id = c.target.nodeId;
+      const parentId = resolve(c.newParent);
+      const target = findNode(roots, id);
+      const parent = parentId ? findNode(roots, parentId) : undefined;
+      // Jamais de cycle (un nœud sous lui-même ou sous un de ses enfants), jamais un parent interdit
+      if (!target || !parent || parent.id === id || ancestors(roots, parent.id).some((a) => a.id === id) || !ALLOWED_CHILDREN[parent.kind]?.includes(target.kind))
+        return { ...p, status: 'superseded', decidedAt: now };
+      roots = insertChild(removeNode(roots, id), parent.id, target);
+      setProv(id, '@parent', basis, p);
+      history.push({ at: now, actor: 'user', action: 'accept', refs: { proposal: p.id, nodeId: id, prop: '@parent', batch: p.batch } });
+      return { ...p, status: 'accepted', decidedAt: now };
     }
     if (c.op === 'setProp') {
       if (waiting(c.target)) return p;
@@ -128,8 +178,20 @@ export function decide(
     return { ...p, status: 'accepted', decidedAt: now };
   });
 
-  // Questions qui portaient sur un objet à créer : rattachées au nœud créé
-  const questions = e0.questions.map((q) => (q.about.tempKey && temp.has(q.about.tempKey) && !q.about.nodeId ? { ...q, about: { ...q.about, nodeId: temp.get(q.about.tempKey) } } : q));
+  // Questions qui portaient sur un objet à créer : rattachées au nœud créé (membres d'une question groupée compris)
+  const decided = new Map(proposals.filter((p) => p.decidedAt === now && p.status !== 'pending').map((p) => [p.id, p]));
+  const questions = e0.questions.map((q0): Question => {
+    let q = q0;
+    if (q.about.tempKey && temp.has(q.about.tempKey) && !q.about.nodeId) q = { ...q, about: { ...q.about, nodeId: temp.get(q.about.tempKey) } };
+    if (q.members?.some((m) => m.tempKey && !m.nodeId && temp.has(m.tempKey)))
+      q = { ...q, members: q.members.map((m) => (m.tempKey && !m.nodeId && temp.has(m.tempKey) ? { ...m, nodeId: temp.get(m.tempKey) } : m)) };
+    // Question liée à une proposition (raccordement deviné…) : réglée par la décision de l'utilisateur sur celle-ci
+    const linked = q.status === 'open' && q.about.proposalId ? decided.get(q.about.proposalId) : undefined;
+    if (linked?.status === 'rejected' || linked?.status === 'superseded') q = { ...q, status: 'dismissed', answeredAt: now };
+    else if (linked?.status === 'accepted' && (confirm.has(linked.id) || opts.edits?.[linked.id] || Object.prototype.hasOwnProperty.call(opts.values ?? {}, linked.id)))
+      q = { ...q, status: 'answered', answer: true, answeredAt: now };
+    return q;
+  });
   return { ...project, roots, ...(boards ? { boards } : {}), evidence: { ...e0, proposals, questions, provenance, history } };
 }
 
@@ -155,7 +217,8 @@ export function answer(project: Project, questionId: string, value: PropValue | 
   } else if (!pseudo && value !== null && value !== undefined && value !== '' && nodeId && q.about.prop && findNode(roots, nodeId)) {
     roots = mapTree(roots, (n) => (n.id === nodeId ? { ...n, props: { ...n.props, [q.about.prop!]: value } } : n));
     const i = provenance.findIndex((x) => x.nodeId === nodeId && x.prop === q.about.prop);
-    const entry: Provenance = { nodeId, prop: q.about.prop, basis: 'confirmed', observations: q.options?.flatMap((o) => o.observations) ?? [], confidence: 1, at: now };
+    const chosen = q.options?.find((o) => o.value === value);
+    const entry: Provenance = { nodeId, prop: q.about.prop, basis: 'confirmed', observations: chosen ? chosen.observations : (q.options?.flatMap((o) => o.observations) ?? []), confidence: 1, at: now };
     if (i >= 0) provenance[i] = entry;
     else provenance.push(entry);
   }
@@ -247,4 +310,74 @@ export const surveyFrozen = (p: Project) => !!p.evidence?.history.some((h) => h.
 /** Valeurs de l'arbre issues de l'assistant et pas encore confirmées par l'utilisateur. */
 export function unconfirmed(project: Project): Provenance[] {
   return (project.evidence?.provenance ?? []).filter((p) => p.basis !== 'confirmed' && p.basis !== 'manual' && p.prop !== '@node');
+}
+
+// ---------------------------------------------------------------------------
+// Questions groupées, report « à vérifier plus tard »
+// ---------------------------------------------------------------------------
+
+/** Membres d'une question groupée qui existent dans l'arbre. */
+const liveMembers = (project: Project, q: Question) => (q.members ?? []).filter((m) => m.nodeId && findNode(project.roots, m.nodeId));
+
+/**
+ * Une question groupée est prête quand chacun de ses objets existe dans l'arbre ou ne sera jamais créé (proposition
+ * refusée ou remplacée). Une question simple : quand son objet existe (ou qu'elle ne vise pas d'objet à créer).
+ */
+export function questionReady(project: Project, q: Question): boolean {
+  if (!q.members) return !!q.about.nodeId || !q.about.tempKey;
+  const pending = new Set((project.evidence?.proposals ?? []).filter((p) => p.status === 'pending' && p.change.op === 'createNode').map((p) => (p.change.op === 'createNode' ? p.change.tempKey : '')));
+  return q.members.every((m) => m.nodeId || !m.tempKey || !pending.has(m.tempKey)) && liveMembers(project, q).length > 0;
+}
+
+/**
+ * Réponse à une question groupée (« 2,5 mm² pour tous les circuits de prises ? ») : la valeur est écrite sur chaque
+ * objet existant, confirmée. `null` : « je ne sais pas » pour tous (rien n'est écrit).
+ */
+export function answerGroup(project: Project, questionId: string, value: PropValue | null, now = new Date().toISOString()): Project {
+  const e0 = ev(project);
+  const q = e0.questions.find((x) => x.id === questionId);
+  if (!q || q.status !== 'open' || !q.members || !q.about.prop) return project;
+  if (value === null || value === undefined || value === '') return answer(project, questionId, null, now);
+  const ids = new Set(liveMembers(project, q).map((m) => m.nodeId!));
+  const prop = q.about.prop;
+  const roots = mapTree(project.roots, (n) => (ids.has(n.id) ? { ...n, props: { ...n.props, [prop]: value } } : n));
+  const provenance = e0.provenance.filter((x) => !(ids.has(x.nodeId) && x.prop === prop));
+  for (const id of ids) provenance.push({ nodeId: id, prop, basis: 'confirmed', observations: [], confidence: 1, at: now });
+  const questions = e0.questions.map((x) => (x.id === questionId ? { ...x, status: 'answered' as const, answer: value, answeredAt: now } : x));
+  const history: HistoryEntry[] = [...e0.history, ...[...ids].map((id): HistoryEntry => ({ at: now, actor: 'user', action: 'answer', refs: { question: questionId, nodeId: id, prop }, after: value }))];
+  return { ...project, roots, evidence: { ...e0, questions, provenance, history } };
+}
+
+/** « Chacun séparément » : la question groupée est remplacée par une question par objet. */
+export function splitGroup(project: Project, questionId: string, textKey = 'assist.q.section'): Project {
+  const e0 = ev(project);
+  const q = e0.questions.find((x) => x.id === questionId);
+  if (!q || q.status !== 'open' || !q.members) return project;
+  const singles: Question[] = q.members.map((m) => ({
+    id: evidenceId('q'),
+    kind: 'unknown',
+    about: { nodeId: m.nodeId, tempKey: m.tempKey, prop: q.about.prop },
+    text: { key: textKey, params: { label: m.label ?? '' } },
+    priority: q.priority,
+    status: 'open',
+  }));
+  const questions = [...e0.questions.map((x) => (x.id === questionId ? { ...x, status: 'dismissed' as const, answeredAt: new Date().toISOString() } : x)), ...singles];
+  return { ...project, evidence: { ...e0, questions } };
+}
+
+/**
+ * « Tout à vérifier plus tard » : les questions ouvertes sont mises de côté (toujours ouvertes, rien n'est écrit) ;
+ * les valeurs restent inconnues et le contrôle les signale. `resume` les fait revenir.
+ */
+export function deferQuestions(project: Project, resume = false, now = new Date().toISOString()): Project {
+  const e0 = ev(project);
+  let n = 0;
+  const questions = e0.questions.map((q) => {
+    if (q.status !== 'open' || !!q.deferred === !resume) return q;
+    n++;
+    return { ...q, deferred: !resume || undefined };
+  });
+  if (!n) return project;
+  const history: HistoryEntry[] = [...e0.history, { at: now, actor: 'user', action: 'dismiss', refs: {}, note: `${resume ? 'reprise' : 'report'} de ${n} question(s)` }];
+  return { ...project, evidence: { ...e0, questions, history } };
 }
