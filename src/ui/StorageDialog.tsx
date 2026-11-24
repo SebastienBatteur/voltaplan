@@ -25,6 +25,7 @@ import { uid } from '../model/tree';
 import { FILE_EXT } from '../brand';
 import type { Project } from '../model/types';
 import { download } from '../io/files';
+import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
 import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, type CloudFile, type CloudId } from '../io/cloud';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
@@ -157,6 +158,7 @@ export function StorageDialog({
         {tab === 'browser' && (
           <div>
             <p className="muted small">{t('storage.browserHelp')}</p>
+            <BrowserSpace />
             {mode === 'save' && (
               <button
                 className="primary"
@@ -167,6 +169,7 @@ export function StorageDialog({
                     const id = existing?.id ?? uid();
                     if (existing && !confirm(t('storage.overwrite', { name: name.trim() }))) return;
                     await browserSave(id, name.trim(), project);
+                    void requestPersistence();
                     onSaved(name.trim(), { kind: 'browser', id });
                     onClose();
                   })
@@ -334,6 +337,56 @@ export function StorageDialog({
           <button onClick={onClose}>{t('ai.close')}</button>
         </div>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Onglet « Navigateur » : place utilisée, protection contre l'effacement automatique (src/io/persist.ts),
+ * conseil pour Safari / iPhone / iPad. Rien n'est affiché de ce que le navigateur ne dit pas.
+ */
+function BrowserSpace() {
+  const t = useStore((s) => s.t);
+  const lang = useStore((s) => s.lang);
+  const [info, setInfo] = useState<StorageInfo | null>(null);
+  const [denied, setDenied] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    void storageInfo().then((i) => alive && setInfo(i));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  if (!info) return null;
+  const advice = needsInstallAdvice();
+  return (
+    <div className="muted small">
+      {info.usage !== null && (
+        <p>
+          {info.quota
+            ? t('storage.spaceQuota', { used: formatBytes(info.usage, lang), quota: formatBytes(info.quota, lang) })
+            : t('storage.spaceUsed', { used: formatBytes(info.usage, lang) })}
+        </p>
+      )}
+      {info.persisted !== null && (
+        <p>
+          {t(info.persisted ? 'storage.persistOn' : 'storage.persistOff')}{' '}
+          {!info.persisted && (
+            <button
+              className="small-btn"
+              onClick={async () => {
+                const ok = await requestPersistence(true);
+                setDenied(ok !== true);
+                setInfo(await storageInfo());
+              }}
+            >
+              {t('storage.persistAsk')}
+            </button>
+          )}
+        </p>
+      )}
+      {denied && !advice && <p>{t('storage.persistDenied')}</p>}
+      {advice && <p>{t('storage.installAdvice')}</p>}
     </div>
   );
 }

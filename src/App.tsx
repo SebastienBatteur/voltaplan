@@ -7,7 +7,8 @@ import { StorageDialog } from './ui/StorageDialog';
 import { AUTOSAVE_ID, browserDelete, browserLoad, browserSave, getGithubToken, githubSave, loadGithubSettings, parseProject, type Location } from './io/storage';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
-import { onUpdate } from './appUpdate';
+import { isReloadingForUpdate } from './appUpdate';
+import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
 import { useStore, type View } from './store';
 import { LANGS, type Lang } from './i18n';
 import { UnifilarView } from './ui/UnifilarView';
@@ -121,7 +122,8 @@ export function App() {
   // Avertir avant de fermer avec des modifications
   useEffect(() => {
     const onBefore = (e: BeforeUnloadEvent) => {
-      if (useStore.getState().dirty) e.preventDefault();
+      // Rechargement pour une nouvelle version : le brouillon vient d'être gardé (src/ui/UpdateBanner.tsx)
+      if (useStore.getState().dirty && !isReloadingForUpdate()) e.preventDefault();
     };
     window.addEventListener('beforeunload', onBefore);
     return () => window.removeEventListener('beforeunload', onBefore);
@@ -137,9 +139,6 @@ export function App() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ name: string; updated: string; data: string } | null>(null);
-  // Nouvelle version publiée pendant que la page est ouverte (src/appUpdate.ts)
-  const [updateReady, setUpdateReady] = useState(false);
-  useEffect(() => onUpdate(() => setUpdateReady(true)), []);
 
   // Brouillon automatique dans le navigateur (toutes les 20 s s'il y a des modifications), récupérable au démarrage
   useEffect(() => {
@@ -206,6 +205,7 @@ export function App() {
           {s.fileName || s.project.meta.title}
           {s.dirty ? ' •' : ''}
         </span>
+        <OfflineBadge />
         <button
           onClick={() => setAiOpen(true)}
           className={aiUnlocked ? 'ai-on' : undefined}
@@ -251,15 +251,7 @@ export function App() {
           }}
         />
       )}
-      {updateReady && (
-        <div className="toast">
-          {t('app.updateReady')}{' '}
-          <button className="primary" onClick={() => window.location.reload()}>
-            {t('app.reload')}
-          </button>{' '}
-          <button onClick={() => setUpdateReady(false)}>✕</button>
-        </div>
-      )}
+      <UpdateBanner />
       {recover && (
         <div className="toast">
           {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}{' '}

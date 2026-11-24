@@ -1,6 +1,9 @@
 import { defineConfig, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
+import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { cspString, webCsp } from './src/security/csp';
+import { SW_FILE, buildPrecacheManifest, renderServiceWorker } from './src/sw/precache';
 
 /**
  * CSP de la version web, ajoutée à index.html à la construction seulement : en développement,
@@ -19,8 +22,31 @@ function cspMeta(): Plugin {
   };
 }
 
+/**
+ * Service worker (hors ligne) : une fois tous les fichiers écrits (y compris ceux de public/), liste-les avec
+ * leur version et écrit dist/sw.js à partir du modèle src/sw/sw.js. Voir docs/offline.md.
+ * Pas pour l'application de bureau (aucun service worker).
+ */
+function serviceWorker(): Plugin {
+  return {
+    name: 'voltaplan-sw',
+    apply: 'build',
+    enforce: 'post',
+    writeBundle(options) {
+      if (process.env.TAURI_ENV_PLATFORM || !options.dir) return;
+      const dir = options.dir;
+      const walk = (d: string): string[] => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]));
+      const files = walk(dir).map((f) => ({ path: relative(dir, f), content: readFileSync(f) }));
+      const manifest = buildPrecacheManifest(files);
+      const template = readFileSync(resolve(__dirname, 'src/sw/sw.js'), 'utf8');
+      writeFileSync(join(dir, SW_FILE), renderServiceWorker(template, manifest));
+      this.info(`service worker : ${manifest.urls.length} fichiers, version ${manifest.version}`);
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), cspMeta()],
+  plugins: [react(), cspMeta(), serviceWorker()],
   base: './',
   test: { globals: true, environment: 'jsdom', exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**', 'src-tauri/**'] },
 });
