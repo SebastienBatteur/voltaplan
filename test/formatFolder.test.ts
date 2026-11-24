@@ -11,7 +11,7 @@ import { MemoryFolderBackend } from '../src/format/storageBackend';
 import { sha256Hex } from '../src/format/sha256';
 import { importArchiveToFolder, transferFolder } from '../src/io/cloudFolder';
 import { AuthError, ConflictError } from '../src/io/conflict';
-import { OneDriveFolderBackend, safeFolderName, SIMPLE_UPLOAD_MAX, UPLOAD_CHUNK } from '../src/io/oneDriveFolder';
+import { OneDriveFolderBackend, safeFolderName, UPLOAD_CHUNK } from '../src/io/oneDriveFolder';
 import { DRIVE_PINS_MIN_BUDGET, drivePinsBudget, pinsToReleaseBySize } from '../src/io/cloud';
 import { saveAt, type SaveDeps } from '../src/io/saveFlow';
 import type { FolderLocation } from '../src/io/storage';
@@ -173,7 +173,7 @@ describe('OneDrive (Graph simulé)', () => {
   });
 
   it('gros document : session d’envoi par tranches, reprise après coupure', async () => {
-    const size = SIMPLE_UPLOAD_MAX + UPLOAD_CHUNK + 10;
+    const size = 4 * 1024 * 1024 + UPLOAD_CHUNK + 10;
     let cut = true;
     let received = 0;
     const { calls, f } = fake((url, init) => {
@@ -191,7 +191,7 @@ describe('OneDrive (Graph simulé)', () => {
       }
       return json({}, 500);
     });
-    const b = new OneDriveFolderBackend('tok', 'Maison', f);
+    const b = new OneDriveFolderBackend('tok', 'Maison', f, 4 * 1024 * 1024);
     const r = await b.putIfAbsent('assets/big.pdf', new Blob([new Uint8Array(size)]));
     expect(r).toEqual({ status: 'created', size });
     const session = calls.find((c) => c.url.endsWith('/createUploadSession'))!;
@@ -199,6 +199,18 @@ describe('OneDrive (Graph simulé)', () => {
     const chunks = calls.filter((c) => c.url === 'https://upload.example/s1' && c.init.method === 'PUT');
     expect(chunks.every((c) => !hdr(c).has('Authorization'))).toBe(true);
     expect(calls.some((c) => c.url === 'https://upload.example/s1' && !c.init.method)).toBe(true); // reprise demandée
+  });
+
+  it('envoi simple refusé (413) : repli sur une session d’envoi', async () => {
+    const { calls, f } = fake((url, init) => {
+      if (url.includes('/content?')) return json({}, 413);
+      if (url.endsWith('/createUploadSession')) return json({ uploadUrl: 'https://upload.example/s2' });
+      if (url === 'https://upload.example/s2' && init.method === 'PUT') return json({ size: 5 }, 201);
+      return json({}, 500);
+    });
+    const b = new OneDriveFolderBackend('tok', 'Maison', f);
+    expect(await b.putIfAbsent('assets/x.pdf', new Blob(['%PDF-']))).toEqual({ status: 'created', size: 5 });
+    expect(calls.map((c) => c.url.split('?')[0].split(':').pop())).toEqual(['/content', '/createUploadSession', '//upload.example/s2']);
   });
 
   it('modèle : If-Match (412 → conflit), création « fail » (409 → conflit), 401 → reconnexion', async () => {

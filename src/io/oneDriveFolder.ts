@@ -2,19 +2,23 @@
  * Dossier de projet OneDrive (F8), via Microsoft Graph, dans le dossier de l'application
  * (« Applications/Voltaplan/<projet>/ », autorisation Files.ReadWrite.AppFolder déjà demandée par cloud.ts).
  *
- *  - documents : créés avec `conflictBehavior=fail` (jamais de remplacement) ; au-delà de 4 Mo, session d'envoi
- *    par tranches de 10 Mio (multiple de 320 Kio exigé par Graph), reprise d'une tranche après une coupure ;
+ *  - documents : créés avec `conflictBehavior=fail` (jamais de remplacement), par envoi simple (PUT sur
+ *    graph.microsoft.com, seule adresse autorisée par la CSP) ; si le service le refuse (413, ou au-delà de 250 Mo),
+ *    session d'envoi par tranches de 10 Mio (multiple de 320 Kio exigé par Graph), reprise d'une tranche après une
+ *    coupure ;
  *  - modèle : `If-Match: <eTag>` (412 → conflit), création en `fail` (409 → conflit) ;
  *  - aucune suppression.
  * Comportements décrits d'après la documentation Microsoft Graph et testés avec des réponses simulées
- * [à vérifier avec un vrai compte, en particulier les limites d'envoi simple (4 Mo historiques, 250 Mo annoncés)].
+ * [à vérifier avec un vrai compte : limite de l'envoi simple (4 Mo historiques, 250 Mo annoncés) ; l'adresse d'une
+ * session d'envoi et la redirection des téléchargements (`/content`) pointent vers un autre domaine
+ * (*.files.1drv.com, *.sharepoint.com), à autoriser dans la CSP (src/security/csp.ts) si nécessaire].
  */
 import { AuthError, ConflictError } from './conflict';
 import type { FolderBackend, FolderEntry } from '../format/storageBackend';
 
 export const GRAPH_APPROOT = 'https://graph.microsoft.com/v1.0/me/drive/special/approot';
-/** Envoi simple jusqu'à cette taille ; session d'envoi au-delà. */
-export const SIMPLE_UPLOAD_MAX = 4 * 1024 * 1024;
+/** Envoi simple jusqu'à cette taille (limite annoncée par Microsoft [à vérifier]) ; session d'envoi au-delà. */
+export const SIMPLE_UPLOAD_MAX = 250 * 1024 * 1024;
 /** Taille d'une tranche de session d'envoi (multiple de 320 Kio). */
 export const UPLOAD_CHUNK = 32 * 320 * 1024;
 
@@ -31,6 +35,7 @@ export class OneDriveFolderBackend implements FolderBackend {
     private readonly token: string,
     readonly folder: string,
     private readonly fetchFn: typeof fetch = (...a) => fetch(...a),
+    private readonly simpleMax = SIMPLE_UPLOAD_MAX,
   ) {
     this.label = 'OneDrive : ' + folder;
   }
@@ -90,11 +95,14 @@ export class OneDriveFolderBackend implements FolderBackend {
   }
 
   async putIfAbsent(path: string, data: Blob): Promise<{ status: 'created' | 'exists'; size: number }> {
-    if (data.size <= SIMPLE_UPLOAD_MAX) {
+    if (data.size <= this.simpleMax) {
       const r = await this.call(this.url(path, '/content?@microsoft.graph.conflictBehavior=fail'), { method: 'PUT', headers: { 'Content-Type': 'application/octet-stream' }, body: data });
       if (r.status === 409) return { status: 'exists', size: await this.sizeOf(path) };
-      if (!r.ok) return this.fail(r);
-      return { status: 'created', size: ((await r.json()) as { size: number }).size };
+      // 413 : trop gros pour un envoi simple sur ce compte : session d'envoi ci-dessous
+      if (r.status !== 413) {
+        if (!r.ok) return this.fail(r);
+        return { status: 'created', size: ((await r.json()) as { size: number }).size };
+      }
     }
     // Session d'envoi : le fichier n'apparaît qu'une fois complet (une coupure ne laisse pas de fichier partiel)
     const s = await this.call(this.url(path, '/createUploadSession'), {
