@@ -65,6 +65,8 @@ export async function readBoardPhoto(opts: {
             text: opts.composed
               ? `Residential electrical distribution board (Belgium). The image shows ${opts.rows} horizontal band(s), one per DIN rail row, ` +
                 `top row first, each straightened and scaled so that every module (17.5 mm) has the same width. ` +
+                `Each band shows the devices and, above them, the label strip of that row (label text is often rotated 90°): ` +
+                `give each device the label written directly above it, word for word including roman numerals ("PRISES II" is not "PRISES I"). ` +
                 `Above each band, a red ruler numbers the module positions of that row 0 to ${opts.perRow - 1}; the red ticks are the module limits. ` +
                 `For each row, list every modular device from left to right: startModule = the ruler number under its left edge, ` +
                 `widthModules = how many ruler positions it physically covers, measured on the ruler (compact 4-pole devices can be only 2 modules wide: ` +

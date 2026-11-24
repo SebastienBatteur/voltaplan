@@ -174,6 +174,8 @@ export const en: Partial<Dict> = {
   'ai.diff.extra2': "{kind}{model} on the photo (row {row}, module {col}), not in the project.",
   'ai.readApplied': "Width or reference taken from the photo for {n} device(s).",
   'ai.associate': "Link to…",
+  'ai.closeKinds': "Similar types",
+  'ai.otherElements': "Other single-line diagram elements",
   'ai.newProtection': "＋ New {kind} in this board",
   'ai.created': "Protection added under the board from the photo and placed. In the tree, move it under its RCD and complete its circuit.",
   'ai.needUnlock': "First unlock the AI key (⚙ AI button).",

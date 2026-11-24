@@ -63,4 +63,20 @@ describe('disposition d’après la photo (sans IA)', () => {
     const r = layoutFromPhotoRows([big], [analyzeRow(profile([20, 2, 20]), stats('120/30 120/30'), 2)]);
     expect(r.unplaced).toEqual([big]);
   });
+
+  it('garde les places déjà justes ; un module domotique coché par erreur ne décale pas les disjoncteurs', () => {
+    const mcbs = Array.from({ length: 18 }, () => createNode('protection', { device: 'mcb', poles: '1P+N' }));
+    const rgb = createNode('domotic', { name: 'Contrôleur RGBCW', inBoard: true });
+    // Arbre : le contrôleur suit le 7e disjoncteur (comme G6 sous G)
+    const tree = [...mcbs.slice(0, 7), rgb, ...mcbs.slice(7)];
+    const r = layoutFromPhotoRows(tree, rows);
+    expect(mcbs.map((d) => r.slots[d.id])).toEqual(mcbs.map((_, i) => ({ row: 0, col: i })));
+    // Disposition existante (par exemple après la lecture IA) : deux disjoncteurs échangés, gardés tels quels
+    const current = Object.fromEntries(mcbs.map((d, i) => [d.id, { row: 0, col: i }]));
+    current[mcbs[7].id] = { row: 0, col: 12 };
+    current[mcbs[12].id] = { row: 0, col: 7 };
+    const r2 = layoutFromPhotoRows(tree, rows, current);
+    expect(r2.slots[mcbs[7].id]).toEqual({ row: 0, col: 12 });
+    expect(r2.slots[mcbs[12].id]).toEqual({ row: 0, col: 7 });
+  });
 });

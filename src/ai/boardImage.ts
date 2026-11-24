@@ -9,8 +9,15 @@ import type { Pt } from '../model/types';
 
 /** Largeur d'un module dans l'image composée (pixels). */
 export const MOD_PX = 56;
-/** Hauteur d'un appareil modulaire, en modules (85 mm / 17,5 mm), et de la bande autour (étiquettes comprises). */
-const BAND_MODULES = 1.5 * (85 / 17.5);
+/** Hauteur d'un appareil modulaire, en modules (85 mm / 17,5 mm). */
+const DEVICE_MODULES = 85 / 17.5;
+/**
+ * Bande autour de l'axe du rail, en hauteurs d'appareil : au-dessus, l'appareil et la bande d'étiquettes
+ * (souvent à une hauteur d'appareil au-dessus de son bord, texte tourné de 90°) ; en dessous, l'appareil et
+ * les volets où est marqué le repère du circuit. Avec 0,75 au-dessus, les étiquettes étaient coupées.
+ */
+const BAND_ABOVE = 1.6 * DEVICE_MODULES;
+const BAND_BELOW = 0.8 * DEVICE_MODULES;
 const RULER_PX = 24;
 
 export interface ComposedGeometry {
@@ -18,6 +25,8 @@ export interface ComposedGeometry {
   height: number;
   /** Marge à gauche et à droite de la rangée (pixels), pour voir les bords des appareils extrêmes. */
   margin: number;
+  /** Position de l'axe du rail dans la bande (pixels depuis le haut de la bande). */
+  axis: number;
   rowTop: number[];
   bandTop: number[];
   bandH: number;
@@ -27,7 +36,7 @@ export interface ComposedGeometry {
 
 export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): ComposedGeometry {
   const margin = MOD_PX / 2;
-  const bandH = Math.round(BAND_MODULES * MOD_PX);
+  const bandH = Math.round((BAND_ABOVE + BAND_BELOW) * MOD_PX);
   const width = perRow * MOD_PX + 2 * margin;
   const rowTop: number[] = [];
   const bandTop: number[] = [];
@@ -39,6 +48,7 @@ export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): Comp
     width,
     height: rows.length * (RULER_PX + bandH),
     margin,
+    axis: Math.round(BAND_ABOVE * MOD_PX),
     rowTop,
     bandTop,
     bandH,
@@ -77,12 +87,12 @@ export async function composeBoardImage(href: string, rows: { a: Pt; b: Pt }[], 
   ctx.fillStyle = '#fff';
   ctx.fillRect(0, 0, c.width, c.height);
   g.rows.forEach((r, i) => {
-    // Bande redressée : le point a de la rangée arrive au bord gauche, au milieu de la bande
+    // Bande redressée : le point a de la rangée arrive au bord gauche, sur l'axe (étiquettes au-dessus comprises)
     ctx.save();
     ctx.beginPath();
     ctx.rect(0, g.bandTop[i], g.width, g.bandH);
     ctx.clip();
-    ctx.translate(g.margin, g.bandTop[i] + g.bandH / 2);
+    ctx.translate(g.margin, g.bandTop[i] + g.axis);
     ctx.scale(r.scale, r.scale);
     ctx.rotate(-r.angle);
     ctx.translate(-r.a.x, -r.a.y);

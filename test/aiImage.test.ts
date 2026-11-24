@@ -17,7 +17,9 @@ describe("image composée pour l'IA", () => {
     expect(g.rows[1].angle).toBeCloseTo(Math.atan2(600, 800));
     expect(g.bandTop[1]).toBeGreaterThan(g.bandTop[0] + g.bandH - 1);
     expect(g.height).toBe(g.bandTop[1] + g.bandH);
-    // Image petite : quelques centaines de milliers de pixels, pas une photo de 12 Mpx
-    expect(g.width * g.height).toBeLessThan(1_500_000);
+    // Axe du rail plus bas que le milieu : la bande d'étiquettes, au-dessus des appareils, est dans l'image
+    expect(g.axis).toBeGreaterThan(g.bandH * 0.6);
+    // Image raisonnable : environ 2 Mpx pour 2 rangées, pas une photo de 12 Mpx
+    expect(g.width * g.height).toBeLessThan(2_500_000);
   });
 });

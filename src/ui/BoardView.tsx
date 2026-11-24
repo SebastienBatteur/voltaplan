@@ -281,9 +281,38 @@ export function BoardView() {
         const pxPerMm = Math.hypot(line.b.x - line.a.x, line.b.y - line.a.y) / (size.perRow * MOD);
         return analyzeRow(rowProfile(g, line.a, line.b, 0.3 * DEV_H * pxPerMm), moduleStats(g, line.a, line.b, size.perRow), size.perRow);
       });
-      const r = layoutFromPhotoRows(enc.devices, rows);
+      const r = layoutFromPhotoRows(enc.devices, rows, layout.slots);
       save({ ...layout, slots: r.slots, checks: undefined });
       setDetect(null);
+      // Modules occupés sur la photo sans appareil du projet : listés, à associer à un élément de l'unifilaire
+      setAiDiffs(
+        r.extra.length
+          ? {
+              diffs: [],
+              proposals: [],
+              notes: null,
+              extra: r.extra.map((x) => ({
+                row: x.row,
+                startModule: x.col,
+                width: x.width,
+                kind: 'other' as const,
+                model: '',
+                seen: {
+                  startModule: x.col,
+                  widthModules: x.width,
+                  kind: 'other' as const,
+                  poles: null,
+                  ratedCurrentA: null,
+                  curve: null,
+                  residualCurrentmA: null,
+                  rcdType: null,
+                  label: null,
+                  confidence: 'low' as const,
+                },
+              })),
+            }
+          : null,
+      );
       setMsg(t('board.fromPhotoDone', { placed: Object.keys(r.slots).length, reserve: r.unplaced.length, extra: r.extra.length }));
     } finally {
       setBusy(false);
@@ -587,17 +616,35 @@ export function BoardView() {
             {aiDiffs.extra.map((x, i) => (
               <li key={'x' + i}>
                 {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}{' '}
-                {(PROTECTION_KINDS.has(x.kind) || associable.some((n) => closeKind(x.kind, n))) && (
+                {(PROTECTION_KINDS.has(x.kind) || x.kind === 'other' || associable.length > 0) && (
+                  // Types proches d'abord, puis tout autre élément de l'unifilaire de ce tableau (choix libre)
                   <select value="" onChange={(e) => (e.target.value === NEW ? createFromPhoto(x) : e.target.value && associate(x, e.target.value))}>
                     <option value="">{t('ai.associate')}</option>
-                    {PROTECTION_KINDS.has(x.kind) && <option value={NEW}>{t('ai.newProtection', { kind: t('ai.kind.' + x.kind) })}</option>}
-                    {associable
-                      .filter((n) => closeKind(x.kind, n))
-                      .map((n) => (
-                        <option key={n.id} value={n.id}>
-                          {candidateLabel(n)}
-                        </option>
-                      ))}
+                    {(PROTECTION_KINDS.has(x.kind) || x.kind === 'other') && (
+                      <option value={NEW}>{t('ai.newProtection', { kind: t('ai.kind.' + (x.kind === 'other' ? 'mcb' : x.kind)) })}</option>
+                    )}
+                    {x.kind !== 'other' && associable.some((n) => closeKind(x.kind, n)) && (
+                      <optgroup label={t('ai.closeKinds')}>
+                        {associable
+                          .filter((n) => closeKind(x.kind, n))
+                          .map((n) => (
+                            <option key={n.id} value={n.id}>
+                              {candidateLabel(n)}
+                            </option>
+                          ))}
+                      </optgroup>
+                    )}
+                    {associable.some((n) => x.kind === 'other' || !closeKind(x.kind, n)) && (
+                      <optgroup label={t('ai.otherElements')}>
+                        {associable
+                          .filter((n) => x.kind === 'other' || !closeKind(x.kind, n))
+                          .map((n) => (
+                            <option key={n.id} value={n.id}>
+                              {candidateLabel(n)}
+                            </option>
+                          ))}
+                      </optgroup>
+                    )}
                   </select>
                 )}
               </li>

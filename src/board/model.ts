@@ -205,16 +205,21 @@ export function compareRow(devices: Placed[], isBoundary: (p: number) => boolean
 
 /**
  * Disposition proposée d'après la photo (sans IA), rangée par rangée (voir RowAnalysis, src/board/photo.ts).
+ *  0. un appareil déjà placé (à la main, ou par la lecture de l'IA) garde sa place si la photo y montre des
+ *     modules occupés : relancer la disposition ne défait pas un tableau déjà juste ;
  *  1. appareils de 2 modules ou plus, dans l'ordre de l'arbre : premier emplacement (rangée par rangée, de gauche
  *     à droite) entièrement occupé sur la photo, bordé de deux bords francs, sans séparation franche à l'intérieur
  *     (la jointure entre pôles est faible). Une suite de disjoncteurs d'un module ne passe donc pas pour un 4P.
  *  2. appareils d'un module, dans l'ordre de l'arbre : modules occupés restants, de gauche à droite.
+ * Les protections passent avant les autres éléments du rail (relais, modules domotiques…), moins sûrs d'y être :
+ * un module coché « Dans le tableau » par erreur ne décale pas toute une rangée de disjoncteurs.
  * Ce qui ne trouve pas de place reste en réserve ; les modules occupés sur la photo sans appareil sont signalés.
  * C'est une proposition : la photo ne dit ni le calibre ni le type ; à vérifier et corriger à la souris.
  */
 export function layoutFromPhotoRows(
   devices: ElNode[],
   rows: { occupied: boolean[]; force: number[] }[],
+  current: BoardLayout['slots'] = {},
 ): { slots: BoardLayout['slots']; unplaced: ElNode[]; extra: { row: number; col: number; width: number }[] } {
   const used = rows.map((r) => r.occupied.map(() => false));
   const slots: BoardLayout['slots'] = {};
@@ -232,6 +237,22 @@ export function layoutFromPhotoRows(
     slots[d.id] = { row: r, col: s };
     for (let c = s; c < s + w; c++) used[r][c] = true;
   };
+  // Protections d'abord (ordre de l'arbre conservé dans chaque groupe)
+  devices = [...devices.filter((d) => d.kind === 'protection'), ...devices.filter((d) => d.kind !== 'protection')];
+  // 0. Places actuelles confirmées par la photo
+  const kept = new Set<string>();
+  for (const d of devices) {
+    const cur = current[d.id];
+    const w = moduleWidth(d);
+    const row = cur ? rows[cur.row] : undefined;
+    if (!cur || !row || cur.col + w > row.occupied.length) continue;
+    let ok = true;
+    for (let c = cur.col; c < cur.col + w; c++) if (!row.occupied[c] || used[cur.row][c]) ok = false;
+    if (!ok) continue;
+    take(d, cur.row, cur.col, w);
+    kept.add(d.id);
+  }
+  devices = devices.filter((d) => !kept.has(d.id));
   for (const d of devices.filter((x) => moduleWidth(x) >= 2)) {
     const w = moduleWidth(d);
     let done = false;
