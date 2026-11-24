@@ -40,6 +40,8 @@ export interface PhotoDeviceT {
   residualCurrentmA: number | null;
   rcdType: string | null;
   label: string | null;
+  /** Repère du circuit marqué sur l'appareil ou juste sous lui (« H », « B2 »), distinct de l'étiquette d'usage. */
+  circuitRef?: string | null;
   confidence: 'high' | 'medium' | 'low';
 }
 export interface PhotoReadingT {
@@ -258,21 +260,46 @@ export function layoutFromReading(
   const seen = reading.rows
     .flatMap((r) => r.devices.filter((x) => x.kind !== 'blank').map((x) => ({ row: r.row, x })))
     .sort((a, b) => a.row - b.row || a.x.startModule - b.x.startModule);
-  /** L'étiquette lue contient le repère du circuit (« A », « B2 ») ou un mot de son usage, comme mot entier. */
-  const labelHit = (s: PhotoDeviceT, n: ElNode) => {
-    if (!s.label) return false;
-    // Différentiel : l'étiquette donne souvent les circuits qu'il protège (« A-F », « G H I J », « K à M »)
+  /**
+   * Ressemblance entre l'étiquette lue et l'appareil du projet (0 = aucune) :
+   *  - repère du circuit lu sur l'appareil (« H ») égal à celui du projet : 10 ;
+   *  - différentiel dont l'étiquette cite ses circuits (« A-F », « G H I J ») : 8 ;
+   *  - usage : part des mots de l'étiquette présents dans l'usage du projet et inversement (0 à 6). Les mots
+   *    comptent entiers : « PRISES I » ressemble à « Prises I » (6), beaucoup moins à « Prises II » (3), ce qui
+   *    départage des circuits de même calibre au lieu de les croire tous égaux.
+   */
+  const refOf = (n: ElNode) => {
+    const first = norm(labelOf(n)).split(/\s+/)[0] ?? '';
+    return /^[a-z]\d{0,2}$/.test(first) ? first : '';
+  };
+  const usageWords = (n: ElNode) => {
+    const ref = refOf(n);
+    const txt = norm(labelOf(n)).replace(/\(.*$/, ''); // le détail entre parenthèses n'est pas sur l'étiquette
+    const w = txt.split(/[^a-z0-9]+/).filter(Boolean);
+    return ref && w[0] === ref ? w.slice(1) : w;
+  };
+  const labelScore = (s: PhotoDeviceT, n: ElNode): number => {
+    const ref = refOf(n);
+    const seenRef = (s.circuitRef ?? '').trim();
+    if (ref && seenRef && norm(seenRef) === ref) return 10;
+    if (!s.label) return 0;
+    // Différentiel : l'étiquette donne souvent les circuits qu'il protège
     const own = circuitsOf(n);
     if (own.length) {
       const got = circuitRefs(s.label);
-      if (got.size && own.filter((c) => got.has(c.toUpperCase())).length * 2 >= own.length) return true;
+      if (got.size && own.filter((c) => got.has(c.toUpperCase())).length * 2 >= own.length) return 8;
     }
-    const lab = norm(s.label);
-    const words = norm(labelOf(n))
-      .split(/[^a-z0-9]+/)
-      .filter((w) => w && (w.length >= 3 || /\d/.test(w) || w.length === 1));
-    return words.some((w) => new RegExp(`(^|[^a-z0-9])${w}($|[^a-z0-9])`).test(lab));
+    const lab = norm(s.label).split(/[^a-z0-9]+/).filter(Boolean);
+    // Étiquette réduite au repère (« B »)
+    if (ref && lab.length === 1 && lab[0] === ref) return 10;
+    const use = usageWords(n);
+    if (!lab.length || !use.length) return 0;
+    const a = lab.filter((w) => use.includes(w)).length / lab.length;
+    const b = use.filter((w) => lab.includes(w)).length / use.length;
+    return a && b ? 3 * (a + b) : 0;
   };
+  /** Étiquette reconnue sans ambiguïté : l'appareil n'est pas réordonné avec ses semblables. */
+  const labelHit = (s: PhotoDeviceT, n: ElNode) => labelScore(s, n) >= 5;
   const score = (s: PhotoDeviceT, n: ElNode, si: number, ni: number) => {
     const p = n.props;
     // Même type : 3 ; type voisin (compteur / module connecté, contacteur / télérupteur…) : 2 ;
@@ -292,7 +319,7 @@ export function layoutFromReading(
     const res = Number(p.residualCurrent);
     if (s.residualCurrentmA != null && res) v += s.residualCurrentmA === res ? 3 : -2;
     if (s.curve && p.curve) v += s.curve.toUpperCase() === String(p.curve).toUpperCase() ? 1 : -1;
-    if (labelHit(s, n)) v += 4;
+    v += labelScore(s, n);
     return v - 0.01 * Math.abs(si - ni);
   };
   const pairs: { si: number; ni: number; v: number }[] = [];

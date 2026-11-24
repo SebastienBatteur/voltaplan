@@ -229,4 +229,35 @@ describe("disposition d'après la lecture de l'IA", () => {
     const r = dev({ device: 'rcd', residualCurrent: 30, poles: '2P', rcdType: '' });
     expect(fieldsFromReading(seen(0, 2, 'rcd', { residualCurrentmA: 30, rcdType: 'A', curve: 'C' }), r).sure).toEqual({ rcdType: 'A' });
   });
+
+  it('étiquettes « PRISES I », « PRISES II »… : chaque circuit à sa place, pas seulement « prises »', () => {
+    const names: [string, number][] = [
+      ['G Eclairage I (Halls, Living)', 16],
+      ['H Prises I (Chambre 1, Living)', 20],
+      ['I Prises II (Garage, Chambre)', 20],
+      ['J Prises III (micro-onde)', 20],
+      ['K Eclairage II (Grenier)', 16],
+      ['L Prises IV (Hall, Living)', 20],
+      ['M Prises V (toutes les pièces)', 20],
+    ];
+    const nodes = names.map(([, r]) => dev({ device: 'mcb', ratedCurrent: r, curve: 'C' }));
+    const label = new Map(nodes.map((n, i) => [n.id, names[i][0]]));
+    const photo = ['ECLAIRAGE I CONTROLEUR LED', 'PRISES I', 'PRISES II', 'PRISES III', 'ECLAIRAGE II', 'PRISES IV', 'PRISES V'];
+    const reading: PhotoReadingT = {
+      rows: [{ row: 0, devices: photo.map((l, i) => seen(i, 1, 'mcb', { ratedCurrentA: names[i][1], curve: 'C', label: l })) }],
+      notes: null,
+    };
+    // Projet dans un ordre mélangé : la place vient des étiquettes, pas de l'ordre de l'arbre
+    const shuffled = [nodes[6], nodes[5], nodes[3], nodes[0], nodes[4], nodes[1], nodes[2]];
+    const r = layoutFromReading(shuffled, reading, 18, (n) => label.get(n.id) ?? '');
+    expect(nodes.map((n) => r.slots[n.id]?.col)).toEqual([0, 1, 2, 3, 4, 5, 6]);
+    // Repère lu sous l'appareil : prioritaire sur l'étiquette
+    const withRef: PhotoReadingT = {
+      rows: [{ row: 0, devices: [seen(0, 1, 'mcb', { ratedCurrentA: 20, label: 'PRISES', circuitRef: 'L' }), seen(1, 1, 'mcb', { ratedCurrentA: 20, label: 'PRISES', circuitRef: 'H' })] }],
+      notes: null,
+    };
+    const r2 = layoutFromReading([nodes[1], nodes[5]], withRef, 18, (n) => label.get(n.id) ?? '');
+    expect(r2.slots[nodes[5].id]).toEqual({ row: 0, col: 0 });
+    expect(r2.slots[nodes[1].id]).toEqual({ row: 0, col: 1 });
+  });
 });
