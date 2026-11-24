@@ -477,6 +477,7 @@ export const en: Partial<Dict> = {
   'addr.city': 'City',
   'import.warnings': 'Import notes',
   'import.done': 'Import done: {nodes} elements, {symbols} symbols on the plan.',
+  'import.tooLarge': "File too large: \"{name}\" is {size} MB, the maximum is {max} MB.",
   'file.unsaved': 'There are unsaved changes. Continue?',
   yes: 'Yes',
   no: 'No',

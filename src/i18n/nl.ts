@@ -477,6 +477,7 @@ export const nl: Partial<Dict> = {
   'addr.city': 'Gemeente',
   'import.warnings': 'Opmerkingen bij import',
   'import.done': 'Import klaar: {nodes} elementen, {symbols} symbolen op het plan.',
+  'import.tooLarge': "Bestand te groot: „{name}” is {size} MB, het maximum is {max} MB.",
   'file.unsaved': 'Er zijn niet-opgeslagen wijzigingen. Doorgaan?',
   yes: 'Ja',
   no: 'Nee',

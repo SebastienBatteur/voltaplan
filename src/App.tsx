@@ -22,6 +22,7 @@ import { ProjectPanel } from './ui/ProjectPanel';
 import { CheckPanel } from './ui/CheckPanel';
 import { useDerived } from './ui/derived';
 import { pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
+import { importErrorText } from './io/limits';
 import { emptyProject, walk } from './model/tree';
 
 const VIEWS: View[] = ['unifilar', 'plan', 'board', 'bom', 'project', 'check'];
@@ -50,7 +51,7 @@ export function App() {
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       setToast({ text: t('import.done', { nodes, symbols }), warnings: r.warnings });
     } catch (e) {
-      setToast({ text: (e as Error).message });
+      setToast({ text: importErrorText(e, t) });
     }
   };
 

@@ -1,4 +1,7 @@
-import { APP_NAME, FILE_EXT, FILE_FORMAT, LEGACY_EXTS, LEGACY_FORMATS } from '../brand';
+import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
+import { checkFileSize } from './limits';
+import { sanitizeProjectImages } from './sanitize';
+import { parseProjectChecked } from './storage';
 /**
  * Ouverture / enregistrement de fichiers locaux.
  * Utilise l'API File System Access quand elle existe (Chrome, Edge : « Enregistrer » réécrit le même fichier),
@@ -61,17 +64,20 @@ export function decodeText(buf: ArrayBuffer): string {
 }
 
 export async function readProjectFile(file: File): Promise<OpenResult> {
+  const trik = /\.trik$/i.test(file.name);
+  // Taille vérifiée avant toute lecture
+  checkFileSize(file, trik ? 'trik' : 'project');
   const text = decodeText(await file.arrayBuffer());
   currentHandle = null;
   currentPath = null;
-  if (/\.trik$/i.test(file.name) || text.trimStart().startsWith('<?xml')) {
+  if (trik || text.trimStart().startsWith('<?xml')) {
+    if (!trik) checkFileSize(file, 'trik');
     const { project, warnings } = importTrikker(text, file.name);
+    if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
     return { project, fileName: file.name.replace(/\.trik$/i, EXT), warnings };
   }
-  const data = JSON.parse(text) as Project;
-  if (!LEGACY_FORMATS.includes(data.format) && data.format !== FILE_FORMAT) throw new Error('Format de fichier inconnu.');
-  data.loose ??= [];
-  return { project: data, fileName: file.name, warnings: [] };
+  const { project, removed } = parseProjectChecked(text, file.name);
+  return { project, fileName: file.name, warnings: removed ? [`${removed} image(s) à l'adresse non autorisée ignorée(s).`] : [] };
 }
 
 export async function saveProject(project: Project, fileName: string, saveAs = false): Promise<string | null> {

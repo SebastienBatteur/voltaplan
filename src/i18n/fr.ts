@@ -477,6 +477,7 @@ export const fr = {
   'addr.city': 'Commune',
   'import.warnings': "Remarques d'import",
   'import.done': 'Import terminé : {nodes} éléments, {symbols} symboles sur le plan.',
+  'import.tooLarge': "Fichier trop volumineux : « {name} » fait {size} Mo, le maximum est {max} Mo.",
   'file.unsaved': 'Des modifications ne sont pas enregistrées. Continuer ?',
   'yes': 'Oui',
   'no': 'Non',

@@ -9,6 +9,8 @@ import type { Project } from '../model/types';
 import { FILE_EXT, FILE_FORMAT, LEGACY_FORMATS, STORAGE_PREFIX } from '../brand';
 import type { SealedSecret } from '../ai/secureStore';
 import type { CloudFile, CloudId } from './cloud';
+import { checkTextSize } from './limits';
+import { sanitizeProjectImages } from './sanitize';
 
 export type Location =
   | { kind: 'device' }
@@ -165,12 +167,21 @@ export async function githubSave(token: string, s: GithubSettings, path: string,
   if (!r.ok) throw await ghError(r);
 }
 
-/** Lecture d'un projet (texte JSON) quelle que soit sa provenance. */
-export function parseProject(text: string): Project {
+/**
+ * Lecture d'un projet (texte JSON) quelle que soit sa provenance : taille bornée, format vérifié,
+ * images limitées aux images intégrées (voir sanitize.ts). `removed` : nombre d'images retirées.
+ */
+export function parseProjectChecked(text: string, name?: string): { project: Project; removed: number } {
+  checkTextSize(text, name);
   const data = JSON.parse(text) as Project;
-  if (data.format !== FILE_FORMAT && !LEGACY_FORMATS.includes(data.format)) throw new Error('Format de fichier inconnu.');
+  if (!data || typeof data !== 'object' || (data.format !== FILE_FORMAT && !LEGACY_FORMATS.includes(data.format))) throw new Error('Format de fichier inconnu.');
   data.loose ??= [];
-  return data;
+  const removed = sanitizeProjectImages(data);
+  return { project: data, removed };
+}
+
+export function parseProject(text: string, name?: string): Project {
+  return parseProjectChecked(text, name).project;
 }
 
 export function safeName(name: string): string {
