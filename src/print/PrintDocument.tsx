@@ -48,7 +48,11 @@ interface Ctx {
   findings: Finding[];
   draft: boolean;
   lang: Lang;
+  /** Type de document : travail, dossier de réception, rapport d'anomalies, dossier complet. */
+  docKind?: DocKind;
 }
+
+export type DocKind = 'working' | 'reception' | 'anomalies' | 'complete';
 
 interface PageDef {
   kind: string;
@@ -144,6 +148,7 @@ function Cartouche({ ctx, title, page, pages }: { ctx: Ctx; title: string; page:
     <div className="cartouche" style={{ height: CART_H + 'mm' }}>
       <div className="c-col c-doc">
         <div className="c-title">{title}</div>
+        {ctx.docKind && <div className="c-kind">{t('print.kind.' + ctx.docKind)}</div>}
         <div>
           {t('print.page')} {page}/{pages}
         </div>
@@ -476,6 +481,8 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
       pages.push({
         kind: t('print.checks'),
         body: (
+          <>
+          <p className="print-note">{t('check.disclaimer')}</p>
           <table className="print-table">
             <tbody>
               {sorted.slice(i, i + per).map((f, j) => (
@@ -494,6 +501,7 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
               ))}
             </tbody>
           </table>
+          </>
         ),
       });
   }
@@ -553,7 +561,7 @@ export function PrintDocument({ ctx, format, sections }: { ctx: Ctx; format: Pap
       {pages.map((pg, i) => (
         <section key={i} className="print-page" style={pageStyle}>
           <div className="print-body">{pg.body}</div>
-          {ctx.draft && <div className="watermark">{ctx.t('print.draft')}</div>}
+          {ctx.draft ? <div className="watermark">{ctx.t('print.draft')}</div> : ctx.docKind === 'working' && <div className="watermark light">{ctx.t('print.workingDoc')}</div>}
           <Cartouche ctx={ctx} title={pg.kind} page={i + 1} pages={pages.length} />
         </section>
       ))}

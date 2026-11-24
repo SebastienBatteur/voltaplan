@@ -1080,6 +1080,18 @@ button.link {
   transform: rotate(-18deg);
   pointer-events: none;
 }
+.watermark.light {
+  color: rgba(0, 0, 0, 0.08);
+}
+.c-kind {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.print-note {
+  font-size: 2.6mm;
+  margin: 0 0 2mm;
+  font-style: italic;
+}
 .cartouche {
   display: grid;
   grid-template-columns: 1.1fr 1.6fr 1.3fr 1.1fr 1.3fr;

@@ -2,7 +2,16 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useStore } from '../store';
 import { useDerived } from '../ui/derived';
-import { PrintDocument, type PaperFormat, type PrintSections } from './PrintDocument';
+import { PrintDocument, type DocKind, type PaperFormat, type PrintSections } from './PrintDocument';
+
+/** Parties incluses par défaut selon le type de document (modifiables ensuite). */
+const PRESETS: Record<DocKind, (hasFindings: boolean) => PrintSections> = {
+  working: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f }),
+  reception: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f }),
+  anomalies: () => ({ unifilar: false, plan: false, board: false, circuits: true, legend: false, labels: false, measures: true, bom: false, checks: true }),
+  complete: () => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: true, measures: true, bom: true, checks: true }),
+};
+const DOC_KINDS: DocKind[] = ['working', 'reception', 'anomalies', 'complete'];
 
 const SECTIONS: (keyof PrintSections)[] = ['unifilar', 'plan', 'board', 'circuits', 'legend', 'measures', 'bom', 'labels', 'checks'];
 
@@ -15,22 +24,15 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
   const project = useStore((s) => s.project);
   const { labelFn, numbering, findings } = useDerived();
   // Constats bloquants (sécurité, ou installation neuve) : le dossier porte la mention « PROJET — NON CONFORME ».
-  const draft = findings.some((f) => f.blocking);
+  const blocking = findings.some((f) => f.blocking);
+  const [docKind, setDocKind] = useState<DocKind>('working');
+  // Dossier de réception ou complet avec constats bloquants : « PROJET — NON CONFORME » ; document de travail : mention propre
+  const draft = blocking && (docKind === 'reception' || docKind === 'complete');
   const [format, setFormat] = useState<PaperFormat>('A4');
-  const [sections, setSections] = useState<PrintSections>({
-    unifilar: true,
-    plan: true,
-    board: true,
-    circuits: true,
-    legend: true,
-    labels: false,
-    measures: true,
-    bom: false,
-    checks: findings.length > 0,
-  });
+  const [sections, setSections] = useState<PrintSections>(() => PRESETS.working(findings.length > 0));
   const [printing, setPrinting] = useState(false);
   const lang = useStore((s) => s.lang);
-  const ctx = { project, t, labelFn, numbering, findings, draft, lang };
+  const ctx = { project, t, labelFn, numbering, findings, draft, lang, docKind };
 
   useEffect(() => {
     if (!printing) return;
@@ -54,6 +56,23 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
         <h2>{t('print.title')}</h2>
         <div className="print-options">
           <label className="field">
+            <span>{t('print.docKind')}</span>
+            <select
+              value={docKind}
+              onChange={(e) => {
+                const k = e.target.value as DocKind;
+                setDocKind(k);
+                setSections(PRESETS[k](findings.length > 0));
+              }}
+            >
+              {DOC_KINDS.map((k) => (
+                <option key={k} value={k}>
+                  {t('print.kind.' + k)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="field">
             <span>{t('print.format')}</span>
             <select value={format} onChange={(e) => setFormat(e.target.value as PaperFormat)}>
               <option value="A4">A4 {t('print.landscape')}</option>
@@ -68,6 +87,7 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         </div>
+        <p className="muted small">{t('print.kindHelp.' + docKind)}</p>
         {draft && <div className="banner error">{t('print.draftWarning', { n: findings.filter((f) => f.blocking).length })}</div>}
         <p className="muted small">{t('print.help')}</p>
         <div className="print-preview">
