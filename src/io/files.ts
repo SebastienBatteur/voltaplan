@@ -1,17 +1,22 @@
-import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
-import { checkFileSize } from './limits';
-import { sanitizeProjectImages } from './sanitize';
-import { parseProjectChecked } from './storage';
 /**
  * Ouverture / enregistrement de fichiers locaux.
  * Utilise l'API File System Access quand elle existe (Chrome, Edge : « Enregistrer » réécrit le même fichier),
  * dans l'application de bureau (Tauri), la boîte de dialogue du système ;
  * sinon un simple téléchargement (Firefox, Safari).
+ *
+ * Format v2 (docs/file-format.md) : un projet est enregistré en archive `.voltaplan` (ZIP), écrite en flux ; un
+ * fichier v1 (JSON) ou Trikker est lu puis converti, et son original n'est jamais réécrit sans que
+ * l'utilisateur choisisse l'emplacement (boîte « Enregistrer sous »).
  */
+import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
+import { MIMETYPE } from '../format/manifest';
+import type { ArchiveReport } from '../format/archive';
 import type { Project } from '../model/types';
-import { importTrikker } from '../import/trikker';
 import type { MigrationWarning } from '../model/migrate';
 import { ConflictError } from './conflict';
+import { openProjectData, projectToV1, serializeProject } from './projectData';
+
+export { decodeText } from './projectData';
 
 export const EXT = FILE_EXT;
 
@@ -42,7 +47,7 @@ async function desktopSavePath(name: string, ext: string, description: string): 
 interface FileSystemFileHandleLike {
   name: string;
   getFile?(): Promise<{ lastModified: number; size: number }>;
-  createWritable(): Promise<{ write(data: Blob | string): Promise<void>; close(): Promise<void> }>;
+  createWritable(): Promise<WritableStream<Uint8Array> & { abort(reason?: unknown): Promise<void> }>;
 }
 
 async function handleState(h: FileSystemFileHandleLike): Promise<{ mtime: number; size: number } | null> {
@@ -84,36 +89,26 @@ export interface OpenResult {
   fileName: string;
   /** Avertissements : texte (import Trikker) ou clé de traduction (lecture d'un projet). */
   warnings: (string | MigrationWarning)[];
+  /** Archive v2 : rapport de validation. */
+  report?: ArchiveReport;
+  /**
+   * Fichier converti (v1, Trikker) ou ouvert en mode de récupération : « Enregistrer » ne réécrit jamais
+   * l'original, il demande un emplacement (le fichier ouvert n'est jamais la cible par défaut).
+   */
+  needsNewFile: boolean;
 }
 
 /**
- * Texte d'un fichier : UTF-8, sinon Windows-1252. Trikker enregistre en Windows-1252 sans le déclarer :
- * lu en UTF-8, « Église » deviendrait « �glise ».
+ * Ouvre un fichier de projet : archive v2, JSON v1 (.voltaplan, .openrgie) ou Trikker, reconnu par sa signature
+ * (src/io/projectData.ts). Taille vérifiée avant toute lecture complète.
  */
-export function decodeText(buf: ArrayBuffer): string {
-  try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(buf).replace(/^\uFEFF/, '');
-  } catch {
-    return new TextDecoder('windows-1252').decode(buf);
-  }
-}
-
 export async function readProjectFile(file: File): Promise<OpenResult> {
-  const trik = /\.trik$/i.test(file.name);
-  // Taille vérifiée avant toute lecture
-  checkFileSize(file, trik ? 'trik' : 'project');
-  const text = decodeText(await file.arrayBuffer());
   currentHandle = null;
   currentPath = null;
   lastWritten = null;
-  if (trik || text.trimStart().startsWith('<?xml')) {
-    if (!trik) checkFileSize(file, 'trik');
-    const { project, warnings } = importTrikker(text, file.name);
-    if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
-    return { project, fileName: file.name.replace(/\.trik$/i, EXT), warnings };
-  }
-  const { project, warnings, removed } = parseProjectChecked(text, file.name);
-  return { project, fileName: file.name, warnings: removed ? [...warnings, { key: 'file.imagesRemoved', params: { n: removed } }] : warnings };
+  const r = await openProjectData(file, file.name);
+  const fileName = r.format === 'trik' ? file.name.replace(/\.trik$/i, EXT) : file.name;
+  return { project: r.project, fileName, warnings: r.warnings, report: r.report, needsNewFile: r.needsNewFile };
 }
 
 /**
@@ -122,7 +117,6 @@ export async function readProjectFile(file: File): Promise<OpenResult> {
  * `suggestedName` : nom proposé dans la boîte « Enregistrer sous » (copie de conflit).
  */
 export async function saveProject(project: Project, fileName: string, saveAs = false, opts: { force?: boolean; suggestedName?: string } = {}): Promise<string | null> {
-  const json = JSON.stringify(project);
   const name =
     opts.suggestedName ??
     (fileName || project.meta.title || 'projet').replace(/[\\/:*?"<>|]/g, '_').replace(/\.[^.]*$/, (e) => (e.toLowerCase() === EXT || LEGACY_EXTS.includes(e.toLowerCase()) ? '' : e)) + EXT;
@@ -130,8 +124,11 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
     if (currentPath && !saveAs && !opts.force && changedSince(lastWritten, await pathState(currentPath))) throw new ConflictError(currentPath.split(/[\\/]/).pop() ?? name);
     const path = !currentPath || saveAs ? await desktopSavePath(name, EXT, 'Projet ' + APP_NAME) : currentPath;
     if (!path) return null;
-    const { writeTextFile } = await import('@tauri-apps/plugin-fs');
-    await writeTextFile(path, json);
+    // Archive assemblée d'abord (documents vérifiés), écrite ensuite en une fois [à vérifier : écriture dans un
+    // fichier temporaire puis renommage, selon les droits de @tauri-apps/plugin-fs].
+    const blob = (await serializeProject(project))!;
+    const { writeFile } = await import('@tauri-apps/plugin-fs');
+    await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
     currentPath = path;
     lastWritten = await pathState(path);
     return path.split(/[\\/]/).pop() ?? name;
@@ -144,14 +141,18 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
         !currentHandle || saveAs
           ? await w.showSaveFilePicker({
               suggestedName: name,
-              types: [{ description: 'Projet ' + APP_NAME, accept: { 'application/json': [EXT] } }],
+              types: [{ description: 'Projet ' + APP_NAME, accept: { [MIMETYPE]: [EXT] } }],
             })
           : currentHandle;
       // createWritable écrit dans un fichier temporaire, qui ne remplace l'original qu'à close() : un enregistrement
-      // interrompu laisse l'ancien fichier intact.
+      // interrompu (ou un document illisible) laisse l'ancien fichier intact. L'archive y est écrite en flux.
       const writable = await handle.createWritable();
-      await writable.write(json);
-      await writable.close();
+      try {
+        await serializeProject(project, writable);
+      } catch (e) {
+        await writable.abort(e).catch(() => undefined);
+        throw e;
+      }
       currentHandle = handle;
       lastWritten = await handleState(handle);
       return handle.name;
@@ -160,8 +161,21 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
     if ((e as Error).name === 'AbortError') return null;
     throw e;
   }
-  await download(new Blob([json], { type: 'application/json' }), name);
+  await download((await serializeProject(project))!, name);
   return name;
+}
+
+/**
+ * « Exporter au format v1 » : copie JSON lisible par les anciennes versions de Voltaplan, toujours sous un nouveau
+ * nom (« … (v1).voltaplan »), jamais à la place du fichier courant. Renvoie le nom et la liste de ce qui n'a pas pu
+ * être gardé, à afficher à l'utilisateur.
+ */
+export async function exportProjectV1(project: Project, fileName: string): Promise<{ name: string; losses: Awaited<ReturnType<typeof projectToV1>>['losses'] }> {
+  const { json, losses } = await projectToV1(project);
+  const base = (fileName || project.meta.title || 'projet').replace(/[\\/:*?"<>|]/g, '_').replace(/\.[^.]*$/, '');
+  const name = `${base} (v1)${EXT}`;
+  await download(new Blob([json], { type: 'application/json' }), name);
+  return { name, losses };
 }
 
 export async function download(blob: Blob, name: string) {

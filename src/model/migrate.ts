@@ -14,8 +14,15 @@ import { FILE_FORMAT, LEGACY_FORMATS } from '../brand';
 import { validateProject, type Issue } from './integrity';
 import type { Project } from './types';
 
-/** Version courante du format de fichier (champ `version`). */
-export const CURRENT_VERSION = 1;
+/**
+ * Version courante du modèle (champ `version` de project.json).
+ *  - 1 : images intégrées (`data:image/…`) uniquement ;
+ *  - 2 : format de projet v2 : fonds de plan et photos de tableau peuvent être des références
+ *    « asset:<sha256> » vers des documents rangés à part (archive, dossier, stockage de travail).
+ * Une version plus ancienne de Voltaplan refuse donc un modèle v2 (« mettez à jour ») au lieu d'en retirer en
+ * silence les images qu'elle ne sait pas lire.
+ */
+export const CURRENT_VERSION = 2;
 
 /** Erreur de lecture d'un projet, traduisible (clé `file.error.<code>`). */
 export class ProjectFileError extends Error {
@@ -95,7 +102,15 @@ const projectSchema = z.looseObject({
  * Étapes de migration : MIGRATIONS[n] transforme un projet de la version n en version n + 1.
  * Ajouter une étape à chaque changement incompatible du format, avec un test dans test/migrate.test.ts.
  */
-const MIGRATIONS: Record<number, (p: Record<string, unknown>) => Record<string, unknown>> = {};
+const MIGRATIONS: Record<number, (p: Record<string, unknown>) => Record<string, unknown>> = {
+  // 1 → 2 : la structure est inchangée ; les images intégrées restent valides. Leur conversion en documents
+  // séparés (asset:<sha256>) se fait à l'ouverture, là où le stockage de travail est disponible
+  // (src/format/migrateV1.ts) : l'original n'est jamais réécrit.
+  1: (p) => ({ ...p, version: 2 }),
+};
+
+/** Versions atteintes sans avertissement (changement invisible pour l'utilisateur). */
+const SILENT_STEPS = new Set([2]);
 
 /** Valide, migre et contrôle un projet lu de l'extérieur. */
 export function migrateProject(data: unknown): { project: Project; warnings: MigrationWarning[]; issues: Issue[] } {
@@ -112,7 +127,8 @@ export function migrateProject(data: unknown): { project: Project; warnings: Mig
     if (!step) throw new ProjectFileError('invalidStructure', { detail: 'migration ' + version });
     cur = step(cur);
     version++;
-    warnings.push({ key: 'file.migrated', params: { version } });
+    // 1 → 2 : rien ne change pour l'utilisateur (la conversion en archive est signalée à part, à l'ouverture)
+    if (!SILENT_STEPS.has(version)) warnings.push({ key: 'file.migrated', params: { version } });
   }
   const parsed = projectSchema.safeParse(cur);
   if (!parsed.success) {

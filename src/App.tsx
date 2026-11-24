@@ -48,6 +48,18 @@ import { useDerived } from './ui/derived';
 import { errorText } from './ui/errors';
 import { pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
 import { emptyProject, walk } from './model/tree';
+import { assetSession } from './io/projectData';
+import { makeDisplayImage } from './io/background';
+import { setOpenModels } from './format/assetsIdb';
+
+// Format v2 : images d'affichage régénérées au besoin ; le projet ouvert compte comme référence (jamais de
+// suppression d'un document qu'il utilise, même avant son enregistrement).
+assetSession.setDisplayMaker(makeDisplayImage);
+setOpenModels(() => {
+  // Historique d'annulation compris : « Annuler » ne doit jamais faire réapparaître une image sans son document
+  const st = useStore.getState();
+  return [st.project, ...st.past, ...st.future].map((p) => JSON.stringify(p));
+});
 
 const VIEWS: View[] = ['unifilar', 'plan', 'board', 'bom', 'project', 'check'];
 

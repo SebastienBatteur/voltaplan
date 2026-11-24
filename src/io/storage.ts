@@ -98,6 +98,14 @@ export function openDb(): Promise<IDBDatabase> {
       dbPromise = null;
       reject(req.error);
     };
+    // Un autre onglet (ancienne version de Voltaplan) garde la base ouverte : on n'attend pas indéfiniment
+    // (l'enregistrement du brouillon ne doit pas bloquer « Enregistrer »). Nouvel essai au prochain appel.
+    req.onblocked = () => {
+      dbPromise = null;
+      const e = new Error('Base de données bloquée par un autre onglet de Voltaplan : fermez-le.');
+      e.name = 'BlockedError';
+      reject(e);
+    };
   });
   return dbPromise;
 }
@@ -130,6 +138,9 @@ export async function browserList(): Promise<Omit<BrowserEntry, 'data'>[]> {
  * Renvoie la nouvelle révision.
  */
 export async function browserSave(id: string, name: string, project: Project, expectedRev: number | 'any' = 'any'): Promise<number> {
+  // Le modèle seul est enregistré ; ses documents doivent être dans le stockage de travail (et non seulement dans
+  // l'archive ouverte, qui peut disparaître). Brouillons : la copie en arrière-plan suffit.
+  if (!isDraftId(id)) await import('./projectData').then((m) => m.assetSession.ensureStored(project)).catch(() => undefined);
   const data = JSON.stringify(project);
   const d = await db();
   return new Promise<number>((resolve, reject) => {
@@ -378,7 +389,11 @@ export const setGithubToken = (t: string | null) => {
 
 /** Base64 d'un texte UTF-8 (accents, symboles). */
 export function utf8ToBase64(s: string): string {
-  const bytes = new TextEncoder().encode(s);
+  return bytesToBase64(new TextEncoder().encode(s));
+}
+
+/** Base64 d'octets (archive v2), par tranches : pas de dépassement de pile. */
+export function bytesToBase64(bytes: Uint8Array): string {
   let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(bin);
@@ -427,12 +442,13 @@ async function githubSha(token: string, s: GithubSettings, path: string): Promis
  * Lecture : texte et SHA du fichier. Le SHA est lu d'abord : si le fichier change entre les deux appels,
  * l'enregistrement suivant sera refusé (prudent), jamais l'inverse.
  */
-export async function githubLoad(token: string, s: GithubSettings, path: string): Promise<{ text: string; sha?: string }> {
+export async function githubLoad(token: string, s: GithubSettings, path: string): Promise<{ data: Blob; sha?: string }> {
   const sha = await githubSha(token, s, path);
-  // Format « raw » : fonctionne aussi pour les fichiers de plus de 1 Mo (photos de fond)
+  // Format « raw » : fonctionne aussi pour les fichiers de plus de 1 Mo (photos de fond). Contenu brut : archive
+  // v2 ou JSON v1, reconnu par sa signature (src/io/projectData.ts).
   const r = await fetch(ghUrl(s.repo, path, s.branch), { headers: ghHeaders(token, true) });
   if (!r.ok) throw await ghError(r);
-  return { text: await r.text(), sha };
+  return { data: await r.blob(), sha };
 }
 
 /**
@@ -447,7 +463,8 @@ export async function githubSave(token: string, s: GithubSettings, path: string,
   const sha = mode === 'update' ? expectedSha : mode === 'overwrite' ? await githubSha(token, s, path) : undefined;
   const body = {
     message: `Voltaplan : ${project.meta.title || path}`,
-    content: utf8ToBase64(JSON.stringify(project, null, 1)),
+    // Archive v2 (documents compris) ; l'API « contents » accepte jusqu'à 100 Mo [à vérifier].
+    content: bytesToBase64(await (await import('../format/sha256')).blobBytes((await (await import('./projectData')).serializeProject(project))!)),
     branch: s.branch,
     ...(sha ? { sha } : {}),
   };

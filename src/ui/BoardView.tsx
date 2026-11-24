@@ -22,7 +22,9 @@ import {
 import { analyzeRow, boundaries, moduleStats, rowProfile, rowTransform } from '../board/photo';
 import { download, pickFile } from '../io/files';
 import { importErrorText } from '../io/limits';
+import { AssetImage } from '../format/AssetImage';
 import { readBackground } from '../io/background';
+import { assetShaOf } from '../format/manifest';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
 import { aiReady, loadAiSettings, getSessionKey, setSessionKey, useAiUnlocked } from '../ai/settings';
@@ -407,7 +409,8 @@ export function BoardView() {
       }
       const image = calibrated ? await composeBoardImage(ph.href, phRows, size.perRow) : await shrinkPhoto(ph.href);
       const engine = { provider: ai.provider, model: ai.model, promptVersion: BOARD_PROMPT_VERSION };
-      const photoSha = await sha256(ph.href);
+      // Format v2 : la photo est un document « asset:<sha256> » — son empreinte est celle du fichier d'origine
+      const photoSha = assetShaOf(ph.href) ?? (await sha256(ph.href));
       const inputHash = await aiInputHash(image, engine);
       // Même photo, même image envoyée, même modèle : lecture déjà faite, aucun nouvel appel (cache)
       const cached = draftMode && hasCachedReading(photoSha, inputHash, enc.board.id);
@@ -926,7 +929,7 @@ export function BoardView() {
                 <clipPath id={`rowclip${r}`}>
                   <rect x={MARGIN - 8} y={rowTop(r) - LABEL_H - 6} width={size.perRow * MOD + 16} height={DEV_H + LABEL_H + 14} />
                 </clipPath>
-                <image
+                <AssetImage
                   href={layout.photo!.href}
                   width={layout.photo!.imgW}
                   height={layout.photo!.imgH}
@@ -937,7 +940,7 @@ export function BoardView() {
             );
           })}
         {layout.photo && !layout.photo.rows && (
-          <image
+          <AssetImage
             href={layout.photo.href}
             x={layout.photo.x}
             y={layout.photo.y}
@@ -1046,7 +1049,7 @@ export function BoardView() {
         )}
         {/* Calage : la photo passe au premier plan (le dessin du tableau reste estompé derrière) pour cliquer ses repères */}
         {corners && layout.photo && (
-          <image
+          <AssetImage
             href={layout.photo.href}
             x={layout.photo.x}
             y={layout.photo.y}

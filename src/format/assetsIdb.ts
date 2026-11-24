@@ -3,7 +3,7 @@
  * Logique et règles de suppression : assets.ts.
  */
 import { ASSETS_STORE, DERIVED_STORE, openDb } from '../io/storage';
-import { AssetStore, reclaimSpace, type AssetBackend, type AssetMeta, type AssetRecord, type DerivedMeta, type DerivedRecord, type ReferenceSources } from './assets';
+import { AssetStore, MemoryAssetBackend, reclaimSpace, type AssetBackend, type AssetMeta, type AssetRecord, type DerivedMeta, type DerivedRecord, type ReferenceSources } from './assets';
 
 function req<T>(r: IDBRequest<T>): Promise<T> {
   return new Promise((resolve, reject) => {
@@ -99,11 +99,49 @@ async function storedModels(): Promise<string[]> {
 
 export const idbReferences: ReferenceSources = { storedModels, openModels: () => openModels() };
 
+/**
+ * IndexedDB indisponible (navigation privée de certains navigateurs, environnement de test) : magasin en mémoire
+ * pour la session, pour que l'application reste utilisable (les documents restent lus depuis leur fichier).
+ */
+const memory = new MemoryAssetBackend();
+let mode: 'idb' | 'memory' | null = null;
+async function backend(): Promise<AssetBackend> {
+  if (!mode) {
+    if (typeof indexedDB === 'undefined') mode = 'memory';
+    else
+      try {
+        await openDb();
+        mode = 'idb';
+      } catch (e) {
+        // Base bloquée par un autre onglet : on réessaiera ; autre erreur : mémoire pour la session
+        if ((e as Error)?.name === 'BlockedError') return memory;
+        mode = 'memory';
+      }
+  }
+  return mode === 'idb' ? idbAssetBackend : memory;
+}
+
+const resilientBackend: AssetBackend = {
+  getAsset: async (s) => (await backend()).getAsset(s),
+  putAssetIfAbsent: async (r) => (await backend()).putAssetIfAbsent(r),
+  deleteAsset: async (s) => (await backend()).deleteAsset(s),
+  listAssets: async () => (await backend()).listAssets(),
+  getDerived: async (k) => (await backend()).getDerived(k),
+  putDerived: async (r) => (await backend()).putDerived(r),
+  deleteDerived: async (k) => (await backend()).deleteDerived(k),
+  listDerived: async () => (await backend()).listDerived(),
+};
+
 let store: AssetStore | null = null;
-/** Magasin de travail de l'application (IndexedDB). */
+/** Magasin de travail de l'application (IndexedDB, à défaut mémoire). */
 export function workingStore(): AssetStore {
-  store ??= new AssetStore(idbAssetBackend);
+  store ??= new AssetStore(resilientBackend);
   return store;
+}
+
+/** Les documents sont-ils gardés durablement sur cet appareil ? (false : mémoire de la session seulement) */
+export async function isDurable(): Promise<boolean> {
+  return (await backend()) === idbAssetBackend;
 }
 
 /** Libération d'espace (après la réduction des versions, voir src/io/storage.ts addVersion). Jamais d'exception. */

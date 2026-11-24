@@ -30,6 +30,7 @@ import { pickFile } from '../io/files';
 import { importErrorText } from '../io/limits';
 import { parseSize } from '../plan/trace';
 import { rectifyBackground, tracePlan } from '../plan/traceImage';
+import { AssetImage } from '../format/AssetImage';
 
 /** Échelle des symboles sur le plan (unités symbole → mm). */
 export const S = 12;
@@ -68,7 +69,7 @@ export function Walls({ page, sel }: { page: PlanPage; sel: PlanSel }) {
   return (
     <g>
       {page.images.map((im, i) => (
-        <image
+        <AssetImage
           key={'i' + i}
           href={im.href}
           x={im.center.x - im.w / 2}

@@ -29,6 +29,7 @@ import { isConflict } from '../io/conflict';
 import { useOnline } from './UpdateBanner';
 import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
 import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, type CloudFile, type CloudId } from '../io/cloud';
+import { openProjectData } from '../io/projectData';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
 
@@ -151,6 +152,20 @@ export function StorageDialog({
                   }
                 >
                   {t('storage.exportEds')}
+                </button>
+              )}
+              {mode === 'save' && (
+                <button
+                  title={t('format.exportV1Help')}
+                  onClick={() =>
+                    run(async () => {
+                      const { exportProjectV1 } = await import('../io/files');
+                      const r = await exportProjectV1(project, name);
+                      if (r.losses.length) window.alert(t('format.exportV1Losses') + '\n\n' + r.losses.map((l) => '• ' + t('format.loss.' + l.kind, { label: l.label })).join('\n'));
+                    })
+                  }
+                >
+                  {t('format.exportV1')}
                 </button>
               )}
             </div>
@@ -325,8 +340,8 @@ export function StorageDialog({
                       className="link"
                       onClick={() =>
                         run(async () => {
-                          const { text, sha } = await githubLoad(unlocked!, gh, f.path);
-                          onOpened(parseProject(text, f.name), f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path, sha });
+                          const { data, sha } = await githubLoad(unlocked!, gh, f.path);
+                          onOpened((await openProjectData(data, f.name)).project, f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path, sha });
                           onClose();
                         })
                       }
@@ -516,8 +531,8 @@ function CloudTab({
                 className="link"
                 onClick={() =>
                   run(async () => {
-                    const { text, rev } = await cloudLoad(svc, f);
-                    onOpened(parseProject(text, f.name), f.name, { kind: 'cloud', provider: svc, file: { ...f, rev: rev ?? f.rev } });
+                    const { data, rev } = await cloudLoad(svc, f);
+                    onOpened((await openProjectData(data, f.name)).project, f.name, { kind: 'cloud', provider: svc, file: { ...f, rev: rev ?? f.rev } });
                     onClose();
                   })
                 }

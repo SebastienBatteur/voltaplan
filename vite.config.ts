@@ -48,5 +48,5 @@ function serviceWorker(): Plugin {
 export default defineConfig({
   plugins: [react(), cspMeta(), serviceWorker()],
   base: './',
-  test: { globals: true, environment: 'jsdom', exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**', 'src-tauri/**'] },
+  test: { globals: true, environment: 'jsdom', setupFiles: ['test/setup.ts'], exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**', 'src-tauri/**'] },
 });

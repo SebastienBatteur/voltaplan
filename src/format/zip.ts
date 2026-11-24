@@ -210,7 +210,9 @@ export async function writeZip(inputs: Iterable<ZipInput> | AsyncIterable<ZipInp
   try {
     for await (const input of inputs) {
       const data = typeof input.data === 'function' ? await input.data() : input.data;
-      const reader = typeof data === 'string' ? new lib.TextReader(data) : data instanceof Uint8Array ? new lib.Uint8ArrayReader(data) : new lib.BlobReader(data);
+      // Textes encodés ici (UTF-8) : pas de Blob intermédiaire
+      const bytes = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+      const reader = ArrayBuffer.isView(bytes) ? new lib.Uint8ArrayReader(bytes as Uint8Array) : new lib.BlobReader(bytes);
       await writer.add(input.path, reader, { level: input.store ? 0 : 9, dataDescriptor: false, useWebWorkers: false });
     }
     const out = await writer.close();

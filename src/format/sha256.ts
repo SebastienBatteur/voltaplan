@@ -138,13 +138,16 @@ export async function blobBytes(b: Blob): Promise<Uint8Array> {
  */
 export async function sha256Hex(data: Blob | Uint8Array | ArrayBuffer | string, signal?: AbortSignal): Promise<string> {
   if (typeof data === 'string') return subtleHex(new TextEncoder().encode(data));
-  if (data instanceof ArrayBuffer) return subtleHex(new Uint8Array(data));
-  if (data instanceof Uint8Array) {
-    if (data.length <= SUBTLE_MAX_BYTES) return subtleHex(data);
+  // Vérifications indépendantes du « royaume » (iframe, environnement de test) : pas d'instanceof
+  if (Object.prototype.toString.call(data) === '[object ArrayBuffer]') return subtleHex(new Uint8Array(data as ArrayBuffer));
+  if (ArrayBuffer.isView(data)) {
+    const bytes = data as Uint8Array;
+    if (bytes.length <= SUBTLE_MAX_BYTES) return subtleHex(bytes);
     const h = new Sha256();
-    for (let i = 0; i < data.length; i += CHUNK_BYTES) h.update(data.subarray(i, i + CHUNK_BYTES));
+    for (let i = 0; i < bytes.length; i += CHUNK_BYTES) h.update(bytes.subarray(i, i + CHUNK_BYTES));
     return h.digestHex();
   }
+  data = data as Blob;
   if (data.size <= SUBTLE_MAX_BYTES) return subtleHex(await blobBytes(data));
   const h = new Sha256();
   for (let i = 0; i < data.size; i += CHUNK_BYTES) {

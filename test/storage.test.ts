@@ -1,4 +1,5 @@
-import { githubSave, parseProject, utf8ToBase64 } from '../src/io/storage';
+import { openProjectData } from '../src/io/projectData';
+import { githubSave, utf8ToBase64 } from '../src/io/storage';
 import { emptyProject } from '../src/model/tree';
 
 describe('enregistrement GitHub', () => {
@@ -29,7 +30,10 @@ describe('enregistrement GitHub', () => {
     const body = JSON.parse(String(calls[1].init?.body));
     expect(body.sha).toBe('abc123');
     expect(body.branch).toBe('main');
-    expect(parseProject(new TextDecoder().decode(Uint8Array.from(atob(body.content), (c) => c.charCodeAt(0)))).meta.title).toBe('Maison');
+    // Archive v2 : relue par la chaîne habituelle (signature PK)
+    const bytes = Uint8Array.from(atob(body.content), (c) => c.charCodeAt(0));
+    expect([...bytes.subarray(0, 2)]).toEqual([0x50, 0x4b]);
+    expect((await openProjectData(new Blob([bytes]), 'Maison.voltaplan')).project.meta.title).toBe('Maison');
     expect((calls[1].init?.headers as Record<string, string>).Authorization).toBe('Bearer tok');
   });
 });

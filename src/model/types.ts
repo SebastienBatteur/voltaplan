@@ -203,7 +203,8 @@ export interface BoardLayout {
 export interface Project {
   /** Identifiant du format (voir src/brand.ts). */
   format: string;
-  version: 1;
+  /** Version du modèle (src/model/migrate.ts : CURRENT_VERSION). 2 : images en références « asset:<sha256> » possibles. */
+  version: 1 | 2;
   meta: ProjectMeta;
   /** Racines de l'arbre (en général une seule : l'origine). */
   roots: ElNode[];

@@ -48,7 +48,8 @@ describe('OneDrive : If-Match sur l’eTag', () => {
   it('lecture : version lue avant le contenu', async () => {
     const calls = mockFetch((url) => (url.endsWith('/content') ? new Response('{"x":1}') : json({ eTag: '"e9"' })));
     const r = await PROVIDERS.onedrive.load('tok', file);
-    expect(r).toEqual({ text: '{"x":1}', rev: '"e9"' });
+    expect(r.rev).toBe('"e9"');
+    expect(await r.data.text()).toBe('{"x":1}');
     expect(calls[0].url.endsWith('/content')).toBe(false);
   });
 
@@ -146,7 +147,7 @@ describe('Google Drive : contrôle avant et après l’envoi', () => {
     const r = await PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file);
     expect(r.concurrentCopy).toMatch(/^Maison \(conflit .*\)\.voltaplan$/);
     const post = calls.find((c) => c.init.method === 'POST')!;
-    expect(String(post.init.body)).toContain('{"autre":true}');
+    expect(await (post.init.body as Blob).text()).toContain('{"autre":true}');
   });
 
   it('révisions entre deux bornes', () => {

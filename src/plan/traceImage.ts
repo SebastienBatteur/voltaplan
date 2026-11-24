@@ -9,7 +9,8 @@ type Bg = PlanPage['images'][number];
 
 export async function loadRGBA(href: string): Promise<RGBA> {
   const img = new Image();
-  img.src = href;
+  // Référence de document (format v2) : image d'affichage, aux dimensions mémorisées dans le projet
+  img.src = await (await import('../io/projectData')).resolveImageSrc(href);
   await img.decode();
   const c = document.createElement('canvas');
   c.width = img.naturalWidth;

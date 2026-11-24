@@ -220,7 +220,7 @@ export function emptyProject(): Project {
   origin.children.push(meter);
   return {
     format: FILE_FORMAT,
-    version: 1,
+    version: 2,
     meta: {
       title: 'Nouveau projet',
       client: { address: { country: 'Belgique' } },

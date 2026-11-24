@@ -80,6 +80,6 @@ describe('images d’un projet ouvert : data:image uniquement', () => {
     expect(parseProject(JSON.stringify(p)).plan.pages[0].images).toEqual([]);
     const r = await readProjectFile(new NodeFile([JSON.stringify(p)], 'x.voltaplan') as unknown as File);
     expect(r.project.plan.pages[0].images).toEqual([]);
-    expect(r.warnings.length).toBe(1);
+    expect(r.warnings).toContainEqual({ key: 'file.imagesRemoved', params: { n: 1 } });
   });
 });

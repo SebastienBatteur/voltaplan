@@ -60,7 +60,9 @@ export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): Comp
  * Chargement de la photo. `img.decode()` peut ne jamais répondre pour une image déjà affichée dans la page
  * (constaté avec une photo en data URL) : on attend `onload`, avec une limite de temps.
  */
-function loadImage(href: string, timeoutMs = 15000): Promise<HTMLImageElement> {
+async function loadImage(href: string, timeoutMs = 15000): Promise<HTMLImageElement> {
+  // Référence de document (format v2) : image d'affichage, aux dimensions mémorisées dans le projet
+  const src = await (await import('../io/projectData')).resolveImageSrc(href);
   return new Promise((resolve, reject) => {
     const img = new Image();
     const timer = window.setTimeout(() => reject(new Error('image')), timeoutMs);
@@ -72,7 +74,7 @@ function loadImage(href: string, timeoutMs = 15000): Promise<HTMLImageElement> {
       window.clearTimeout(timer);
       reject(new Error('image'));
     };
-    img.src = href;
+    img.src = src;
   });
 }
 

@@ -6,8 +6,8 @@ import { parseProject } from '../src/io/storage';
 import { translate } from '../src/i18n';
 
 const MB = 1024 * 1024;
-/** Fichier dont seule la taille compte (le contenu n'est jamais lu s'il est refusé). */
-const sized = (name: string, size: number, type = '') => ({ name, size, type, arrayBuffer: () => Promise.reject(new Error('lu')) }) as unknown as File;
+/** Fichier dont seule la taille compte (le contenu n'est jamais lu s'il est refusé ; seul l'en-tête l'est, pour reconnaître le format). */
+const sized = (name: string, size: number, type = '') => ({ name, size, type, slice: () => new Blob(['{']), arrayBuffer: () => Promise.reject(new Error('lu')) }) as unknown as File;
 
 describe('taille maximale des fichiers importés', () => {
   it('reconnaît le genre du fichier', () => {

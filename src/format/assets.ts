@@ -171,7 +171,9 @@ export class AssetStore {
   private async putVerified(sha: string, ext: AssetExt, blob: Blob, name: string | undefined, verify: boolean): Promise<AssetMeta> {
     const existing = await this.backend.getAsset(sha);
     if (existing) return strip(existing);
-    const rec: AssetRecord = { sha256: sha, mime: ASSET_TYPES[ext], size: blob.size, addedAt: this.now().toISOString(), blob, ...(name ? { name: name.slice(0, 255) } : {}) };
+    // Type MIME exact (d'après la signature) porté par le Blob lui-même
+    const typed = blob.type === ASSET_TYPES[ext] ? blob : blob.slice(0, blob.size, ASSET_TYPES[ext]);
+    const rec: AssetRecord = { sha256: sha, mime: ASSET_TYPES[ext], size: blob.size, addedAt: this.now().toISOString(), blob: typed, ...(name ? { name: name.slice(0, 255) } : {}) };
     await this.backend.putAssetIfAbsent(rec);
     if (verify) {
       const back = await this.backend.getAsset(sha);
