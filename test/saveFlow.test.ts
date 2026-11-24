@@ -2,7 +2,7 @@
  * Enregistrement sans perte silencieuse : écritures conditionnelles chez chaque fournisseur (fetch simulé),
  * copie de conflit, mise en attente hors ligne, versions locales, brouillons par onglet.
  */
-import { PROVIDERS, revisionsBetween, withToken, setCloudTokenForTest, cloudToken, type CloudFile } from '../src/io/cloud';
+import { PROVIDERS, pinsToRelease, revisionsBetween, withToken, setCloudTokenForTest, cloudToken, type CloudFile } from '../src/io/cloud';
 import { AuthError, ConflictError, conflictName, isConflict, isQuotaError } from '../src/io/conflict';
 import { changedSince } from '../src/io/files';
 import { saveAt, locationKey, type SaveDeps } from '../src/io/saveFlow';
@@ -104,9 +104,35 @@ describe('Google Drive : contrôle avant et après l’envoi', () => {
           : json({ version: '7', headRevisionId: 'r7' }),
     );
     const r = await PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file);
-    expect(calls.filter((c) => c.init.method === 'PATCH')).toHaveLength(1);
+    const uploads = calls.filter((c) => c.init.method === 'PATCH' && c.url.includes('/upload/'));
+    expect(uploads).toHaveLength(1);
+    expect(uploads[0].url).toContain('keepRevisionForever=true');
+    // La révision remplacée (r7) est marquée « à conserver » AVANT l'envoi
+    const pin = calls.findIndex((c) => c.init.method === 'PATCH' && c.url.includes('/revisions/r7'));
+    expect(pin).toBeGreaterThanOrEqual(0);
+    expect(JSON.parse(String(calls[pin].init.body))).toEqual({ keepForever: true });
+    expect(pin).toBeLessThan(calls.indexOf(uploads[0]));
     expect(r.rev).toBe('8|r8');
     expect(r.concurrentCopy).toBeUndefined();
+  });
+
+  it('marquage impossible même après libération : rien n’est envoyé', async () => {
+    const calls = mockFetch((url, init) => {
+      if (init.method === 'PATCH' && url.includes('/revisions/')) return new Response('quota', { status: 403 });
+      if (url.includes('/revisions')) return json({ revisions: [] });
+      return json({ version: '7', headRevisionId: 'r7' });
+    });
+    await expect(PROVIDERS.gdrive.save('tok', file.name, '{}', 'update', file)).rejects.toThrow();
+    expect(calls.some((c) => c.url.includes('/upload/'))).toBe(false);
+  });
+
+  it('révisions conservées : on libère les plus anciennes au-delà du seuil, jamais les 20 dernières', () => {
+    const revs = Array.from({ length: 200 }, (_, i) => ({ id: 'r' + i, keepForever: true }));
+    const rel = pinsToRelease(revs, 150, 100);
+    expect(rel).toHaveLength(100);
+    expect(rel[0]).toBe('r0');
+    expect(rel).not.toContain('r199');
+    expect(pinsToRelease(revs.slice(0, 120), 150, 100)).toEqual([]);
   });
 
   it('enregistrement d’un autre appareil pendant notre envoi : sa version est recopiée (les deux sont gardées)', async () => {

@@ -246,13 +246,19 @@ export const PROVIDERS: Record<CloudId, Provider> = {
         //  2. après l'envoi : la révision qui précède la nôtre doit être celle de l'ouverture. Sinon, quelqu'un a
         //     enregistré pendant notre envoi : sa version (toujours dans l'historique de Drive) est recopiée en
         //     copie de conflit. Les deux versions sont donc conservées, même dans ce cas.
+        //  3. stratégie conservatrice : la révision que nous allons remplacer est d'abord marquée « à conserver
+        //     indéfiniment » (keepForever), et notre envoi aussi (keepRevisionForever). Drive ne purge donc jamais
+        //     une version remplacée par Voltaplan : même en cas de course non détectée, elle reste récupérable
+        //     (Drive → clic droit → Gérer les versions). Si ce marquage échoue, on n'envoie pas.
+        const now = await driveVersion(token, existing.id);
         if (mode === 'update') {
           if (!existing.rev) throw new ConflictError('Google Drive : ' + name, 'version inconnue');
-          const now = await driveVersion(token, existing.id);
           if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
         }
+        const current = now?.split('|')[1];
+        if (current) await drivePin(token, existing.id, current);
         const r = await check(
-          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&fields=id,name,size,modifiedTime,version,headRevisionId`, {
+          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&keepRevisionForever=true&fields=id,name,size,modifiedTime,version,headRevisionId`, {
             method: 'PATCH',
             headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
             body: data,
@@ -276,6 +282,9 @@ export const PROVIDERS: Record<CloudId, Provider> = {
             saved.concurrentCopy = copyName;
           }
         }
+        // Drive limite le nombre de révisions conservées indéfiniment par fichier : on libère les plus anciennes
+        // au-delà d'un seuil (jamais les plus récentes). Échec sans conséquence pour l'enregistrement.
+        await driveReleaseOldPins(token, existing.id).catch(() => undefined);
         return saved;
       }
       // Création : Drive admet plusieurs fichiers de même nom, un fichier existant n'est donc jamais remplacé.
@@ -290,7 +299,7 @@ async function driveCreate(token: string, name: string, data: string): Promise<C
     `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, mimeType: 'application/json' })}\r\n` +
     `--${boundary}\r\nContent-Type: application/json\r\n\r\n${data}\r\n--${boundary}--`;
   const r = await check(
-    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,size,modifiedTime,version,headRevisionId', {
+    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&keepRevisionForever=true&fields=id,name,size,modifiedTime,version,headRevisionId', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
       body,
@@ -314,6 +323,51 @@ async function driveRevisionsBetween(token: string, id: string, from: string, to
   const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id)&pageSize=1000`, { headers: { Authorization: 'Bearer ' + token } }));
   const ids = ((await r.json()) as { revisions?: { id: string }[] }).revisions?.map((x) => x.id) ?? [];
   return revisionsBetween(ids, from, to);
+}
+
+/** Marque une révision « à conserver indéfiniment ». Plafond atteint : on libère d'anciennes révisions et on réessaie. */
+async function drivePin(token: string, id: string, rev: string): Promise<void> {
+  const pin = () =>
+    fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rev)}?fields=id,keepForever`, {
+      method: 'PATCH',
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keepForever: true }),
+    });
+  const r = await pin();
+  if (r.ok) return;
+  if (r.status === 401) throw new AuthError('Google Drive');
+  await driveReleaseOldPins(token, id, DRIVE_PINS_KEEP / 2);
+  await check(await pin());
+}
+
+/** Seuils de conservation des révisions « indéfinies » (Drive en limite le nombre par fichier [à vérifier : 200]). */
+export const DRIVE_PINS_MAX = 150;
+export const DRIVE_PINS_KEEP = 100;
+
+async function driveReleaseOldPins(token: string, id: string, keep = DRIVE_PINS_KEEP): Promise<void> {
+  const r = await check(
+    await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id,keepForever)&pageSize=1000`, { headers: { Authorization: 'Bearer ' + token } }),
+  );
+  const revs = ((await r.json()) as { revisions?: { id: string; keepForever?: boolean }[] }).revisions ?? [];
+  for (const rid of pinsToRelease(revs, keep === DRIVE_PINS_KEEP ? DRIVE_PINS_MAX : keep, keep))
+    await check(
+      await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rid)}`, {
+        method: 'PATCH',
+        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keepForever: false }),
+      }),
+    );
+}
+
+/**
+ * Fonction pure (testée) : révisions « conservées indéfiniment » à libérer, des plus anciennes aux plus récentes,
+ * seulement quand il y en a plus de `max`, pour revenir à `keep`. Les 20 dernières révisions ne sont jamais libérées.
+ */
+export function pinsToRelease(revs: { id: string; keepForever?: boolean }[], max = DRIVE_PINS_MAX, keep = DRIVE_PINS_KEEP): string[] {
+  const pinned = revs.slice(0, Math.max(0, revs.length - 20)).filter((r) => r.keepForever);
+  const total = revs.filter((r) => r.keepForever).length;
+  if (total <= max) return [];
+  return pinned.slice(0, Math.max(0, total - keep)).map((r) => r.id);
 }
 
 /** Fonction pure (testée) : identifiants strictement entre `from` et `to` dans la liste chronologique. */
