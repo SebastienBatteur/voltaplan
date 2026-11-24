@@ -1,0 +1,50 @@
+# Mêmes vérifications que ci.yml, sur Windows et macOS : différences de système (chemins, fins de ligne,
+# casse des noms de fichiers, outils natifs de npm). Sur un dépôt privé, une minute Windows compte ×2 et une
+# minute macOS ×10 [à vérifier] : ce workflow ne tourne donc pas à chaque push ni à chaque demande de fusion,
+# mais seulement quand le code livré change sur main, chaque semaine et à la demande (voir docs/ci.md).
+# Pour vérifier une branche avant fusion : onglet Actions → « CI multi-OS » → Run workflow → choisir la branche.
+name: CI multi-OS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - '.github/workflows/ci-multi-os.yml'
+  schedule:
+    - cron: '37 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Sur main, plusieurs pushes rapprochés : l'exécution en cours va à son terme, les suivantes en attente
+  # sont regroupées en une seule (la plus récente). Une branche lancée à la main annule sa précédente.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  test:
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build

@@ -1,19 +1,50 @@
-# Analyse de sécurité du code (CodeQL) : à chaque push sur main, chaque pull request et chaque semaine.
+# Analyse de sécurité du code (CodeQL) : à chaque push sur main et chaque demande de fusion qui touchent
+# du code JavaScript / TypeScript (ou les dépendances), chaque semaine sur tout le code, et à la demande.
+# Pas sur un changement de documentation seule (rien à analyser).
 name: CodeQL
 
 on:
   push:
     branches: [main]
+    # Liste identique pour pull_request ci-dessous (pas d'ancre YAML, par prudence).
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '**/*.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql-accepted.txt'
   pull_request:
+    paths:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '**/*.html'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/codeql.yml'
+      - '.github/codeql-accepted.txt'
   schedule:
     - cron: '23 4 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       actions: read

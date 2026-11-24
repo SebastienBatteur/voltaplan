@@ -1,4 +1,4 @@
-# Recherche de secrets (gitleaks, voir .github/workflows/ci.yml) : règles par défaut de gitleaks.
+# Recherche de secrets (gitleaks, voir .github/workflows/secrets.yml) : règles par défaut de gitleaks.
 # Les tests unitaires utilisent de fausses clés (ex. pour le chiffrement local des secrets).
 [extend]
 useDefault = true

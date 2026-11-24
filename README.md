@@ -62,10 +62,15 @@ L'application de bureau utilise [Tauri](https://tauri.app) : petit installateur,
 
 | Workflow | Quand | Ce qu'il fait |
 |---|---|---|
-| `ci.yml` | chaque push sur `main` et chaque pull request | typage, ESLint, tests, construction, sur Windows, macOS et Linux ; la version web est jointe au run ; audit des dépendances livrées (`npm audit --omit=dev`) et recherche de secrets (gitleaks) |
-| `codeql.yml` | chaque push sur `main`, chaque pull request, chaque semaine | analyse de sécurité du code (CodeQL) |
+| `ci.yml` | push sur `main` et pull request qui touchent autre chose que la documentation, chaque semaine, à la demande | Linux : typage, ESLint, tous les tests, construction ; audit des dépendances livrées (`npm audit --omit=dev`) ; la version web est jointe aux runs de `main` |
+| `ci-multi-os.yml` | push sur `main` qui touche `src/`, `package*.json` ou `vite.config.ts`, chaque semaine, à la demande | mêmes vérifications sur Windows et macOS |
+| `secrets.yml` | chaque push sur `main` et chaque pull request (documentation comprise), chaque semaine | recherche de secrets dans tout l'historique (gitleaks) |
+| `codeql.yml` | push sur `main` et pull request qui touchent du code, chaque semaine, à la demande | analyse de sécurité du code (CodeQL) |
+| `desktop-build.yml` | pull request et push sur `main` qui touchent `src-tauri/` ou un paquet Tauri, à la demande | construction de l'application de bureau sur les 3 systèmes, sans publication |
 | `release.yml` | tag `v*` (ex. `git tag v0.2.0 && git push --tags`) ou lancement manuel | installateurs Windows, macOS (Apple Silicon et Intel) et Linux ; release *brouillon* créée sur GitHub pour un tag |
-| `pages.yml` | chaque push sur `main` | publie le site (accueil + guide, dossier `site/`) et l'application web dans `app/` sur GitHub Pages (à activer une fois : *Settings → Pages → Source : GitHub Actions*) |
+| `pages.yml` | push sur `main` qui change le site ou l'application | publie le site (accueil + guide, dossier `site/`) et l'application web dans `app/` sur GitHub Pages (à activer une fois : *Settings → Pages → Source : GitHub Actions*) |
+
+Politique de déclenchement et coût en minutes : [docs/ci.md](docs/ci.md).
 
 Les installateurs ne sont pas signés : Windows SmartScreen et macOS Gatekeeper afficheront un avertissement au premier lancement. La signature demande un certificat (payant) à ajouter plus tard dans les secrets du dépôt.
 

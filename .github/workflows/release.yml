@@ -14,6 +14,11 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Jamais d'annulation : une release interrompue laisserait une release brouillon incomplète.
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   build:
     # Création de la release brouillon et envoi des paquets
@@ -36,6 +41,8 @@ jobs:
             args: ''
             name: linux
     runs-on: ${{ matrix.platform }}
+    # Garde-fou contre un job bloqué (les constructions normales prennent bien moins)
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 

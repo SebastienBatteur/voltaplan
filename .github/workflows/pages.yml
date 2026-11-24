@@ -6,20 +6,36 @@ name: Pages
 on:
   push:
     branches: [main]
+    # Tout ce qui change le site publié (site/, application : src/, public/, index.html, dépendances,
+    # configuration de construction) déclenche la publication. Sont exclus : documentation interne,
+    # fichiers .md, tests, application de bureau et autres workflows. Les motifs sont lus dans l'ordre,
+    # le dernier qui correspond l'emporte ; un changement mixte qui touche un fichier publié déclenche.
+    paths:
+      - '**'
+      - '!docs/**'
+      - '!**/*.md'
+      - '!test/**'
+      - '!src-tauri/**'
+      - '!.github/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
+  # Une seule publication à la fois, SANS annuler celle en cours : interrompre deploy-pages en plein
+  # déploiement peut laisser le site dans un état intermédiaire ou faire échouer la publication suivante.
+  # Les exécutions en attente sont remplacées par la plus récente (seul le dernier état de main compte).
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Construction et publication séparées (schéma officiel) : l'artefact est complet avant la publication,
   # ce qui évite l'erreur intermittente « No artifacts named github-pages were found ».
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       pages: read # configure-pages lit la configuration du site
@@ -52,6 +68,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     # Publication GitHub Pages : seules permissions d'écriture nécessaires
     permissions:
       pages: write
