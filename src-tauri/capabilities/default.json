@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Droits de la fenêtre principale : boîte de dialogue « Enregistrer », écriture du fichier choisi, lecture de sa date de modification (détection d'une modification faite ailleurs avant de réécrire), impression (sur macOS, window.print() passe par la commande webview « print »).",
+  "description": "Droits de la fenêtre principale : impression (sur macOS, window.print() passe par la commande webview « print »). L'enregistrement passe par les commandes de l'application (pick_save_path, save_begin, save_chunk, save_commit, save_abort, file_state ; src/atomic_save.rs), qui n'écrivent qu'aux chemins choisis dans la boîte « Enregistrer » ouverte côté Rust : aucun droit dialog ni fs n'est donné à la page. Sans manifeste d'application dans build.rs, Tauri 2 autorise les commandes de l'application pour les pages locales.",
   "windows": ["main"],
-  "permissions": ["core:default", "dialog:allow-save", "fs:allow-write-text-file", "fs:allow-write-file", "fs:allow-stat", "core:webview:allow-print"]
+  "permissions": ["core:default", "core:webview:allow-print"]
 }

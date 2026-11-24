@@ -14,6 +14,7 @@ import type { ArchiveReport } from '../format/archive';
 import type { Project } from '../model/types';
 import type { MigrationWarning } from '../model/migrate';
 import { ConflictError, isQuotaError, StorageFullError } from './conflict';
+import { desktopFileState, desktopPickPath, desktopWritable, desktopWriteBlob } from './desktopSave';
 import { openProjectData, projectToV1, serializeProject } from './projectData';
 
 export { decodeText } from './projectData';
@@ -39,10 +40,8 @@ export function changedSince(known: { mtime: number; size: number } | null, now:
 /** Vrai dans l'application de bureau (Tauri). */
 export const isDesktop = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
 
-async function desktopSavePath(name: string, ext: string, description: string): Promise<string | null> {
-  const { save } = await import('@tauri-apps/plugin-dialog');
-  return save({ defaultPath: name, filters: [{ name: description, extensions: [ext.replace(/^\./, '')] }] });
-}
+// Bureau : boîte « Enregistrer », état et écriture atomique par les commandes Rust (src/io/desktopSave.ts).
+const desktopSavePath = desktopPickPath;
 
 interface FileSystemFileHandleLike {
   name: string;
@@ -59,15 +58,7 @@ async function handleState(h: FileSystemFileHandleLike): Promise<{ mtime: number
   }
 }
 
-async function pathState(path: string): Promise<{ mtime: number; size: number } | null> {
-  try {
-    const { stat } = await import('@tauri-apps/plugin-fs');
-    const st = await stat(path);
-    return { mtime: st.mtime ? new Date(st.mtime).getTime() : 0, size: st.size };
-  } catch {
-    return null;
-  }
-}
+const pathState = desktopFileState;
 
 type PickerWindow = Window & {
   showSaveFilePicker?: (opts: unknown) => Promise<FileSystemFileHandleLike>;
@@ -155,13 +146,17 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
     if (currentPath && !saveAs && !opts.force && changedSince(lastWritten, await pathState(currentPath))) throw new ConflictError(currentPath.split(/[\\/]/).pop() ?? name);
     const path = !currentPath || saveAs ? await desktopSavePath(name, EXT, 'Projet ' + APP_NAME) : currentPath;
     if (!path) return null;
-    // Archive assemblée d'abord (documents vérifiés), écrite ensuite en une fois [à vérifier : écriture dans un
-    // fichier temporaire puis renommage, selon les droits de @tauri-apps/plugin-fs].
-    const blob = (await serializeProject(project))!;
-    const { writeFile } = await import('@tauri-apps/plugin-fs');
-    await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
+    // Archive écrite en flux dans un fichier temporaire du même dossier, vérifiée puis renommée (atomic_save.rs) ;
+    // version précédente gardée en `<nom>.bak`. En cas d'erreur, le fichier d'origine reste intact.
+    const { stream, done, cancel } = desktopWritable(path, { backup: true });
+    try {
+      await serializeProject(project, stream);
+    } catch (e) {
+      await cancel(e);
+      throw e;
+    }
+    lastWritten = await done;
     currentPath = path;
-    lastWritten = await pathState(path);
     return path.split(/[\\/]/).pop() ?? name;
   }
   const w = window as PickerWindow;
@@ -215,8 +210,7 @@ export async function download(blob: Blob, name: string) {
     const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')) : '';
     const path = await desktopSavePath(name, ext, ext.toUpperCase());
     if (!path) return;
-    const { writeFile } = await import('@tauri-apps/plugin-fs');
-    await writeFile(path, new Uint8Array(await blob.arrayBuffer()));
+    await desktopWriteBlob(path, blob, { backup: false });
     return;
   }
   const url = URL.createObjectURL(blob);

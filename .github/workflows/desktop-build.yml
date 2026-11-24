@@ -127,6 +127,13 @@ jobs:
         run: npx tauri build
         shell: bash
 
+      # Tests Rust (écriture atomique, src-tauri/src/atomic_save.rs) sur chaque plateforme : le comportement de
+      # std::fs::rename diffère entre Windows et Unix. Après la construction (dist/ doit exister pour generate_context!).
+      - name: Tests Rust (cargo test)
+        working-directory: src-tauri
+        run: cargo test --locked --lib
+        shell: bash
+
       - name: Cargo.lock résolu (artifact)
         if: always() && matrix.name == 'linux'
         uses: actions/upload-artifact@v4
