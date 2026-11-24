@@ -195,6 +195,20 @@ describe('brouillon depuis une photo de tableau', () => {
   });
 });
 
+describe('acceptation en un seul lot', () => {
+  it('parent accepté mais en attente (son différentiel n’est pas décidé) : ses enfants attendent aussi, rien n’est abandonné', () => {
+    const { p } = draftProject();
+    // Tout sauf les différentiels : disjoncteurs, câbles, usages et places attendent leur différentiel
+    const notRcd = p.evidence!.proposals.filter((x) => !(x.change.op === 'createNode' && x.change.props.device === 'rcd')).map((x) => x.id);
+    const q = decide(p, { accept: notRcd });
+    expect(q.evidence!.proposals.filter((x) => x.status === 'superseded')).toHaveLength(0);
+    // Une fois les différentiels acceptés, tout le reste s'applique
+    const r = decide(q, { accept: q.evidence!.proposals.filter((x) => x.status === 'pending').map((x) => x.id) });
+    expect(r.evidence!.proposals.filter((x) => x.status === 'superseded' || x.status === 'pending')).toHaveLength(0);
+    expect(nodesOf(r, 'cable')).toHaveLength(4);
+  });
+});
+
 describe('questions, relevé, corrections tracées', () => {
   it('réponse : valeur écrite et confirmée ; « je ne sais pas » : rien d’écrit', () => {
     const { p } = draftProject();

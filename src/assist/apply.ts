@@ -86,8 +86,14 @@ export function decide(
   for (const p of e0.proposals) if (p.status === 'accepted' && p.createdNodeId && p.change.op === 'createNode') temp.set(p.change.tempKey, p.createdNodeId);
   const resolve = (t: { nodeId: string } | { tempKey: string }) => ('nodeId' in t ? t.nodeId : temp.get(t.tempKey));
   // Parent ou cible encore en attente de décision (et pas accepté maintenant) : la proposition attend aussi
+  // Parents acceptés dans ce même lot mais restés en attente (leur propre parent attend) : leurs enfants attendent
+  // aussi, au lieu d'être abandonnés (ordre du dossier : un parent est toujours traité avant ses enfants)
+  const deferred = new Set<string>();
   const waiting = (t: { nodeId: string } | { tempKey: string }) =>
-    'tempKey' in t && !temp.has(t.tempKey) && e0.proposals.some((x) => x.status === 'pending' && x.change.op === 'createNode' && x.change.tempKey === t.tempKey && !accept.has(x.id) && !reject.has(x.id));
+    'tempKey' in t &&
+    !temp.has(t.tempKey) &&
+    (deferred.has(t.tempKey) ||
+      e0.proposals.some((x) => x.status === 'pending' && x.change.op === 'createNode' && x.change.tempKey === t.tempKey && !accept.has(x.id) && !reject.has(x.id)));
 
   const provenance: Provenance[] = [...e0.provenance];
   const history: HistoryEntry[] = [...e0.history];
@@ -111,7 +117,10 @@ export function decide(
     const c = p.change;
     if (c.op === 'createNode') {
       const parentRef = edit?.parent ?? c.parent;
-      if (waiting(parentRef)) return p;
+      if (waiting(parentRef)) {
+        deferred.add(c.tempKey);
+        return p;
+      }
       const parentId = resolve(parentRef);
       if (!parentId || !findNode(roots, parentId)) return { ...p, status: 'superseded', decidedAt: now };
       // Uniquement les propriétés observées ou déduites (ou corrigées par l'utilisateur) : AUCUNE valeur par défaut (A2)

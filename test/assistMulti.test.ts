@@ -229,6 +229,21 @@ describe('plusieurs tableaux', () => {
     expect(enclosures(p.roots).map((e) => e.board.id)).toContain(added.boardId);
   });
 
+  it('nouvelle photo du tableau principal après le rattachement : le point « tableau » redéduit est remplacé (pas de doublon)', () => {
+    let p = newExistingProject('X');
+    const r = reading([dev({ startModule: 0, ratedCurrentA: 25, curve: 'C', label: 'Sous-tableau garage', circuitRef: 'A' })]);
+    p = photo(p, 'h1', r, 1).project;
+    const added = addBoard(p, 'Garage');
+    p = added.project;
+    expect(pending(p).filter((x) => x.change.op === 'move')).toHaveLength(1);
+    // Deuxième photo (gros plan) du tableau principal : même étiquette, donc même point « tableau » déduit
+    p = photo(p, 'h2', reading([dev({ startModule: 0, ratedCurrentA: 25, curve: 'C', label: 'Sous-tableau garage', circuitRef: 'A' })]), 2).project;
+    expect(creates(p, 'board')).toHaveLength(0);
+    // Tout accepter : un seul sous-tableau (principal + garage)
+    p = acceptAll(p, T(30));
+    expect(nodesOf(p, 'board')).toHaveLength(2);
+  });
+
   it('circuit et câble déjà acceptés, point « tableau » en attente : un seul rattachement, sous le câble existant', () => {
     let p = newExistingProject('X');
     p = photo(p, 'h1', reading([dev({ startModule: 0, ratedCurrentA: 25, curve: 'C', label: 'Sous-tableau garage', circuitRef: 'A' })]), 1).project;

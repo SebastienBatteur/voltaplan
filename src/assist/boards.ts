@@ -88,9 +88,14 @@ export function subBoardLinks(project: Project, now = new Date().toISOString()):
   const all = feeds(project);
   const taken = new Set<string>();
   for (const b of unfed) {
-    const already = ev?.proposals.some((x) => x.change.op === 'move' && x.change.target.nodeId === b.id && (x.status === 'pending' || x.status === 'accepted'));
-    if (already) continue;
     const name = `${b.props.name ?? ''} ${b.location ?? ''}`.trim();
+    const already = ev?.proposals.some((x) => x.change.op === 'move' && x.change.target.nodeId === b.id && (x.status === 'pending' || x.status === 'accepted'));
+    if (already) {
+      // Rattachement déjà proposé ou accepté : un nouveau point « sous-tableau » déduit d'une autre photo du tableau
+      // principal désigne ce même tableau — il est remplacé, sinon l'accepter créerait un tableau en double
+      for (const f of all) if (f.replaces && sameBoardName(name, f.name)) supersede.push(f.replaces);
+      continue;
+    }
     const free = all.filter((f) => !taken.has(JSON.stringify(f.parent)));
     const named = free.filter((f) => sameBoardName(name, f.name));
     // Sans nom concordant : seulement vers un circuit existant (jamais à la place d'un autre sous-tableau proposé)
@@ -131,7 +136,7 @@ export function subBoardLinks(project: Project, now = new Date().toISOString()):
 /** Ajoute au dossier de preuves les propositions de rattachement (même étape d'annulation que l'action appelante). */
 export function withSubBoardLinks(project: Project, now = new Date().toISOString()): Project {
   const r = subBoardLinks(project, now);
-  if (!r.proposals.length) return project;
+  if (!r.proposals.length && !r.supersede.length) return project;
   const e = project.evidence ?? emptyEvidence();
   const sup = new Set(r.supersede);
   return {
