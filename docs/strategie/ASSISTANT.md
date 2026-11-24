@@ -169,3 +169,49 @@ règles relues par un expert, pas sur un modèle de langage.
 - **Tout se fait aussi sans IA** : le même parcours fonctionne avec une saisie manuelle guidée, et l'IA n'est
   qu'un accélérateur.
 - **Sur téléphone** : photographier, répondre aux questions. Sur ordinateur : finaliser le dossier.
+
+## 7. Estimations précisées et niveaux de maturité (2026-11-24)
+
+**Nature de l'estimation initiale « 6 à 10 semaines »** : c'était une estimation de **développement humain
+classique**, à temps partiel. Avec Claude Code en autonomie, l'écriture du code se compresse fortement. Le délai
+réel est alors dominé par :
+
+- les validations du porteur du projet (spécifications, essais) ;
+- la constitution d'un **corpus de photos réelles anonymisées** ;
+- l'itération sur la qualité de lecture de l'IA (mesures, réglage des consignes) ;
+- les essais de terrain et la relecture réglementaire.
+
+Aucun de ces facteurs ne s'accélère avec plus de code.
+
+| Niveau | Contenu | Claude Code (délai réel) | Développement humain classique |
+|---|---|---|---|
+| **Prototype minimal** | photo du tableau → calage (existant) → lecture IA (existante) → **« Tout créer depuis la photo »** : tableau, appareils et circuits proposés d'après les étiquettes, unifilaire automatique ; propositions de la session seulement, sans dossier de preuves persistant | **2 à 4 jours** | 1 à 2 semaines |
+| **Première version utilisable** | dossier de preuves (spécification A) en v1, questions, écran de validation, cache de l'IA, interprétation des étiquettes (pièce, usage), test de fidélité, essais sur environ 20 photos réelles | **1 à 2 semaines**, dont environ la moitié d'attente de validations et de photos | 4 à 6 semaines |
+| **Bêta** | format v2 (originaux), plusieurs photos par tableau, texte des plans PDF, essais chez 5 à 10 électriciens, modèles locaux mesurés | **3 à 6 semaines** | 2 à 3 mois |
+| **Professionnelle** | corpus de plus de 100 tableaux avec taux de lecture mesuré, non-régression par modèle, documentation, support, relecture par un expert des propositions de conception | **3 à 6 mois**, limités par le terrain et l'expertise, pas par le code | 4 à 8 mois |
+
+### Chemin le plus court vers un premier brouillon à partir d'une photo de tableau
+
+Ce chemin s'appuie sur ce qui existe déjà :
+
+1. **Nouveau projet → « Depuis une photo du tableau »** : un tableau vide est créé, et la photo est importée
+   (existant).
+2. **Calage des rangées** : 2 clics par rangée (existant ; la détection des séparations aide déjà).
+3. **Lecture par l'IA** (existante) : type, calibre, courbe, sensibilité, étiquette et repère de chaque appareil.
+4. **Nouveau** :
+   - les appareils sont créés dans l'arbre, dans l'ordre du tableau ; `createFromPhoto` existe pour un appareil,
+     il suffit de l'appliquer à tous ;
+   - les différentiels deviennent parents des disjoncteurs qu'ils protègent (repères « A-F » déjà lus) ;
+   - **un circuit par disjoncteur**, nommé d'après son étiquette. Une analyse déterministe de l'étiquette
+     (« PRISES CUISINE » → prises, cuisine ; « ÉCLAIRAGE » → points lumineux) propose le contenu, en quantité
+     **inconnue**, donc avec une question.
+5. L'unifilaire, le tableau et la liste des circuits s'affichent aussitôt (existant), ainsi que le contrôle RGIE
+   avec les « informations manquantes ». Ce n'est pas une reconstruction embellie : rien n'est corrigé.
+
+**Ce que ce chemin ne fait pas** :
+
+- placer les points sur le plan : il faut un plan, c'est le deuxième jalon ;
+- connaître les sections des câbles et le nombre de points par circuit : questions à l'utilisateur.
+
+**Sa condition** : que la spécification du modèle de l'assistant soit validée d'abord, pour que le prototype n'ait
+pas à être réécrit.
