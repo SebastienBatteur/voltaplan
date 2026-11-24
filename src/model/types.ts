@@ -46,6 +46,14 @@ export interface ElNode {
 }
 
 export type RgieVersion = 'new' | 'old';
+
+/**
+ * Faits du relevé qu'on peut déclarer sans les dessiner (ADR-0007) : prise de terre, différentiel général,
+ * différentiel 30 mA des circuits qui l'exigent.
+ */
+export type SurveyFact = 'earth' | 'rcd' | 'rcd30';
+/** Déclaration explicite de l'utilisateur : confirmé présent ou confirmé absent (clé absente = inconnu). */
+export type SurveyStatement = 'present' | 'absent';
 export type InstallationKind = 'new' | 'existing';
 
 export interface Address {
@@ -100,6 +108,11 @@ export interface ProjectMeta {
   installationDate?: string;
   /** Dérogations applicables, saisies et justifiées par l'utilisateur (voir src/rules/types.ts). */
   derogations?: { ruleId: string; nodeId?: string; reason: string; reference?: string }[];
+  /**
+   * Déclarations explicites du relevé (ADR-0007) : un fait non dessiné n'est pas pour autant absent de
+   * l'installation. Facultatif ; absent dans les anciens fichiers (= rien de déclaré).
+   */
+  survey?: Partial<Record<SurveyFact, SurveyStatement>>;
   /** Éléments connus à la dernière « Mise à jour » (src/model/sync.ts) : les autres sont nouveaux. */
   syncedIds?: string[];
 }

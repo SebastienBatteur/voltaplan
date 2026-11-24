@@ -16,8 +16,8 @@ import { ancestors, isCircuit, walk } from '../model/tree';
 import { Walls, PlanSymbol, S, planBounds } from '../ui/PlanView';
 import { DeviceFace, DEV_H, LABEL_H, MARGIN, MOD, ROW_PITCH, rowTop } from '../ui/BoardView';
 import { boardSize, enclosures, placed } from '../board/model';
-import type { Finding } from '../rules';
-import { paramsText } from '../ui/CheckPanel';
+import { DRAFT_KEYS, isDocumentary, type DraftLevel, type Finding } from '../rules';
+import { blockingText, findingRank, knowledgeText, ruleText } from '../ui/CheckPanel';
 import { APP_NAME } from '../brand';
 import type { Lang } from '../i18n';
 import { billOfMaterials } from '../bom/bom';
@@ -47,7 +47,8 @@ interface Ctx {
   labelFn: LabelFn;
   numbering: Map<string, string>;
   findings: Finding[];
-  draft: boolean;
+  /** Mention en filigrane du dossier de réception ou complet (src/rules/knowledge.ts, draftLevel). */
+  draft: DraftLevel;
   lang: Lang;
   /** Type de document : travail, dossier de réception, rapport d'anomalies, dossier complet. */
   docKind?: DocKind;
@@ -474,39 +475,65 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
   }
 
   if (sec.checks && ctx.findings.length) {
-    // Tous les constats, sur autant de pages que nécessaire (bloquants d'abord, puis par statut)
-    const rank = (f: Finding) => (f.blocking ? 0 : 10) + ['nonCompliant', 'insufficientData', 'warning', 'manualCheck', 'recommendation', 'derogation', 'notApplicable'].indexOf(f.status ?? 'warning');
-    const sorted = [...ctx.findings].sort((a, b) => rank(a) - rank(b));
+    // Tous les constats, sur autant de pages que nécessaire : « Exigences de l'installation » puis « Exigences
+    // documentaires » (ADR-0007 : une lacune du dossier n'est jamais présentée comme une non-conformité physique),
+    // bloquants d'abord, puis par statut ; l'état de connaissance (inconnu, déduit, contradictoire…) est indiqué.
+    const rows = findingRows(ctx.findings);
     const per = format === 'A3' ? 34 : 22;
-    for (let i = 0; i < sorted.length; i += per)
+    for (let i = 0; i < rows.length; i += per)
       pages.push({
         kind: t('print.checks'),
         body: (
           <>
-          <p className="print-note">{t('check.disclaimer')}</p>
-          <table className="print-table">
-            <tbody>
-              {sorted.slice(i, i + per).map((f, j) => (
-                <tr key={j}>
-                  <td className="b">
-                    {t('status.' + (f.status ?? 'warning'))}
-                    {f.blocking ? ' · ' + t('status.blocking') : ''}
-                  </td>
-                  <td>{f.nodeId ? numbering.get(f.nodeId) ?? '' : ''}</td>
-                  <td>
-                    {t('rule.' + f.ruleId, paramsText(f, t))}
-                    {f.derogation ? ' — ' + t('status.derogation') + ' : ' + f.derogation.reason + (f.derogation.reference ? ' (' + f.derogation.reference + ')' : '') : ''}
-                  </td>
-                  <td className="small">{f.ruleId}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            <p className="print-note">
+              {t('check.disclaimer')} {t('check.liability')}
+            </p>
+            <table className="print-table">
+              <tbody>
+                {rows.slice(i, i + per).map((r, j) =>
+                  r.head ? (
+                    <tr key={j}>
+                      <td colSpan={4} className="b">
+                        {t('requirement.' + r.head)}
+                        {r.head === 'documentary' && <span className="small"> — {t('requirement.documentary.help')}</span>}
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={j}>
+                      <td className="b">
+                        {t('status.' + (r.f.status ?? 'warning'))}
+                        {blockingText(r.f, t)}
+                        {knowledgeText(r.f, t) && <div className="small">{knowledgeText(r.f, t)}</div>}
+                      </td>
+                      <td>{r.f.nodeId ? numbering.get(r.f.nodeId) ?? '' : ''}</td>
+                      <td>
+                        {ruleText(r.f, t)}
+                        {r.f.derogation ? ' — ' + t('status.derogation') + ' : ' + r.f.derogation.reason + (r.f.derogation.reference ? ' (' + r.f.derogation.reference + ')' : '') : ''}
+                      </td>
+                      <td className="small">{r.f.ruleId}</td>
+                    </tr>
+                  ),
+                )}
+              </tbody>
+            </table>
           </>
         ),
       });
   }
   return pages;
+}
+
+/** Lignes de la page des constats : titre de groupe (exigences de l'installation / documentaires) puis constats triés. */
+export function findingRows(findings: Finding[]): ({ head: 'physical' | 'documentary'; f?: undefined } | { head?: undefined; f: Finding })[] {
+  const sorted = [...findings].sort((a, b) => findingRank(a) - findingRank(b));
+  const out: ({ head: 'physical' | 'documentary'; f?: undefined } | { head?: undefined; f: Finding })[] = [];
+  for (const head of ['physical', 'documentary'] as const) {
+    const list = sorted.filter((f) => isDocumentary(f) === (head === 'documentary'));
+    if (!list.length) continue;
+    out.push({ head });
+    for (const f of list) out.push({ f });
+  }
+  return out;
 }
 
 function labelText(n: ElNode, numbering: Map<string, string>, t: Ctx['t'], nameOnly = false): string {
@@ -562,7 +589,11 @@ export function PrintDocument({ ctx, format, sections }: { ctx: Ctx; format: Pap
       {pages.map((pg, i) => (
         <section key={i} className="print-page" style={pageStyle}>
           <div className="print-body">{pg.body}</div>
-          {ctx.draft ? <div className="watermark">{ctx.t('print.draft')}</div> : ctx.docKind === 'working' && <div className="watermark light">{ctx.t('print.workingDoc')}</div>}
+          {ctx.draft !== 'none' ? (
+            <div className={'watermark' + (ctx.draft === 'nonCompliant' ? '' : ' light')}>{ctx.t(DRAFT_KEYS[ctx.draft])}</div>
+          ) : (
+            ctx.docKind === 'working' && <div className="watermark light">{ctx.t('print.workingDoc')}</div>
+          )}
           <Cartouche ctx={ctx} title={pg.kind} page={i + 1} pages={pages.length} />
         </section>
       ))}
