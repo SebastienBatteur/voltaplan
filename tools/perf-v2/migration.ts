@@ -14,7 +14,7 @@
  * EN MÉMOIRE : les documents rangés comptent donc dans la mesure, ~70 % de la taille du fichier).
  */
 import { randomFillSync } from 'node:crypto';
-import { mkdirSync, openAsBlob, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, openAsBlob, rmSync, writeFileSync } from 'node:fs';
 import { cpus, tmpdir, totalmem } from 'node:os';
 import { join } from 'node:path';
 import { AssetStore, MemoryAssetBackend } from '../../src/format/assets';
@@ -24,11 +24,11 @@ import { emptyProject } from '../../src/model/tree';
 
 const MB = 1024 * 1024;
 const target = Number(process.argv.slice(2).find((a) => /^\d+$/.test(a)) ?? 50);
-const DIR = join(tmpdir(), 'voltaplan-perf-migration-' + process.pid);
+// Dossier temporaire au nom imprévisible, créé atomiquement avec des droits réservés à l'utilisateur (mkdtemp)
+const DIR = mkdtempSync(join(tmpdir(), 'voltaplan-perf-migration-'));
 const gc = () => (globalThis as { gc?: () => void }).gc?.();
 
 async function main() {
-  mkdirSync(DIR, { recursive: true });
   const path = join(DIR, 'v1.voltaplan');
   let photos = 0;
   {

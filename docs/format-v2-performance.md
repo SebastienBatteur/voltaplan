@@ -36,12 +36,12 @@ Banc dédié : `tools/perf-v2/migration.ts` (`npm run perf:v2:migration [taille 
 46,7 Mo (10 photos aléatoires de 3,5 Mo en base64), **écrit sur le disque et lu avec `fs.openAsBlob`** comme le
 `File` du navigateur (le premier banc partait d'un `Blob` en mémoire, d'où +319 Mo : il comptait aussi la copie du
 fichier). Stockage de travail en mémoire : les 35 Mo de documents rangés sont **inclus** dans la mesure. Trois
-exécutions, Node 20.17, même machine.
+exécutions avant, neuf après, Node 20.17, même machine.
 
 | Lecture | Durée | Mémoire (pic RSS) |
 |---|---|---|
 | Avant : texte complet, objet JSON, chaînes base64 et copies décodées en même temps | 474 à 646 ms | **+184 Mo** |
-| Après : lecture par tranches de 4 Mo, images décodées au fil de la lecture en `Blob` (`scanV1`) | 0,6 à 1,4 s | **+34 Mo** (dont 35 Mo de documents rangés) |
+| Après : lecture par tranches de 4 Mo, images décodées au fil de la lecture en `Blob` (`scanV1`) | 0,6 à 1,9 s | **+34 Mo** en général (de +13 à +74 Mo sur 9 exécutions), dont 35 Mo de documents rangés |
 
 - Le surcoût mémoire, hors documents rangés, devient négligeable : le texte qui reste (modèle sans ses images) est
   petit, aucune chaîne base64 n'est créée.
@@ -63,7 +63,7 @@ signature, SHA-256). « Ouverture » ne lit aucun document. Les valeurs varient 
 | Enregistrement complet < 3 s pour 500 Mo | 3,8 s | **dépassé de peu** (débit ~130 Mo/s, limité par la lecture et l'écriture disque) |
 | Petite modification < 50 ms | 5 à 14 ms (IndexedDB simulé) | atteint ici, **[à mesurer dans un navigateur]** |
 | Ajout d'une photo de 5 Mo < 500 ms | ~20 ms (sans l'image d'affichage, qui demande un canvas) | atteint pour la partie format |
-| Migration v1 de 50 Mo < 3 s | 0,6 à 1,4 s | atteint ; mémoire +34 Mo (avant : +184 Mo, § 2.1) |
+| Migration v1 de 50 Mo < 3 s | 0,6 à 1,9 s | atteint ; mémoire +34 Mo (avant : +184 Mo, § 2.1) |
 
 - **Empreintes SHA-256** : Web Crypto est environ 12 fois plus rapide que le calcul en JavaScript
   (`tools/perf-v2/sha-bench.ts` : 35 ms contre 455 ms pour 40 Mo). Il est donc utilisé jusqu'à 64 Mo (au prix
