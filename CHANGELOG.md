@@ -2,6 +2,11 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Site et publication
+- Pages publiques Confidentialité et Conditions d'utilisation (FR, NL, EN) sur voltaplan.org, liées depuis toutes les pages ; mention « utilisation limitée » des données Google.
+- Liens « Code source » corrigés sur le domaine voltaplan.org (ils pointaient vers github.com sans dépôt) ; plus de bouton « Télécharger » tant qu'aucune version de bureau n'est publiée (installation de la version web comme application expliquée).
+- Dossier de validation OAuth Google (`docs/google-oauth-verification.md`) et logo 120 × 120.
+
 Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 
 ### Contrôle RGIE

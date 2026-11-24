@@ -1,11 +1,12 @@
-// Liens vers le dépôt et les installateurs, déduits de l'adresse GitHub Pages (<compte>.github.io/<dépôt>/).
+// Liens vers le dépôt : déduits de l'adresse GitHub Pages (<compte>.github.io/<dépôt>/) si le site y est servi,
+// sinon (domaine propre, ex. voltaplan.org) le dépôt officiel.
 // Pages en néerlandais et en anglais dans nl/ et en/ ; ce script est toujours à la racine du site.
 (function () {
   var root = new URL('./', document.currentScript.src).href;
   var lang = document.documentElement.lang || 'fr';
   var m = location.hostname.match(/^([^.]+)\.github\.io$/);
   var repoName = location.pathname.split('/').filter(Boolean)[0];
-  var repo = m && repoName ? 'https://github.com/' + m[1] + '/' + repoName : 'https://github.com/';
+  var repo = m && repoName ? 'https://github.com/' + m[1] + '/' + repoName : 'https://github.com/SebastienBatteur/voltaplan';
   var KEY = 'voltaplan-site-lang';
   var store = function (v) {
     try {
@@ -33,8 +34,9 @@
   document.querySelectorAll('.repo-link').forEach(function (a) {
     a.href = repo;
   });
+  // Aucune version de bureau publiée pour l'instant : les liens « release » mènent à la page des versions du dépôt
   document.querySelectorAll('.release-link').forEach(function (a) {
-    a.href = repo + (m ? '/releases/latest' : '');
+    a.href = repo + '/releases';
   });
   // L'application s'ouvre dans la langue de la page
   document.querySelectorAll('a[href$="app/"]').forEach(function (a) {

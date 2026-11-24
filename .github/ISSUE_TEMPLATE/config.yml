@@ -4,5 +4,5 @@ contact_links:
     url: https://github.com/SebastienBatteur/voltaplan/security/advisories/new
     about: Ne jamais signaler une faille dans un ticket public.
   - name: Guide d'utilisation
-    url: https://sebastienbatteur.github.io/voltaplan/guide.html
+    url: https://voltaplan.org/guide.html
     about: Questions d'utilisation, pas à pas.

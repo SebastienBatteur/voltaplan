@@ -55,8 +55,8 @@ Remarques :
    - nom de l'application, adresse d'assistance (une adresse dédiée, pas personnelle) ;
    - logo facultatif ;
    - domaine de l'application `voltaplan.org` ;
-   - politique de confidentialité : `https://github.com/SebastienBatteur/voltaplan/blob/main/PRIVACY.md`, ou une page
-     du site si elle est créée ;
+   - politique de confidentialité : `https://voltaplan.org/en/privacy.html` (aussi en français et en néerlandais) ;
+   - conditions d'utilisation : `https://voltaplan.org/en/terms.html` ;
    - **domaines autorisés** : `voltaplan.org` ;
    - **portée** : `https://www.googleapis.com/auth/drive.file`, la seule demandée. Elle est classée « non sensible »
      **[à vérifier]**.

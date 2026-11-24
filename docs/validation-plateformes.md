@@ -20,8 +20,8 @@ Complète [offline.md](offline.md) (fonctionnement) et [desktop-tauri.md](deskto
 
 ## 2. Procédure de validation (à dérouler par plateforme)
 
-**Préparation** : ouvrir https://sebastienbatteur.github.io/voltaplan/app/, puis l'adresse définitive une fois le
-domaine choisi. Ouvrir un projet d'exemple et l'enregistrer dans le navigateur.
+**Préparation** : ouvrir https://voltaplan.org/app/ (domaine définitif ; l'ancienne adresse
+`sebastienbatteur.github.io/voltaplan/` y redirige). Ouvrir un projet d'exemple et l'enregistrer dans le navigateur.
 
 | # | Étape | Résultat attendu |
 |---|---|---|

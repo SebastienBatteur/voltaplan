@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Confidentialité — Voltaplan</title>
+<meta name="description" content="Politique de confidentialité de Voltaplan : aucun serveur, aucun compte, aucune télémétrie ; vos données restent sur votre appareil ou dans le stockage que vous choisissez.">
+<link rel="canonical" href="https://voltaplan.org/confidentialite.html">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Guide</a>
+    <a href="guide.html#installer">Installer</a>
+    <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Code source</a>
+    <a class="btn primary" href="app/">Ouvrir l'application</a>
+    <span class="lang"><a href="confidentialite.html" aria-current="true" data-lang="fr">FR</a><a href="nl/privacy.html" data-lang="nl">NL</a><a href="en/privacy.html" data-lang="en">EN</a></span>
+  </nav>
+</div></header>
+<main class="doc legal">
+<div>
+<h1>Confidentialité</h1>
+<p class="muted">Mise à jour : 24 novembre 2026</p>
+
+<p>Voltaplan est une application <strong>gratuite et open source</strong> (licence AGPL-3.0) qui fonctionne <strong>sur votre appareil</strong>. Il n'y a <strong>pas de serveur Voltaplan</strong>, pas de compte, pas de publicité, et <strong>aucune mesure d'audience ni télémétrie</strong>. Le site ne fait que livrer les fichiers de l'application.</p>
+<h2>Ce qui est enregistré, et où</h2>
+<ul>
+<li><strong>Vos projets</strong> : dans le fichier que vous choisissez, dans le stockage du navigateur (IndexedDB) de votre appareil, ou dans votre propre stockage en ligne (Google Drive, OneDrive, Dropbox, GitHub) si vous le choisissez.</li>
+<li><strong>Brouillons, versions locales, enregistrements en attente</strong> : dans le navigateur de votre appareil, pour récupérer votre travail après une coupure ou un conflit.</li>
+<li><strong>Réglages</strong> (langue, disposition, réglages de l'IA) : dans le navigateur de votre appareil. Votre <strong>clé d'API</strong> d'IA et votre jeton GitHub y sont <strong>chiffrés</strong> avec votre phrase secrète, jamais enregistrée.</li>
+<li>Les <strong>jetons de connexion</strong> Google Drive, OneDrive et Dropbox restent en mémoire le temps de la session.</li>
+</ul>
+<h2>Ce qui est envoyé, et à qui</h2>
+<p><strong>Rien n'est envoyé sans une action de votre part</strong>, et jamais à Voltaplan. Les seuls envois possibles vont directement de votre appareil vers le service que vous avez choisi :</p>
+<ul>
+<li><strong>Intelligence artificielle</strong> (facultative, désactivée par défaut) : la photo du tableau, réduite, vers le fournisseur que <em>vous</em> configurez avec <em>votre</em> clé (Anthropic, OpenAI, Google Gemini, Mistral) ou vers un modèle local sur votre ordinateur. Le service destinataire est affiché avant l'envoi. Ses conditions s'appliquent et son coût est à votre charge.</li>
+<li><strong>Google Drive</strong> : connexion par Google, puis lecture et écriture <strong>uniquement des fichiers et dossiers créés par Voltaplan ou ouverts avec lui</strong> (autorisation <code>drive.file</code>). Voltaplan ne voit pas le reste de votre Drive.</li>
+<li><strong>OneDrive</strong> : uniquement le dossier propre à l'application (<code>Files.ReadWrite.AppFolder</code>). <strong>Dropbox</strong> : uniquement le dossier de l'application.</li>
+<li><strong>GitHub</strong> : le dépôt que vous indiquez, avec votre jeton personnel.</li>
+<li><strong>Hébergement du site</strong> (GitHub Pages) : les requêtes habituelles pour télécharger l'application (adresse IP, navigateur), comme pour tout site. Aucun cookie ni traceur ajouté par Voltaplan.</li>
+</ul>
+<p>La politique de sécurité du contenu de l'application bloque toute connexion vers un autre service.</p>
+<h2>Utilisation des données Google</h2>
+<p>Les données obtenues par les API Google (fichiers Voltaplan de votre Drive) ne servent qu'à ouvrir et enregistrer vos projets, à votre demande. Elles ne sont ni transmises à des tiers, ni utilisées à d'autres fins, ni stockées ailleurs que sur votre appareil et dans votre Drive. L'utilisation par Voltaplan des informations reçues des API Google respecte les <a href="https://developers.google.com/terms/api-services-user-data-policy">règles relatives aux données utilisateur des services d'API Google</a>, y compris les exigences d'utilisation limitée.</p>
+<h2>Autres traitements</h2>
+<ul>
+<li><strong>Tickets et discussions sur GitHub</strong> : publics. N'y joignez jamais de données d'un client.</li>
+<li><strong>Dons</strong> (GitHub Sponsors) : traités par GitHub selon ses conditions.</li>
+</ul>
+<h2>Vos droits et vos responsabilités</h2>
+<p>Voltaplan ne détient aucune donnée vous concernant : vous pouvez tout effacer en supprimant les données du site dans votre navigateur et vos fichiers. Retirez l'accès de Voltaplan à tout moment depuis votre compte Google, Microsoft ou Dropbox. Vous restez responsable des données de vos clients (RGPD) lorsque vous les enregistrez dans un service en ligne.</p>
+<h2>Contact</h2>
+<p>Question de confidentialité : <a href="https://github.com/SebastienBatteur/voltaplan/issues">ticket sur le dépôt</a> ; faille de sécurité : <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">signalement privé</a>.</p>
+
+</div>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="https://github.com/sponsors/SebastienBatteur">soutenir le projet</a> (facultatif) — <a href="confidentialite.html">Confidentialité</a> — <a href="conditions.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — Voltaplan</title>
+<meta name="description" content="Privacybeleid van Voltaplan: geen server, geen account, geen telemetrie; uw gegevens blijven op uw toestel of in de opslag die u kiest.">
+<link rel="canonical" href="https://voltaplan.org/nl/privacy.html">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Handleiding</a>
+    <a href="guide.html#installer">Installeren</a>
+    <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Broncode</a>
+    <a class="btn primary" href="../app/">Toepassing openen</a>
+    <span class="lang"><a href="../confidentialite.html" data-lang="fr">FR</a><a href="../nl/privacy.html" aria-current="true" data-lang="nl">NL</a><a href="../en/privacy.html" data-lang="en">EN</a></span>
+  </nav>
+</div></header>
+<main class="doc legal">
+<div>
+<h1>Privacy</h1>
+<p class="muted">Bijgewerkt : 24 november 2026</p>
+
+<p>Voltaplan is een <strong>gratis en open source</strong> toepassing (licentie AGPL-3.0) die <strong>op uw toestel</strong> werkt. Er is <strong>geen Voltaplan-server</strong>, geen account, geen reclame en <strong>geen bezoekersmeting of telemetrie</strong>. De website levert alleen de bestanden van de toepassing.</p>
+<h2>Wat wordt bewaard, en waar</h2>
+<ul>
+<li><strong>Uw projecten</strong>: in het bestand dat u kiest, in de opslag van de browser (IndexedDB) op uw toestel, of in uw eigen onlineopslag (Google Drive, OneDrive, Dropbox, GitHub) als u dat kiest.</li>
+<li><strong>Concepten, lokale versies, wachtende opslag</strong>: in de browser van uw toestel, om uw werk na een onderbreking of conflict terug te vinden.</li>
+<li><strong>Instellingen</strong> (taal, indeling, AI-instellingen): in de browser van uw toestel. Uw AI-<strong>API-sleutel</strong> en GitHub-token zijn <strong>versleuteld</strong> met uw wachtzin, die nooit wordt bewaard.</li>
+<li><strong>Aanmeldtokens</strong> van Google Drive, OneDrive en Dropbox blijven alleen tijdens de sessie in het geheugen.</li>
+</ul>
+<h2>Wat wordt verzonden, en naar wie</h2>
+<p><strong>Niets wordt verzonden zonder een handeling van uw kant</strong>, en nooit naar Voltaplan. De enige mogelijke verzendingen gaan rechtstreeks van uw toestel naar de dienst die u kiest:</p>
+<ul>
+<li><strong>Artificiële intelligentie</strong> (facultatief, standaard uit): de foto van het bord, verkleind, naar de aanbieder die <em>u</em> instelt met <em>uw</em> sleutel (Anthropic, OpenAI, Google Gemini, Mistral) of naar een lokaal model op uw computer. De ontvanger wordt vóór verzending getoond. Zijn voorwaarden gelden en de kosten zijn voor u.</li>
+<li><strong>Google Drive</strong>: aanmelden bij Google, daarna lezen en schrijven van <strong>alleen de bestanden en mappen die Voltaplan heeft gemaakt of waarmee ze geopend zijn</strong> (machtiging <code>drive.file</code>). Voltaplan ziet de rest van uw Drive niet.</li>
+<li><strong>OneDrive</strong>: alleen de eigen map van de toepassing (<code>Files.ReadWrite.AppFolder</code>). <strong>Dropbox</strong>: alleen de app-map.</li>
+<li><strong>GitHub</strong>: de repository die u opgeeft, met uw persoonlijke token.</li>
+<li><strong>Hosting van de website</strong> (GitHub Pages): de gewone verzoeken om de toepassing te downloaden (IP-adres, browser), zoals bij elke website. Voltaplan voegt geen cookies of trackers toe.</li>
+</ul>
+<p>Het inhoudsbeveiligingsbeleid van de toepassing blokkeert elke verbinding met een andere dienst.</p>
+<h2>Gebruik van Google-gegevens</h2>
+<p>Gegevens die via Google-API's worden verkregen (Voltaplan-bestanden in uw Drive) dienen alleen om uw projecten op uw verzoek te openen en op te slaan. Ze worden niet aan derden doorgegeven, niet voor andere doeleinden gebruikt en nergens anders bewaard dan op uw toestel en in uw Drive. Het gebruik door Voltaplan van informatie die van Google-API's wordt ontvangen, volgt het <a href="https://developers.google.com/terms/api-services-user-data-policy">Google API Services User Data Policy</a>, inclusief de vereisten voor beperkt gebruik.</p>
+<h2>Andere verwerkingen</h2>
+<ul>
+<li><strong>Tickets en discussies op GitHub</strong> zijn openbaar. Voeg nooit klantgegevens toe.</li>
+<li><strong>Giften</strong> (GitHub Sponsors) worden door GitHub verwerkt volgens zijn eigen voorwaarden.</li>
+</ul>
+<h2>Uw rechten en verantwoordelijkheden</h2>
+<p>Voltaplan bewaart geen gegevens over u: u kunt alles wissen door de sitegegevens in uw browser en uw bestanden te verwijderen. Trek de toegang van Voltaplan op elk moment in via uw Google-, Microsoft- of Dropbox-account. U blijft verantwoordelijk voor de gegevens van uw klanten (AVG) wanneer u ze in een onlinedienst bewaart.</p>
+<h2>Contact</h2>
+<p>Privacyvraag: <a href="https://github.com/SebastienBatteur/voltaplan/issues">ticket in de repository</a>; beveiligingslek: <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">vertrouwelijke melding</a>.</p>
+
+</div>
+</main>
+<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="privacy.html">Privacy</a> — <a href="voorwaarden.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
+<script src="../site.js"></script>
+</body>
+</html>

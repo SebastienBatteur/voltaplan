@@ -229,6 +229,14 @@ td {
   margin-top: 0;
   border-top: 0;
 }
+/* Pages légales (confidentialité, conditions) : une seule colonne lisible, sans sommaire */
+.doc.legal {
+  grid-template-columns: minmax(0, 760px);
+  justify-content: center;
+}
+.muted {
+  color: var(--muted);
+}
 footer {
   border-top: 1px solid var(--border);
   color: var(--muted);
