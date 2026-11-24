@@ -21,12 +21,12 @@ Documents liés :
 | D5 | PWA pour smartphones et tablettes ; pas de Tauri mobile | voir § 3.7 de l'analyse |
 | D6 | Tauri bureau conservé, à réévaluer | mesurer son usage et sa charge avant de décider |
 | D7 | Dépôt public après vérification de l'historique Git (secrets, données confidentielles) | scan complet avant la bascule (étape de maintenance, voir § 4) |
-| D8 | Format v2 = archive ; **ZIP retenu**, pas 7z (voir § 2) | ADR à rédiger, puis implémentation |
+| D8 | Format v2 = **archive ZIP** (validé le 2026-11-24, 7z écarté après mesures) | [ADR-0004](../adr/0004-format-projet-v2-zip.md) ; spécification détaillée à valider avant l'implémentation ; tests de performance de 10 à 500 Mo |
 | D9 | Pas de moteur de synchronisation ; priorité : aucune perte silencieuse | sauvegarde locale, détection des modifications concurrentes, copie en cas de conflit, état visible |
 | D10 | Domaine propre envisagé (`voltaplan.org` ou `voltaplan.eu`) ; adresse publique inchangée pour l'instant | plan de migration dans [STOCKAGE-ET-DOMAINE.md](STOCKAGE-ET-DOMAINE.md) |
 | D11 | Terminologie réglementaire en 6 niveaux, aucune certification revendiquée | voir § 3 |
 
-## 2. Format : 7z ou ZIP — décision à confirmer
+## 2. Format : 7z ou ZIP — **ZIP validé**
 
 Vous avez demandé 7z avec un niveau de compression élevé. **Après mesure, je recommande de rester sur ZIP.** Le
 détail est dans [FORMAT-V2.md § 2](FORMAT-V2.md#2-zip-ou-7z--mesures). En résumé :
@@ -48,7 +48,7 @@ détail est dans [FORMAT-V2.md § 2](FORMAT-V2.md#2-zip-ou-7z--mesures). En rés
   déjà compressés stockés tels quels**. Si un gain de taille devient important plus tard, il viendra de la
   **réduction des photos** (proposée, jamais imposée, l'original restant gardé), pas de l'algorithme d'archive.
 
-**Décision attendue** : confirmer ZIP, ou maintenir 7z en acceptant ces coûts.
+**Décision (2026-11-24)** : ZIP validé, voir [ADR-0004](../adr/0004-format-projet-v2-zip.md).
 
 ## 3. Terminologie réglementaire
 
