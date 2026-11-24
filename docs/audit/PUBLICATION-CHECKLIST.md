@@ -1,78 +1,67 @@
-# Passage du dépôt en public : liste de contrôle finale
+# Bêta publique et version stable : liste de contrôle
 
-Date : 2026-11-24. Audit complet : [PUBLICATION-AUDIT.md](PUBLICATION-AUDIT.md) (**GO**, aucun point bloquant :
-pas de secret, pas de fichier client, pas d'adresse e-mail personnelle dans l'historique, licences compatibles).
+Mise à jour : 2026-11-24.
 
-**Rien de ce qui suit n'est fait sans l'autorisation explicite du propriétaire**, sauf ce qui est marqué « fait ».
+**État actuel** :
 
-## 1. Textes publics
+- dépôt **public** ;
+- site sur **https://voltaplan.org** : certificat Let's Encrypt validé pour `voltaplan.org` et `www.voltaplan.org`,
+  HTTPS forcé ; l'ancienne adresse `sebastienbatteur.github.io/voltaplan/` redirige vers le domaine ;
+- CI, CI multi-OS, CodeQL, Secrets, Desktop build et Pages verts sur `main` ;
+- aucune release publiée.
 
-| Élément | État |
+Rapport de la phase de stabilisation : [RAPPORT-STABILISATION.md](RAPPORT-STABILISATION.md). Audit de publication
+(GO, sans point bloquant) : [PUBLICATION-AUDIT.md](PUBLICATION-AUDIT.md).
+
+**Rien de ce qui suit n'est fait sans l'autorisation explicite du propriétaire** : release, dépense, suppression de
+données distantes, DNS.
+
+## A. Bloquant pour la bêta publique
+
+| # | Point | État | Qui |
+|---|---|---|---|
+| A1 | Le site s'ouvre en HTTPS depuis un réseau **sans** filtrage (le filtre FortiClient de ce poste bloque `voltaplan.org`), application sur `/app/`, guide, installation en PWA | à vérifier | propriétaire |
+| A2 | **Enregistrer, rouvrir et réenregistrer** un projet v2 dans un vrai Chrome (Windows), puis un vrai Firefox et un vrai Safari ; ouvrir un ancien fichier v1 et vérifier la conversion (l'original n'est pas écrasé) | à faire (simulé et testé automatiquement seulement) | propriétaire |
+| A3 | **Un téléphone Android et un iPhone** : ouverture, installation en PWA, prise de photo du tableau, hors ligne, mise à jour de la PWA sans perte (procédure [validation-plateformes.md](../validation-plateformes.md)) | à faire (émulation seulement) | propriétaire |
+| A4 | Mentions de la bêta : « aide au dessin et à la vérification, pas de certification » visible (README, site, application, dossier) | **fait** | — |
+| A5 | Assistant IA affiché comme **expérimental** tant que l’évaluation réelle n’est pas faite (A6) | **fait** (titre et menu, FR, NL, EN) | — |
+| A6 | **Évaluation réelle minimale** de la lecture des photos : au moins 10 tableaux anonymisés, 1 ou 2 modèles, taux d'informations inventées mesuré ([assistant-evaluation.md](../assistant-evaluation.md)) | à faire (aucun appel payant sans accord) | propriétaire |
+| A7 | **Installateurs de bureau** : soit présentés comme « aperçu non signé, non testé », soit retirés de l'annonce. Les artefacts de test non signés expirent seuls d'ici au 24/12 ; leur suppression anticipée demande ton accord | décision | propriétaire |
+| A8 | **Stockage cloud** : présenté comme expérimental, ou au moins un fournisseur (OneDrive) validé avec de vrais comptes (scénarios C1 à C10 de [tests-cloud-reels.md](../tests-cloud-reels.md)) après création des applications OAuth ([oauth-configuration.md](../oauth-configuration.md)) | à faire | propriétaire |
+| A9 | Bouton « Sponsor » : inscription à GitHub Sponsors faite, sinon retirer ou remplacer la ligne de `FUNDING.yml` | à vérifier | propriétaire |
+| A10 | Activer *Private vulnerability reporting*, *Secret scanning* et *Push protection* dans les réglages du dépôt | à vérifier | propriétaire |
+
+## B. Bloquant pour la version stable
+
+| # | Point |
 |---|---|
-| Description du dépôt (sans « conformes au RGIE ») | **fait** (2026-11-24) : « Application gratuite et open source de schémas électriques (unifilaire, plan de position, tableau) et d'assistance réglementaire RGIE — aide à la vérification, sans certification. AGPL-3.0 » |
-| README : présentation « gratuite et open source… assistance réglementaire », avertissement « pas de certification », contribuer, soutenir | **fait** |
-| Site (FR, NL, EN) : descriptions sans promesse de conformité, lien « soutenir » discret | **fait** |
-| Slogan de l'application (`app.tagline` FR, NL, EN, DE) | **fait** |
-| Conditions d'utilisation et limites de responsabilité ([docs/CONDITIONS.md](../CONDITIONS.md)) | **rédigé, à faire relire par un juriste** |
-| Confidentialité ([PRIVACY.md](../../PRIVACY.md)) : fournisseurs d'IA au choix, modèles locaux, versions locales, envois en attente, dossier de l'assistant, tickets publics, dons | **fait** |
-| Sécurité ([SECURITY.md](../../SECURITY.md)) | à jour ; activer le signalement privé (point 3) |
-| Guides : [CONTRIBUTING.md](../../CONTRIBUTING.md) (DCO, règles RGIE, pas de données client), [CODE_OF_CONDUCT.md](../../CODE_OF_CONDUCT.md), modèles de tickets (bogue, règle RGIE, traduction) et de demande de fusion | **fait** |
-| Mentions « PROJET — NON CONFORME » du dossier | en cours de révision (moteur RGIE : inconnu ≠ absent, documentaire ≠ physique) |
+| B1 | **Relecture réglementaire** du catalogue et de la matrice par un expert RGIE ou un organisme agréé ; numéros d'articles vérifiés ; règles sorties de « à relire » |
+| B2 | **Relecture juridique** de [CONDITIONS.md](../CONDITIONS.md) et de la phrase de responsabilité des rapports (juriste belge) ; RGPD (rôle du projet) |
+| B3 | **Évaluation IA complète** : au moins 30 tableaux, comparaison de fournisseurs, seuils validés (proposition dans assistant-evaluation.md, § 11) |
+| B4 | **Validation par plateforme** complète : 7 plateformes de [validation-plateformes.md](../validation-plateformes.md), dont l'éviction des données sur Safari et iOS |
+| B5 | **Cloud** : les 4 fournisseurs testés avec de vrais comptes, dont les erreurs réelles de quota, les gros fichiers et la CSP OneDrive (`*.1drv.com`, `*.sharepoint.com`) ; vérification de la marque Google pour une publication hors mode test |
+| B6 | **Bureau (Tauri)** : écriture atomique (branche `tauri-ecriture-atomique-v2`, compilée et `cargo test` 12/12 sur 3 systèmes) **testée dans l'application installée** puis intégrée ; installateurs signés au moins pour Windows (SignPath Foundation, gratuit pour l'open source **[à vérifier]**) |
+| B7 | **Performances mobiles** du format v2 (ouverture, enregistrement, migration) sur un appareil d'entrée de gamme ; plafonds F5 ajustés aux mesures |
+| B8 | **Dossier PDF** : vérifié par un organisme agréé sur une vraie réception ; page « Portée de l'analyse » (règles non évaluées, hypothèses) |
+| B9 | **Ergonomie mobile** : écran de relevé pour téléphone, zoom à deux doigts, cibles tactiles d'au moins 44 px (17 boutons trop petits relevés en émulation), réglages du tableau qui se superposent au dessin |
 
-## 2. Soutien financier
+## C. Amélioration ultérieure
 
-- `.github/FUNDING.yml` : `github: [SebastienBatteur]`, ajouté par le propriétaire.
-- **À vérifier** : le bouton « Sponsor » n'apparaît que si le compte est **inscrit à GitHub Sponsors** (profil
-  validé, compte de paiement, informations fiscales). Sinon, il faut retirer la ligne ou la remplacer par un autre
-  lien (`custom: […]`, par exemple Ko-fi).
-- Le lien « soutenir le projet » du site pointe vers `github.com/sponsors/SebastienBatteur`. **À vérifier** après
-  l'inscription.
-- Fiscalité belge des dons : à vérifier séparément (personne physique ou ASBL).
+- Plans d'architecte, documents existants (anciens schémas, PDF) et génération du plan de position par l'assistant.
+- Dossiers cloud (F8) pour Google Drive, Dropbox et GitHub ; ouverture d'un répertoire local.
+- Interface « Vérifier l'intégrité » et indicateur de progression des copies.
+- Message à l'utilisateur quand le navigateur est plein pendant l'ajout d'une photo (aujourd'hui, seule l'image
+  réduite est gardée, sans le dire).
+- Nettoyage des fichiers temporaires laissés par une interruption sous Tauri.
+- Allemand complet ; autres pays (architecture prête).
+- Accessibilité (lecteurs d'écran, contrastes) à évaluer.
+- Indication « appui long » au lieu de « clic droit » sur un écran tactile.
 
-## 3. Réglages GitHub au moment de la bascule (propriétaire)
+## Réglages GitHub et branches (pour mémoire)
 
-1. *Settings → General → Danger Zone → Change visibility → Public.*
-2. *Settings → Code security* :
-   - **Private vulnerability reporting** : activé ;
-   - **Secret scanning** et **Push protection** : activés (gratuits pour un dépôt public) ;
-   - **Dependabot alerts** : activé.
-3. `.github/workflows/codeql.yml` : passer `upload: never` à `upload: always` (le « code scanning » devient
-   disponible).
-4. *Settings → Pages* : inchangé (déjà public).
-5. Vérifier *Settings → Actions → General* : demandes de fusion venant de forks avec l'approbation obligatoire des
-   workflows pour les nouveaux contributeurs (protection contre l'abus de minutes).
-6. Facultatif : sujets du dépôt (`electricite`, `rgie`, `arei`, `belgique`, `pwa`, `open-source`).
-
-## 4. Artefacts à supprimer (installateurs de test non signés) — **préparé, non exécuté**
-
-Une fois le dépôt public, les artefacts de workflows encore valides sont téléchargeables par toute personne
-connectée à GitHub. Les installateurs de bureau sont **non signés et non testés** : il faut les supprimer avant la
-bascule. Les artefacts `voltaplan-web` (site construit, sans risque) peuvent rester. Ils expirent seuls, au plus
-tard le 8/12.
-
-Commande à lancer **seulement après accord** (suppression définitive) :
-
-```powershell
-gh api "repos/SebastienBatteur/voltaplan/actions/artifacts?per_page=100" --jq '.artifacts[] | select(.expired==false) | select(.name|test("^voltaplan-(desktop-|windows|linux|macos)")) | .id' | ForEach-Object { gh api -X DELETE "repos/SebastienBatteur/voltaplan/actions/artifacts/$_" }
-```
-
-Inventaire au 2026-11-24 :
-
-- `voltaplan-desktop-*` (Windows, Linux, macOS arm64), expiration le 1/12 ;
-- `voltaplan-windows`, `voltaplan-linux`, `voltaplan-macos-arm64`, `voltaplan-macos-x64` (`release.yml` manuel),
-  expiration le 24/12.
-
-Il n'y a **aucune release** GitHub à supprimer.
-
-## 5. Branches
-
-- `tauri-ecriture-atomique` : écriture atomique sous Tauri, **non compilée**. Elle reste en attente d'une
-  compilation réussie (règle : jamais de code Rust non compilé touchant l'intégrité des fichiers dans `main`). Elle
-  deviendra publique avec le dépôt, ce qui est sans risque.
-- `worktree-agent-ab851763ebd9da010` (ancienne branche de travail Tauri, fusionnée) : à supprimer, **avec accord**.
-
-## 6. Après la bascule
-
-- Relancer la CI (gratuite pour un dépôt public) et vérifier les premiers runs des workflows optimisés
-  ([docs/ci.md](../ci.md)) et de `desktop-build.yml` sur la branche `tauri-ecriture-atomique`.
-- Annoncer en **version bêta d'aide au dessin et à la vérification**, sans promesse de conformité.
+- Ruleset `main` actif : historique linéaire (aucun commit de fusion). Toutes les intégrations sont faites par
+  rebase.
+- Branches conservées :
+  - `tauri-ecriture-atomique-v2` : en attente du test dans l'application installée ;
+  - `tauri-ecriture-atomique` : ancienne version, remplacée, à supprimer **avec ton accord**.
+- Branches de travail des agents (`worktree-agent-…`, `eval/…`) : intégrées, à supprimer **avec ton accord**.
