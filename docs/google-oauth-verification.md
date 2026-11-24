@@ -9,6 +9,7 @@ Google évoluent : vérifiez-les sur la page officielle « OAuth App Verificatio
 | Élément | Valeur |
 |---|---|
 | Portée | **`https://www.googleapis.com/auth/drive.file` seulement** : fichiers créés par Voltaplan ou ouverts avec lui |
+| Portée facultative | `https://www.googleapis.com/auth/drive.install` : demandée seulement par le bouton « Ajouter à « Ouvrir avec » de Drive » ; aucun accès aux fichiers, elle inscrit Voltaplan dans « Ouvrir avec » et « Nouveau » |
 | Classement de la portée | **non sensible** selon Google **[à vérifier]** : pas d'évaluation de sécurité (CASA), pas de vidéo de démonstration attendue |
 | Serveur | aucun ; flux OAuth dans le navigateur, jeton en mémoire seulement, sans secret client |
 | Autres données Google | aucune (ni profil, ni e-mail, ni contacts) |
@@ -52,12 +53,14 @@ Google demande de prouver que `voltaplan.org` vous appartient, via **Google Sear
 > `drive.file` scope, so the app can access only the files and folders it created or that the user explicitly
 > opens with it. There is no server: all requests go directly from the user's browser to Google Drive, the access
 > token is kept in memory for the session only, and no data is shared with third parties or used for any other
-> purpose.
+> purpose. The optional `drive.install` scope is requested only when the user chooses to add Voltaplan to Google
+> Drive's "Open with" and "New" menus; it grants no access to file content.
 
 ## 5. Avant de soumettre
 
 1. Le site s'ouvre en HTTPS depuis un réseau sans filtrage : pages d'accueil, de confidentialité et de conditions.
-2. L'écran de consentement est rempli comme ci-dessus ; la portée `drive.file` est la seule déclarée.
+2. L'écran de consentement est rempli comme ci-dessus ; portées déclarées : `drive.file` et, pour « Ouvrir avec »,
+   `drive.install` (aucune autre).
 3. Les identifiants OAuth sont de type **Application Web** :
    - origine `https://voltaplan.org` ;
    - redirection `https://voltaplan.org/app/oauth.html` ([oauth-configuration.md](oauth-configuration.md)).
