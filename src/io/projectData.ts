@@ -15,7 +15,7 @@ import type { Project } from '../model/types';
 import { readArchive, writeArchive, type ArchiveReport, type ArchiveWriteInput, type OpenedArchive } from '../format/archive';
 import { workingStore } from '../format/assetsIdb';
 import { capacityAdvice, currentDevice, deviceLimits } from '../format/limits';
-import { blobToDataUrl, exportV1, extractEmbeddedImages, type V1Loss } from '../format/migrateV1';
+import { blobToDataUrl, exportV1, extractEmbeddedImages, placeExtractedImages, scanV1, type V1Loss } from '../format/migrateV1';
 import { assetShaOf } from '../format/manifest';
 import { mergeSources, projectAssetRefs, splitProject, type AssetRef } from '../format/projectFile';
 import { AssetSession, type DocSource } from '../format/session';
@@ -115,20 +115,24 @@ export async function openProjectData(data: Blob | string, name: string, session
   }
   // v1 et Trikker : texte, plafond de taille de l'ancien format
   checkFileSize({ name, size: blob.size }, fmt === 'trik' ? 'trik' : 'project');
-  const text = decodeText(await blobBytes(blob));
   const add = async (b: Blob, n: string) => (await session.store.add(b, { name: n })).sha256;
   if (fmt === 'trik') {
-    const { project, warnings } = importTrikker(text, name);
+    const { project, warnings } = importTrikker(decodeText(await blobBytes(blob)), name);
     if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
     await extractEmbeddedImages(project, add);
     return { project, format: 'trik', warnings, needsNewFile: true };
   }
-  const { project, warnings, removed } = parseProjectChecked(text, name);
+  // v1 : lu par tranches, images décodées au fil de la lecture (mémoire réduite, voir scanV1) ; repli sur la
+  // lecture habituelle si le contenu sort du cas simple. Ni le texte complet ni les chaînes base64 ne sont gardés.
+  const scanned = await scanV1(blob);
+  const { project, warnings, removed } = parseProjectChecked(scanned ? scanned.text : decodeText(await blobBytes(blob)), name);
   const w: MigrationWarning[] = [...warnings];
   if (removed) w.push({ key: 'file.imagesRemoved', params: { n: removed } });
-  const conv = await extractEmbeddedImages(project, add);
+  const placed = scanned ? await placeExtractedImages(project, scanned.images, add) : { converted: 0, keptInline: 0, tried: undefined };
+  const conv = await extractEmbeddedImages(project, add, placed.tried);
   w.push({ key: 'format.v1Converted' });
-  if (conv.keptInline) w.push({ key: 'format.keptInline', params: { n: conv.keptInline } });
+  const keptInline = placed.keptInline + conv.keptInline;
+  if (keptInline) w.push({ key: 'format.keptInline', params: { n: keptInline } });
   return { project, format: 'v1', warnings: w, needsNewFile: true };
 }
 
@@ -172,10 +176,10 @@ export async function projectWriteInput(project: Project, session: AssetSession 
 }
 
 /** Archive v2 du projet : vers `sink` (écriture en flux) ou en `Blob`. */
-export async function serializeProject(project: Project, sink?: WritableStream<Uint8Array>, session: AssetSession = assetSession): Promise<Blob | null> {
+export async function serializeProject(project: Project, sink?: WritableStream<Uint8Array>, session: AssetSession = assetSession, signal?: AbortSignal): Promise<Blob | null> {
   // Images dérivées non écrites (F6, facultatives) : régénérables, et un dérivé libéré du cache entre la
   // préparation et l'écriture ferait échouer l'enregistrement. Elles sont lues si une archive en contient.
-  return (await writeArchive(await projectWriteInput(project, session, { withDerived: false }), sink)).blob;
+  return (await writeArchive(await projectWriteInput(project, session, { withDerived: false }), sink, signal)).blob;
 }
 
 /**
