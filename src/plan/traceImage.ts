@@ -24,7 +24,11 @@ export function toDataUrl(img: RGBA): string {
   const c = document.createElement('canvas');
   c.width = img.w;
   c.height = img.h;
-  c.getContext('2d')!.putImageData(new ImageData(img.data, img.w, img.h), 0, 0);
+  const ctx = c.getContext('2d')!;
+  // createImageData + set plutôt que new ImageData(img.data) : accepté quel que soit le tampon sous-jacent (TS 5.7+).
+  const d = ctx.createImageData(img.w, img.h);
+  d.data.set(img.data);
+  ctx.putImageData(d, 0, 0);
   return c.toDataURL('image/jpeg', 0.85);
 }
 
