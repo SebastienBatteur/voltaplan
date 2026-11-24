@@ -108,8 +108,9 @@ Nouveaux tests :
   versions majeures : migration à faire à la main.
 - Aucune télémétrie. Les données ne partent qu'à la demande de l'utilisateur, vers le service qu'il a choisi
   (voir [PRIVACY.md](../../PRIVACY.md)).
-- CodeQL : le dépôt privé n'a pas le « code scanning ». L'analyse tourne quand même ; ses résultats sont joints au run
-  et toute alerte fait échouer le job.
+- CodeQL (requêtes `security-extended`) : **1 alerte**, examinée et classée faux positif (`js/xss-through-dom`, lecture
+  XML inerte de l'import Trikker). Elle est justifiée dans `.github/codeql-accepted.txt` ; toute nouvelle alerte fait
+  échouer le job. Le dépôt privé n'a pas le « code scanning » : les résultats sont joints au run.
 
 ## 8. Couverture réglementaire
 
