@@ -69,6 +69,22 @@ describe('classement', () => {
     expect(classify({ ruleId: 'R-X', status: 'manualCheck' }, rule({}), ctxNew)).toMatchObject({ status: 'manualCheck', blocking: false });
   });
 
+  it('état de connaissance (ADR-0007) : inconnu, déduit, contradictoire, mesure', () => {
+    const high = rule({ hazard: 'high' });
+    expect(classify({ ruleId: 'R-X', knowledge: 'unknown' }, high, ctxOld)).toMatchObject({ status: 'insufficientData', blocking: false });
+    expect(classify({ ruleId: 'R-X', knowledge: 'unknown' }, high, ctxNew)).toMatchObject({ status: 'insufficientData', blocking: true });
+    expect(classify({ ruleId: 'R-X', knowledge: 'absent' }, high, ctxOld)).toMatchObject({ status: 'nonCompliant', blocking: true });
+    expect(classify({ ruleId: 'R-X', knowledge: 'deduced' }, high, ctxNew)).toMatchObject({ status: 'potential', blocking: false, inferred: true, severity: 'warning' });
+    expect(classify({ ruleId: 'R-X', knowledge: 'contradictory' }, high, ctxNew)).toMatchObject({ status: 'contradictory', blocking: false });
+    expect(classify({ ruleId: 'R-X', knowledge: 'measureNeeded' }, high, ctxNew)).toMatchObject({ status: 'manualCheck', blocking: false });
+  });
+
+  it('exigence documentaire : jamais « non conforme », reste bloquante en neuf', () => {
+    const f = classify({ ruleId: 'R-X' }, rule({ requirement: 'documentary' }), ctxNew);
+    expect(f).toMatchObject({ requirement: 'documentary', status: 'insufficientData', blocking: true });
+    expect(classify({ ruleId: 'R-X' }, rule({}), ctxNew).requirement).toBe('physical');
+  });
+
   it('sévérité dérivée', () => {
     expect(severityOf('nonCompliant', false)).toBe('warning');
     expect(severityOf('insufficientData', false)).toBe('warning');

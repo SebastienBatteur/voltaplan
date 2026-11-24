@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { useStore } from '../store';
 import { useDerived } from '../ui/derived';
 import { PrintDocument, type DocKind, type PaperFormat, type PrintSections } from './PrintDocument';
+import { draftLevel, isDocumentary } from '../rules';
 
 /** Parties incluses par défaut selon le type de document (modifiables ensuite). */
 const PRESETS: Record<DocKind, (hasFindings: boolean) => PrintSections> = {
@@ -23,11 +24,20 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
   const t = useStore((s) => s.t);
   const project = useStore((s) => s.project);
   const { labelFn, numbering, findings } = useDerived();
-  // Constats bloquants (sécurité, ou installation neuve) : le dossier porte la mention « PROJET — NON CONFORME ».
-  const blocking = findings.some((f) => f.blocking);
   const [docKind, setDocKind] = useState<DocKind>('working');
-  // Dossier de réception ou complet avec constats bloquants : « PROJET — NON CONFORME » ; document de travail : mention propre
-  const draft = blocking && (docKind === 'reception' || docKind === 'complete');
+  // Mention du dossier de réception ou complet (ADR-0007, src/rules/knowledge.ts) : « NON-CONFORMITÉS À TRAITER »
+  // seulement pour des non-conformités physiques établies ; « VÉRIFICATIONS À FAIRE » pour des informations inconnues,
+  // déduites, contradictoires ou des mesures à faire ; « DOSSIER INCOMPLET » pour des exigences documentaires.
+  // Document de travail : mention propre (« Document de travail »).
+  const draft = draftLevel(findings, docKind);
+  const draftWarning =
+    draft === 'nonCompliant'
+      ? t('print.draftWarning', { n: findings.filter((f) => f.blocking).length })
+      : draft === 'pending'
+        ? t('print.draftPendingWarning')
+        : draft === 'incomplete'
+          ? t('print.draftIncompleteWarning', { n: findings.filter((f) => f.blocking && isDocumentary(f)).length })
+          : '';
   const [format, setFormat] = useState<PaperFormat>('A4');
   const [sections, setSections] = useState<PrintSections>(() => PRESETS.working(findings.length > 0));
   const [printing, setPrinting] = useState(false);
@@ -88,7 +98,7 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
           </div>
         </div>
         <p className="muted small">{t('print.kindHelp.' + docKind)}</p>
-        {draft && <div className="banner error">{t('print.draftWarning', { n: findings.filter((f) => f.blocking).length })}</div>}
+        {draftWarning && <div className={'banner' + (draft === 'nonCompliant' ? ' error' : '')}>{draftWarning}</div>}
         <p className="muted small">{t('print.help')}</p>
         <div className="print-preview">
           <div className="print-preview-inner">

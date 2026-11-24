@@ -47,54 +47,66 @@ const r = (id: string, m: Omit<RuleMeta, 'id' | 'source' | 'needsReview'> & { so
   ...m,
 });
 
+/** Exigence documentaire (dossier, schéma, données à renseigner) : jamais une non-conformité de l'installation. */
+const DOC = { requirement: 'documentary' as const };
+/** Exigence physique (installation elle-même). */
+const PHY = { requirement: 'physical' as const };
+
+/**
+ * Catalogue. `requirement` : exigence documentaire ou physique (ADR-0007). Le comportement de chaque règle quand
+ * l'information est inconnue, déduite ou contradictoire est décrit dans docs/audit/REGULATORY-COVERAGE.md.
+ */
 export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
   [
-    r('R-RULESET-UNKNOWN', { kind: 'nonCompliance', hazard: 'none', existing: 'nonCompliant', source: undefined }),
-    r('R-OLD-RGIE', { kind: 'info', hazard: 'none' }),
-    r('R-INSTALL-DATE', { kind: 'manualCheck', hazard: 'none' }),
+    r('R-RULESET-UNKNOWN', { kind: 'nonCompliance', hazard: 'none', existing: 'nonCompliant', source: undefined, ...PHY }),
+    r('R-OLD-RGIE', { kind: 'info', hazard: 'none', ...DOC }),
+    r('R-INSTALL-DATE', { kind: 'manualCheck', hazard: 'none', ...DOC }),
     // Documents
-    r('R-DOC-INSTALLER', { kind: 'missingData', hazard: 'none' }),
-    r('R-DOC-ADDRESS', { kind: 'missingData', hazard: 'none' }),
-    r('R-DOC-SUPPLY', { kind: 'missingData', hazard: 'none' }),
+    r('R-DOC-INSTALLER', { kind: 'missingData', hazard: 'none', ...DOC }),
+    r('R-DOC-ADDRESS', { kind: 'missingData', hazard: 'none', ...DOC }),
+    r('R-DOC-SUPPLY', { kind: 'missingData', hazard: 'none', ...DOC }),
+    // Équipement confirmé présent sur place mais non dessiné : schéma incomplet, pas une non-conformité physique
+    r('R-DOC-NOT-DRAWN', { kind: 'missingData', hazard: 'none', ...DOC }),
     // Terre, isolement, liaisons, essais
-    r('R-EARTH-MISSING', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-EARTH-VALUE', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-EARTH-30', { kind: 'warning', hazard: 'medium' }),
-    r('R-INSULATION', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-BONDING', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-RCD-TEST', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-RCD-TRIP', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-MEAS-MISSING', { kind: 'manualCheck', hazard: 'none' }),
-    // Protections
-    r('R-PROT-RATING-MISSING', { kind: 'missingData', hazard: 'medium' }),
-    r('R-POLES-NO-NEUTRAL', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-PROT-KA-MISSING', { kind: 'missingData', hazard: 'low', neverBlocking: true }),
-    r('R-RCD-SENS-MISSING', { kind: 'missingData', hazard: 'medium' }),
-    r('R-RCD-SELECTIVITY', { kind: 'warning', hazard: 'low' }),
-    r('R-RCD-MAIN', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-RCD30', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-RCD-TYPE-A', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation' }),
+    r('R-EARTH-MISSING', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-EARTH-VALUE', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-EARTH-30', { kind: 'warning', hazard: 'medium', ...PHY }),
+    r('R-INSULATION', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-BONDING', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-RCD-TEST', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-RCD-TRIP', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-MEAS-MISSING', { kind: 'manualCheck', hazard: 'none', ...PHY }),
+    // Protections. Valeur non renseignée : le schéma est incomplet (documentaire) ; les règles physiques qui en
+    // dépendent signalent, elles, une vérification nécessaire (R-RCD-MAIN, R-RCD30, R-CABLE-PROT en relevé).
+    r('R-PROT-RATING-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
+    r('R-POLES-NO-NEUTRAL', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-PROT-KA-MISSING', { kind: 'missingData', hazard: 'low', neverBlocking: true, ...DOC }),
+    r('R-RCD-SENS-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
+    r('R-RCD-SELECTIVITY', { kind: 'warning', hazard: 'low', ...PHY }),
+    r('R-RCD-MAIN', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-RCD30', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-RCD-TYPE-A', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation', ...PHY }),
     // Canalisations
-    r('R-CABLE-SECTION-MISSING', { kind: 'missingData', hazard: 'medium' }),
-    r('R-CABLE-DATA-MISSING', { kind: 'missingData', hazard: 'medium' }),
-    r('R-CABLE-MIN', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-CABLE-PROT', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-CABLE-NO-OVERCURRENT', { kind: 'nonCompliance', hazard: 'high' }),
+    r('R-CABLE-SECTION-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
+    r('R-CABLE-DATA-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
+    r('R-CABLE-MIN', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-CABLE-PROT', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-CABLE-NO-OVERCURRENT', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     // Prises et circuits
-    r('R-SOCKET-EARTH', { kind: 'nonCompliance', hazard: 'high' }),
-    r('R-SOCKET-CHILD', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation' }),
-    r('R-SOCKET-MAX', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation' }),
-    r('R-SOCKET-SECTION', { kind: 'nonCompliance', hazard: 'medium' }),
-    r('R-DEDICATED-CIRCUIT', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation' }),
-    r('R-CIRCUIT-NAME', { kind: 'recommendation', hazard: 'none' }),
-    r('R-WETROOM-NAME', { kind: 'manualCheck', hazard: 'high' }),
+    r('R-SOCKET-EARTH', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
+    r('R-SOCKET-CHILD', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation', ...PHY }),
+    r('R-SOCKET-MAX', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation', ...PHY }),
+    r('R-SOCKET-SECTION', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
+    r('R-DEDICATED-CIRCUIT', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation', ...PHY }),
+    r('R-CIRCUIT-NAME', { kind: 'recommendation', hazard: 'none', ...DOC }),
+    r('R-WETROOM-NAME', { kind: 'manualCheck', hazard: 'high', ...PHY }),
     // Installations particulières : vérification manuelle (règles non encore automatisées)
-    r('R-EV-MANUAL', { kind: 'manualCheck', hazard: 'medium' }),
-    r('R-PV-MANUAL', { kind: 'manualCheck', hazard: 'medium' }),
+    r('R-EV-MANUAL', { kind: 'manualCheck', hazard: 'medium', ...PHY }),
+    r('R-PV-MANUAL', { kind: 'manualCheck', hazard: 'medium', ...PHY }),
     // Calculs (méthode conventionnelle : estimation)
-    r('R-VDROP', { kind: 'warning', hazard: 'low' }),
-    r('R-VDROP-RATING', { kind: 'recommendation', hazard: 'low' }),
-    r('R-ICC-LMAX', { kind: 'warning', hazard: 'high' }),
-    r('R-COUNTRY-OPTION', { kind: 'warning', hazard: 'none' }),
+    r('R-VDROP', { kind: 'warning', hazard: 'low', ...PHY }),
+    r('R-VDROP-RATING', { kind: 'recommendation', hazard: 'low', ...PHY }),
+    r('R-ICC-LMAX', { kind: 'warning', hazard: 'high', ...PHY }),
+    r('R-COUNTRY-OPTION', { kind: 'warning', hazard: 'none', ...DOC }),
   ].map((m) => [m.id, m]),
 );

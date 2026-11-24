@@ -15,7 +15,11 @@ import type { Derogation, Edition, Finding, FindingStatus, RuleMeta, RulePack, S
 export interface PartContext {
   /** Édition applicable à la partie (id de RulePack.editions), ou « current » sans éditions datées. */
   edition: string;
-  /** La partie est-elle réalisée sous l'édition en vigueur et soumise à la réception d'une installation neuve ? */
+  /**
+   * La partie est-elle réalisée sous l'édition en vigueur et soumise à la réception d'une installation neuve ?
+   * Une partie neuve est une conception : le dessin y est la référence (un élément non dessiné est absent du
+   * projet). Une partie existante est un relevé : non dessiné = inconnu, sauf absence confirmée (ADR-0007).
+   */
   isNew: boolean;
   /** L'édition applicable est-elle l'édition en vigueur ? */
   current: boolean;
@@ -87,7 +91,7 @@ export function findDerogation(derogations: Derogation[] | undefined, f: Finding
 /** Sévérité affichée, dérivée du statut. */
 export function severityOf(status: FindingStatus, blocking: boolean): Severity {
   if (blocking) return 'error';
-  if (status === 'nonCompliant' || status === 'warning' || status === 'insufficientData') return 'warning';
+  if (status === 'nonCompliant' || status === 'warning' || status === 'insufficientData' || status === 'potential' || status === 'contradictory') return 'warning';
   return 'info';
 }
 
@@ -97,6 +101,12 @@ export function severityOf(status: FindingStatus, blocking: boolean): Severity {
  *  - partie existante (ou édition antérieure) : une règle de sécurité (gravité élevée) reste non conforme et bloquante
  *    pour un dossier de réception ; les autres prennent le statut prévu par la règle (`existing`), par défaut
  *    « recommandation » — jamais « conforme » en silence ;
+ *  - état de connaissance (ADR-0007) : `unknown` → « Informations insuffisantes » (bloquant seulement pour une partie
+ *    neuve, comme une donnée manquante) ; `deduced` → « Anomalie potentielle » (non bloquant) ; `contradictory` →
+ *    « Informations contradictoires » (non bloquant) ; `measureNeeded` → « Vérification manuelle nécessaire » ;
+ *    `absent` (absence confirmée) et données connues → classement ci-dessus, inchangé ;
+ *  - exigence documentaire : jamais « non conforme » au sens de l'installation (statut « Informations insuffisantes »
+ *    ou statut prévu) ; peut rester bloquante pour un dossier de réception (« dossier incomplet ») ;
  *  - dérogation saisie : statut « dérogation », non bloquante, motif conservé.
  */
 export function classify(raw: Omit<Finding, 'severity'>, rule: RuleMeta | undefined, ctx: PartContext, derogations?: Derogation[]): Finding {
@@ -130,12 +140,38 @@ export function classify(raw: Omit<Finding, 'severity'>, rule: RuleMeta | undefi
     default:
       status = 'recommendation';
   }
-  if (rule?.neverBlocking) blocking = false;
-  if (raw.status) status = raw.status; // statut imposé par la règle (ex. local humide déduit du nom → vérification)
+  if (raw.status) status = raw.status; // statut imposé par la règle
   if (raw.status && raw.status !== 'nonCompliant' && raw.status !== 'insufficientData') blocking = false;
-  const f: Finding = { ...raw, status, hazard, blocking, edition: ctx.edition, severity: 'info' };
+  let inferred = raw.inferred;
+  switch (raw.knowledge) {
+    case 'unknown':
+      if (status !== 'manualCheck') {
+        status = 'insufficientData';
+        blocking = ctx.isNew;
+      }
+      break;
+    case 'deduced':
+      if (status === 'nonCompliant' || status === 'warning' || status === 'manualCheck') status = 'potential';
+      blocking = false;
+      inferred = true;
+      break;
+    case 'contradictory':
+      status = 'contradictory';
+      blocking = false;
+      break;
+    case 'measureNeeded':
+      status = 'manualCheck';
+      blocking = false;
+      break;
+  }
+  if (rule?.neverBlocking) blocking = false;
+  const requirement = raw.requirement ?? rule?.requirement ?? 'physical';
+  // Exigence documentaire : jamais présentée comme une non-conformité de l'installation.
+  if (requirement === 'documentary' && status === 'nonCompliant') status = 'insufficientData';
+  const f: Finding = { ...raw, status, hazard, blocking, edition: ctx.edition, requirement, severity: 'info' };
+  if (inferred) f.inferred = true;
   const d = findDerogation(derogations, f);
-  if (d && (status === 'nonCompliant' || status === 'recommendation' || status === 'warning')) {
+  if (d && (status === 'nonCompliant' || status === 'recommendation' || status === 'warning' || status === 'potential')) {
     f.status = 'derogation';
     f.blocking = false;
     f.derogation = { reason: d.reason, reference: d.reference };

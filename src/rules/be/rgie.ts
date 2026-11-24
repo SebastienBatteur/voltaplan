@@ -9,12 +9,18 @@
  * Les règles relèvent des constats bruts ; leur statut (non conforme, recommandation, dérogation…), leur caractère
  * bloquant et leur sévérité affichée sont décidés ensuite selon la partie d'installation concernée
  * (édition applicable, neuve ou existante) : voir src/rules/context.ts.
+ *
+ * Inconnu ≠ absent (ADR-0007, src/rules/knowledge.ts) : une règle qui porte sur la présence d'un équipement
+ * (terre, différentiels) ou sur une valeur (sensibilité, section, calibre) précise l'état de connaissance du fait
+ * (`knowledge`). En conception (partie neuve), le dessin est la référence ; en relevé (partie existante), ce qui
+ * n'est pas dessiné est inconnu tant que l'utilisateur n'a pas confirmé son absence (meta.survey).
  */
 import type { ElNode, Project } from '../../model/types';
 import { DEDICATED_CIRCUIT_APPLIANCES, RCD30_APPLIANCES } from '../../model/schema';
 import { circuitContent, isCircuit, isRcd } from '../../model/tree';
-import type { Finding, FindingStatus, RulePack, Severity } from '../types';
+import type { Finding, FindingStatus, Knowledge, RulePack, Severity, SurveyFact } from '../types';
 import { classify, normDate, partContext, projectContext } from '../context';
+import { presence, surveyStatement } from '../knowledge';
 import { BE_EDITIONS, BE_RULES } from './catalog';
 import { calcProject, roundTo } from '../../calc/electrical';
 
@@ -77,14 +83,21 @@ function meta_supply(p: Project): string {
 
 /** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
 type Raw = Omit<Finding, 'severity'>;
+type Extra = { status?: FindingStatus; inferred?: boolean; knowledge?: Knowledge; fact?: SurveyFact };
 
 function checkRgie(project: Project): Finding[] {
   const nc: Severity = 'error'; // non-conformité (statut final décidé par classify selon la partie)
   const raws: Raw[] = [];
-  const add = (ruleId: string, _hint: Severity, nodeId?: string, params?: Finding['params'], extra?: { status?: FindingStatus; inferred?: boolean }) =>
-    raws.push({ ruleId, nodeId, params, ...extra });
+  const add = (ruleId: string, _hint: Severity, nodeId?: string, params?: Finding['params'], extra?: Extra) => raws.push({ ruleId, nodeId, params, ...extra });
+  /** Constat de présence d'un équipement (ADR-0007) : absent/inconnu/contradictoire ; rien si présent. */
+  const addPresence = (ruleId: string, k: Knowledge, fact: SurveyFact, nodeId?: string, params?: Finding['params']) => {
+    if (k === 'present') return;
+    add(ruleId, nc, nodeId, params, { knowledge: k, fact });
+  };
 
   const infos = collect(project.roots);
+  // Faits déclarés présents sans être dessinés : schéma incomplet (exigence documentaire), une fois par fait.
+  const notDrawn = new Set<SurveyFact>();
   // 3 × 230 V : réseau triphasé sans neutre (fréquent à Bruxelles et dans les anciens réseaux)
   const noNeutral = /3\s*[x×]\s*230/i.test(meta_supply(project));
   const byId = new Map(infos.map((i) => [i.node.id, i]));
@@ -102,7 +115,12 @@ function checkRgie(project: Project): Finding[] {
   if (!meta.supply?.trim()) add('R-DOC-SUPPLY', nc);
 
   // --- Terre ---
-  if (!infos.some((i) => i.node.kind === 'earth')) add('R-EARTH-MISSING', nc);
+  // Installation neuve (conception) : terre non dessinée = absente du projet → non-conformité.
+  // Installation existante (relevé) : non dessinée = inconnue, sauf absence confirmée (meta.survey.earth).
+  const earthDrawn = infos.some((i) => i.node.kind === 'earth');
+  const earthStated = surveyStatement(project, 'earth');
+  addPresence('R-EARTH-MISSING', presence(earthDrawn, earthStated, projCtx.isNew), 'earth');
+  if (!earthDrawn && earthStated === 'present') notDrawn.add('earth');
   const re = project.measurements.earthResistanceOhm;
   if (re !== undefined) {
     if (re > 100) add('R-EARTH-VALUE', nc, undefined, { value: re });
@@ -110,7 +128,9 @@ function checkRgie(project: Project): Finding[] {
   }
   const iso = project.measurements.insulationMOhm;
   if (iso !== undefined && iso < 0.5) add('R-INSULATION', nc, undefined, { value: iso });
+  // Liaisons équipotentielles : « non » saisi = violation constatée ; non saisi = vérification sur place nécessaire.
   if (project.measurements.bondingOk === false) add('R-BONDING', nc);
+  else if (project.measurements.bondingOk === undefined) add('R-BONDING', nc, undefined, undefined, { knowledge: 'measureNeeded' });
   // Essais des différentiels : déclenchement au courant nominal différentiel en 300 ms maximum
   // (500 ms pour un différentiel sélectif « S »), ou résultat « non conforme » noté par l'installateur.
   for (const [id, test] of Object.entries(project.measurements.rcdTests ?? {})) {
@@ -120,7 +140,10 @@ function checkRgie(project: Project): Finding[] {
     if (test.ok === false) add('R-RCD-TEST', nc, id);
     else if (test.tripMs !== undefined && test.tripMs > max) add('R-RCD-TRIP', nc, id, { value: test.tripMs, max });
   }
-  if (re === undefined || iso === undefined) add('R-MEAS-MISSING', 'info');
+  // Différentiel dessiné sans essai noté : l'essai reste à faire (vérification, jamais bloquant).
+  const tests = project.measurements.rcdTests ?? {};
+  for (const { node } of infos) if (isRcd(node) && !tests[node.id]) add('R-RCD-TEST', nc, node.id, undefined, { knowledge: 'measureNeeded' });
+  if (re === undefined || iso === undefined) add('R-MEAS-MISSING', 'info', undefined, undefined, { knowledge: 'measureNeeded' });
 
   for (const { node, ancestors } of infos) {
     // --- Protections ---
@@ -160,8 +183,18 @@ function checkRgie(project: Project): Finding[] {
         const max = maxProtectionFor(section);
         if (rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
       }
+      // Relevé (partie existante) : section ou calibre inconnus → la coordination section / protection est à vérifier
+      // sur place (le schéma incomplet est signalé à part, R-CABLE-*-MISSING / R-PROT-RATING-MISSING). En conception,
+      // la valeur manquante est une lacune du projet, déjà signalée et bloquante : pas de second constat.
+      if (isStart && !dcSide && prot && feedsLoads && (section === undefined || n(prot.props.ratedCurrent) === undefined)) {
+        if (!partContext(project, belgium, [...ancestors, node]).isNew) add('R-CABLE-PROT', nc, node.id, undefined, { knowledge: 'unknown' });
+      }
       // Les câbles de branchement/alimentation en amont sont protégés par le gestionnaire de réseau.
-      if (!prot && anyProtection && feedsLoads && !dcSide) add('R-CABLE-NO-OVERCURRENT', nc, node.id);
+      // Une protection amont de nature inconnue (appareil non renseigné) : la protection est inconnue, pas absente.
+      if (!prot && anyProtection && feedsLoads && !dcSide) {
+        const unknownDevice = ancestors.some((a) => a.kind === 'protection' && (a.props.device === undefined || a.props.device === ''));
+        add('R-CABLE-NO-OVERCURRENT', nc, node.id, undefined, unknownDevice ? { knowledge: 'unknown' } : undefined);
+      }
     }
 
     // --- Installations particulières : points à vérifier à la main (non automatisés) ---
@@ -169,12 +202,15 @@ function checkRgie(project: Project): Finding[] {
 
     // --- Prises ---
     if (node.kind === 'socket') {
-      if (node.props.earth === false) add('R-SOCKET-EARTH', nc, node.id);
-      if (node.props.childSafety === false && !node.props.threePhase) add('R-SOCKET-CHILD', nc, node.id);
+      // Valeur non renseignée = symbole par défaut (prise avec terre et sécurité enfant) : présent dans le dessin.
+      // « false » = absence déclarée (saisie, ou reprise par l'assistant : « déduite » tant que non confirmée).
+      if (node.props.earth === false) add('R-SOCKET-EARTH', nc, node.id, undefined, { knowledge: 'absent' });
+      if (node.props.childSafety === false && !node.props.threePhase) add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge: 'absent' });
     }
   }
 
   // --- Règles par circuit ---
+  const rcd300Drawn = infos.some((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= 300);
   for (const { node: circuit, ancestors } of infos) {
     if (!isCircuit(circuit)) continue;
     const content = circuitContent(circuit);
@@ -204,16 +240,35 @@ function checkRgie(project: Project): Finding[] {
       if (others.length) add('R-DEDICATED-CIRCUIT', nc, ap.id, { appliance: type, others: others.length });
     }
 
-    // Différentiels
-    if (!rcds.length || minRcd > 300) add('R-RCD-MAIN', nc, circuit.id);
+    // Différentiels (ADR-0007). Sensibilité inconnue d'un différentiel dessiné : valeur inconnue (pas une violation).
+    // Aucun différentiel adéquat dessiné : conception → absent ; relevé → inconnu, sauf déclaration (meta.survey).
+    const design = partContext(project, belgium, [...ancestors, circuit]).isNew;
+    const unknownSens = rcds.some((r) => n(r.props.residualCurrent) === undefined);
+    if (!(minRcd <= 300)) {
+      if (unknownSens) add('R-RCD-MAIN', nc, circuit.id, undefined, { knowledge: 'unknown' });
+      else {
+        const stated = surveyStatement(project, 'rcd');
+        const k = stated === 'absent' && rcd300Drawn ? 'contradictory' : presence(false, stated, design);
+        if (k === 'present') notDrawn.add('rcd');
+        addPresence('R-RCD-MAIN', k, 'rcd', circuit.id);
+      }
+    }
     // Local avec baignoire ou douche : indiqué explicitement (propriété wetRoom) ; un nom de pièce évocateur
-    // n'est qu'un indice, signalé pour vérification tant que la propriété n'est pas renseignée.
+    // n'est qu'un indice (information déduite → anomalie potentielle) tant que la propriété n'est pas renseignée.
     const nodes = [circuit, ...content];
     const wet = nodes.some((c) => c.props.wetRoom === 'yes');
     const wetByName = !wet && nodes.some((c) => c.props.wetRoom !== 'no' && WET_ROOM.test(c === circuit ? label + ' ' + text(c) : text(c)));
     const wetAppliance = appliances.find((a) => RCD30_APPLIANCES.has(String(a.props.applianceType)));
-    if ((wet || wetAppliance) && !(minRcd <= 30)) add('R-RCD30', nc, circuit.id, { reason: wet ? 'wetRoom' : String(wetAppliance!.props.applianceType) });
-    else if (wetByName && !(minRcd <= 30)) add('R-WETROOM-NAME', 'info', circuit.id, undefined, { inferred: true });
+    const rcd30Stated = surveyStatement(project, 'rcd30');
+    if ((wet || wetAppliance) && !(minRcd <= 30)) {
+      const reason = wet ? 'wetRoom' : String(wetAppliance!.props.applianceType);
+      if (unknownSens) add('R-RCD30', nc, circuit.id, { reason }, { knowledge: 'unknown' });
+      else {
+        const k = presence(false, rcd30Stated, design);
+        if (k === 'present') notDrawn.add('rcd30');
+        addPresence('R-RCD30', k, 'rcd30', circuit.id, { reason });
+      }
+    } else if (wetByName && !(minRcd <= 30) && rcd30Stated !== 'present') add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
     if (wetAppliance) {
       const rcd30 = rcds.find((r) => (n(r.props.residualCurrent) ?? Infinity) <= 30);
       if (rcd30 && rcd30.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, rcd30.id);
@@ -222,6 +277,9 @@ function checkRgie(project: Project): Finding[] {
 
   const pv = infos.find((i) => i.node.kind === 'inverter' || i.node.kind === 'solarPanel');
   if (pv) add('R-PV-MANUAL', 'info', pv.node.id);
+
+  // Équipements confirmés présents mais non dessinés : le schéma est incomplet (exigence documentaire).
+  for (const fact of notDrawn) add('R-DOC-NOT-DRAWN', nc, undefined, { fact }, { fact });
 
   // --- Calculs (longueurs connues) : chute de tension et protection contre les courts-circuits ---
   // Comparaisons sur les valeurs brutes ; arrondi seulement pour le message.
@@ -244,7 +302,7 @@ function checkRgie(project: Project): Finding[] {
   const seen = new Set<string>();
   const out: Finding[] = [];
   for (const raw of raws) {
-    const k = raw.ruleId + '|' + (raw.nodeId ?? '');
+    const k = raw.ruleId + '|' + (raw.nodeId ?? '') + '|' + (raw.fact ?? '');
     if (seen.has(k)) continue;
     seen.add(k);
     const info = raw.nodeId ? byId.get(raw.nodeId) : undefined;

@@ -11,8 +11,19 @@ import { classify, partContext, projectContext } from './context';
 import { ancestors } from '../model/tree';
 import { withUnconfirmed } from '../assist/unconfirmed';
 
-export type { Derogation, Edition, Finding, FindingStatus, Hazard, RuleMeta, RulePack, Severity } from './types';
+export type { Derogation, Edition, Finding, FindingStatus, Hazard, Knowledge, Requirement, RuleMeta, RulePack, Severity, SurveyFact } from './types';
 export { severityOf } from './context';
+export { DRAFT_KEYS, draftLevel, isDocumentary, isPhysicalNonCompliance, needsVerification, presence, surveyStatement, SURVEY_FACTS, type DraftLevel } from './knowledge';
+
+/**
+ * Nombre de règles vérifiées par le référentiel du projet (résumé « Aucune anomalie détectée parmi les N règles
+ * vérifiées ») : règles du catalogue, hors simples informations. Référentiel inconnu : 0.
+ */
+export function checkedRuleCount(project: Project): number {
+  const pack = findRulePack(project.meta.ruleset);
+  if (!pack) return 0;
+  return Object.values(pack.rules ?? {}).filter((r) => r.kind !== 'info' && r.id !== 'R-RULESET-UNKNOWN').length;
+}
 
 export const RULE_PACKS: RulePack[] = [belgium];
 export const DEFAULT_RULE_PACK = belgium.id;
@@ -40,7 +51,8 @@ export function packLabel(p: RulePack, lang: Lang): string {
 export function checkProject(project: Project): Finding[] {
   const pack = findRulePack(project.meta.ruleset);
   if (!pack)
-    return [{ ruleId: 'R-RULESET-UNKNOWN', severity: 'error', status: 'nonCompliant', blocking: true, hazard: 'none', params: { id: String(project.meta.ruleset) } }];
+    // Aucune règle évaluée : « Règle non évaluée », bloquant (jamais présenté comme une non-conformité de l'installation).
+    return [{ ruleId: 'R-RULESET-UNKNOWN', severity: 'error', status: 'notEvaluated', blocking: true, hazard: 'none', params: { id: String(project.meta.ruleset) } }];
   // Un référentiel tiers qui ne fournit que la sévérité reste accepté : le statut en est déduit.
   const own = pack.check(project).map((f) => (f.status ? f : { ...f, status: f.severity === 'error' ? 'nonCompliant' : f.severity === 'warning' ? 'warning' : 'recommendation', blocking: f.severity === 'error' } as Finding));
   // Valeurs reprises par l'assistant et non confirmées : signalées, et constats concernés marqués « déduits » (A6)

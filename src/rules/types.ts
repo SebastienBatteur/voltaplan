@@ -11,7 +11,7 @@
  *  - `blocking` : empêche un dossier de réception « conforme » (un document de travail reste toujours exportable).
  * `severity` (error / warning / info) est dérivé de ces trois informations, pour l'affichage.
  */
-import type { Project } from '../model/types';
+import type { Project, SurveyFact } from '../model/types';
 import type { Lang } from '../i18n';
 
 export type Severity = 'error' | 'warning' | 'info';
@@ -24,7 +24,35 @@ export type FindingStatus =
   | 'derogation' // dérogation applicable (saisie et justifiée par l'utilisateur)
   | 'notApplicable' // règle non applicable à cette partie
   | 'insufficientData' // informations insuffisantes pour conclure
-  | 'manualCheck'; // vérification manuelle nécessaire (sur place, ou interprétation)
+  | 'manualCheck' // vérification manuelle nécessaire (sur place, mesure, ou interprétation)
+  | 'potential' // anomalie potentielle : le constat repose sur une information déduite ou non confirmée
+  | 'contradictory' // informations contradictoires (dessin, déclaration, sources de l'assistant)
+  | 'notEvaluated'; // règle non évaluée (hors champ, référentiel inconnu…)
+
+/**
+ * État de connaissance du fait dont dépend un constat (ADR-0007). « Absent du dessin » ne veut pas dire
+ * « absent de l'installation » :
+ *  - `present`       : présence confirmée (dessinée dans l'arbre, ou déclarée présente par l'utilisateur) ;
+ *  - `absent`        : absence confirmée (déclarée par l'utilisateur ; ou, pour une installation neuve en conception,
+ *                      non dessinée : le dessin est alors la référence) ;
+ *  - `unknown`       : information inconnue (relevé d'une installation existante : non dessiné, non déclaré) ;
+ *  - `deduced`       : information déduite ou reprise par l'assistant, non confirmée ;
+ *  - `contradictory` : informations contradictoires (ex. terre dessinée mais déclarée absente, question
+ *                      « contradiction » ouverte dans le dossier de preuves) ;
+ *  - `measureNeeded` : la réponse demande une mesure ou une vérification sur place.
+ * Un constat sans `knowledge` repose sur des données connues (valeurs saisies, éléments dessinés).
+ */
+export type Knowledge = 'present' | 'absent' | 'unknown' | 'deduced' | 'contradictory' | 'measureNeeded';
+
+/**
+ * Nature de l'exigence :
+ *  - `documentary` : porte sur le dossier (mentions, schéma incomplet, données non renseignées) ; ne démontre jamais
+ *                    une non-conformité de l'installation ; peut bloquer un dossier de réception (« dossier incomplet ») ;
+ *  - `physical`    : porte sur l'installation elle-même (protection, terre, différentiels, sections…).
+ */
+export type Requirement = 'documentary' | 'physical';
+
+export type { SurveyFact, SurveyStatement } from '../model/types';
 
 /** Gravité électrique (risque), indépendante du statut réglementaire. */
 export type Hazard = 'high' | 'medium' | 'low' | 'none';
@@ -44,6 +72,12 @@ export interface Finding {
   inferred?: boolean;
   /** Dérogation appliquée (motif et référence saisis par l'utilisateur). */
   derogation?: { reason: string; reference?: string };
+  /** Exigence documentaire ou physique (repris du catalogue ; « physical » par défaut). */
+  requirement?: Requirement;
+  /** État de connaissance du fait contrôlé (voir Knowledge) ; absent = données connues. */
+  knowledge?: Knowledge;
+  /** Fait du relevé que l'utilisateur peut confirmer présent / absent (boutons du contrôle, question de l'assistant). */
+  fact?: SurveyFact;
 }
 
 /** Édition (version) d'un référentiel, avec ses dates d'application. */
@@ -87,6 +121,8 @@ export interface RuleMeta {
   neverBlocking?: boolean;
   /** Fichier de test qui couvre la règle. */
   tests?: string;
+  /** Exigence documentaire (dossier, schéma) ou physique (installation). Par défaut : physique. */
+  requirement?: Requirement;
 }
 
 /** Dérogation saisie par l'utilisateur pour une règle (éventuellement limitée à un élément). */

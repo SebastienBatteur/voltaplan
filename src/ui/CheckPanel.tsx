@@ -1,20 +1,33 @@
 import { useState } from 'react';
 import { useStore } from '../store';
 import { useDerived } from './derived';
-import { findRulePack, projectContext, type Finding, type FindingStatus } from '../rules';
+import {
+  checkedRuleCount,
+  findRulePack,
+  isDocumentary,
+  isPhysicalNonCompliance,
+  needsVerification,
+  projectContext,
+  type Finding,
+  type FindingStatus,
+  type SurveyFact,
+} from '../rules';
 import { ancestors } from '../model/tree';
 import { calcProject, roundTo } from '../calc/electrical';
 import { balanceProject, PHASES } from '../calc/balance';
 import { fmtNum } from './labels';
 
+type T = (k: string, p?: Record<string, string | number>) => string;
+
 /** Paramètres d'un constat traduits pour l'affichage (contrôle et dossier imprimé). */
 export function paramsText(f: Finding, t: (k: string) => string): Record<string, string | number> {
   const p: Record<string, string | number> = { ...(f.params ?? {}) };
-  // Valeurs non confirmées (assistant) : noms de propriétés lisibles
-  if (f.ruleId === 'R-UNCONFIRMED' && typeof p.props === 'string')
+  if (typeof p.fact === 'string') p.fact = t('survey.fact.' + p.fact);
+  // Valeurs non confirmées ou contradictoires (assistant) : noms de propriétés lisibles
+  if ((f.ruleId === 'R-UNCONFIRMED' || f.ruleId === 'R-CONTRADICTION') && typeof p.props === 'string')
     p.props = p.props
       .split(', ')
-      .map((k) => (k === '@parent' ? t('assist.prop.parent') : t('prop.' + k)))
+      .map((k) => (k === '@parent' ? t('assist.prop.parent') : k === '@node' ? t('knowledge.node') : t('prop.' + k)))
       .join(', ');
   if (typeof p.appliance === 'string') p.appliance = t('enum.applianceType.' + p.appliance);
   if (typeof p.reason === 'string') {
@@ -24,19 +37,84 @@ export function paramsText(f: Finding, t: (k: string) => string): Record<string,
   return p;
 }
 
+/**
+ * Texte d'un constat selon l'état de connaissance (ADR-0007) : « rule.<id>.<knowledge> » s'il existe
+ * (ex. terre inconnue, absence confirmée, contradiction), sinon « rule.<id> ».
+ */
+export function ruleText(f: Finding, t: T): string {
+  const p = paramsText(f, t);
+  if (f.knowledge) {
+    const k = 'rule.' + f.ruleId + '.' + f.knowledge;
+    const s = t(k, p);
+    if (s !== k) return s;
+  }
+  return t('rule.' + f.ruleId, p);
+}
+
+/** Conseil d'un constat (variante selon l'état de connaissance), ou undefined. */
+export function adviceText(f: Finding, t: T): string | undefined {
+  for (const k of [f.knowledge ? 'advice.' + f.ruleId + '.' + f.knowledge : '', 'advice.' + f.ruleId]) {
+    if (!k) continue;
+    const s = t(k);
+    if (s !== k) return s;
+  }
+  return undefined;
+}
+
+/** Libellé « bloquant » : pour une exigence documentaire, bloquant pour le dossier de réception seulement. */
+export function blockingText(f: Finding, t: T): string {
+  return f.blocking ? ' · ' + t(isDocumentary(f) ? 'status.blockingDoc' : 'status.blocking') : '';
+}
+
+/** État de connaissance affiché (rien pour une présence confirmée ou des données connues). */
+export function knowledgeText(f: Finding, t: T): string {
+  return f.knowledge && f.knowledge !== 'present' ? t('knowledge.' + f.knowledge) : '';
+}
+
 /** Ordre d'affichage des constats : bloquants d'abord, puis par statut. */
-const STATUS_ORDER: Record<FindingStatus, number> = {
+export const STATUS_ORDER: Record<FindingStatus, number> = {
   nonCompliant: 0,
-  insufficientData: 1,
-  warning: 2,
-  manualCheck: 3,
-  recommendation: 4,
-  derogation: 5,
-  notApplicable: 6,
+  contradictory: 1,
+  potential: 2,
+  insufficientData: 3,
+  notEvaluated: 4,
+  warning: 5,
+  manualCheck: 6,
+  recommendation: 7,
+  derogation: 8,
+  notApplicable: 9,
 };
 
 export function findingRank(f: Finding): number {
-  return (f.blocking ? 0 : 10) + STATUS_ORDER[f.status ?? 'warning'];
+  return (f.blocking ? 0 : 20) + STATUS_ORDER[f.status ?? 'warning'];
+}
+
+/** Boutons « Confirmer présent / Confirmer absent / Je ne sais pas » d'un fait du relevé (écrit meta.survey). */
+function SurveyButtons({ fact }: { fact: SurveyFact }) {
+  const t = useStore((s) => s.t);
+  const survey = useStore((s) => s.project.meta.survey);
+  const setMeta = useStore((s) => s.setMeta);
+  const cur = survey?.[fact];
+  const set = (v: 'present' | 'absent' | undefined) => (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const next = { ...(survey ?? {}) };
+    if (v) next[fact] = v;
+    else delete next[fact];
+    setMeta({ survey: Object.keys(next).length ? next : undefined });
+  };
+  return (
+    <>
+      <button className={cur === 'present' ? 'primary' : undefined} aria-pressed={cur === 'present'} onClick={set('present')}>
+        {t('survey.present')}
+      </button>
+      <button className={cur === 'absent' ? 'primary' : undefined} aria-pressed={cur === 'absent'} onClick={set('absent')}>
+        {t('survey.absent')}
+      </button>
+      <button aria-pressed={!cur} onClick={set(undefined)}>
+        {t('survey.unknown')}
+      </button>
+    </>
+  );
 }
 
 export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
@@ -50,7 +128,9 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
   const node = f.nodeId ? find(f.nodeId) : undefined;
   // Pour une canalisation, on nomme le circuit qui l'alimente.
   const circuit = node?.kind === 'cable' ? [...ancestors(project.roots, node.id)].reverse().find((a) => a.kind === 'protection') : undefined;
-  const advice = t('advice.' + f.ruleId);
+  const advice = adviceText(f, t);
+  const knowledge = knowledgeText(f, t);
+  const knowledgeHelp = f.knowledge ? t('knowledge.help.' + f.knowledge) : '';
   const pageOf = node ? project.plan.pages.findIndex((pg) => pg.symbols.some((s) => s.nodeId === node.id)) : -1;
   const inBoard = !!node && Object.values(project.boards ?? {}).some((b) => b.slots[node.id]);
   const go = (view: 'unifilar' | 'plan' | 'board') => (e: React.MouseEvent) => {
@@ -60,7 +140,9 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
     if (view === 'plan' && pageOf >= 0) useStore.getState().setPage(pageOf);
     setView(view);
   };
-  const canDerogate = !compact && (f.status === 'nonCompliant' || f.status === 'recommendation' || f.status === 'warning');
+  const canDerogate = !compact && (f.status === 'nonCompliant' || f.status === 'recommendation' || f.status === 'warning' || f.status === 'potential');
+  // Fait du relevé non dessiné (terre, différentiels) : l'utilisateur confirme ce qu'il a constaté sur place.
+  const survey = !compact && f.fact ? f.fact : undefined;
   const saveDerogation = () => {
     if (!derog?.reason.trim()) return;
     const list = project.meta.derogations ?? [];
@@ -82,8 +164,13 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
       <div className="finding-head">
         <span className={'badge ' + f.severity}>
           {t('status.' + (f.status ?? 'warning'))}
-          {f.blocking ? ' · ' + t('status.blocking') : ''}
+          {blockingText(f, t)}
         </span>
+        {knowledge && (
+          <em className="muted small" title={knowledgeHelp !== 'knowledge.help.' + f.knowledge ? knowledgeHelp : undefined}>
+            {knowledge}
+          </em>
+        )}
         {f.hazard && f.hazard !== 'none' && f.status !== 'derogation' && <span className={'hazard ' + f.hazard}>{t('hazard.' + f.hazard)}</span>}
         {node && !compact && (
           <span className="finding-node">
@@ -95,8 +182,8 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
         <span className="rule-id">{f.ruleId}</span>
       </div>
       <div>
-        {t('rule.' + f.ruleId, paramsText(f, t))}
-        {f.inferred && <em className="muted"> ({t('check.inferred')})</em>}
+        {ruleText(f, t)}
+        {f.inferred && f.knowledge !== 'deduced' && <em className="muted"> ({t('check.inferred')})</em>}
       </div>
       {f.derogation ? (
         <div className="advice">
@@ -104,14 +191,15 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
           {f.derogation.reference ? ' (' + f.derogation.reference + ')' : ''}
         </div>
       ) : (
-        advice !== 'advice.' + f.ruleId && (
+        (advice || (knowledgeHelp && knowledgeHelp !== 'knowledge.help.' + f.knowledge)) && (
           <div className="advice">
-            <strong>{t('check.advice')} :</strong> {advice}
+            <strong>{t('check.advice')} :</strong> {advice ?? knowledgeHelp}
           </div>
         )
       )}
-      {!compact && (node || canDerogate) && (
+      {!compact && (node || canDerogate || survey) && (
         <div className="finding-actions" onClick={(e) => e.stopPropagation()}>
+          {survey && <SurveyButtons fact={survey} />}
           {node && <button onClick={go('unifilar')}>{t('check.goUnifilar')}</button>}
           {pageOf >= 0 && <button onClick={go('plan')}>{t('check.goPlan')}</button>}
           {inBoard && <button onClick={go('board')}>{t('check.goBoard')}</button>}
@@ -150,8 +238,14 @@ export function CheckPanel() {
   const setMeta = useStore((s) => s.setMeta);
   const { findings, numbering } = useDerived();
   const blocking = findings.filter((f) => f.blocking).length;
-  const nc = findings.filter((f) => f.status === 'nonCompliant').length;
+  const nc = findings.filter(isPhysicalNonCompliance).length;
+  const verify = findings.filter(needsVerification).length;
   const sorted = [...findings].sort((a, b) => findingRank(a) - findingRank(b));
+  // Exigences de l'installation d'abord, puis exigences documentaires (jamais des non-conformités physiques).
+  const groups = [
+    { key: 'physical', list: sorted.filter((f) => !isDocumentary(f)) },
+    { key: 'documentary', list: sorted.filter(isDocumentary) },
+  ].filter((g) => g.list.length);
   const pack = findRulePack(project.meta.ruleset);
   const edition = pack?.editions?.find((e) => e.id === projectContext(project, pack).edition);
   const derogations = project.meta.derogations ?? [];
@@ -163,11 +257,24 @@ export function CheckPanel() {
         {edition && <> — {t('check.edition', { edition: edition.label[lang] ?? edition.label.en ?? edition.id })}</>}
       </p>
       {blocking > 0 && <div className="banner error">{t('check.blocking', { n: blocking })}</div>}
-      {findings.length === 0 && <div className="banner ok">{t('check.ok')}</div>}
-      {findings.length > 0 && <p className="muted small">{t('check.summary', { blocking, nc, other: findings.length - nc })}</p>}
-      {sorted.map((f, i) => (
-        <FindingItem key={i} f={f} />
+      {findings.length === 0 && <div className="banner ok">{t('check.okN', { n: checkedRuleCount(project) })}</div>}
+      {findings.length > 0 && (
+        <p className="muted small">
+          {t('check.summary', { blocking, nc, other: findings.length - nc })}
+          <br />
+          {t('check.counts', { nc, verify, doc: findings.filter(isDocumentary).length })}
+        </p>
+      )}
+      {groups.map((g) => (
+        <section key={g.key}>
+          <h3>{t('requirement.' + g.key)}</h3>
+          {g.key === 'documentary' && <p className="muted small">{t('requirement.documentary.help')}</p>}
+          {g.list.map((f, i) => (
+            <FindingItem key={i} f={f} />
+          ))}
+        </section>
       ))}
+      <p className="muted small">{t('check.liability')}</p>
       {derogations.length > 0 && (
         <>
           <h3>{t('check.derogations')}</h3>
