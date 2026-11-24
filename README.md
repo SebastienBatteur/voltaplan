@@ -56,6 +56,7 @@ L'application de bureau utilise [Tauri](https://tauri.app) : petit installateur,
 
 - **Pour l'utilisateur** : télécharger l'installateur depuis la page *Releases* du dépôt GitHub (`.msi` ou `.exe` pour Windows, `.dmg` pour macOS, `.AppImage` / `.deb` / `.rpm` pour Linux).
 - **Pour le développeur** : installer [Rust](https://rustup.rs), puis `npm run desktop` (développement) ou `npm run desktop:build` (installateur dans `src-tauri/target/release/bundle`).
+- Paquets compilés en CI mais **pas encore testés à l'usage ni signés** : voir [docs/desktop-tauri.md](docs/desktop-tauri.md).
 
 ### Intégration continue (GitHub Actions)
 

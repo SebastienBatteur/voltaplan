@@ -12,6 +12,10 @@ updates:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
     groups:
+      # Paquets Tauri ensemble : les plugins npm doivent garder la même version majeure.mineure que les crates
+      # (tauri build refuse sinon). La mise à jour cargo correspondante arrive dans la demande « cargo » ci-dessous.
+      tauri:
+        patterns: ['@tauri-apps/*']
       # Outils de développement regroupés pour limiter le nombre de demandes de fusion
       dev-dependencies:
         dependency-type: development
@@ -33,3 +37,12 @@ updates:
     directory: /src-tauri
     schedule:
       interval: weekly
+    # Cargo.lock versionné : les crates Tauri sont mises à jour ensemble, à fusionner avec la demande npm « tauri ».
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    groups:
+      tauri:
+        patterns: ['tauri*']
+      rust-dependencies:
+        patterns: ['*']

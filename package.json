@@ -12,6 +12,7 @@
     "test": "vitest run",
     "typecheck": "tsc -p .",
     "lint": "eslint .",
+    "tauri": "tauri",
     "desktop": "tauri dev",
     "desktop:build": "tauri build"
   },
