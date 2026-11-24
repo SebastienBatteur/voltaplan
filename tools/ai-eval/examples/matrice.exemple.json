@@ -1,0 +1,30 @@
+{
+  "format": "voltaplan-ai-eval-matrix/1",
+  "currency": "USD",
+  "repetitions": 1,
+  "entries": [
+    {
+      "id": "demo-simulee",
+      "provider": "openaiCompatible",
+      "model": "lectures-simulees",
+      "replayDir": "installation/lectures",
+      "notes": "Rejeu de lectures SIMULÉES (écrites à la main) : démonstration du rapport, ne mesure rien de la reconnaissance."
+    },
+    {
+      "id": "claude",
+      "provider": "anthropic",
+      "model": "claude-opus-5-5",
+      "keyEnv": "ANTHROPIC_API_KEY",
+      "priceInPerMTok": null,
+      "priceOutPerMTok": null,
+      "notes": "Recopier les prix (par million de jetons) depuis la page de tarifs du fournisseur avant tout lancement réel."
+    },
+    {
+      "id": "ollama-local",
+      "provider": "openaiCompatible",
+      "baseUrl": "http://localhost:11434/v1",
+      "model": "qwen2.5vl:7b",
+      "notes": "Modèle local (gratuit, rien ne sort de la machine) : à installer avec Ollama."
+    }
+  ]
+}

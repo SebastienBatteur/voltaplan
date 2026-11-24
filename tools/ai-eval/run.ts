@@ -2,12 +2,13 @@
  * Banc d'évaluation de la lecture des photos de tableaux par l'IA (à lancer par le propriétaire, avec SA clé ou SON
  * modèle local ; jamais en intégration continue). Mode d'emploi : docs/assistant-evaluation.md.
  *
- *   npx vite-node tools/ai-eval/run.ts -- --dir <dossier> --live --provider anthropic --model <modèle>
- *   npx vite-node tools/ai-eval/run.ts -- --dir <dossier> --live --provider openaiCompatible --base-url http://localhost:11434/v1 --model <modèle>
+ *   npx vite-node tools/ai-eval/run.ts -- --dir <dossier> --live --i-authorize-costs --provider anthropic --model <modèle>
+ *   npx vite-node tools/ai-eval/run.ts -- --dir <dossier> --live --i-authorize-costs --provider openaiCompatible --base-url http://localhost:11434/v1 --model <modèle>
  *   npx vite-node tools/ai-eval/run.ts -- --dir tools/ai-eval/examples --predictions tools/ai-eval/examples
  *
  * Le dossier contient, par photo, un fichier `<nom>.truth.json` (vérité terrain) qui désigne son image. Sans `--live`,
- * AUCUN appel n'est fait : les lectures sont prises dans `--predictions` (fichiers `<nom>.prediction.json`).
+ * AUCUN appel n'est fait : les lectures sont prises dans `--predictions` (fichiers `<nom>.prediction.json`). Un appel
+ * réel exige `--live --i-authorize-costs` (autorisation explicite du propriétaire). Plusieurs modèles : run-matrix.ts.
  * La clé n'est jamais passée en argument : elle est lue dans une variable d'environnement (`--key-env`).
  * L'appel est exactement celui de l'application (src/ai/boardPhotoAi.ts : même consigne, même schéma).
  */
@@ -21,6 +22,7 @@ import { checkTruth, report, scorePhoto, type GroundTruth, type PhotoScore } fro
 interface Args {
   dir: string;
   live: boolean;
+  authorizeCosts: boolean;
   provider: ProviderId;
   model: string;
   baseUrl?: string;
@@ -56,6 +58,7 @@ function parseArgs(argv: string[]): Args {
   return {
     dir,
     live: a.get('live') === true,
+    authorizeCosts: a.get('i-authorize-costs') === true,
     provider,
     model: str('model') ?? '',
     baseUrl: str('base-url'),
@@ -76,7 +79,7 @@ function usage(msg?: string): never {
   console.error(`Banc d'évaluation de la lecture des photos de tableaux (voir docs/assistant-evaluation.md)
 
   --dir <dossier>            fichiers <nom>.truth.json (+ images)          [obligatoire]
-  --live                     appelle réellement l'IA (sinon : aucune requête)
+  --live --i-authorize-costs appelle réellement l'IA (les deux sont exigés ; sinon : aucune requête)
   --provider <id>            anthropic | openaiCompatible                 [anthropic]
   --model <modèle>           modèle à évaluer                             [obligatoire avec --live]
   --base-url <url>           API compatible OpenAI (ex. http://localhost:11434/v1)
@@ -114,6 +117,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!existsSync(args.dir)) usage(`dossier introuvable : ${args.dir}`);
   if (!args.live && !args.predictions) usage('sans --live, donnez --predictions <dossier> (aucun appel à l’IA sans --live)');
+  if (args.live && !args.authorizeCosts) usage('--live exige aussi --i-authorize-costs (autorisation explicite des appels et de leur coût)');
   if (args.live && !args.model) usage('--model est obligatoire avec --live');
   let apiKey: string | undefined;
   if (args.live) {

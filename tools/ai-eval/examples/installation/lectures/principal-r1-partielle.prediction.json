@@ -1,0 +1,14 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "devices": [
+        { "startModule": 0, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Prises cuisine", "circuitRef": "A", "confidence": "high" },
+        { "startModule": 1, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Prises salon", "circuitRef": "B", "confidence": "medium" },
+        { "startModule": 2, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 10, "curve": "B", "residualCurrentmA": null, "rcdType": null, "label": "Ecl. ch.1", "circuitRef": "C", "confidence": "high" },
+        { "startModule": 3, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": null, "curve": null, "residualCurrentmA": null, "rcdType": null, "label": null, "circuitRef": "D", "confidence": "low" }
+      ]
+    }
+  ],
+  "notes": "Lecture SIMULÉE, écrite à la main pour l'exemple (désaccord volontaire avec la première photo : 20 A au lieu de 16 A sur « Prises salon »)."
+}

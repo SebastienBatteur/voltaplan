@@ -1,0 +1,13 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "devices": [
+        { "startModule": 0, "widthModules": 2, "kind": "rcd", "brand": null, "model": null, "poles": null, "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 30, "rcdType": "A", "label": "E-F", "circuitRef": null, "confidence": "high" },
+        { "startModule": 2, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Lave-linge", "circuitRef": "E", "confidence": "high" },
+        { "startModule": 3, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 25, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Sous-tableau garage", "circuitRef": "F", "confidence": "high" }
+      ]
+    }
+  ],
+  "notes": "Lecture SIMULÉE, écrite à la main pour l'exemple (sans erreur)."
+}

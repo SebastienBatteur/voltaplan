@@ -1,0 +1,14 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "principal-r2.jpg",
+  "composed": true,
+  "rows": 1,
+  "perRow": 12,
+  "lang": "fr",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo) : rangée 2 du tableau principal (décalage d'une rangée dans le cas).",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 2, "kind": "rcd", "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 30, "rcdType": "A", "label": "E-F", "circuitRef": null },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "label": "Lave-linge", "circuitRef": "E" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 25, "curve": "C", "residualCurrentmA": null, "label": "Sous-tableau garage", "circuitRef": "F" }
+  ]
+}

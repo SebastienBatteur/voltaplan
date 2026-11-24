@@ -1,0 +1,16 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "devices": [
+        { "startModule": 0, "widthModules": 2, "kind": "rcd", "brand": null, "model": null, "poles": "2P", "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 300, "rcdType": "A", "label": "A-D", "circuitRef": null, "confidence": "high" },
+        { "startModule": 2, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": "1P+N", "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "PRISES CUISINE", "circuitRef": "A", "confidence": "high" },
+        { "startModule": 3, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Prises salon", "circuitRef": "B", "confidence": "high" },
+        { "startModule": 4, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 10, "curve": "B", "residualCurrentmA": null, "rcdType": null, "label": "Ecl. ch.7", "circuitRef": "C", "confidence": "medium" },
+        { "startModule": 5, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 16, "curve": null, "residualCurrentmA": null, "rcdType": null, "label": null, "circuitRef": "D", "confidence": "low" },
+        { "startModule": 6, "widthModules": 1, "kind": "contactor", "brand": null, "model": null, "poles": null, "ratedCurrentA": null, "curve": null, "residualCurrentmA": null, "rcdType": null, "label": "TL hall", "circuitRef": null, "confidence": "low" }
+      ]
+    }
+  ],
+  "notes": "Lecture SIMULÉE, écrite à la main pour l'exemple (erreurs volontaires : étiquette « ch.7 », calibre 16 A inventé sur un illisible)."
+}

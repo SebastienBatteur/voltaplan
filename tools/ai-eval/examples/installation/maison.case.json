@@ -1,0 +1,23 @@
+{
+  "format": "voltaplan-ai-eval-case/1",
+  "notes": "Installation SYNTHÉTIQUE inventée (aucune photo) : tableau principal (2 rangées, 3 photos dont un gros plan) et sous-tableau du garage.",
+  "boards": [
+    {
+      "id": "principal",
+      "name": "Tableau principal",
+      "photos": [
+        { "truth": "principal-r1.truth.json" },
+        { "truth": "principal-r2.truth.json", "offset": { "row": 1, "module": 0 } },
+        { "truth": "principal-r1-partielle.truth.json", "offset": { "row": 0, "module": 2 } }
+      ],
+      "upstream": { "r0m0": null, "r0m2": "r0m0", "r0m3": "r0m0", "r0m4": "r0m0", "r0m5": "r0m0", "r1m0": null, "r1m2": "r1m0", "r1m3": "r1m0" }
+    },
+    {
+      "id": "garage",
+      "name": "Garage",
+      "photos": [{ "truth": "garage.truth.json" }],
+      "upstream": { "r0m0": null, "r0m1": null },
+      "fedBy": { "board": "principal", "at": "r1m3" }
+    }
+  ]
+}

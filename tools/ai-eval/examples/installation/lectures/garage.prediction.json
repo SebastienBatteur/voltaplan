@@ -1,0 +1,12 @@
+{
+  "rows": [
+    {
+      "row": 0,
+      "devices": [
+        { "startModule": 0, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "Prises garage", "circuitRef": null, "confidence": "high" },
+        { "startModule": 1, "widthModules": 1, "kind": "mcb", "brand": null, "model": null, "poles": null, "ratedCurrentA": 10, "curve": "B", "residualCurrentmA": null, "rcdType": null, "label": "Ecl. garage", "circuitRef": null, "confidence": "high" }
+      ]
+    }
+  ],
+  "notes": "Lecture SIMULÉE, écrite à la main pour l'exemple (sans erreur)."
+}

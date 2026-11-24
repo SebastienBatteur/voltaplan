@@ -1,0 +1,15 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "principal-r1-partielle.jpg",
+  "composed": true,
+  "rows": 1,
+  "perRow": 4,
+  "lang": "fr",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo) : gros plan des modules 2 à 5 de la rangée 1 (décalage de 2 modules dans le cas).",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "label": "Prises cuisine", "circuitRef": "A" },
+    { "row": 0, "startModule": 1, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 16, "curve": "C", "label": "Prises salon", "circuitRef": "B" },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 10, "curve": "B", "label": "Ecl. ch.1", "circuitRef": "C" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": null, "curve": null, "label": null, "circuitRef": "D", "unreadable": ["ratedCurrentA", "curve", "label"] }
+  ]
+}

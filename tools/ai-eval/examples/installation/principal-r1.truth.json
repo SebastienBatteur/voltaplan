@@ -1,0 +1,17 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "principal-r1.jpg",
+  "composed": true,
+  "rows": 1,
+  "perRow": 12,
+  "lang": "fr",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo) : rangée 1 du tableau principal.",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 2, "kind": "rcd", "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 300, "rcdType": "A", "poles": "2P", "label": "A-D", "circuitRef": null },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "poles": "1P+N", "label": "Prises cuisine", "circuitRef": "A" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "label": "Prises salon", "circuitRef": "B" },
+    { "row": 0, "startModule": 4, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 10, "curve": "B", "residualCurrentmA": null, "label": "Ecl. ch.1", "circuitRef": "C" },
+    { "row": 0, "startModule": 5, "widthModules": 1, "kind": "mcb", "ratedCurrentA": null, "curve": null, "residualCurrentmA": null, "label": null, "circuitRef": "D", "unreadable": ["ratedCurrentA", "curve", "label"] },
+    { "row": 0, "startModule": 6, "widthModules": 1, "kind": "teleswitch", "label": "TL hall", "unsure": ["label"] }
+  ]
+}

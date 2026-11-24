@@ -20,4 +20,5 @@ test/fixtures/*.png
 
 # Banc d'évaluation de l'IA : corpus de photos et rapports, jamais publiés
 tools/ai-eval/corpus/
+tools/ai-eval/resultats/
 rapport-evaluation.md

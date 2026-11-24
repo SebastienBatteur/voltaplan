@@ -1,0 +1,13 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "garage.jpg",
+  "composed": true,
+  "rows": 1,
+  "perRow": 6,
+  "lang": "fr",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo) : sous-tableau du garage, sans différentiel.",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 16, "curve": "C", "label": "Prises garage", "circuitRef": null },
+    { "row": 0, "startModule": 1, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 10, "curve": "B", "label": "Ecl. garage", "circuitRef": null }
+  ]
+}
