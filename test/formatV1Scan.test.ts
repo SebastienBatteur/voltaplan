@@ -75,7 +75,11 @@ describe('lecture v1 par tranches (scanV1)', () => {
 
   it('échappements \\/ et retours à la ligne base64 acceptés ; \\u et caractère inattendu : repli (null)', async () => {
     const bytes = jpeg(5, 600);
-    const wrapped = b64(bytes).replace(/\//g, '\\/').replace(/(.{76})/g, '$1\\n');
+    // JSON écrit par un autre outil : « / » échappé en « \/ », base64 coupé en lignes de 76 caractères (« \n »)
+    const lines: string[] = [];
+    const plain = b64(bytes);
+    for (let i = 0; i < plain.length; i += 76) lines.push([...plain.slice(i, i + 76)].map((ch) => (ch === '/' ? '\\/' : ch)).join(''));
+    const wrapped = lines.join('\\n');
     const r = (await scanV1(new Blob([`{"a":"data:image/jpeg;base64,${wrapped}"}`]), 5))!;
     expect(await blobBytes([...r.images.values()][0])).toEqual(bytes);
     expect(await scanV1(new Blob(['{"a":"data:image/png;base64,AAAA\\u0041"}']))).toBeNull();
