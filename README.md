@@ -4,7 +4,7 @@ Application **gratuite et open source** de création de schémas électriques �
 
 **Gratuite, sans publicité, sans compte, sans serveur** : vos projets restent sur votre appareil ou dans votre propre stockage (fichier, OneDrive, Google Drive, Dropbox, GitHub). L'IA est facultative, avec votre propre clé ou un modèle local. Fonctionne hors connexion.
 
-**En ligne** : https://voltaplan.org (guide et application). **Soutenir le projet** (facultatif) : bouton *Sponsor* du dépôt.
+**En ligne** : https://voltaplan.org (guide et application). **Soutenir le projet** (facultatif) : [GitHub Sponsors](https://github.com/sponsors/SebastienBatteur).
 
 > ⚠️ **Aide à la vérification, pas de certification.** Les vérifications RGIE ne remplacent ni le texte officiel du RGIE ni le contrôle par un organisme agréé. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée **parmi les règles vérifiées**, avec les informations saisies. Voir [les conditions d'utilisation](https://voltaplan.org/terms.html) et [la politique de confidentialité](https://voltaplan.org/privacy.html).
 
@@ -149,7 +149,7 @@ Contributions bienvenues : code, **signalement d'une règle RGIE incorrecte**, t
 
 ## Soutenir Voltaplan
 
-Voltaplan est et restera **entièrement gratuit**, sans fonction réservée. Un don est **facultatif** et ne débloque rien : il aide à couvrir le temps de maintenance et de relecture réglementaire. Bouton *Sponsor* du dépôt (GitHub Sponsors).
+Voltaplan est et restera **entièrement gratuit**, sans fonction réservée. Un don est **facultatif** et ne débloque rien : il aide à couvrir le temps de maintenance et de relecture réglementaire. [Devenir sponsor sur GitHub](https://github.com/sponsors/SebastienBatteur).
 
 ## Sécurité
 

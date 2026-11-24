@@ -2037,3 +2037,8 @@ body.resizing-h * {
     display: none;
   }
 }
+
+/* Lien GitHub Sponsors (pied de page et menu « ⋯ ») */
+.sponsor-link span {
+  color: #db61a2;
+}

@@ -6,10 +6,10 @@ const SITE = 'https://voltaplan.org/';
 const PREFIX: Record<Lang, string> = { fr: '', nl: 'nl/', en: 'en/', de: 'en/' };
 
 addMessages({
-  fr: { 'legal.privacy': 'Confidentialité', 'legal.terms': 'Conditions d’utilisation', 'legal.source': 'Code source' },
-  nl: { 'legal.privacy': 'Privacy', 'legal.terms': 'Gebruiksvoorwaarden', 'legal.source': 'Broncode' },
-  en: { 'legal.privacy': 'Privacy', 'legal.terms': 'Terms of use', 'legal.source': 'Source code' },
-  de: { 'legal.privacy': 'Datenschutz (EN)', 'legal.terms': 'Nutzungsbedingungen (EN)', 'legal.source': 'Quellcode' },
+  fr: { 'legal.privacy': 'Confidentialité', 'legal.terms': 'Conditions d’utilisation', 'legal.source': 'Code source', 'legal.sponsor': 'Soutenir', 'legal.sponsorHelp': 'Soutenir Voltaplan sur GitHub Sponsors (facultatif, ne débloque rien)' },
+  nl: { 'legal.privacy': 'Privacy', 'legal.terms': 'Gebruiksvoorwaarden', 'legal.source': 'Broncode', 'legal.sponsor': 'Steunen', 'legal.sponsorHelp': 'Voltaplan steunen via GitHub Sponsors (vrijblijvend, ontgrendelt niets)' },
+  en: { 'legal.privacy': 'Privacy', 'legal.terms': 'Terms of use', 'legal.source': 'Source code', 'legal.sponsor': 'Sponsor', 'legal.sponsorHelp': 'Sponsor Voltaplan on GitHub Sponsors (optional, unlocks nothing)' },
+  de: { 'legal.privacy': 'Datenschutz (EN)', 'legal.terms': 'Nutzungsbedingungen (EN)', 'legal.source': 'Quellcode', 'legal.sponsor': 'Unterstützen', 'legal.sponsorHelp': 'Voltaplan über GitHub Sponsors unterstützen (freiwillig, schaltet nichts frei)' },
 });
 
 export function legalUrls(lang: Lang) {
@@ -18,6 +18,7 @@ export function legalUrls(lang: Lang) {
 }
 
 const SOURCE = 'https://github.com/SebastienBatteur/voltaplan';
+const SPONSOR = 'https://github.com/sponsors/SebastienBatteur';
 
 /** Liens légaux ; `menu` : entrées du menu « ⋯ » de la barre compacte (le pied de page y est masqué). */
 export function LegalLinks({ menu }: { menu?: boolean }) {
@@ -36,6 +37,10 @@ export function LegalLinks({ menu }: { menu?: boolean }) {
       <a href={SOURCE} target="_blank" rel="noopener" role={role}>
         {t('legal.source')}
         {menu ? ' (AGPL-3.0)' : ''}
+      </a>
+      {/* Lien simple (pas de cadre GitHub intégré) : aucune requête vers un tiers avant le clic */}
+      <a className="sponsor-link" href={SPONSOR} target="_blank" rel="noopener" role={role} title={t('legal.sponsorHelp')}>
+        <span aria-hidden="true">♥</span> {t('legal.sponsor')}
       </a>
     </>
   );

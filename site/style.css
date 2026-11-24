@@ -257,3 +257,66 @@ footer {
     background: var(--panel);
   }
 }
+
+/* GitHub Sponsors : liens locaux (aucun contenu tiers chargé par la page) */
+.btn.sponsor {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text);
+}
+.btn.sponsor svg {
+  color: #db61a2;
+  flex: none;
+}
+.btn.sponsor:hover,
+.btn.sponsor:focus-visible {
+  border-color: #db61a2;
+}
+.btn.sponsor.big {
+  padding: 12px 22px;
+  font-size: 1.05em;
+}
+.sponsor-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px 32px;
+  align-items: center;
+  margin: 32px 0 8px;
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--panel);
+}
+.sponsor-card h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 1.25em;
+}
+.sponsor-card h2 svg {
+  color: #db61a2;
+  width: 20px;
+  height: 20px;
+}
+.sponsor-card p {
+  margin: 0;
+}
+.sponsor-cta {
+  text-align: center;
+}
+.sponsor-cta .small {
+  margin-top: 8px;
+  font-size: 0.85em;
+  max-width: 260px;
+}
+@media (max-width: 700px) {
+  .sponsor-card {
+    grid-template-columns: 1fr;
+  }
+  .nav-sponsor-text,
+  .links .btn.sponsor span {
+    display: none;
+  }
+}
