@@ -10,6 +10,9 @@ export interface PropDef {
   default?: PropValue;
 }
 
+/** Local avec baignoire ou douche : non précisé (''), oui, non. */
+export const WET_ROOM_OPTIONS = ['', 'yes', 'no'];
+
 export const PROTECTION_DEVICES = ['mcb', 'rcd', 'rcbo', 'fuse', 'switch'] as const;
 export const POLES = ['1P', '1P+N', '2P', '3P', '3P+N', '4P'] as const;
 export const CABLE_TYPES = ['VOB', 'XVB', 'EXVB', 'VFVB', 'XGB', 'CRVB', 'XFVB', 'H07V-U', 'H07V-K', 'other'] as const;
@@ -66,6 +69,9 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'phase', type: 'enum', options: ['', 'L1', 'L2', 'L3'] },
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'oldPart', type: 'bool' },
+    { key: 'installedOn', type: 'text' },
+    { key: 'installationKind', type: 'enum', options: ['', 'new', 'existing'] },
+    { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'series', type: 'bool' },
     { key: 'reference', type: 'text' },
   ],
@@ -74,6 +80,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'fixedLetter', type: 'text' },
     { key: 'rows', type: 'number', default: 2 },
     { key: 'modulesPerRow', type: 'number', default: 13 },
+    { key: 'installedOn', type: 'text' },
+    { key: 'installationKind', type: 'enum', options: ['', 'new', 'existing'] },
     { key: 'reference', type: 'text' },
   ],
   meter: [
@@ -98,11 +106,13 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'childSafety', type: 'bool', default: true },
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'threePhase', type: 'bool', default: false },
+    { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'reference', type: 'text' },
   ],
   switch: [
     { key: 'switchType', type: 'enum', options: [...SWITCH_TYPES], default: 'single' },
     { key: 'pilotLight', type: 'bool', default: false },
+    { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'signalLamp', type: 'bool' },
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'reference', type: 'text' },
@@ -111,11 +121,13 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'lightType', type: 'enum', options: [...LIGHT_TYPES], default: 'standard' },
     { key: 'count', type: 'number', default: 1 },
     { key: 'splashProof', type: 'bool', default: false },
+    { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'reference', type: 'text' },
   ],
   appliance: [
     { key: 'applianceType', type: 'enum', options: [...APPLIANCE_TYPES], default: 'other' },
     { key: 'power', type: 'number', unit: 'W' },
+    { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
   ],
   domotic: [
     { key: 'name', type: 'text' },

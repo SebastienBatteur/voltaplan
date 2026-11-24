@@ -2,18 +2,20 @@
  * Vérifications RGIE (Belgique) — installations domestiques basse tension.
  *
  * IMPORTANT : ces règles sont une aide. Elles couvrent les points les plus souvent relevés
- * lors des contrôles et ne remplacent ni le texte officiel du RGIE (Livre 1, 2020)
- * ni l'avis de l'organisme agréé. Chaque règle a un id stable (ex. "R-CABLE-PROT")
- * et ses textes (message + conseil) sont dans les fichiers de traduction.
+ * lors des contrôles et ne remplacent ni le texte officiel du RGIE (Livre 1)
+ * ni l'avis de l'organisme agréé. Chaque règle a un id stable (ex. "R-CABLE-PROT"), une fiche de traçabilité
+ * (src/rules/be/catalog.ts) et ses textes (message + conseil) dans les fichiers de traduction.
  *
- * Sévérité :
- *  - installation neuve (nouveau RGIE) : non-conformité = « error » → bloque l'export du dossier ;
- *  - installation existante / ancien RGIE : non-conformité = « warning » (non bloquant) + conseil de mise en conformité.
+ * Les règles relèvent des constats bruts ; leur statut (non conforme, recommandation, dérogation…), leur caractère
+ * bloquant et leur sévérité affichée sont décidés ensuite selon la partie d'installation concernée
+ * (édition applicable, neuve ou existante) : voir src/rules/context.ts.
  */
 import type { ElNode, Project } from '../../model/types';
 import { DEDICATED_CIRCUIT_APPLIANCES, RCD30_APPLIANCES } from '../../model/schema';
 import { circuitContent, isCircuit, isRcd } from '../../model/tree';
-import type { Finding, RulePack, Severity } from '../types';
+import type { Finding, FindingStatus, RulePack, Severity } from '../types';
+import { classify, normDate, partContext, projectContext } from '../context';
+import { BE_EDITIONS, BE_RULES } from './catalog';
 import { calcProject } from '../../calc/electrical';
 
 /**
@@ -38,7 +40,8 @@ export function maxProtectionFor(section: number): number | undefined {
   return best;
 }
 
-const WET_ROOM = /salle\s*de\s*bain|sdb|douche|badkamer|bathroom|\bbad\b|wellness|sauna|piscine|zwembad/i;
+/** Noms de pièces évoquant un local avec baignoire ou douche : simple indice, à confirmer (propriété wetRoom). */
+export const WET_ROOM = /salle\s*de\s*bain|sdb|douche|badkamer|bathroom|\bbad\b|wellness|sauna|piscine|zwembad/i;
 const OVERCURRENT = new Set(['mcb', 'rcbo', 'fuse']);
 const LOAD_KINDS = new Set(['socket', 'light', 'appliance', 'motor', 'domotic', 'bell', 'solarPanel', 'inverter']);
 
@@ -72,18 +75,24 @@ function meta_supply(p: Project): string {
   return String(p.meta.supply ?? '');
 }
 
+/** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
+type Raw = Omit<Finding, 'severity'>;
+
 function checkRgie(project: Project): Finding[] {
-  const strict = project.meta.installationKind === 'new' && project.meta.rgieVersion === 'new';
-  const nc: Severity = strict ? 'error' : 'warning'; // non-conformité
-  const findings: Finding[] = [];
-  const add = (ruleId: string, severity: Severity, nodeId?: string, params?: Finding['params']) => findings.push({ ruleId, severity, nodeId, params });
+  const nc: Severity = 'error'; // non-conformité (statut final décidé par classify selon la partie)
+  const raws: Raw[] = [];
+  const add = (ruleId: string, _hint: Severity, nodeId?: string, params?: Finding['params'], extra?: { status?: FindingStatus; inferred?: boolean }) =>
+    raws.push({ ruleId, nodeId, params, ...extra });
 
   const infos = collect(project.roots);
   // 3 × 230 V : réseau triphasé sans neutre (fréquent à Bruxelles et dans les anciens réseaux)
   const noNeutral = /3\s*[x×]\s*230/i.test(meta_supply(project));
   const byId = new Map(infos.map((i) => [i.node.id, i]));
 
-  if (project.meta.rgieVersion === 'old') add('R-OLD-RGIE', 'info');
+  const projCtx = projectContext(project, belgium);
+  if (!projCtx.current) add('R-OLD-RGIE', 'info');
+  const instDate = normDate(project.meta.installationDate);
+  if (instDate && instDate < '2020-06-01' && project.meta.installationKind === 'new') add('R-INSTALL-DATE', 'info', undefined, { date: String(project.meta.installationDate) });
 
   // --- Mentions obligatoires sur les schémas et plans (RGIE 3.1.2.1) ---
   const meta = project.meta;
@@ -155,6 +164,9 @@ function checkRgie(project: Project): Finding[] {
       if (!prot && anyProtection && feedsLoads && !dcSide) add('R-CABLE-NO-OVERCURRENT', nc, node.id);
     }
 
+    // --- Installations particulières : points à vérifier à la main (non automatisés) ---
+    if (node.kind === 'appliance' && node.props.applianceType === 'evCharger') add('R-EV-MANUAL', 'info', node.id);
+
     // --- Prises ---
     if (node.kind === 'socket') {
       if (node.props.earth === false) add('R-SOCKET-EARTH', nc, node.id);
@@ -194,14 +206,22 @@ function checkRgie(project: Project): Finding[] {
 
     // Différentiels
     if (!rcds.length || minRcd > 300) add('R-RCD-MAIN', nc, circuit.id);
-    const wet = WET_ROOM.test(label) || content.some((c) => WET_ROOM.test(text(c)));
+    // Local avec baignoire ou douche : indiqué explicitement (propriété wetRoom) ; un nom de pièce évocateur
+    // n'est qu'un indice, signalé pour vérification tant que la propriété n'est pas renseignée.
+    const nodes = [circuit, ...content];
+    const wet = nodes.some((c) => c.props.wetRoom === 'yes');
+    const wetByName = !wet && nodes.some((c) => c.props.wetRoom !== 'no' && WET_ROOM.test(c === circuit ? label + ' ' + text(c) : text(c)));
     const wetAppliance = appliances.find((a) => RCD30_APPLIANCES.has(String(a.props.applianceType)));
     if ((wet || wetAppliance) && !(minRcd <= 30)) add('R-RCD30', nc, circuit.id, { reason: wet ? 'wetRoom' : String(wetAppliance!.props.applianceType) });
+    else if (wetByName && !(minRcd <= 30)) add('R-WETROOM-NAME', 'info', circuit.id, undefined, { inferred: true });
     if (wetAppliance) {
       const rcd30 = rcds.find((r) => (n(r.props.residualCurrent) ?? Infinity) <= 30);
       if (rcd30 && rcd30.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, rcd30.id);
     }
   }
+
+  const pv = infos.find((i) => i.node.kind === 'inverter' || i.node.kind === 'solarPanel');
+  if (pv) add('R-PV-MANUAL', 'info', pv.node.id);
 
   // --- Calculs (longueurs connues) : chute de tension et protection contre les courts-circuits ---
   for (const c of calcProject(project)) {
@@ -210,14 +230,18 @@ function checkRgie(project: Project): Finding[] {
       add('R-ICC-LMAX', 'warning', c.circuitId, { length: c.length ?? 0, lmax: c.lmax ?? 0, icc: c.iccMin, magnetic: c.magnetic });
   }
 
-  // Une même règle sur un même nœud une seule fois
+  // Une même règle sur un même nœud une seule fois, puis classement selon la partie concernée
   const seen = new Set<string>();
-  return findings.filter((f) => {
-    const k = f.ruleId + '|' + (f.nodeId ?? '');
-    if (seen.has(k)) return false;
+  const out: Finding[] = [];
+  for (const raw of raws) {
+    const k = raw.ruleId + '|' + (raw.nodeId ?? '');
+    if (seen.has(k)) continue;
     seen.add(k);
-    return true;
-  });
+    const info = raw.nodeId ? byId.get(raw.nodeId) : undefined;
+    const ctx = info ? partContext(project, belgium, [...info.ancestors, info.node]) : projCtx;
+    out.push(classify(raw, BE_RULES[raw.ruleId], ctx, project.meta.derogations));
+  }
+  return out;
 }
 
 /**
@@ -229,6 +253,8 @@ export const belgium: RulePack = {
   country: 'BE',
   label: { fr: 'Belgique — RGIE (Livre 1)', nl: 'België — AREI (Boek 1)', en: 'Belgium — RGIE (Book 1)', de: 'Belgien — AREI (Buch 1)' },
   versions: ['new', 'old'],
+  editions: BE_EDITIONS,
+  rules: BE_RULES,
   check: checkRgie,
   // Désignations belges des câbles (NBN) → équivalent harmonisé CENELEC quand il existe
   equivalents: {

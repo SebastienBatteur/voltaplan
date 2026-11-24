@@ -468,24 +468,34 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
   }
 
   if (sec.checks && ctx.findings.length) {
-    const order = { error: 0, warning: 1, info: 2 } as const;
-    const sorted = [...ctx.findings].sort((a, b) => order[a.severity] - order[b.severity]);
-    pages.push({
-      kind: t('print.checks'),
-      body: (
-        <table className="print-table">
-          <tbody>
-            {sorted.slice(0, format === 'A3' ? 34 : 22).map((f, i) => (
-              <tr key={i}>
-                <td className="b">{t('severity.' + f.severity)}</td>
-                <td>{f.nodeId ? numbering.get(f.nodeId) ?? '' : ''}</td>
-                <td>{t('rule.' + f.ruleId, f.params as Record<string, string | number>)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ),
-    });
+    // Tous les constats, sur autant de pages que nécessaire (bloquants d'abord, puis par statut)
+    const rank = (f: Finding) => (f.blocking ? 0 : 10) + ['nonCompliant', 'insufficientData', 'warning', 'manualCheck', 'recommendation', 'derogation', 'notApplicable'].indexOf(f.status ?? 'warning');
+    const sorted = [...ctx.findings].sort((a, b) => rank(a) - rank(b));
+    const per = format === 'A3' ? 34 : 22;
+    for (let i = 0; i < sorted.length; i += per)
+      pages.push({
+        kind: t('print.checks'),
+        body: (
+          <table className="print-table">
+            <tbody>
+              {sorted.slice(i, i + per).map((f, j) => (
+                <tr key={j}>
+                  <td className="b">
+                    {t('status.' + (f.status ?? 'warning'))}
+                    {f.blocking ? ' · ' + t('status.blocking') : ''}
+                  </td>
+                  <td>{f.nodeId ? numbering.get(f.nodeId) ?? '' : ''}</td>
+                  <td>
+                    {t('rule.' + f.ruleId, f.params as Record<string, string | number>)}
+                    {f.derogation ? ' — ' + t('status.derogation') + ' : ' + f.derogation.reason + (f.derogation.reference ? ' (' + f.derogation.reference + ')' : '') : ''}
+                  </td>
+                  <td className="small">{f.ruleId}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ),
+      });
   }
   return pages;
 }

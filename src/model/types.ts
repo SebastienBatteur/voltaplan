@@ -93,6 +93,13 @@ export interface ProjectMeta {
   /** Sens de l'unifilaire : 'up' (défaut, alimentation en bas comme la figure 3.1 du RGIE) ou 'down'. */
   unifilarDirection?: 'up' | 'down';
   rgieVersion: RgieVersion;
+  /**
+   * Date de réalisation de l'installation (ISO ou « AAAA »). Détermine l'édition du référentiel applicable
+   * (prioritaire sur rgieVersion) ; une partie peut avoir sa propre date (propriété `installedOn`).
+   */
+  installationDate?: string;
+  /** Dérogations applicables, saisies et justifiées par l'utilisateur (voir src/rules/types.ts). */
+  derogations?: { ruleId: string; nodeId?: string; reason: string; reference?: string }[];
   /** Éléments connus à la dernière « Mise à jour » (src/model/sync.ts) : les autres sont nouveaux. */
   syncedIds?: string[];
 }

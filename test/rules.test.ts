@@ -24,12 +24,20 @@ describe('référentiels par pays', () => {
     try {
       const p = emptyProject();
       p.meta.ruleset = 'XX-DEMO';
-      expect(checkProject(p)).toEqual([{ ruleId: 'XX-1', severity: 'warning' }]);
+      expect(checkProject(p)).toEqual([{ ruleId: 'XX-1', severity: 'warning', status: 'warning', blocking: false }]);
       expect(translate('fr', 'rule.XX-1')).toBe('Règle de démonstration');
       expect(translate('nl', 'rule.XX-1')).toBe('Règle de démonstration'); // repli sur le français
     } finally {
       RULE_PACKS.pop();
     }
+  });
+});
+
+describe('référentiel inconnu', () => {
+  it("n'applique pas en silence les règles belges", () => {
+    const p = emptyProject();
+    p.meta.ruleset = 'FR-NFC15100';
+    expect(checkProject(p)).toEqual([expect.objectContaining({ ruleId: 'R-RULESET-UNKNOWN', blocking: true })]);
   });
 });
 

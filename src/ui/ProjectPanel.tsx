@@ -2,7 +2,7 @@ import { useDerived } from './derived';
 import { walk } from '../model/tree';
 import type { ElNode } from '../model/types';
 import type { Revision } from '../model/types';
-import { RULE_PACKS, getRulePack, packLabel } from '../rules';
+import { RULE_PACKS, findRulePack, getRulePack, packLabel, projectContext } from '../rules';
 import { useStore } from '../store';
 import type { Address } from '../model/types';
 
@@ -77,6 +77,13 @@ export function ProjectPanel() {
             <input type="radio" checked={meta.rgieVersion === k} onChange={() => setMeta({ rgieVersion: k })} /> {t('project.rgieVersion.' + k)}
           </label>
         ))}
+        <label className="field">
+          <span>{t('project.installationDate')}</span>
+          <input value={meta.installationDate ?? ''} placeholder="2024-03-15" onChange={(e) => setMeta({ installationDate: e.target.value || undefined })} />
+        </label>
+        <p className="muted small">
+          {t('project.installationDateHelp')} <EditionApplied />
+        </p>
       </fieldset>
 
       <fieldset>
@@ -251,4 +258,15 @@ export function ProjectPanel() {
       </fieldset>
     </div>
   );
+}
+
+/** Édition du référentiel applicable au projet (d'après la date, sinon le choix ci-dessus). */
+function EditionApplied() {
+  const t = useStore((s) => s.t);
+  const lang = useStore((s) => s.lang);
+  const project = useStore((s) => s.project);
+  const pack = findRulePack(project.meta.ruleset);
+  const e = pack?.editions?.find((x) => x.id === projectContext(project, pack).edition);
+  if (!e) return null;
+  return <strong>{t('project.editionApplied', { edition: e.label[lang] ?? e.label.en ?? e.id })}</strong>;
 }

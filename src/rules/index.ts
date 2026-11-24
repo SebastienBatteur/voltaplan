@@ -7,16 +7,28 @@ import { walk } from '../model/tree';
 import { addMessages, type Lang } from '../i18n';
 import { belgium } from './be/rgie';
 import type { Finding, RulePack, Severity } from './types';
+import { classify, partContext, projectContext } from './context';
+import { ancestors } from '../model/tree';
 
-export type { Finding, RulePack, Severity } from './types';
+export type { Derogation, Edition, Finding, FindingStatus, Hazard, RuleMeta, RulePack, Severity } from './types';
+export { severityOf } from './context';
 
 export const RULE_PACKS: RulePack[] = [belgium];
 export const DEFAULT_RULE_PACK = belgium.id;
 
 for (const p of RULE_PACKS) if (p.messages) addMessages(p.messages);
 
+/** Référentiel du projet : absent = Belgique (défaut historique) ; inconnu = undefined (jamais de repli silencieux). */
+export function findRulePack(id: string | undefined): RulePack | undefined {
+  return RULE_PACKS.find((p) => p.id === (id || DEFAULT_RULE_PACK));
+}
+
+/**
+ * Référentiel pour l'affichage (listes de choix, libellés). Un id inconnu retombe sur la Belgique pour l'interface
+ * seulement : le contrôle (checkProject) signale, lui, le référentiel inconnu et n'applique aucune règle.
+ */
 export function getRulePack(id: string | undefined): RulePack {
-  return RULE_PACKS.find((p) => p.id === id) ?? belgium;
+  return findRulePack(id) ?? belgium;
 }
 
 export function packLabel(p: RulePack, lang: Lang): string {
@@ -25,8 +37,12 @@ export function packLabel(p: RulePack, lang: Lang): string {
 
 /** Contrôle du projet selon son référentiel (Belgique par défaut). */
 export function checkProject(project: Project): Finding[] {
-  const pack = getRulePack(project.meta.ruleset);
-  return [...pack.check(project), ...countryOptionFindings(project, pack)];
+  const pack = findRulePack(project.meta.ruleset);
+  if (!pack)
+    return [{ ruleId: 'R-RULESET-UNKNOWN', severity: 'error', status: 'nonCompliant', blocking: true, hazard: 'none', params: { id: String(project.meta.ruleset) } }];
+  // Un référentiel tiers qui ne fournit que la sévérité reste accepté : le statut en est déduit.
+  const own = pack.check(project).map((f) => (f.status ? f : { ...f, status: f.severity === 'error' ? 'nonCompliant' : f.severity === 'warning' ? 'warning' : 'recommendation', blocking: f.severity === 'error' } as Finding));
+  return [...own, ...countryOptionFindings(project, pack)];
 }
 
 /**
@@ -42,14 +58,23 @@ export function countryOptionFindings(project: Project, pack: RulePack): Finding
     for (const [key, allowed] of Object.entries(opts)) {
       const v = node.props[key];
       if (allowed && v !== undefined && v !== '' && !allowed.includes(String(v)))
-        out.push({ ruleId: 'R-COUNTRY-OPTION', severity: 'warning', nodeId: node.id, params: { prop: key, value: String(v), country: pack.country } });
+        out.push(
+          classify(
+            { ruleId: 'R-COUNTRY-OPTION', nodeId: node.id, params: { prop: key, value: String(v), country: pack.country } },
+            pack.rules?.['R-COUNTRY-OPTION'] ?? { id: 'R-COUNTRY-OPTION', kind: 'warning', hazard: 'none' },
+            partContext(project, pack, [...ancestors(project.roots, node.id), node]),
+            project.meta?.derogations,
+          ),
+        );
     }
   return out;
 }
 
 export function isBlocking(findings: Finding[]): boolean {
-  return findings.some((f) => f.severity === 'error');
+  return findings.some((f) => f.blocking ?? f.severity === 'error');
 }
+
+export { projectContext };
 
 /** Pour les tests et le rapport : nombre de constats par sévérité. */
 export function summarize(findings: Finding[]): Record<Severity, number> {

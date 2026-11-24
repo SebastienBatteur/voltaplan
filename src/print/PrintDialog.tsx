@@ -14,9 +14,8 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
   const t = useStore((s) => s.t);
   const project = useStore((s) => s.project);
   const { labelFn, numbering, findings } = useDerived();
-  const errors = findings.filter((f) => f.severity === 'error').length;
-  const strict = project.meta.installationKind === 'new' && project.meta.rgieVersion === 'new';
-  const draft = strict && errors > 0;
+  // Constats bloquants (sécurité, ou installation neuve) : le dossier porte la mention « PROJET — NON CONFORME ».
+  const draft = findings.some((f) => f.blocking);
   const [format, setFormat] = useState<PaperFormat>('A4');
   const [sections, setSections] = useState<PrintSections>({
     unifilar: true,
@@ -69,7 +68,7 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
             ))}
           </div>
         </div>
-        {draft && <div className="banner error">{t('print.draftWarning', { n: errors })}</div>}
+        {draft && <div className="banner error">{t('print.draftWarning', { n: findings.filter((f) => f.blocking).length })}</div>}
         <p className="muted small">{t('print.help')}</p>
         <div className="print-preview">
           <div className="print-preview-inner">

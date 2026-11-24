@@ -5,12 +5,12 @@ Statuts : À analyser · Confirmé · En cours · Implémenté · Testé · Term
 | Tâche | Prio | Constat | Statut | Commit | Limitations restantes |
 |---|---|---|---|---|---|
 | T-0 Audit et plan | — | — | Terminé | (ce commit) | — |
-| T-1.1 Éditions et contexte réglementaire | P1 | A-1.1 | Confirmé | | |
-| T-1.2 Statuts des constats | P1 | A-1.2 | Confirmé | | |
-| T-1.3 Catalogue des règles | P1 | A-1.3 | Confirmé | | |
-| T-1.4 Locaux humides structurés | P1 | A-1.4 | Confirmé | | |
-| T-1.5 Référentiel inconnu | P1 | A-1.5 | Confirmé | | |
-| T-1.6 Matrice de tests réglementaires | P1 | A-1.6 | Confirmé | | |
+| T-1.1 Éditions et contexte réglementaire | P1 | A-1.1 | Testé | (lot 1)| |
+| T-1.2 Statuts des constats | P1 | A-1.2 | Testé | (lot 1)| |
+| T-1.3 Catalogue des règles | P1 | A-1.3 | Testé | (lot 1)| |
+| T-1.4 Locaux humides structurés | P1 | A-1.4 | Testé | (lot 1)| |
+| T-1.5 Référentiel inconnu | P1 | A-1.5 | Testé | (lot 1)| |
+| T-1.6 Matrice de tests réglementaires | P1 | A-1.6 | Testé | (lot 1)| |
 | T-2.1 Références orphelines | P2 | A-2.1 | Confirmé | | |
 | T-2.2 Validation et migration des fichiers | P2 | A-2.2, A-2.3 | Confirmé | | |
 | T-2.3 Contrôle d'intégrité | P2 | A-2.4 | Confirmé | | |

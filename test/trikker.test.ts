@@ -45,7 +45,10 @@ it('maison-a : lave-vaisselle partagé = circuit spécialisé manquant', () => {
   const { project } = importTrikker(readFileSync('test/fixtures/maison-a.trik', 'utf8'));
   const f = checkProject(project);
   expect(f.some((x) => x.ruleId === 'R-DEDICATED-CIRCUIT' && x.params?.appliance === 'dishwasher')).toBe(true);
-  // En installation existante : plus rien de bloquant
+  // En installation existante : le circuit spécialisé devient une recommandation (non bloquante) ;
+  // seules les règles de sécurité (gravité élevée) restent bloquantes.
   project.meta.installationKind = 'existing';
-  expect(checkProject(project).some((x) => x.severity === 'error')).toBe(false);
+  const after = checkProject(project);
+  expect(after.find((x) => x.ruleId === 'R-DEDICATED-CIRCUIT')).toMatchObject({ status: 'recommendation', blocking: false });
+  expect(after.filter((x) => x.blocking).every((x) => x.hazard === 'high')).toBe(true);
 });

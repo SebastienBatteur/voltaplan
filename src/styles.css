@@ -581,6 +581,41 @@ main {
 .badge.warning {
   background: var(--warning);
 }
+.hazard {
+  font-size: 11px;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+}
+.hazard.high {
+  color: var(--error);
+}
+.hazard.medium {
+  color: var(--warning);
+}
+.hazard.low {
+  color: var(--muted);
+}
+.finding-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.finding-actions button {
+  font-size: 11px;
+  padding: 1px 6px;
+}
+.derogation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+.derogation-list {
+  padding-left: 18px;
+  font-size: 12px;
+}
 .advice {
   color: var(--muted);
   font-size: 12px;
