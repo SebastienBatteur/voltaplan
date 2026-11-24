@@ -23,6 +23,13 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 ### IA
 - Fournisseur au choix : Anthropic, API compatible OpenAI (OpenAI, Gemini, Mistral), modèles locaux (Ollama, LM Studio) sans clé.
 
+### Application de bureau (Tauri)
+- Première compilation réelle (CI) : Windows, macOS (Apple Silicon et Intel) et Linux. État, risques et recommandations : [docs/desktop-tauri.md](docs/desktop-tauri.md).
+- `release.yml` échouait avant toute compilation (script npm `tauri` absent) : corrigé.
+- Nouveau workflow `desktop-build.yml` : construction sans publication (manuelle et sur les demandes de fusion touchant `src-tauri` ou les paquets npm), cache Rust.
+- `Cargo.lock` versionné et vérifié ; `@tauri-apps/plugin-fs` aligné sur la crate (2.7.1) ; Dependabot regroupe les mises à jour Tauri.
+- Droit `core:webview:allow-print` : sur macOS, l'impression du dossier était refusée sans lui.
+
 ### Sécurité
 - CSP, tailles maximales à l'import, fichiers XML avec DTD refusés, images limitées aux images intégrées, ESLint, audit des dépendances, CodeQL, Dependabot, recherche de secrets.
 
