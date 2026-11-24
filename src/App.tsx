@@ -22,7 +22,8 @@ import { conflictName } from './io/conflict';
 import { VersionsDialog } from './ui/VersionsDialog';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
 import { useEffect, useRef, useState } from 'react';
-import { onUpdate } from './appUpdate';
+import { isReloadingForUpdate } from './appUpdate';
+import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
 import { useStore, type View } from './store';
 import { LANGS, type Lang } from './i18n';
 import { UnifilarView } from './ui/UnifilarView';
@@ -228,7 +229,8 @@ export function App() {
   // Avertir avant de fermer avec des modifications
   useEffect(() => {
     const onBefore = (e: BeforeUnloadEvent) => {
-      if (useStore.getState().dirty) e.preventDefault();
+      // Rechargement pour une nouvelle version : le brouillon vient d'être gardé (src/ui/UpdateBanner.tsx)
+      if (useStore.getState().dirty && !isReloadingForUpdate()) e.preventDefault();
     };
     window.addEventListener('beforeunload', onBefore);
     return () => window.removeEventListener('beforeunload', onBefore);
@@ -244,9 +246,6 @@ export function App() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ id: string; name: string; updated: string; data: string; others: number } | null>(null);
-  // Nouvelle version publiée pendant que la page est ouverte (src/appUpdate.ts)
-  const [updateReady, setUpdateReady] = useState(false);
-  useEffect(() => onUpdate(() => setUpdateReady(true)), []);
 
   // Brouillon automatique dans le navigateur, un par onglet (toutes les 20 s s'il y a des modifications, et quand
   // l'onglet passe en arrière-plan ou se ferme). Au démarrage, les brouillons d'onglets fermés ou interrompus
@@ -343,6 +342,7 @@ export function App() {
             {saveState.kind === 'error' && '✕ ' + t('save.state.error')}
           </span>
         )}
+        <OfflineBadge />
         <button
           onClick={() => setAiOpen(true)}
           className={aiUnlocked ? 'ai-on' : undefined}
@@ -426,15 +426,7 @@ export function App() {
           </button>
         </div>
       )}
-      {updateReady && (
-        <div className="toast">
-          {t('app.updateReady')}{' '}
-          <button className="primary" onClick={() => window.location.reload()}>
-            {t('app.reload')}
-          </button>{' '}
-          <button onClick={() => setUpdateReady(false)}>✕</button>
-        </div>
-      )}
+      <UpdateBanner />
       {recover && (
         <div className="toast">
           {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}

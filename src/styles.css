@@ -78,6 +78,16 @@ button.primary {
   color: #fff;
 }
 /* Bouton ⚙ IA : clé déverrouillée, l'IA est prête */
+/* Hors ligne : repère près du bouton IA (src/ui/UpdateBanner.tsx) */
+.offline-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: help;
+  white-space: nowrap;
+}
 button.ai-on {
   background: var(--ok);
   border-color: var(--ok);

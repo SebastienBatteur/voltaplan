@@ -24,6 +24,11 @@ export default tseslint.config(
     },
   },
   {
+    // Modèle du service worker (script classique, voir vite.config.ts)
+    files: ['src/sw/*.js'],
+    languageOptions: { ecmaVersion: 2022, sourceType: 'script', globals: { ...globals.serviceworker } },
+  },
+  {
     files: ['test/**/*.ts'],
     languageOptions: { globals: { ...globals.vitest } },
   },
