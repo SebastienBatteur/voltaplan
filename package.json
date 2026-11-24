@@ -11,6 +11,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "typecheck": "tsc -p .",
+    "lint": "eslint .",
     "desktop": "tauri dev",
     "desktop:build": "tauri build"
   },
@@ -25,13 +26,18 @@
     "zustand": "4.5.5"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@tauri-apps/cli": "2.1.0",
     "@types/node": "^20.17.6",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
     "@vitejs/plugin-react": "4.3.3",
+    "eslint": "10.15.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.14.0",
     "jsdom": "25.0.1",
     "typescript": "5.6.3",
+    "typescript-eslint": "8.74.0",
     "vite": "5.4.11",
     "vitest": "2.1.5"
   }

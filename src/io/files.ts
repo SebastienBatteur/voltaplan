@@ -57,7 +57,7 @@ export interface OpenResult {
  */
 export function decodeText(buf: ArrayBuffer): string {
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(buf).replace(/^﻿/, '');
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf).replace(/^\uFEFF/, '');
   } catch {
     return new TextDecoder('windows-1252').decode(buf);
   }

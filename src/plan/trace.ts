@@ -394,7 +394,10 @@ export function bandGaps(g: Gray, band: { x0: number; y0: number; x1: number; y1
   const sm = prof.map((_, i) => {
     let s = 0;
     let n = 0;
-    for (let k = Math.max(0, i - 2); k <= Math.min(prof.length - 1, i + 2); k++) (s += prof[k]), n++;
+    for (let k = Math.max(0, i - 2); k <= Math.min(prof.length - 1, i + 2); k++) {
+      s += prof[k];
+      n++;
+    }
     return s / n;
   });
   const sorted = [...sm].sort((a, b) => a - b);

@@ -94,12 +94,24 @@ export function App() {
     const onKey = (e: KeyboardEvent) => {
       const typing = ['INPUT', 'SELECT', 'TEXTAREA'].includes((e.target as Element).tagName);
       const mod = e.ctrlKey || e.metaKey;
-      if (mod && e.key.toLowerCase() === 'z' && !typing) (e.preventDefault(), e.shiftKey ? s.redo() : s.undo());
-      else if (mod && e.key.toLowerCase() === 'y' && !typing) (e.preventDefault(), s.redo());
-      else if (mod && e.key.toLowerCase() === 's') (e.preventDefault(), save(e.shiftKey));
-      else if (mod && e.key.toLowerCase() === 'p') (e.preventDefault(), setPrintOpen(true));
-      else if (mod && e.key.toLowerCase() === 'o') (e.preventDefault(), open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(',')));
-      else if (e.key === 'Delete' && !typing && s.selectedId) s.remove(s.selectedId);
+      const key = e.key.toLowerCase();
+      if (mod && key === 'z' && !typing) {
+        e.preventDefault();
+        if (e.shiftKey) s.redo();
+        else s.undo();
+      } else if (mod && key === 'y' && !typing) {
+        e.preventDefault();
+        s.redo();
+      } else if (mod && key === 's') {
+        e.preventDefault();
+        save(e.shiftKey);
+      } else if (mod && key === 'p') {
+        e.preventDefault();
+        setPrintOpen(true);
+      } else if (mod && key === 'o') {
+        e.preventDefault();
+        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
+      } else if (e.key === 'Delete' && !typing && s.selectedId) s.remove(s.selectedId);
       else if (e.key === 'Escape') s.startPlacing(null);
     };
     window.addEventListener('keydown', onKey);

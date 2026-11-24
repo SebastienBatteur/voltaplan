@@ -71,7 +71,7 @@ export const LIGHTS: Record<string, string> = { LED: 'led', TL: 'fluo', Spot: 's
 
 function num(v: string | undefined | null): number | undefined {
   if (v == null || v === '') return undefined;
-  const n = parseFloat(v.replace(',', '.').replace(/[^0-9.\-]/g, ''));
+  const n = parseFloat(v.replace(',', '.').replace(/[^0-9.-]/g, ''));
   return Number.isFinite(n) ? n : undefined;
 }
 

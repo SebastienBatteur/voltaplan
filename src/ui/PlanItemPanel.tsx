@@ -13,7 +13,7 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
   const editPage = useStore((s) => s.editPage);
   const cm = (mm: number) => Math.round(mm / 10);
 
-  let body: JSX.Element | null = null;
+  let body: JSX.Element;
   if (sel.type === 'wall') {
     const w = page.walls[sel.index];
     if (!w) return null;
