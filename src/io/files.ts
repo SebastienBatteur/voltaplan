@@ -1,4 +1,4 @@
-import { APP_NAME, FILE_EXT, FILE_FORMAT, LEGACY_EXTS, LEGACY_FORMATS } from '../brand';
+import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
 /**
  * Ouverture / enregistrement de fichiers locaux.
  * Utilise l'API File System Access quand elle existe (Chrome, Edge : « Enregistrer » réécrit le même fichier),
@@ -7,6 +7,7 @@ import { APP_NAME, FILE_EXT, FILE_FORMAT, LEGACY_EXTS, LEGACY_FORMATS } from '..
  */
 import type { Project } from '../model/types';
 import { importTrikker } from '../import/trikker';
+import { parseProjectText, type MigrationWarning } from '../model/migrate';
 
 export const EXT = FILE_EXT;
 
@@ -45,7 +46,8 @@ export function pickFile(accept: string): Promise<File | null> {
 export interface OpenResult {
   project: Project;
   fileName: string;
-  warnings: string[];
+  /** Avertissements : texte (import Trikker) ou clé de traduction (lecture d'un projet). */
+  warnings: (string | MigrationWarning)[];
 }
 
 /**
@@ -68,10 +70,8 @@ export async function readProjectFile(file: File): Promise<OpenResult> {
     const { project, warnings } = importTrikker(text, file.name);
     return { project, fileName: file.name.replace(/\.trik$/i, EXT), warnings };
   }
-  const data = JSON.parse(text) as Project;
-  if (!LEGACY_FORMATS.includes(data.format) && data.format !== FILE_FORMAT) throw new Error('Format de fichier inconnu.');
-  data.loose ??= [];
-  return { project: data, fileName: file.name, warnings: [] };
+  const { project, warnings } = parseProjectText(text);
+  return { project, fileName: file.name, warnings };
 }
 
 export async function saveProject(project: Project, fileName: string, saveAs = false): Promise<string | null> {

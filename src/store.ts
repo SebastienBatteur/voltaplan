@@ -15,6 +15,7 @@ import {
   updateNode,
 } from './model/tree';
 import { detectLang, translate, type Lang } from './i18n';
+import { pruneReferences } from './model/integrity';
 import { orientSymbols } from './plan/geometry';
 import { isWallMounted } from './unifilar/symbols';
 
@@ -153,19 +154,8 @@ export const useStore = create<State>((set, get) => {
     remove: (id) => {
       const parent = findParent(get().project.roots, id);
       commit((p) => {
-        const ids = new Set<string>();
-        const n = findNode(p.roots, id) ?? findNode(p.loose, id);
-        const rec = (x: ElNode) => {
-          ids.add(x.id);
-          x.children.forEach(rec);
-        };
-        if (n) rec(n);
-        return {
-          ...p,
-          roots: removeNode(p.roots, id),
-          loose: removeNode(p.loose, id),
-          plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.filter((s) => !ids.has(s.nodeId)) })) },
-        };
+        // Retire aussi tout ce qui référence l'élément et ses descendants (plan, tableau, mesures, dérogations…)
+        return pruneReferences({ ...p, roots: removeNode(p.roots, id), loose: removeNode(p.loose, id) });
       });
       set({ selectedId: parent?.id ?? null });
     },

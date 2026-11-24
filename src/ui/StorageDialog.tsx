@@ -1,3 +1,4 @@
+import { errorText } from './errors';
 import { useEffect, useRef, useState } from 'react';
 import { enterClicks } from './enterClicks';
 import { useStore } from '../store';
@@ -73,7 +74,7 @@ export function StorageDialog({
     try {
       await fn();
     } catch (e) {
-      setMsg((e as Error).message);
+      setMsg(errorText(e, t));
     } finally {
       setBusy(false);
     }

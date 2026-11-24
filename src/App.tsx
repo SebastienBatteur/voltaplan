@@ -21,6 +21,7 @@ import { PropsPanel } from './ui/PropsPanel';
 import { ProjectPanel } from './ui/ProjectPanel';
 import { CheckPanel } from './ui/CheckPanel';
 import { useDerived } from './ui/derived';
+import { errorText } from './ui/errors';
 import { pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
 import { emptyProject, walk } from './model/tree';
 
@@ -48,9 +49,9 @@ export function App() {
       location.current = { kind: 'device' };
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
-      setToast({ text: t('import.done', { nodes, symbols }), warnings: r.warnings });
+      setToast({ text: t('import.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
-      setToast({ text: (e as Error).message });
+      setToast({ text: errorText(e, t) });
     }
   };
 
@@ -255,7 +256,7 @@ export function App() {
               try {
                 s.loadProject(parseProject(recover.data), recover.name);
               } catch (e) {
-                setToast({ text: (e as Error).message });
+                setToast({ text: errorText(e, t) });
               }
               setRecover(null);
             }}

@@ -5,8 +5,9 @@
  *  - « GitHub » : fichier dans un dépôt, via l'API GitHub, avec un jeton personnel chiffré localement.
  * Google Drive, OneDrive et Dropbox : voir cloud.ts (identifiant d'application OAuth à enregistrer chez chaque service).
  */
+import { parseProjectText } from '../model/migrate';
 import type { Project } from '../model/types';
-import { FILE_EXT, FILE_FORMAT, LEGACY_FORMATS, STORAGE_PREFIX } from '../brand';
+import { FILE_EXT, STORAGE_PREFIX } from '../brand';
 import type { SealedSecret } from '../ai/secureStore';
 import type { CloudFile, CloudId } from './cloud';
 
@@ -167,10 +168,7 @@ export async function githubSave(token: string, s: GithubSettings, path: string,
 
 /** Lecture d'un projet (texte JSON) quelle que soit sa provenance. */
 export function parseProject(text: string): Project {
-  const data = JSON.parse(text) as Project;
-  if (data.format !== FILE_FORMAT && !LEGACY_FORMATS.includes(data.format)) throw new Error('Format de fichier inconnu.');
-  data.loose ??= [];
-  return data;
+  return parseProjectText(text).project;
 }
 
 export function safeName(name: string): string {
