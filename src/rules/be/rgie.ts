@@ -14,7 +14,7 @@ import type { ElNode, Project } from '../../model/types';
 import { DEDICATED_CIRCUIT_APPLIANCES, RCD30_APPLIANCES } from '../../model/schema';
 import { circuitContent, isCircuit, isRcd } from '../../model/tree';
 import type { Finding, RulePack, Severity } from '../types';
-import { calcProject } from '../../calc/electrical';
+import { calcProject, roundTo } from '../../calc/electrical';
 
 /**
  * Courant maximal de la protection selon la section (cuivre, pose courante encastrée sous tube).
@@ -204,10 +204,20 @@ function checkRgie(project: Project): Finding[] {
   }
 
   // --- Calculs (longueurs connues) : chute de tension et protection contre les courts-circuits ---
+  // Comparaisons sur les valeurs brutes ; arrondi seulement pour le message.
+  // Chute : totale depuis l'origine si l'amont est connu, détaillée si toutes les puissances sont connues
+  // (voir src/calc/electrical.ts) ; un dépassement au calibre non confirmé par le détail reste signalé (info).
   for (const c of calcProject(project)) {
-    if (c.dropPct !== undefined && c.dropPct > c.dropLimit) add('R-VDROP', 'warning', c.circuitId, { value: c.dropPct, max: c.dropLimit, length: c.length ?? 0 });
+    const len = roundTo(c.length, 1) ?? 0;
+    if (c.checkDropPct !== undefined && c.checkDropPct > c.dropLimit)
+      add('R-VDROP', 'warning', c.circuitId, { value: roundTo(c.checkDropPct, 2)!, max: c.dropLimit, length: len });
+    else if (c.method === 'detailed') {
+      const conservative = c.totalDropPct ?? c.dropPct;
+      if (conservative !== undefined && conservative > c.dropLimit)
+        add('R-VDROP-RATING', 'info', c.circuitId, { value: roundTo(conservative, 2)!, detailed: roundTo(c.checkDropPct, 2) ?? 0, max: c.dropLimit });
+    }
     if (c.iccMin !== undefined && c.magnetic !== undefined && c.iccMin < c.magnetic)
-      add('R-ICC-LMAX', 'warning', c.circuitId, { length: c.length ?? 0, lmax: c.lmax ?? 0, icc: c.iccMin, magnetic: c.magnetic });
+      add('R-ICC-LMAX', 'warning', c.circuitId, { length: len, lmax: roundTo(c.lmax, 1) ?? 0, icc: Math.round(c.iccMin), magnetic: c.magnetic });
   }
 
   // Une même règle sur un même nœud une seule fois

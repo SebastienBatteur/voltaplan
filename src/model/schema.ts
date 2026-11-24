@@ -74,6 +74,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'fixedLetter', type: 'text' },
     { key: 'rows', type: 'number', default: 2 },
     { key: 'modulesPerRow', type: 'number', default: 13 },
+    // Facteur de simultanéité (0–1) saisi par l'utilisateur : aucun n'est supposé par défaut
+    { key: 'simultaneity', type: 'number' },
     { key: 'reference', type: 'text' },
   ],
   meter: [
@@ -86,6 +88,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
   cable: [
     { key: 'cableType', type: 'enum', options: [...CABLE_TYPES], default: 'VOB' },
     { key: 'section', type: 'number', unit: 'mm²', default: 2.5 },
+    // Matière de l'âme : absente = cuivre supposé par les calculs (src/calc/electrical.ts)
+    { key: 'material', type: 'enum', options: ['Cu', 'Al'] },
     { key: 'conductors', type: 'number', default: 3 },
     { key: 'inConduit', type: 'bool', default: true },
     { key: 'method', type: 'enum', options: [...INSTALL_METHODS], default: 'inWall' },
@@ -110,12 +114,16 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
   light: [
     { key: 'lightType', type: 'enum', options: [...LIGHT_TYPES], default: 'standard' },
     { key: 'count', type: 'number', default: 1 },
+    // Puissance par luminaire (multipliée par « nombre ») et cos φ : méthode détaillée des calculs
+    { key: 'power', type: 'number', unit: 'W' },
+    { key: 'cosPhi', type: 'number' },
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'reference', type: 'text' },
   ],
   appliance: [
     { key: 'applianceType', type: 'enum', options: [...APPLIANCE_TYPES], default: 'other' },
     { key: 'power', type: 'number', unit: 'W' },
+    { key: 'cosPhi', type: 'number' },
   ],
   domotic: [
     { key: 'name', type: 'text' },
@@ -128,7 +136,10 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'name', type: 'text' },
   ],
   inverter: [{ key: 'power', type: 'number', unit: 'W' }],
-  motor: [{ key: 'power', type: 'number', unit: 'W' }],
+  motor: [
+    { key: 'power', type: 'number', unit: 'W' },
+    { key: 'cosPhi', type: 'number' },
+  ],
   relay: [
     { key: 'relayType', type: 'enum', options: ['relay', 'teleswitch', 'contactor', 'timer'], default: 'relay' },
     { key: 'inBoard', type: 'bool', default: true },
