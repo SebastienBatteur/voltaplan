@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { enterClicks } from './enterClicks';
 import { useStore } from '../store';
 import {
   browserDelete,
@@ -58,6 +59,8 @@ export function StorageDialog({
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const unlocked = getGithubToken();
+  /** Bouton « Déverrouiller » / « Enregistrer la clé » du jeton : Entrée dans ses champs a le même effet. */
+  const tokenBtn = useRef<HTMLButtonElement>(null);
 
   const refresh = () => browserList().then(setItems).catch((e) => setMsg(String(e)));
   useEffect(() => {
@@ -231,14 +234,21 @@ export function StorageDialog({
                 {!gh.token && (
                   <label className="field">
                     <span>{t('storage.token')}</span>
-                    <input type="password" autoComplete="off" value={ghToken} onChange={(e) => setGhTokenInput(e.target.value)} />
+                    <input type="password" autoComplete="off" value={ghToken} onChange={(e) => setGhTokenInput(e.target.value)} onKeyDown={enterClicks(tokenBtn)} />
                   </label>
                 )}
                 <label className="field">
                   <span>{t('ai.passphrase')}</span>
-                  <input type="password" autoComplete="new-password" value={pass} onChange={(e) => setPass(e.target.value)} />
+                  <input
+                    type="password"
+                    autoComplete={gh.token ? 'current-password' : 'new-password'}
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    onKeyDown={enterClicks(tokenBtn)}
+                  />
                 </label>
                 <button
+                  ref={tokenBtn}
                   disabled={busy || pass.length < 8 || (!gh.token && !ghToken)}
                   onClick={() =>
                     run(async () => {
