@@ -105,6 +105,23 @@ const norm = (s: string) =>
     .toLowerCase();
 const compact = (s: string) => norm(s).replace(/[^a-z0-9]/g, '');
 
+/**
+ * Repères de circuits cités sur une étiquette : lettres isolées (« G H I J », « A, B »), éventuellement suivies
+ * d'un chiffre (« B2 »), et plages (« A-F », « A à F », « A→F », « A tot F », « A to F »).
+ */
+export function circuitRefs(label: string): Set<string> {
+  const out = new Set<string>();
+  const txt = label.toUpperCase().replace(/[–—→>]/g, '-');
+  const range = /(?:^|[^A-Z0-9])([A-Z])\s*(?:-|À|TOT|TO|T\/M)\s*([A-Z])(?![A-Z0-9])/g;
+  for (const m of txt.matchAll(range)) {
+    const a = m[1].charCodeAt(0);
+    const b = m[2].charCodeAt(0);
+    if (b > a && b - a < 26) for (let c = a; c <= b; c++) out.add(String.fromCharCode(c));
+  }
+  for (const m of txt.matchAll(/(?:^|[^A-Z0-9])([A-Z]\d{0,2})(?![A-Z0-9])/g)) out.add(m[1]);
+  return out;
+}
+
 /** Marque et modèle lus, en une référence (« Hager MBN116 »). */
 export function readReference(s: PhotoDeviceT): string {
   return [s.brand, s.model].filter((x) => x && x.trim()).join(' ').trim();
@@ -127,6 +144,47 @@ export function protectionFromReading(x: PhotoDeviceT): Record<string, PropValue
   if (ref) p.reference = ref;
   if (x.label) p.circuitName = x.label;
   return p;
+}
+
+/** Caractéristique lue sur la photo, à confirmer avant de l'écrire dans l'unifilaire. */
+export interface Proposal {
+  nodeId: string;
+  prop: 'ratedCurrent' | 'curve' | 'residualCurrent' | 'rcdType' | 'poles';
+  /** Valeur actuelle du projet (null si vide). */
+  from: PropValue | null;
+  to: PropValue;
+}
+
+/**
+ * Caractéristiques lues sur un appareil reconnu : une valeur absente du projet et lue avec une confiance
+ * élevée est sûre (complétée d'office) ; une valeur lue avec peu de confiance, ou différente de celle du
+ * projet, devient une proposition (le projet n'est jamais écrasé sans accord).
+ */
+export function fieldsFromReading(s: PhotoDeviceT, n: ElNode): { sure: Record<string, PropValue>; proposals: Proposal[] } {
+  const sure: Record<string, PropValue> = {};
+  const proposals: Proposal[] = [];
+  if (n.kind !== 'protection') return { sure, proposals };
+  const k = projectKind(n);
+  const read: [Proposal['prop'], PropValue | null][] = [
+    ['ratedCurrent', s.ratedCurrentA && s.ratedCurrentA > 0 ? s.ratedCurrentA : null],
+    ['curve', k !== 'rcd' && s.curve && /^[BCD]$/i.test(s.curve.trim()) ? s.curve.trim().toUpperCase() : null],
+    ['residualCurrent', (k === 'rcd' || k === 'rcbo') && s.residualCurrentmA && s.residualCurrentmA > 0 ? s.residualCurrentmA : null],
+    ['rcdType', (k === 'rcd' || k === 'rcbo') && s.rcdType && /^(AC|A|F|B)$/i.test(s.rcdType.trim()) ? s.rcdType.trim().toUpperCase() : null],
+    ['poles', (() => {
+      const v = s.poles?.toUpperCase().replace(/\s/g, '');
+      return v && POLE_VALUES.includes(v) ? v : null;
+    })()],
+  ];
+  for (const [prop, to] of read) {
+    if (to == null) continue;
+    const cur = n.props[prop];
+    const empty = cur == null || cur === '' || cur === 0;
+    if (empty) {
+      if (s.confidence === 'high') sure[prop] = to;
+      else proposals.push({ nodeId: n.id, prop, from: null, to });
+    } else if (String(cur).toUpperCase() !== String(to).toUpperCase()) proposals.push({ nodeId: n.id, prop, from: cur, to });
+  }
+  return { sure, proposals };
 }
 
 /** Comparaison (sans IA) entre le matériel défini et ce que l'IA a lu sur la photo. */
@@ -195,13 +253,20 @@ export function layoutFromReading(
   reading: PhotoReadingT,
   perRow: number,
   labelOf: (n: ElNode) => string = () => '',
-): { slots: BoardLayout['slots']; unplaced: ElNode[]; props: Record<string, Record<string, PropValue>> } {
+  circuitsOf: (n: ElNode) => string[] = () => [],
+): { slots: BoardLayout['slots']; unplaced: ElNode[]; props: Record<string, Record<string, PropValue>>; proposals: Proposal[] } {
   const seen = reading.rows
     .flatMap((r) => r.devices.filter((x) => x.kind !== 'blank').map((x) => ({ row: r.row, x })))
     .sort((a, b) => a.row - b.row || a.x.startModule - b.x.startModule);
   /** L'étiquette lue contient le repère du circuit (« A », « B2 ») ou un mot de son usage, comme mot entier. */
   const labelHit = (s: PhotoDeviceT, n: ElNode) => {
     if (!s.label) return false;
+    // Différentiel : l'étiquette donne souvent les circuits qu'il protège (« A-F », « G H I J », « K à M »)
+    const own = circuitsOf(n);
+    if (own.length) {
+      const got = circuitRefs(s.label);
+      if (got.size && own.filter((c) => got.has(c.toUpperCase())).length * 2 >= own.length) return true;
+    }
     const lab = norm(s.label);
     const words = norm(labelOf(n))
       .split(/[^a-z0-9]+/)
@@ -270,6 +335,7 @@ export function layoutFromReading(
   }
   // Largeur et référence lues
   const props: Record<string, Record<string, PropValue>> = {};
+  const proposals: Proposal[] = [];
   const widthOf = new Map<string, number>();
   for (const [si, ni] of bySeen) {
     const s = seen[si].x;
@@ -279,6 +345,9 @@ export function layoutFromReading(
     if (w !== moduleWidth(n)) ch.modules = w;
     const ref = readReference(s);
     if (ref && !String(n.props.reference ?? '').trim()) ch.reference = ref;
+    const f = fieldsFromReading(s, n);
+    Object.assign(ch, f.sure);
+    proposals.push(...f.proposals);
     if (Object.keys(ch).length) props[n.id] = ch;
     widthOf.set(n.id, w);
   }
@@ -300,13 +369,14 @@ export function layoutFromReading(
       if (c + w > perRow) {
         unplaced.push(n);
         delete props[n.id];
+        for (let i = proposals.length - 1; i >= 0; i--) if (proposals[i].nodeId === n.id) proposals.splice(i, 1);
         continue;
       }
       slots[n.id] = { row: r, col: c };
       end = c + w;
     }
   }
-  return { slots, unplaced: devices.filter((n) => unplaced.includes(n)), props };
+  return { slots, unplaced: devices.filter((n) => unplaced.includes(n)), props, proposals };
 }
 
 /** Appel à l'IA (module chargé seulement quand on s'en sert). */

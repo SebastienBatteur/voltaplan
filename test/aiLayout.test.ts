@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { closeKind, layoutFromReading, protectionFromReading, type PhotoDeviceT, type PhotoReadingT } from '../src/ai/boardPhoto';
+import { circuitRefs, closeKind, fieldsFromReading, layoutFromReading, protectionFromReading, type PhotoDeviceT, type PhotoReadingT } from '../src/ai/boardPhoto';
 import { createNode } from '../src/model/tree';
 import { boardCandidates, enclosures, moduleWidth } from '../src/board/model';
 
@@ -193,5 +193,40 @@ describe("disposition d'après la lecture de l'IA", () => {
       { row: 1, col: 2 },
       { row: 1, col: 4 },
     ]);
+  });
+
+  it("étiquette d'un différentiel : plage de circuits lue sur la photo", () => {
+    expect([...circuitRefs('A-F')].sort()).toEqual(['A', 'B', 'C', 'D', 'E', 'F']);
+    expect(circuitRefs('K à M').has('L')).toBe(true);
+    expect([...circuitRefs('G H I J')].sort()).toEqual(['G', 'H', 'I', 'J']);
+    expect(circuitRefs('Diff 30 mA').size).toBe(0);
+    // Arbre : D1 → A, B ; D2 → C, D ; sur la photo, l'étiquette « C-D » est sur le premier différentiel
+    const mk = () => dev({ device: 'rcd', poles: '2P', ratedCurrent: 40, residualCurrent: 30 });
+    const D1 = mk();
+    const D2 = mk();
+    const circuits = new Map([
+      [D1.id, ['A', 'B']],
+      [D2.id, ['C', 'D']],
+    ]);
+    const reading: PhotoReadingT = {
+      rows: [{ row: 0, devices: [seen(0, 2, 'rcd', { residualCurrentmA: 30, label: 'C-D' }), seen(2, 2, 'rcd', { residualCurrentmA: 30, label: 'A à B' })] }],
+      notes: null,
+    };
+    const r = layoutFromReading([D1, D2], reading, 13, () => '', (n) => circuits.get(n.id) ?? []);
+    expect(r.slots[D2.id]).toEqual({ row: 0, col: 0 });
+    expect(r.slots[D1.id]).toEqual({ row: 0, col: 2 });
+  });
+
+  it('caractéristiques lues : complétées si sûres, proposées sinon, jamais écrasées', () => {
+    // Courbe et pôles vides dans le projet (les valeurs par défaut de createNode sont effacées)
+    const n = dev({ device: 'mcb', ratedCurrent: 16, curve: '', poles: '' });
+    const sure = fieldsFromReading(seen(0, 1, 'mcb', { ratedCurrentA: 20, curve: 'c', poles: '1P+N' }), n);
+    expect(sure.sure).toEqual({ curve: 'C', poles: '1P+N' });
+    expect(sure.proposals).toEqual([{ nodeId: n.id, prop: 'ratedCurrent', from: 16, to: 20 }]);
+    const unsure = fieldsFromReading(seen(0, 1, 'mcb', { curve: 'B', confidence: 'low' }), n);
+    expect(unsure.sure).toEqual({});
+    expect(unsure.proposals).toEqual([{ nodeId: n.id, prop: 'curve', from: null, to: 'B' }]);
+    const r = dev({ device: 'rcd', residualCurrent: 30, poles: '2P', rcdType: '' });
+    expect(fieldsFromReading(seen(0, 2, 'rcd', { residualCurrentmA: 30, rcdType: 'A', curve: 'C' }), r).sure).toEqual({ rcdType: 'A' });
   });
 });

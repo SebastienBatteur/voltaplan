@@ -33,12 +33,23 @@ import {
   compareReading,
   extraDevices,
   layoutFromReading,
+  projectKind as projectKindOf,
   PROTECTION_KINDS,
   protectionFromReading,
   readBoardPhoto,
   type DeviceDiff,
   type ExtraDevice,
+  type Proposal,
 } from '../ai/boardPhoto';
+
+/** Différence de la comparaison qu'une proposition règle. */
+const ISSUE_OF: Record<Proposal['prop'], string> = {
+  ratedCurrent: 'ai.diff.rating',
+  residualCurrent: 'ai.diff.sensitivity',
+  curve: 'ai.diff.curve',
+  rcdType: 'ai.diff.rcdType',
+  poles: '',
+};
 
 /** Valeur du menu « Associer à… » pour créer une nouvelle protection. */
 const NEW = '__new';
@@ -130,7 +141,7 @@ export function BoardView() {
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
-  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: ExtraDevice[]; notes: string | null } | null>(
+  const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: ExtraDevice[]; proposals: Proposal[]; notes: string | null } | null>(
     null,
   );
   const lang = useStore((s) => s.lang);
@@ -164,6 +175,47 @@ export function BoardView() {
     if (n.props.circuitName) return [numbering.get(n.id), String(n.props.circuitName)].filter(Boolean).join(' ');
     if (Number(n.props.residualCurrent) > 0) return `${t('label.diff')} ${n.props.residualCurrent} mA`;
     return [numbering.get(n.id), labelFn.title(n)].filter(Boolean).join(' ');
+  };
+
+  /** Repères des circuits protégés par un différentiel (pour reconnaître « A-F » sur son étiquette). */
+  const circuitsOf = (n: ElNode): string[] =>
+    projectKindOf(n) !== 'rcd'
+      ? []
+      : enc.devices
+          .filter((d) => d.id !== n.id && [...ancestors(project.roots, d.id)].some((a) => a.id === n.id))
+          .map((d) => numbering.get(d.id) ?? '')
+          .filter(Boolean);
+  /** Applique des caractéristiques lues sur la photo (une seule annulation). */
+  const applyProposals = (list: Proposal[]) => {
+    if (!list.length) return;
+    applyProject((p) => ({
+      ...p,
+      roots: mapTree(p.roots, (n) => {
+        const mine = list.filter((x) => x.nodeId === n.id);
+        return mine.length ? { ...n, props: { ...n.props, ...Object.fromEntries(mine.map((x) => [x.prop, x.to])) } } : n;
+      }),
+    }));
+    setAiDiffs((d) =>
+      d
+        ? {
+            ...d,
+            proposals: d.proposals.filter((x) => !list.includes(x)),
+            // Différences réglées par ces propositions
+            diffs: d.diffs.map((df) => {
+              const issues = df.issues.filter((i) => !list.some((x) => x.nodeId === df.nodeId && ISSUE_OF[x.prop] === i.key));
+              return { ...df, issues, ok: issues.length === 0 };
+            }),
+          }
+        : d,
+    );
+  };
+  const propText = (x: Proposal) => {
+    const unit = x.prop === 'ratedCurrent' ? ' A' : x.prop === 'residualCurrent' ? ' mA' : '';
+    return t('ai.proposal', {
+      prop: t('ai.prop.' + x.prop),
+      from: x.from == null ? '—' : `${x.from}${unit}`,
+      to: `${x.to}${unit}`,
+    });
   };
 
   // Position de la réserve (appareils non placés)
@@ -298,7 +350,7 @@ export function BoardView() {
         composed: calibrated,
       });
       // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
-      const { slots, unplaced: left, props } = layoutFromReading(enc.devices, reading, size.perRow, nameOf);
+      const { slots, unplaced: left, props, proposals } = layoutFromReading(enc.devices, reading, size.perRow, nameOf, circuitsOf);
       const next: BoardLayout = { ...layout, slots };
       // Disposition, largeurs et références lues : une seule étape d'annulation
       const changed = Object.keys(props);
@@ -311,7 +363,7 @@ export function BoardView() {
       const devsNow = enc.devices.map((n) => (props[n.id] ? { ...n, props: { ...n.props, ...props[n.id] } } : n));
       const now = placed({ ...enc, devices: devsNow }, next).placed;
       const diffs = compareReading(now, reading);
-      setAiDiffs({ diffs, extra: extraDevices(now, reading), notes: reading.notes });
+      setAiDiffs({ diffs, extra: extraDevices(now, reading), proposals, notes: reading.notes });
       setDetect(new Map(diffs.map((d) => [d.nodeId, d.ok ? 'ok' : 'width'])));
       setMsg(
         t('ai.readPlaced', { placed: now.length, left: left.length }) +
@@ -511,7 +563,11 @@ export function BoardView() {
           <strong>{t('ai.resultsTitle')}</strong>
           <ul>
             {aiDiffs.diffs
-              .filter((d) => !d.ok)
+              .map((d) => ({
+                ...d,
+                issues: d.issues.filter((i) => !aiDiffs.proposals.some((x) => x.nodeId === d.nodeId && ISSUE_OF[x.prop] === i.key)),
+              }))
+              .filter((d) => d.issues.length > 0)
               .map((d) => {
                 const n = enc.devices.find((x) => x.id === d.nodeId);
                 return (
@@ -547,6 +603,26 @@ export function BoardView() {
               </li>
             ))}
           </ul>
+          {aiDiffs.proposals.length > 0 && (
+            <>
+              <strong>{t('ai.proposalsTitle')}</strong>
+              <ul>
+                {aiDiffs.proposals.map((x, i) => {
+                  const n = enc.devices.find((d) => d.id === x.nodeId);
+                  return (
+                    <li key={'p' + i}>
+                      <button className="link" onClick={() => select(x.nodeId)}>
+                        {n ? nameOf(n) : x.nodeId}
+                      </button>{' '}
+                      : {propText(x)}{' '}
+                      <button onClick={() => applyProposals([x])}>{t('ai.apply')}</button>
+                    </li>
+                  );
+                })}
+              </ul>
+              {aiDiffs.proposals.length > 1 && <button onClick={() => applyProposals(aiDiffs.proposals)}>{t('ai.applyAll')}</button>}
+            </>
+          )}
           {aiDiffs.notes && <p className="muted small">{aiDiffs.notes}</p>}
           <p className="muted small">{t('ai.resultsHelp')}</p>
           <button onClick={() => setAiDiffs(null)}>{t('ai.close')}</button>

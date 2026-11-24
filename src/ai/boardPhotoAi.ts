@@ -23,7 +23,7 @@ export const PhotoDevice = z.object({
   curve: z.string().nullable().describe('Courbe B, C ou D si lisible'),
   residualCurrentmA: z.number().nullable().describe('Sensibilité différentielle en mA si lisible'),
   rcdType: z.string().nullable().describe('Type de différentiel (AC, A, F, B) si lisible'),
-  label: z.string().nullable().describe("Texte de l'étiquette au-dessus ou sur l'appareil, si lisible"),
+  label: z.string().nullable().describe("Texte de l'étiquette au-dessus ou sur l'appareil, tel qu'écrit (pour un différentiel, souvent les circuits protégés : « A-F »)"),
   confidence: z.enum(['high', 'medium', 'low']),
 });
 
@@ -66,7 +66,8 @@ export async function readBoardPhoto(opts: {
                 `widthModules = how many ruler positions it physically covers, measured on the ruler (compact 4-pole devices can be only 2 modules wide: ` +
                 `never infer the width from the number of poles). Give its type (breakers and RCDs, but also contactors, impulse relays, timers, ` +
                 `bell or safety transformers, meters and connected modules), the brand and the model/reference printed on it, the ratings ` +
-                `(rated current, curve, residual current, RCD type) and its label text. A connected/smart circuit breaker (Zigbee, Wi-Fi, ` +
+                `(rated current, curve, residual current, RCD type) and its label text, copied as written: for an RCD, the label ` +
+                `often lists the circuits it protects (e.g. "A-F", "G H I J", "K à M"), keep it exactly. A connected/smart circuit breaker (Zigbee, Wi-Fi, ` +
                 `energy metering) that has a breaker toggle is a "mcb" (or "rcbo"), not "domotic"; use "meter" or "domotic" only for modules ` +
                 `without a breaker toggle. Adjacent devices of the same type are separate devices ` +
                 `when a new front face is visible. Report blanking plates as "blank" and skip empty rail. ` +

@@ -35,6 +35,34 @@ export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
     }
   };
 
+  const canSave = !busy && !!newKey && pass.length >= 8;
+  const canUnlock = !busy && !!s.key && !newKey && !unlocked && !!pass;
+  const saveKey = () =>
+    run(async () => {
+      const sealed = await seal(newKey.trim(), pass);
+      update({ key: sealed });
+      setSessionKey(newKey.trim());
+      setUnlocked(newKey.trim());
+      setNewKey('');
+      setPass('');
+      setMsg({ ok: true, text: t('ai.saved') });
+    });
+  const unlockKey = () =>
+    run(async () => {
+      const k = await unseal(s.key!, pass);
+      setSessionKey(k);
+      setUnlocked(k);
+      setPass('');
+    });
+  /** Entrée dans un champ de la clé : même effet que le bouton affiché (enregistrer ou déverrouiller). */
+  const onEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    if (newKey || !s.key) {
+      if (canSave) saveKey();
+    } else if (canUnlock) unlockKey();
+  };
+
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-label={t('ai.title')}>
@@ -71,46 +99,35 @@ export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
           {!s.key || newKey ? (
             <label className="field">
               <span>{t('ai.keyNew')}</span>
-              <input type="password" autoComplete="off" value={newKey} onChange={(e) => setNewKey(e.target.value)} />
+              <input type="password" autoComplete="off" value={newKey} onChange={(e) => setNewKey(e.target.value)} onKeyDown={onEnter} />
             </label>
           ) : null}
           {(!s.key || newKey || !unlocked) && (
             <label className="field">
               <span>{t('ai.passphrase')}</span>
-              <input type="password" autoComplete="new-password" value={pass} onChange={(e) => setPass(e.target.value)} />
+              <input
+                type="password"
+                autoComplete={s.key && !newKey ? 'current-password' : 'new-password'}
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                onKeyDown={onEnter}
+              />
             </label>
           )}
           <div className="row">
             {(newKey || !s.key) && (
               <button
                 className="primary"
-                disabled={busy || !newKey || pass.length < 8}
-                onClick={() =>
-                  run(async () => {
-                    const sealed = await seal(newKey.trim(), pass);
-                    update({ key: sealed });
-                    setSessionKey(newKey.trim());
-                    setUnlocked(newKey.trim());
-                    setNewKey('');
-                    setPass('');
-                    setMsg({ ok: true, text: t('ai.saved') });
-                  })
-                }
+                disabled={!canSave}
+                onClick={saveKey}
               >
                 {t('ai.saveKey')}
               </button>
             )}
             {s.key && !newKey && !unlocked && (
               <button
-                disabled={busy || !pass}
-                onClick={() =>
-                  run(async () => {
-                    const k = await unseal(s.key!, pass);
-                    setSessionKey(k);
-                    setUnlocked(k);
-                    setPass('');
-                  })
-                }
+                disabled={!canUnlock}
+                onClick={unlockKey}
               >
                 {t('ai.unlock')}
               </button>
