@@ -28,6 +28,12 @@ export const CONNECT_HOSTS = [
   'https://content.dropboxapi.com',
   'https://graph.microsoft.com',
   'https://login.microsoftonline.com',
+  // OneDrive : les téléchargements de /content sont redirigés vers un lien pré-authentifié, et les gros envois passent
+  // par une session d'envoi sur un autre domaine — *.1drv.com et api.onedrive.com (comptes personnels),
+  // *.sharepoint.com (comptes professionnels) [à vérifier avec de vrais comptes].
+  'https://*.1drv.com',
+  'https://api.onedrive.com',
+  'https://*.sharepoint.com',
   'https://www.googleapis.com',
 ] as const;
 

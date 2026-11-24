@@ -11,7 +11,12 @@ describe('politique de sécurité du contenu (CSP)', () => {
     expect(d['object-src']).toBe("'none'");
     expect(d['form-action']).toBe("'none'");
     expect(d['img-src']).toBe("'self' data: blob:");
-    expect(cspString(d)).not.toMatch(/unsafe-eval|\*/);
+    expect(cspString(d)).not.toMatch(/unsafe-eval/);
+    // Aucune source générique (« * », « https: », « https://* ») ; seuls deux sous-domaines Microsoft nommément
+    // autorisés pour les transferts OneDrive (liens de téléchargement et sessions d'envoi)
+    const wild = cspString(d).split(/[\s;]+/).filter((x) => x.includes('*'));
+    expect(wild).toEqual(['https://*.1drv.com', 'https://*.sharepoint.com']);
+    expect(cspString(d)).not.toMatch(/(^|\s)(\*|https:|http:)(\s|;|$)/);
   });
 
   it('connect-src : uniquement les services utilisés', () => {

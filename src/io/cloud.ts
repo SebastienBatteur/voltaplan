@@ -3,7 +3,7 @@
  *
  * Chaque service demande d'enregistrer l'application une fois (identifiant client OAuth, public, pas de secret) :
  *  - Dropbox : https://www.dropbox.com/developers/apps → « Scoped access », « App folder »,
- *    autorisations files.content.read + files.content.write, Redirect URI = <adresse de Voltaplan>/oauth.html ;
+ *    autorisations files.metadata.read + files.content.read + files.content.write, Redirect URI = <adresse de Voltaplan>/oauth.html ;
  *  - OneDrive : https://entra.microsoft.com → Inscriptions d'applications → plateforme « Application monopage (SPA) »,
  *    URI de redirection = <adresse>/oauth.html, comptes personnels et professionnels, autorisation Files.ReadWrite.AppFolder ;
  *  - Google Drive : https://console.cloud.google.com → Identifiants → « ID client OAuth » de type Application Web,
@@ -124,7 +124,9 @@ export const PROVIDERS: Record<CloudId, Provider> = {
     label: 'Dropbox',
     authUrl: 'https://www.dropbox.com/oauth2/authorize',
     tokenUrl: 'https://api.dropboxapi.com/oauth2/token',
-    scope: 'files.content.read files.content.write',
+    // files.metadata.read : nécessaire pour list_folder et get_metadata (lister, lire la révision) ; à cocher aussi dans
+    // la console Dropbox de l'application, avec files.content.read et files.content.write
+    scope: 'files.metadata.read files.content.read files.content.write',
     extraAuth: { token_access_type: 'online' },
     list: async (token) => {
       const r = await check(
