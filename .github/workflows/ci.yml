@@ -1,4 +1,5 @@
-# Tests à chaque push et pull request : typage, tests unitaires et construction de la version web.
+# Tests à chaque push et pull request : typage, tests unitaires, construction de la version web,
+# audit des dépendances livrées et recherche de secrets dans l'historique.
 name: CI
 
 on:
@@ -11,6 +12,8 @@ permissions:
 
 jobs:
   test:
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -33,3 +36,27 @@ jobs:
           name: voltaplan-web
           path: dist
           retention-days: 14
+
+  audit:
+    # Dépendances livrées avec l'application (hors outils de développement) : bloquant au-delà de « high ».
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm audit --audit-level=high --omit=dev
+
+  secrets:
+    # Recherche de secrets dans tout l'historique (image officielle de gitleaks, version figée).
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --config /repo/.gitleaks.toml --redact --verbose --no-banner
