@@ -77,6 +77,12 @@ button.primary {
   border-color: var(--accent);
   color: #fff;
 }
+/* Bouton ⚙ IA : clé déverrouillée, l'IA est prête */
+button.ai-on {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
 button.danger {
   color: var(--error);
 }

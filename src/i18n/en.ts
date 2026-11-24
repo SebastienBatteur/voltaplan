@@ -177,6 +177,8 @@ export const en: Partial<Dict> = {
   'ai.newProtection': "＋ New {kind} in this board",
   'ai.created': "Protection added under the board from the photo and placed. In the tree, move it under its RCD and complete its circuit.",
   'ai.needUnlock': "First unlock the AI key (⚙ AI button).",
+  'ai.on': "AI ready (key unlocked)",
+  'ai.unlockShort': "Unlock the AI key",
   'ai.reading': "The AI is reading the photo…",
   'ai.readPlaced': "Devices arranged from the photo: {placed} placed, {left} in reserve (Ctrl+Z to undo).",
   'ai.readDone': "The AI read the photo: {ok} devices match the project, {bad} differ.",

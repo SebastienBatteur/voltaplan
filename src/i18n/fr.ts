@@ -177,6 +177,8 @@ export const fr = {
   'ai.newProtection': "＋ Nouveau {kind} dans ce tableau",
   'ai.created': "Protection ajoutée sous le tableau d'après la photo et placée. Dans l'arborescence, déplacez-la sous son différentiel et complétez son circuit.",
   'ai.needUnlock': "Déverrouillez d'abord la clé de l'IA (bouton ⚙ IA).",
+  'ai.on': "IA prête (clé déverrouillée)",
+  'ai.unlockShort': "Déverrouiller la clé de l'IA",
   'ai.reading': "Lecture de la photo par l'IA…",
   'ai.readPlaced': "Appareils disposés d'après la photo : {placed} placés, {left} en réserve (Ctrl+Z pour annuler).",
   'ai.readDone': "L'IA a lu la photo : {ok} appareils conformes au projet, {bad} avec une différence.",

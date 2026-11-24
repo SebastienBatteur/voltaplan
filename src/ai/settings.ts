@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react';
 /**
  * Réglages de l'IA (optionnelle). Enregistrés localement (navigateur, ou dossier de l'application de bureau),
  * jamais dans les fichiers de projet : ceux-ci sont transmis à des tiers (organisme agréé, client).
@@ -55,7 +56,18 @@ export function saveAiSettings(s: AiSettings) {
 
 /** Clé déchiffrée, en mémoire uniquement (perdue à la fermeture de l'application). */
 let sessionKey: string | null = null;
+const listeners = new Set<() => void>();
 export const getSessionKey = () => sessionKey;
 export const setSessionKey = (k: string | null) => {
   sessionKey = k;
+  listeners.forEach((l) => l());
 };
+/** Abonnement aux changements de la clé déverrouillée (pour `useSyncExternalStore`). */
+export const subscribeSessionKey = (l: () => void) => {
+  listeners.add(l);
+  return () => {
+    listeners.delete(l);
+  };
+};
+/** Vrai tant que la clé de l'IA est déverrouillée pour cette session ; l'interface se met à jour d'elle-même. */
+export const useAiUnlocked = () => useSyncExternalStore(subscribeSessionKey, () => sessionKey !== null);

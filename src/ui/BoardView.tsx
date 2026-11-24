@@ -24,7 +24,7 @@ import { pickFile } from '../io/files';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
-import { loadAiSettings, getSessionKey, setSessionKey } from '../ai/settings';
+import { loadAiSettings, getSessionKey, setSessionKey, useAiUnlocked } from '../ai/settings';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
@@ -139,6 +139,7 @@ export function BoardView() {
   const unlockInput = useRef<HTMLInputElement>(null);
   const ai = loadAiSettings();
   const aiAllowed = ai.enabled && ai.permissions.boardFromPhoto;
+  const aiUnlocked = useAiUnlocked();
 
   const enc = encs[Math.min(idx, encs.length - 1)];
   const size = enc ? boardSize(enc.board) : { rows: 2, perRow: 13 };
@@ -430,11 +431,28 @@ export function BoardView() {
               {t('board.compare')}
             </button>
             {aiAllowed && (
-              <button onClick={readWithAi} disabled={busy || !enc.devices.length} title={t('ai.boardHelp')}>
+              // Grisé tant que la clé n'est pas déverrouillée : le cadenas à côté la déverrouille sur place
+              <button
+                onClick={readWithAi}
+                disabled={busy || !enc.devices.length || !aiUnlocked}
+                title={aiUnlocked ? t('ai.boardHelp') : t('ai.needUnlock')}
+              >
                 {t('ai.boardRead')}
               </button>
             )}
-            {aiAllowed && unlock !== null && (
+            {aiAllowed && !aiUnlocked && ai.key && unlock === null && (
+              <button
+                onClick={() => {
+                  setUnlock('');
+                  setMsg(t('ai.askPass'));
+                }}
+                title={t('ai.unlockShort')}
+                aria-label={t('ai.unlockShort')}
+              >
+                🔒
+              </button>
+            )}
+            {aiAllowed && !aiUnlocked && unlock !== null && (
               <form
                 className="inline"
                 onSubmit={async (e) => {
@@ -446,7 +464,8 @@ export function BoardView() {
                     unlockInput.current?.select();
                     return;
                   }
-                  void readWithAi();
+                  setUnlock(null);
+                  setMsg(t('ai.on'));
                 }}
               >
                 <input

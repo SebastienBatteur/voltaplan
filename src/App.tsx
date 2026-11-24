@@ -1,4 +1,5 @@
 import { AiSettingsDialog } from './ui/AiSettingsDialog';
+import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
 import { PrintDialog } from './print/PrintDialog';
 import { StorageDialog } from './ui/StorageDialog';
@@ -117,6 +118,7 @@ export function App() {
   }, [s.dirty, s.project.meta.title]);
 
   const [aiOpen, setAiOpen] = useState(false);
+  const aiUnlocked = useAiUnlocked();
   const [printOpen, setPrintOpen] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
@@ -190,7 +192,11 @@ export function App() {
           {s.fileName || s.project.meta.title}
           {s.dirty ? ' •' : ''}
         </span>
-        <button onClick={() => setAiOpen(true)} title={t('ai.title')}>
+        <button
+          onClick={() => setAiOpen(true)}
+          className={aiUnlocked ? 'ai-on' : undefined}
+          title={aiUnlocked ? `${t('ai.title')} — ${t('ai.on')}` : t('ai.title')}
+        >
           ⚙ {t('ai.button')}
         </button>
         <select value={s.lang} onChange={(e) => s.setLang(e.target.value as Lang)} aria-label="Langue">

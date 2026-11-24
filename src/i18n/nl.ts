@@ -177,6 +177,8 @@ export const nl: Partial<Dict> = {
   'ai.newProtection': "＋ Nieuwe {kind} in dit verdeelbord",
   'ai.created': "Beveiliging toegevoegd onder het verdeelbord volgens de foto en geplaatst. Verplaats ze in de boomstructuur onder haar verliesstroomschakelaar en vul haar kring aan.",
   'ai.needUnlock': "Ontgrendel eerst de AI-sleutel (knop ⚙ AI).",
+  'ai.on': "AI klaar (sleutel ontgrendeld)",
+  'ai.unlockShort': "AI-sleutel ontgrendelen",
   'ai.reading': "De AI leest de foto…",
   'ai.readPlaced': "Toestellen geplaatst volgens de foto: {placed} geplaatst, {left} in reserve (Ctrl+Z om ongedaan te maken).",
   'ai.readDone': "De AI heeft de foto gelezen: {ok} toestellen conform het project, {bad} met een verschil.",
