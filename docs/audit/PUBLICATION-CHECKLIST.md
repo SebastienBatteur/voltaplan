@@ -26,8 +26,8 @@ données distantes, DNS.
 | A4 | Mentions de la bêta : « aide au dessin et à la vérification, pas de certification » visible (README, site, application, dossier) | **fait** | — |
 | A5 | Assistant IA affiché comme **expérimental** tant que l’évaluation réelle n’est pas faite (A6) | **fait** (titre et menu, FR, NL, EN) | — |
 | A6 | **Évaluation réelle minimale** de la lecture des photos : au moins 10 tableaux anonymisés, 1 ou 2 modèles, taux d'informations inventées mesuré ([assistant-evaluation.md](../assistant-evaluation.md)) | à faire (aucun appel payant sans accord) | propriétaire |
-| A7 | **Installateurs de bureau** : soit présentés comme « aperçu non signé, non testé », soit retirés de l'annonce. Les artefacts de test non signés expirent seuls d'ici au 24/12 ; leur suppression anticipée demande ton accord | décision | propriétaire |
-| A8 | **Stockage cloud** : présenté comme expérimental, ou au moins un fournisseur (OneDrive) validé avec de vrais comptes (scénarios C1 à C10 de [tests-cloud-reels.md](../tests-cloud-reels.md)) après création des applications OAuth ([oauth-configuration.md](../oauth-configuration.md)) | à faire | propriétaire |
+| A7 | **Installateurs de bureau** : les 30 artefacts de test non signés ont été **supprimés** (2026-11-24, à la demande du propriétaire). Pour tester l'écriture atomique, relancer `release.yml` à la main sur la branche `tauri-ecriture-atomique-v2` (artefacts seulement, aucune release) ; présenter le bureau comme « aperçu non signé » dans l'annonce | **fait** (suppression) ; annonce à décider | propriétaire |
+| A8 | **Stockage cloud** : présenté comme expérimental, ou au moins un fournisseur (OneDrive) validé avec de vrais comptes (scénarios C1 à C10 de [tests-cloud-reels.md](../tests-cloud-reels.md)) après création des applications OAuth ([oauth-configuration.md](../oauth-configuration.md)) | en cours : Google Drive configuré (`VITE_GOOGLE_CLIENT_ID` injecté et publié le 2026-11-24) ; OneDrive et Dropbox à créer ; essais réels à faire | propriétaire |
 | A9 | Bouton « Sponsor » : inscription à GitHub Sponsors faite, sinon retirer ou remplacer la ligne de `FUNDING.yml` | à vérifier | propriétaire |
 | A10 | Activer *Private vulnerability reporting*, *Secret scanning* et *Push protection* dans les réglages du dépôt | à vérifier | propriétaire |
 
@@ -61,7 +61,4 @@ données distantes, DNS.
 
 - Ruleset `main` actif : historique linéaire (aucun commit de fusion). Toutes les intégrations sont faites par
   rebase.
-- Branches conservées :
-  - `tauri-ecriture-atomique-v2` : en attente du test dans l'application installée ;
-  - `tauri-ecriture-atomique` : ancienne version, remplacée, à supprimer **avec ton accord**.
-- Branches de travail des agents (`worktree-agent-…`, `eval/…`) : intégrées, à supprimer **avec ton accord**.
+- Branches : seules `main` et `tauri-ecriture-atomique-v2` (en attente de l'essai dans l'application installée) restent. Les anciennes branches (`tauri-ecriture-atomique`, `eval/protocole-ia-photos`, `worktree-agent-…`) ont été **supprimées** le 2026-11-24, après leur intégration.
