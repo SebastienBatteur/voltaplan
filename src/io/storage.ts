@@ -10,6 +10,8 @@ import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
 import type { SealedSecret } from '../ai/secureStore';
 import type { CloudFile, CloudId } from './cloud';
+import { checkTextSize } from './limits';
+import { sanitizeProjectImages } from './sanitize';
 
 export type Location =
   | { kind: 'device' }
@@ -166,9 +168,19 @@ export async function githubSave(token: string, s: GithubSettings, path: string,
   if (!r.ok) throw await ghError(r);
 }
 
-/** Lecture d'un projet (texte JSON) quelle que soit sa provenance. */
-export function parseProject(text: string): Project {
-  return parseProjectText(text).project;
+/**
+ * Lecture d'un projet (texte JSON) quelle que soit sa provenance : taille bornée, structure validée et migrée
+ * (src/model/migrate.ts), images limitées aux images intégrées (sanitize.ts). `removed` : images retirées.
+ */
+export function parseProjectChecked(text: string, name?: string): ReturnType<typeof parseProjectText> & { removed: number } {
+  checkTextSize(text, name);
+  const r = parseProjectText(text);
+  const removed = sanitizeProjectImages(r.project);
+  return { ...r, removed };
+}
+
+export function parseProject(text: string, name?: string): Project {
+  return parseProjectChecked(text, name).project;
 }
 
 export function safeName(name: string): string {

@@ -282,7 +282,7 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
       <line x1={x + size / 2} y1={-size * 0.87} x2={x - size / 2} y2={size * 0.87} />
     </g>
   );
-  let inner: JSX.Element | null = null;
+  let inner: JSX.Element | null;
   switch (t) {
     case 'cooker':
     case 'hob':

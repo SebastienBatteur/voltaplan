@@ -71,7 +71,7 @@ export const LIGHTS: Record<string, string> = { LED: 'led', TL: 'fluo', Spot: 's
 
 function num(v: string | undefined | null): number | undefined {
   if (v == null || v === '') return undefined;
-  const n = parseFloat(v.replace(',', '.').replace(/[^0-9.\-]/g, ''));
+  const n = parseFloat(v.replace(',', '.').replace(/[^0-9.-]/g, ''));
   return Number.isFinite(n) ? n : undefined;
 }
 
@@ -249,7 +249,22 @@ export interface TrikkerImportResult {
   warnings: string[];
 }
 
+/**
+ * Trikker n'écrit jamais de DTD. Une déclaration <!DOCTYPE> ou <!ENTITY> ne peut venir que d'un fichier
+ * fabriqué : refusée avant l'analyse (entités externes, « milliard de rires » / expansion d'entités).
+ */
+export function hasDtd(xml: string): boolean {
+  return /<!\s*(DOCTYPE|ENTITY)/i.test(xml);
+}
+
+/** Données base64 d'une image Trikker (espaces et retours à la ligne tolérés). */
+function cleanBase64(b64: string): string | null {
+  const s = b64.replace(/\s+/g, '');
+  return s.length > 0 && /^[A-Za-z0-9+/]+={0,2}$/.test(s) ? s : null;
+}
+
 export function importTrikker(xml: string, fileName = 'Projet Trikker'): TrikkerImportResult {
+  if (hasDtd(xml)) throw new Error("Ce fichier n'est pas un fichier Trikker valide (déclaration DOCTYPE/ENTITY refusée).");
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
   const root = doc.documentElement;
   if (!root || root.tagName !== 'Document' || doc.getElementsByTagName('parsererror').length) {
@@ -335,7 +350,9 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
           page.rects.push({ center: pt(child(e, 'Center')), w: width ?? 0, h: num(e.getAttribute('Hoogte')) ?? 0, angle: num(e.getAttribute('Hoek')) ?? 0 });
           break;
         case 'Figuur': {
-          const b64 = e.getAttribute('ImageAsBase64');
+          const raw = e.getAttribute('ImageAsBase64');
+          const b64 = raw ? cleanBase64(raw) : null;
+          if (raw && !b64) ctx.warnings.push('Image de plan illisible ignorée.');
           if (b64)
             page.images.push({
               center: pt(child(e, 'Center')),

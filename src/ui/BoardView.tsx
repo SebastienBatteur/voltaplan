@@ -21,6 +21,7 @@ import {
 } from '../board/model';
 import { analyzeRow, boundaries, moduleStats, rowProfile, rowTransform } from '../board/photo';
 import { pickFile } from '../io/files';
+import { importErrorText } from '../io/limits';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
 import { toGray } from '../plan/trace';
@@ -249,6 +250,8 @@ export function BoardView() {
       save({ ...layout, photo: { href: img.href, x: MARGIN, y: fieldTop, w, h, opacity: 0.6, imgW: img.w, imgH: img.h } });
       setCorners([]);
       setMsg(t('board.photoRow', { row: 1, end: t('board.photoRowLeft') }));
+    } catch (e) {
+      setMsg(importErrorText(e, t));
     } finally {
       setBusy(false);
     }

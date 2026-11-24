@@ -2,6 +2,8 @@
  * Import d'un fond de plan : photo (JPG, PNG…) ou PDF (première page).
  * L'image est réduite (2400 px max) et enregistrée dans le projet en JPEG, pour garder des fichiers légers.
  */
+import { checkFileSize, checkImagePixels } from './limits';
+
 const MAX_PX = 2400;
 
 export interface RasterImage {
@@ -41,6 +43,7 @@ async function photo(file: File): Promise<RasterImage> {
     const img = new Image();
     img.src = url;
     await img.decode();
+    checkImagePixels(file.name, img.naturalWidth, img.naturalHeight);
     const k = Math.min(1, MAX_PX / Math.max(img.naturalWidth, img.naturalHeight));
     const c = document.createElement('canvas');
     c.width = Math.round(img.naturalWidth * k);
@@ -52,6 +55,9 @@ async function photo(file: File): Promise<RasterImage> {
   }
 }
 
-export function readBackground(file: File): Promise<RasterImage> {
-  return /\.pdf$/i.test(file.name) || file.type === 'application/pdf' ? pdfFirstPage(file) : photo(file);
+export async function readBackground(file: File): Promise<RasterImage> {
+  const pdf = /\.pdf$/i.test(file.name) || file.type === 'application/pdf';
+  // Taille vérifiée avant toute lecture
+  checkFileSize(file, pdf ? 'pdf' : 'image');
+  return pdf ? pdfFirstPage(file) : photo(file);
 }

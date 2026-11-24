@@ -1,4 +1,7 @@
 import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
+import { checkFileSize } from './limits';
+import { sanitizeProjectImages } from './sanitize';
+import { parseProjectChecked } from './storage';
 /**
  * Ouverture / enregistrement de fichiers locaux.
  * Utilise l'API File System Access quand elle existe (Chrome, Edge : « Enregistrer » réécrit le même fichier),
@@ -7,7 +10,7 @@ import { APP_NAME, FILE_EXT, LEGACY_EXTS } from '../brand';
  */
 import type { Project } from '../model/types';
 import { importTrikker } from '../import/trikker';
-import { parseProjectText, type MigrationWarning } from '../model/migrate';
+import type { MigrationWarning } from '../model/migrate';
 
 export const EXT = FILE_EXT;
 
@@ -56,22 +59,27 @@ export interface OpenResult {
  */
 export function decodeText(buf: ArrayBuffer): string {
   try {
-    return new TextDecoder('utf-8', { fatal: true }).decode(buf).replace(/^﻿/, '');
+    return new TextDecoder('utf-8', { fatal: true }).decode(buf).replace(/^\uFEFF/, '');
   } catch {
     return new TextDecoder('windows-1252').decode(buf);
   }
 }
 
 export async function readProjectFile(file: File): Promise<OpenResult> {
+  const trik = /\.trik$/i.test(file.name);
+  // Taille vérifiée avant toute lecture
+  checkFileSize(file, trik ? 'trik' : 'project');
   const text = decodeText(await file.arrayBuffer());
   currentHandle = null;
   currentPath = null;
-  if (/\.trik$/i.test(file.name) || text.trimStart().startsWith('<?xml')) {
+  if (trik || text.trimStart().startsWith('<?xml')) {
+    if (!trik) checkFileSize(file, 'trik');
     const { project, warnings } = importTrikker(text, file.name);
+    if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
     return { project, fileName: file.name.replace(/\.trik$/i, EXT), warnings };
   }
-  const { project, warnings } = parseProjectText(text);
-  return { project, fileName: file.name, warnings };
+  const { project, warnings, removed } = parseProjectChecked(text, file.name);
+  return { project, fileName: file.name, warnings: removed ? [...warnings, { key: 'file.imagesRemoved', params: { n: removed } }] : warnings };
 }
 
 export async function saveProject(project: Project, fileName: string, saveAs = false): Promise<string | null> {

@@ -186,7 +186,7 @@ export function StorageDialog({
                         ? run(async () => {
                             const e = await browserLoad(i.id);
                             if (!e) return;
-                            onOpened(parseProject(e.data), i.name, { kind: 'browser', id: i.id });
+                            onOpened(parseProject(e.data, i.name), i.name, { kind: 'browser', id: i.id });
                             onClose();
                           })
                         : setName(i.name)
@@ -311,7 +311,7 @@ export function StorageDialog({
                       onClick={() =>
                         run(async () => {
                           const text = await githubLoad(unlocked!, gh, f.path);
-                          onOpened(parseProject(text), f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path });
+                          onOpened(parseProject(text, f.name), f.name, { kind: 'github', repo: gh.repo, branch: gh.branch, path: f.path });
                           onClose();
                         })
                       }
@@ -366,7 +366,7 @@ function CloudTab({
       await fn();
     } catch (e) {
       const m = (e as Error).message;
-      setMsg(m === 'client-id' ? t('cloud.needClientId') : m === 'popup' ? t('cloud.popupBlocked') : m === 'cancelled' ? t('cloud.cancelled') : m);
+      setMsg(m === 'client-id' ? t('cloud.needClientId') : m === 'popup' ? t('cloud.popupBlocked') : m === 'cancelled' ? t('cloud.cancelled') : errorText(e, t));
     } finally {
       setBusy(false);
     }
@@ -451,7 +451,7 @@ function CloudTab({
                 onClick={() =>
                   run(async () => {
                     const text = await cloudLoad(svc, f);
-                    onOpened(parseProject(text), f.name, { kind: 'cloud', provider: svc, file: f });
+                    onOpened(parseProject(text, f.name), f.name, { kind: 'cloud', provider: svc, file: f });
                     onClose();
                   })
                 }

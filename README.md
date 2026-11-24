@@ -61,7 +61,8 @@ L'application de bureau utilise [Tauri](https://tauri.app) : petit installateur,
 
 | Workflow | Quand | Ce qu'il fait |
 |---|---|---|
-| `ci.yml` | chaque push sur `main` et chaque pull request | typage, tests, construction, sur Windows, macOS et Linux ; la version web est jointe au run |
+| `ci.yml` | chaque push sur `main` et chaque pull request | typage, ESLint, tests, construction, sur Windows, macOS et Linux ; la version web est jointe au run ; audit des dépendances livrées (`npm audit --omit=dev`) et recherche de secrets (gitleaks) |
+| `codeql.yml` | chaque push sur `main`, chaque pull request, chaque semaine | analyse de sécurité du code (CodeQL) |
 | `release.yml` | tag `v*` (ex. `git tag v0.2.0 && git push --tags`) ou lancement manuel | installateurs Windows, macOS (Apple Silicon et Intel) et Linux ; release *brouillon* créée sur GitHub pour un tag |
 | `pages.yml` | chaque push sur `main` | publie le site (accueil + guide, dossier `site/`) et l'application web dans `app/` sur GitHub Pages (à activer une fois : *Settings → Pages → Source : GitHub Actions*) |
 
@@ -131,6 +132,12 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 - [Eendraadschema](https://github.com/igoethal/eendraadschema) (GPL, belge, AREI) : unifilaire + plan de situation dans le navigateur.
 - [QElectroTech](https://qelectrotech.org) (GPL) : schémas électriques généralistes, sans règles RGIE.
 - Trikker : gratuit mais pas open source.
+
+## Sécurité
+
+- **Signaler une faille** : en privé, via l'onglet *Security → Report a vulnerability* du dépôt, jamais dans un ticket public. Détails dans [SECURITY.md](SECURITY.md).
+- **Confidentialité** : pas de serveur ni de télémétrie ; les projets restent sur votre appareil, et rien n'est envoyé à un service (IA, GitHub, Drive, OneDrive, Dropbox) sans votre action. Détails dans [PRIVACY.md](PRIVACY.md).
+- Politique de sécurité du contenu (CSP) stricte, taille maximale des fichiers importés, clé d'IA et jeton GitHub chiffrés localement ; dépendances suivies par Dependabot.
 
 ## Licence
 

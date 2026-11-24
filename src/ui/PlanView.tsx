@@ -27,6 +27,7 @@ import { PlanAddDialog } from './PlanAddDialog';
 import { FURNITURE, FURNITURE_GROUPS, FurnitureShape, type FurnitureKind } from '../plan/furniture';
 import { readBackground } from '../io/background';
 import { pickFile } from '../io/files';
+import { importErrorText } from '../io/limits';
 import { parseSize } from '../plan/trace';
 import { rectifyBackground, tracePlan } from '../plan/traceImage';
 
@@ -348,7 +349,7 @@ export function PlanView() {
       // Plan déjà dessiné (ex. import Trikker) : on cale la photo dessus ; sinon on la met à l'échelle.
       chooseTool(page.walls.length ? 'align' : 'scale');
     } catch (err) {
-      alert(String((err as Error).message ?? err));
+      alert(importErrorText(err, t));
     } finally {
       setBusy(false);
     }
