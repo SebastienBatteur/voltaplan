@@ -56,6 +56,11 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('message', (event) => {
+  // Seulement une page Voltaplan de la même origine. Un service worker ne reçoit que des messages de ses propres
+  // pages, mais l'origine est vérifiée explicitement (défense en profondeur).
+  if (event.origin && event.origin !== self.location.origin) return;
+  const from = event.source && event.source.url;
+  if (!from || new URL(from).origin !== self.location.origin) return;
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 

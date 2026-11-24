@@ -96,9 +96,15 @@ describe('service worker', () => {
 
   it('SKIP_WAITING envoyé par la page : activation', async () => {
     const sw = setup();
-    await sw.fire('message', { data: { type: 'AUTRE' } });
+    const page = { url: SCOPE + 'index.html' };
+    await sw.fire('message', { data: { type: 'AUTRE' }, source: page });
     expect(sw.self.skipWaiting).not.toHaveBeenCalled();
+    // Origine étrangère ou expéditeur inconnu : ignoré
+    await sw.fire('message', { data: { type: 'SKIP_WAITING' }, source: { url: 'https://evil.example/x' } });
+    await sw.fire('message', { data: { type: 'SKIP_WAITING' }, origin: 'https://evil.example', source: page });
     await sw.fire('message', { data: { type: 'SKIP_WAITING' } });
+    expect(sw.self.skipWaiting).not.toHaveBeenCalled();
+    await sw.fire('message', { data: { type: 'SKIP_WAITING' }, source: page });
     expect(sw.self.skipWaiting).toHaveBeenCalledTimes(1);
   });
 
