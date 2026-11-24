@@ -6,6 +6,9 @@ name: Desktop build
 
 on:
   workflow_dispatch:
+  # TEMPORAIRE (vérification de la branche, à retirer avant fusion)
+  push:
+    branches: ['worktree-agent-ab851763ebd9da010']
   pull_request:
     paths:
       - 'src-tauri/**'
