@@ -6,7 +6,7 @@ tirés de la documentation, consultée de mémoire et marquée **[à vérifier]*
 
 **Nous ne garantissons pas l'absence de perte de données sur Google Drive avant ces tests.**
 
-## 1. Ce que fait Voltaplan aujourd'hui (`src/io/cloud.ts`)
+## 1. Ce que fait Voltaplan aujourd'hui (`src/io/drive.ts`, utilisé par `cloud.ts` et `driveFolder.ts`)
 
 1. **Avant l'envoi**, Voltaplan relit la version et la révision de tête. Si elles ont changé depuis l'ouverture, il
    y a conflit : rien n'est envoyé, et notre version part en copie.
@@ -104,3 +104,67 @@ Ne jamais remplacer de fichier sur Drive :
 
 Cette méthode est sans écrasement possible, mais demande un ménage des anciens modèles et plus de code. **À ne
 retenir que si les tests réels montrent une perte avec la stratégie actuelle.**
+
+## 8. Dossier de projet sur Google Drive (F8)
+
+Code : `src/io/driveFolder.ts` (service), `src/io/drive.ts` (appels communs, stratégie prudente),
+`src/format/folder.ts` (logique commune à tous les services). Testé avec un Drive **simulé**
+(`test/cloudFolders.test.ts`, `test/cloudFakes.ts`) **[à vérifier avec de vrais comptes]**.
+
+```
+Mon Drive/<Projet>/            dossier créé par Voltaplan, marqué appProperties.voltaplan = "project"
+  project.json                 SEUL fichier modifiable (modèle + dossier de preuves), application/json
+  assets/<sha256>.<ext>        documents immuables (sous-dossier marqué voltaplan = "assets")
+  README.txt
+  project (conflit …).json     copie de conflit éventuelle, à côté
+```
+
+- **Portée `drive.file`** : Voltaplan voit les dossiers et fichiers qu'il a créés. La liste « Dossiers de projet »
+  cherche les dossiers marqués ; un dossier créé à la main dans Drive n'y apparaît pas.
+- **Documents** : recherchés par nom dans `assets` avant tout envoi (jamais renvoyés, jamais remplacés) ; envoi
+  « multipart » jusqu'à 5 Mo, « resumable » au-delà (tranches de 8 Mio ; après une coupure, Voltaplan demande au
+  service où reprendre au lieu de tout renvoyer). Ils sont envoyés et vérifiés AVANT le modèle qui les référence.
+- **Modèle** : pas d'If-Match : stratégie des § 1 à 6 appliquée à `project.json` (version et révision vérifiées
+  avant, révision remplacée conservée, contrôle après envoi, copie de la version concurrente dans le **même
+  dossier**, libération selon la taille). Le modèle étant petit, le budget de révisions conservées n'est presque
+  jamais atteint.
+- **Noms en double** : Drive admet deux fichiers ou dossiers de même nom.
+  - deux appareils qui créent `assets` en même temps : deux dossiers `assets`, lus ensemble ; rien n'est perdu ;
+  - deux appareils qui créent `project.json` en même temps : le second est renommé en copie de conflit (aucune
+    suppression) et le conflit est signalé.
+- **Modèle supprimé ou mis à la corbeille ailleurs** : conflit (jamais de recréation silencieuse) ; notre version
+  part en copie de conflit.
+- **Espace plein** (403 `storageQuotaExceeded`) : erreur typée, documents déjà envoyés gardés, modèle non publié,
+  pas de nouvel essai automatique.
+
+## 9. « Ouvrir avec Voltaplan » depuis Google Drive
+
+Configuration et prérequis (Marketplace, portée `drive.install`) : [oauth-configuration.md](oauth-configuration.md#google-drive--ouvrir-avec-voltaplan-et-nouveau--voltaplan).
+
+1. Drive ouvre `https://voltaplan.org/app/?state=<JSON encodé>`.
+2. Au démarrage, Voltaplan lit `state` **une fois** et le retire de l'adresse (`history.replaceState`) : un
+   rechargement ne relance rien.
+3. `state` est validé (zod) : action `open` ou `create`, identifiants `[A-Za-z0-9_-]` de 10 à 200 caractères,
+   clés de ressource et compte au format attendu ; tout le reste est ignoré (y compris `exportIds`, documents
+   Google). Les identifiants ne servent qu'à des chemins de l'API Drive, encodés (`encodeURIComponent`) ; rien
+   n'est inséré dans la page, aucun lien n'est suivi.
+4. Un bandeau propose « Se connecter et ouvrir » (ou « Créer le projet »). Rien n'est lu avant ce clic, qui
+   autorise aussi la fenêtre de connexion. Le compte attendu est suggéré (`login_hint` = `userId`)
+   **[à vérifier : `userId` accepté comme indication de compte]**.
+5. **Ouvrir** : métadonnées (nom, type, version, révision de tête, dossier parent, droit de modification), puis
+   contenu ; ouverture par la chaîne habituelle (signature : archive v2 ou JSON v1). L'emplacement devient ce
+   fichier Drive avec sa version : « Enregistrer » y réécrit avec la stratégie prudente. Plusieurs fichiers
+   sélectionnés : le premier est ouvert, les autres sont signalés.
+   - fichier **en lecture seule** pour ce compte : « Enregistrer » crée un nouveau fichier dans « Mon Drive » ;
+   - fichier **v1** (converti) ou ouvert en récupération : nouveau fichier dans le même dossier, l'original n'est
+     jamais réécrit ;
+   - `project.json` d'un dossier de projet Voltaplan : ouvert comme dossier ;
+   - dossier, document Google, fichier inaccessible : message clair, rien n'est ouvert.
+6. **Nouveau** (`create`) : nouveau projet vide ; le premier « Enregistrer » crée `<titre>.voltaplan` dans le
+   dossier choisi (création seule, jamais de remplacement), puis les enregistrements suivants le mettent à jour.
+
+Tests (simulés) : `test/driveOpenWith.test.ts` (paramètre valide, invalide, malveillant ; adresse nettoyée ;
+ouverture avec version ; lecture seule ; v1 ; dossier ; création), `test/cloudFolders.test.ts` (création dans le
+dossier choisi). Non vérifié : tout ce qui dépend du vrai service (affichage dans « Ouvrir avec », consentement,
+`login_hint`, accès `drive.file` au fichier ouvert, création dans un dossier non créé par Voltaplan, en-têtes
+`Location` et `Range` des envois « resumable » lisibles depuis le navigateur).

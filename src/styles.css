@@ -1995,6 +1995,23 @@ body.resizing-h * {
   }
 }
 
+/* --- cloud dossiers / Drive --- */
+.cloud-form {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 8px 0;
+  display: grid;
+  gap: 6px;
+}
+.cloud-form legend {
+  font-size: 0.85em;
+  padding: 0 4px;
+}
+.drive-open button {
+  margin-top: 6px;
+}
+
 /* Liens légaux : dans le menu « ⋯ » quand la barre est compacte (téléphone, tablette au doigt), pour laisser
  * toute la hauteur au dessin ; pied de page inchangé sur ordinateur. */
 .toolbar-more-list a {

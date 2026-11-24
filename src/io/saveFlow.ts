@@ -17,7 +17,8 @@
 import type { Project } from '../model/types';
 import { conflictName, isAuthError, isConflict, isDestinationFull, isNetworkError } from './conflict';
 import type { CloudFile, CloudId, SaveMode } from './cloud';
-import type { FolderLocation, GithubSettings, LocalVersion, Location, PendingSave } from './storage';
+import { safeName, type FolderLocation, type GithubSettings, type LocalVersion, type Location, type PendingSave } from './storage';
+import { FILE_EXT } from '../brand';
 
 export interface SaveDeps {
   browserSave: (id: string, name: string, project: Project, expectedRev: number | 'any') => Promise<number>;
@@ -27,7 +28,7 @@ export interface SaveDeps {
   githubSettings: () => GithubSettings;
   deviceSave: (project: Project, fileName: string) => Promise<string | null>;
   /** Projet en dossier (format v2, F8) : documents puis modèle conditionnel ; renvoie la version du modèle. */
-  folderSave?: (loc: FolderLocation, project: Project, mode: SaveMode) => Promise<{ rev?: string }>;
+  folderSave?: (loc: FolderLocation, project: Project, mode: SaveMode) => Promise<{ rev?: string; concurrentCopy?: string }>;
   addVersion: (key: string, name: string, project: Project, reason: LocalVersion['reason']) => Promise<void>;
   /** Enregistrement à reprendre (persistant) ; effacé dès qu'un enregistrement aboutit à cet emplacement. */
   setPending: (p: PendingSave) => void;
@@ -58,11 +59,12 @@ export function locationKey(loc: Location, fileName: string): string {
     case 'browser':
       return `browser:${loc.id}`;
     case 'cloud':
-      return `cloud:${loc.provider}:${loc.file.id}`;
+      // Fichier pas encore créé (« Nouveau » depuis Google Drive) : désigné par son dossier
+      return loc.file.id ? `cloud:${loc.provider}:${loc.file.id}` : `cloud:${loc.provider}:new:${loc.file.parentId ?? ''}`;
     case 'github':
       return `github:${loc.repo}@${loc.branch}:${loc.path}`;
     case 'folder':
-      return `folder:${loc.provider}:${loc.folder}/${loc.modelPath}`;
+      return `folder:${loc.provider}:${loc.folderId ?? loc.folder}/${loc.modelPath}`;
     default:
       return `device:${fileName || 'sans-nom'}`;
   }
@@ -70,10 +72,12 @@ export function locationKey(loc: Location, fileName: string): string {
 
 const dirOf = (path: string) => (path.includes('/') ? path.slice(0, path.lastIndexOf('/') + 1) : '');
 const baseOf = (path: string) => path.slice(path.lastIndexOf('/') + 1);
+/** Nom d'un fichier à créer (emplacement sans nom : « Nouveau » depuis Google Drive) : titre du projet. */
+const newFileName = (project: Project, fileName: string) => safeName((fileName || project.meta.title || 'projet').replace(/\.[^.]*$/, '')) + FILE_EXT;
 
 /** Enregistre `project` à l'emplacement `loc`, sans jamais écraser une version modifiée ailleurs. */
 export async function saveAt(loc: Location, project: Project, fileName: string, deps: SaveDeps): Promise<SaveOutcome> {
-  const name = loc.kind === 'cloud' ? loc.file.name : loc.kind === 'github' ? baseOf(loc.path) : loc.kind === 'folder' ? loc.folder : fileName || project.meta.title || 'projet';
+  const name = loc.kind === 'cloud' ? loc.file.name || newFileName(project, fileName) : loc.kind === 'github' ? baseOf(loc.path) : loc.kind === 'folder' ? loc.folder : fileName || project.meta.title || 'projet';
   const key = locationKey(loc, fileName);
   const keep = (reason: LocalVersion['reason']) => deps.addVersion(key, name, project, reason).catch(() => undefined);
   /** Attente : version gardée et envoi mémorisé (survit à la fermeture). */
@@ -127,13 +131,16 @@ async function write(
       return { loc: { ...loc, rev }, name };
     }
     case 'cloud': {
-      const { concurrentCopy, ...file } = await deps.cloudSave(loc.provider, loc.file.name, project, 'update', loc.file);
+      // Sans identifiant : fichier à créer (jamais de remplacement), dans le dossier désigné (parentId)
+      const create = !loc.file.id;
+      const name = loc.file.name || newFileName(project, fileName);
+      const { concurrentCopy, ...file } = await deps.cloudSave(loc.provider, name, project, create ? 'create' : 'update', loc.file);
       return { loc: { ...loc, file: { ...loc.file, ...file } }, name: file.name, concurrentCopy };
     }
     case 'folder': {
       if (!deps.folderSave) throw new Error('dossier : non pris en charge');
-      const { rev } = await deps.folderSave(loc, project, 'update');
-      return { loc: { ...loc, rev }, name: loc.folder };
+      const { rev, concurrentCopy } = await deps.folderSave(loc, project, 'update');
+      return { loc: { ...loc, rev }, name: loc.folder, concurrentCopy };
     }
     case 'github': {
       const token = deps.githubToken();
@@ -157,8 +164,10 @@ async function writeCopy(loc: Exclude<Location, { kind: 'device' }>, project: Pr
       return { kind: 'browser', id, rev };
     }
     case 'cloud': {
-      const file = await deps.cloudSave(loc.provider, copyName, project, 'create');
-      return { kind: 'cloud', provider: loc.provider, file };
+      // Même dossier que l'original quand il est connu (Google Drive)
+      const where = loc.file.parentId ? { id: '', name: copyName, parentId: loc.file.parentId, resourceKeys: loc.file.resourceKeys } : undefined;
+      const file = await deps.cloudSave(loc.provider, copyName, project, 'create', where);
+      return { kind: 'cloud', provider: loc.provider, file: { ...file, parentId: loc.file.parentId } };
     }
     case 'folder': {
       // Copie de conflit dans le même dossier : les documents (immuables) sont partagés, rien n'est renvoyé

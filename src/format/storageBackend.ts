@@ -1,6 +1,6 @@
 /**
- * Abstraction de stockage d'un projet en DOSSIER (F8) : dossier cloud (OneDrive ; Dropbox, Google Drive et GitHub
- * à brancher sur la même interface), répertoire local (File System Access, Tauri plus tard), ou mémoire (tests).
+ * Abstraction de stockage d'un projet en DOSSIER (F8) : dossier cloud (OneDrive, Dropbox, Google Drive ; GitHub à
+ * brancher sur la même interface), répertoire local (File System Access, Tauri plus tard), ou mémoire (tests).
  * L'archive `.voltaplan` reste la forme portable ; le contenu logique est le même (src/format/folder.ts).
  *
  * Contrat volontairement réduit, qui rend impossibles par construction les écritures dangereuses :
@@ -30,8 +30,10 @@ export interface FolderBackend {
   /**
    * Écrit le fichier modifiable. `expected` : version lue (remplacement seulement si inchangé), `null` (création,
    * refusée si le fichier existe) ou `'any'` (remplacement confirmé par l'utilisateur). ConflictError sinon.
+   * `concurrentCopy` (Google Drive, sans écriture conditionnelle) : modification faite ailleurs pendant l'envoi,
+   * détectée après coup et recopiée sous ce nom dans le même dossier.
    */
-  writeConditional(path: string, data: string, expected: string | null | 'any'): Promise<{ version?: string }>;
+  writeConditional(path: string, data: string, expected: string | null | 'any'): Promise<{ version?: string; concurrentCopy?: string }>;
 }
 
 /** Dossier en mémoire (tests, et modèle de comportement attendu des autres implémentations). */

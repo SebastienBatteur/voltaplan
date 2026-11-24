@@ -56,6 +56,9 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Stockage du navigateur plein à l'ajout d'une photo : les images d'affichage (régénérables) sont libérées d'abord.
 - Ouverture d'un ancien projet (JSON) avec photos : mémoire nettement réduite (lecture par tranches, images décodées au fil de l'eau ; +184 Mo → +34 Mo pour 47 Mo, mesure sur ordinateur).
 - Garanties après une fermeture brutale et entre deux appareils décrites dans [ADR-0006](docs/adr/0006-format-v2-implementation.md) § 13.
+- Dossier de projet aussi sur Dropbox et Google Drive (mêmes garanties que OneDrive : documents envoyés une fois et vérifiés avant le modèle, modèle conditionnel, copie de conflit dans le même dossier, reprise après coupure, gros documents par tranches, aucune suppression). Pour chaque service, choix « dossier de projet » ou « fichier unique », avec une courte explication ; import d'un fichier `.voltaplan` dans un nouveau dossier ; passage d'un service à l'autre. Tests avec des services simulés [à vérifier avec de vrais comptes].
+- Google Drive : « Ouvrir avec Voltaplan » et « Nouveau → Voltaplan » (paramètre de Drive validé, ouverture seulement après un clic, adresse nettoyée, fichier rouvert à sa version pour un enregistrement sans écrasement ; lecture seule ou ancien format : nouveau fichier). Configuration à faire dans la console Google : [docs/oauth-configuration.md](docs/oauth-configuration.md).
+- Un seul type MIME pour l'archive : `application/vnd.voltaplan+zip` (envois Drive, « Enregistrer sous », manifeste de l'application installée) ; les anciens fichiers JSON restent acceptés.
 
 ### Calculs
 - Câbles en aluminium, chute de tension cumulée depuis l'origine, méthode détaillée avec les puissances, bilan de puissance et équilibrage des phases.

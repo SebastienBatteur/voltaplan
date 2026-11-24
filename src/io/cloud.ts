@@ -21,9 +21,28 @@
  */
 import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
-import { AuthError, cloudQuotaReached, ConflictError, conflictName, StorageFullError } from './conflict';
-import { MIMETYPE } from '../format/manifest';
-import { listPending } from './storage';
+import { AuthError, cloudQuotaReached, ConflictError, StorageFullError } from './conflict';
+import { driveCreate, driveMedia, driveUpdate, driveVersion } from './drive';
+
+// Règles de conservation des révisions Drive (fonctions pures), déplacées dans drive.ts
+export {
+  DRIVE_PINS_KEEP,
+  DRIVE_PINS_MAX,
+  DRIVE_PINS_MAX_COUNT,
+  DRIVE_PINS_MIN_BUDGET,
+  DRIVE_PINS_RECENT,
+  DRIVE_PINS_SIZE_FACTOR,
+  drivePinsBudget,
+  pinsToRelease,
+  pinsToReleaseBySize,
+  revisionsBetween,
+  type DriveRevision,
+} from './drive';
+
+/** Portée Google : fichiers créés par Voltaplan ou ouverts avec lui. */
+export const DRIVE_FILE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
+/** Portée Google facultative : Voltaplan proposé dans « Ouvrir avec » et « Nouveau » de Drive (aucun accès aux fichiers). */
+export const DRIVE_INSTALL_SCOPE = 'https://www.googleapis.com/auth/drive.install';
 
 /** Contenu envoyé : archive v2 (Blob) ; texte accepté pour les tests et les anciens appels. */
 export type CloudData = Blob | string;
@@ -47,6 +66,13 @@ export interface CloudFile {
    * elle a été recopiée sous ce nom (les deux versions sont conservées).
    */
   concurrentCopy?: string;
+  /**
+   * Google Drive : dossier où créer le fichier (« Nouveau » depuis Drive) et où ranger une copie de conflit.
+   * Création demandée par un emplacement dont `id` est vide.
+   */
+  parentId?: string;
+  /** Google Drive : en-tête X-Goog-Drive-Resource-Keys (fichiers partagés par lien), valeurs validées. */
+  resourceKeys?: string;
 }
 
 /**
@@ -240,7 +266,7 @@ export const PROVIDERS: Record<CloudId, Provider> = {
   gdrive: {
     label: 'Google Drive',
     authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
-    scope: 'https://www.googleapis.com/auth/drive.file',
+    scope: DRIVE_FILE_SCOPE,
     list: async (token) => {
       const q = encodeURIComponent(`name contains '${FILE_EXT}' and trashed = false`);
       const r = await check(
@@ -253,230 +279,21 @@ export const PROVIDERS: Record<CloudId, Provider> = {
       return j.files.map((f) => ({ id: f.id, name: f.name, size: f.size ? Number(f.size) : undefined, modified: f.modifiedTime }));
     },
     load: async (token, f) => {
-      const rev = await driveVersion(token, f.id);
-      const data = await (await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(f.id)}?alt=media`, { headers: { Authorization: 'Bearer ' + token } }))).blob();
+      const c = { token, resourceKeys: f.resourceKeys };
+      const rev = await driveVersion(c, f.id);
+      const data = await driveMedia(c, f.id);
       return { data, rev };
     },
     save: async (token, name, data, mode, existing) => {
-      if (mode !== 'create' && existing) {
-        // L'API v3 n'a pas d'écriture conditionnelle. Deux contrôles :
-        //  1. avant l'envoi : version et révision inchangées depuis l'ouverture (sinon conflit, rien n'est envoyé) ;
-        //  2. après l'envoi : la révision qui précède la nôtre doit être celle de l'ouverture. Sinon, quelqu'un a
-        //     enregistré pendant notre envoi : sa version (toujours dans l'historique de Drive) est recopiée en
-        //     copie de conflit. Les deux versions sont donc conservées, même dans ce cas.
-        //  3. stratégie conservatrice : la révision que nous allons remplacer est d'abord marquée « à conserver
-        //     indéfiniment » (keepForever), et notre envoi aussi (keepRevisionForever). Drive ne purge donc jamais
-        //     une version remplacée par Voltaplan : même en cas de course non détectée, elle reste récupérable
-        //     (Drive → clic droit → Gérer les versions). Si ce marquage échoue, on n'envoie pas.
-        const now = await driveVersion(token, existing.id);
-        if (mode === 'update') {
-          if (!existing.rev) throw new ConflictError('Google Drive : ' + name, 'version inconnue');
-          if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
-        }
-        const current = now?.split('|')[1];
-        // Révisions jamais libérées : celle que nous remplaçons, celle de l'ouverture, celles qu'un enregistrement
-        // en attente (conflit ou hors ligne) désigne encore.
-        const protect = new Set([current, existing.rev?.split('|')[1], ...pendingDriveRevisions(existing.id)].filter((x): x is string => !!x));
-        if (current) await drivePin(token, existing.id, current, protect);
-        const r = await check(
-          await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&keepRevisionForever=true&fields=id,name,size,modifiedTime,version,headRevisionId`, {
-            method: 'PATCH',
-            headers: { Authorization: 'Bearer ' + token, 'Content-Type': typeof data === 'string' ? 'application/json' : MIMETYPE },
-            body: asBody(data),
-          }),
-          // 403 « storageQuotaExceeded » : espace Google épuisé (StorageFullError) [à vérifier avec un vrai compte]
-          'Google Drive',
-        );
-        const saved = driveFile(await r.json());
-        const head = mode === 'update' ? existing.rev?.split('|')[1] : undefined;
-        if (head) {
-          const between = await driveRevisionsBetween(token, existing.id, head, saved.rev?.split('|')[1]);
-          if (between.length) {
-            // Recopie de la dernière version écrite par l'autre appareil (les révisions intermédiaires restent dans Drive)
-            const theirs = await (
-              await check(
-                await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(existing.id)}/revisions/${encodeURIComponent(between[between.length - 1])}?alt=media`, {
-                  headers: { Authorization: 'Bearer ' + token },
-                }),
-              )
-            ).blob();
-            const copyName = conflictName(name);
-            await driveCreate(token, copyName, theirs);
-            saved.concurrentCopy = copyName;
-          }
-        }
-        // Drive limite le nombre de révisions conservées indéfiniment par fichier : on libère les plus anciennes
-        // au-delà d'un seuil (jamais les plus récentes). Échec sans conséquence pour l'enregistrement.
-        const head2 = saved.rev?.split('|')[1];
-        if (head2) protect.add(head2);
-        await driveReleaseOldPins(token, existing.id, { fileSize: saved.size ?? asBody(data).size, protect }).catch(() => undefined);
-        return saved;
-      }
+      const c = { token, resourceKeys: existing?.resourceKeys };
+      // Mise à jour : stratégie prudente (vérification avant, révision remplacée conservée, contrôle après), voir drive.ts
+      if (mode !== 'create' && existing?.id) return driveUpdate(c, existing, name, data, mode, { parents: existing.parentId ? [existing.parentId] : undefined });
       // Création : Drive admet plusieurs fichiers de même nom, un fichier existant n'est donc jamais remplacé.
-      return driveCreate(token, name, data);
+      // « Nouveau » depuis Drive : dans le dossier choisi par l'utilisateur (parentId).
+      return driveCreate(c, name, data, { parents: existing?.parentId ? [existing.parentId] : undefined });
     },
   },
 };
-
-async function driveCreate(token: string, name: string, data: CloudData): Promise<CloudFile> {
-  const boundary = 'voltaplan' + Math.random().toString(36).slice(2);
-  const type = typeof data === 'string' ? 'application/json' : MIMETYPE;
-  const body = new Blob([
-    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify({ name, mimeType: type })}\r\n`,
-    `--${boundary}\r\nContent-Type: ${type}\r\n\r\n`,
-    asBody(data),
-    `\r\n--${boundary}--`,
-  ]);
-  const r = await check(
-    await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&keepRevisionForever=true&fields=id,name,size,modifiedTime,version,headRevisionId', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'multipart/related; boundary=' + boundary },
-      body,
-    }),
-    'Google Drive',
-  );
-  return driveFile(await r.json());
-}
-
-/** Version complète d'un fichier Drive : « version|révision de tête » (les deux changent à chaque envoi). */
-async function driveVersion(token: string, id: string): Promise<string | undefined> {
-  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}?fields=version,headRevisionId`, { headers: { Authorization: 'Bearer ' + token } }));
-  const j = (await r.json()) as { version?: string; headRevisionId?: string };
-  return j.version ? `${j.version}|${j.headRevisionId ?? ''}` : undefined;
-}
-
-/**
- * Révisions écrites entre `from` (révision de l'ouverture) et `to` (notre envoi), exclues : vide si personne d'autre
- * n'a enregistré pendant notre envoi. Si `from` n'est plus dans l'historique (purgé par Drive), on ne conclut rien.
- */
-async function driveRevisionsBetween(token: string, id: string, from: string, to: string | undefined): Promise<string[]> {
-  const r = await check(await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id)&pageSize=1000`, { headers: { Authorization: 'Bearer ' + token } }));
-  const ids = ((await r.json()) as { revisions?: { id: string }[] }).revisions?.map((x) => x.id) ?? [];
-  return revisionsBetween(ids, from, to);
-}
-
-/** Marque une révision « à conserver indéfiniment ». Plafond atteint : on libère d'anciennes révisions et on réessaie. */
-async function drivePin(token: string, id: string, rev: string, protect: Set<string>): Promise<void> {
-  const pin = () =>
-    fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rev)}?fields=id,keepForever`, {
-      method: 'PATCH',
-      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keepForever: true }),
-    });
-  const r = await pin();
-  if (r.ok) return;
-  if (r.status === 401) throw new AuthError('Google Drive');
-  // Refus (plafond du service probablement atteint) : libération plus large, puis nouvel essai
-  await driveReleaseOldPins(token, id, { fileSize: 0, protect, maxCount: DRIVE_PINS_MAX_COUNT / 2 });
-  await check(await pin());
-}
-
-/**
- * Révisions « conservées indéfiniment » (keepForever) d'un fichier Drive. Elles comptent dans l'espace de
- * stockage de l'utilisateur [à vérifier] : avec le format v1 (photos intégrées, jusqu'à 50 Mo par fichier), 150
- * révisions pourraient occuper plusieurs Go. On en garde tant que les DEUX limites sont respectées :
- *  - nombre ≤ DRIVE_PINS_MAX_COUNT (le service en accepte 200 par fichier [à vérifier]) ;
- *  - taille totale ≤ budget = max(DRIVE_PINS_SIZE_FACTOR × taille actuelle du fichier, DRIVE_PINS_MIN_BUDGET).
- * Jamais libérées : les DRIVE_PINS_RECENT dernières révisions, et celles qu'un conflit ou un enregistrement en
- * attente désigne encore. Avec les dossiers de projet (F8), seul le modèle (petit) est modifiable : le budget
- * concerne surtout les fichiers v1 et les archives.
- */
-export const DRIVE_PINS_MAX_COUNT = 100;
-export const DRIVE_PINS_SIZE_FACTOR = 10;
-export const DRIVE_PINS_MIN_BUDGET = 200 * 1024 * 1024;
-export const DRIVE_PINS_RECENT = 20;
-/** Anciens seuils (nombre seul), gardés pour pinsToRelease. */
-export const DRIVE_PINS_MAX = 150;
-export const DRIVE_PINS_KEEP = 100;
-
-export interface DriveRevision {
-  id: string;
-  keepForever?: boolean;
-  /** Octets (l'API renvoie une chaîne). */
-  size?: number | string;
-  modifiedTime?: string;
-}
-
-export const drivePinsBudget = (fileSize: number) => Math.max(DRIVE_PINS_SIZE_FACTOR * Math.max(0, fileSize), DRIVE_PINS_MIN_BUDGET);
-
-/**
- * Fonction pure (testée) : révisions conservées à libérer, des plus anciennes aux plus récentes, jusqu'à respecter
- * le nombre ET le budget de taille. Ordre chronologique d'après modifiedTime (à défaut, l'ordre de la liste).
- */
-export function pinsToReleaseBySize(
-  revs: DriveRevision[],
-  opts: { fileSize: number; protect?: Set<string>; maxCount?: number; budget?: number; recent?: number },
-): string[] {
-  const maxCount = opts.maxCount ?? DRIVE_PINS_MAX_COUNT;
-  const budget = opts.budget ?? drivePinsBudget(opts.fileSize);
-  const recent = opts.recent ?? DRIVE_PINS_RECENT;
-  const ordered = revs.every((r) => r.modifiedTime) ? [...revs].sort((a, b) => a.modifiedTime!.localeCompare(b.modifiedTime!)) : revs;
-  const untouchable = new Set([...ordered.slice(Math.max(0, ordered.length - recent)).map((r) => r.id), ...(opts.protect ?? [])]);
-  const pinned = ordered.filter((r) => r.keepForever);
-  let count = pinned.length;
-  let bytes = pinned.reduce((t, r) => t + (Number(r.size) || 0), 0);
-  const out: string[] = [];
-  for (const r of pinned) {
-    if (count <= maxCount && bytes <= budget) break;
-    if (untouchable.has(r.id)) continue;
-    out.push(r.id);
-    count--;
-    bytes -= Number(r.size) || 0;
-  }
-  return out;
-}
-
-/** Révisions Drive encore désignées par un enregistrement en attente (conflit, hors ligne) pour ce fichier. */
-function pendingDriveRevisions(fileId: string): string[] {
-  try {
-    return listPending()
-      .map((p) => (p.loc.kind === 'cloud' && p.loc.provider === 'gdrive' && p.loc.file.id === fileId ? p.loc.file.rev?.split('|')[1] : undefined))
-      .filter((x): x is string => !!x);
-  } catch {
-    return [];
-  }
-}
-
-async function driveReleaseOldPins(token: string, id: string, opts: { fileSize: number; protect: Set<string>; maxCount?: number }): Promise<void> {
-  const r = await check(
-    await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id,keepForever,size,modifiedTime)&pageSize=1000`, {
-      headers: { Authorization: 'Bearer ' + token },
-    }),
-  );
-  const revs = ((await r.json()) as { revisions?: DriveRevision[] }).revisions ?? [];
-  for (const rid of pinsToReleaseBySize(revs, opts))
-    await check(
-      await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rid)}`, {
-        method: 'PATCH',
-        headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ keepForever: false }),
-      }),
-    );
-}
-
-/**
- * Fonction pure (testée) : révisions « conservées indéfiniment » à libérer selon le seul nombre (ancienne règle,
- * remplacée par pinsToReleaseBySize), seulement quand il y en a plus de `max`, pour revenir à `keep`. Les 20
- * dernières révisions ne sont jamais libérées.
- */
-export function pinsToRelease(revs: { id: string; keepForever?: boolean }[], max = DRIVE_PINS_MAX, keep = DRIVE_PINS_KEEP): string[] {
-  const pinned = revs.slice(0, Math.max(0, revs.length - 20)).filter((r) => r.keepForever);
-  const total = revs.filter((r) => r.keepForever).length;
-  if (total <= max) return [];
-  return pinned.slice(0, Math.max(0, total - keep)).map((r) => r.id);
-}
-
-/** Fonction pure (testée) : identifiants strictement entre `from` et `to` dans la liste chronologique. */
-export function revisionsBetween(ids: string[], from: string, to: string | undefined): string[] {
-  const a = ids.indexOf(from);
-  const b = to ? ids.indexOf(to) : ids.length;
-  if (a < 0 || b < 0 || b <= a) return [];
-  return ids.slice(a + 1, b);
-}
-
-function driveFile(j: { id: string; name: string; size?: string; modifiedTime?: string; version?: string; headRevisionId?: string }): CloudFile {
-  return { id: j.id, name: j.name, size: j.size ? Number(j.size) : undefined, modified: j.modifiedTime, rev: j.version ? `${j.version}|${j.headRevisionId ?? ''}` : undefined };
-}
 
 /** En-tête HTTP Dropbox-API-Arg : JSON en ASCII (caractères non ASCII échappés). */
 export function asciiJson(v: unknown): string {
@@ -534,13 +351,18 @@ function waitForRedirect(popup: Window, state: string): Promise<URLSearchParams>
   });
 }
 
-export async function cloudConnect(id: CloudId): Promise<string> {
+/**
+ * Connexion. `loginHint` : compte attendu (Google : identifiant transmis par « Ouvrir avec » de Drive) ;
+ * `extraScope` : portée ajoutée pour cette connexion seulement (Google : drive.install).
+ */
+export async function cloudConnect(id: CloudId, opts: { loginHint?: string; extraScope?: string } = {}): Promise<string> {
   const p = PROVIDERS[id];
   const client = clientId(id);
   if (!client) throw new Error('client-id');
   const state = b64url(crypto.getRandomValues(new Uint8Array(16)));
   const redirect = redirectUri();
-  const q = new URLSearchParams({ client_id: client, redirect_uri: redirect, state, scope: p.scope, ...(p.extraAuth ?? {}) });
+  const q = new URLSearchParams({ client_id: client, redirect_uri: redirect, state, scope: opts.extraScope ? `${p.scope} ${opts.extraScope}` : p.scope, ...(p.extraAuth ?? {}) });
+  if (opts.loginHint) q.set('login_hint', opts.loginHint);
   let verifier = '';
   if (p.tokenUrl) {
     const pk = await pkcePair();

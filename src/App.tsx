@@ -3,7 +3,8 @@ import { ElementsPanel } from './ui/ElementsPanel';
 import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
 import { PrintDialog } from './print/PrintDialog';
-import { StorageDialog } from './ui/StorageDialog';
+import { DriveOpenPrompt, StorageDialog } from './ui/StorageDialog';
+import type { DriveIntent } from './io/driveOpenWith';
 import {
   addVersion,
   browserDelete,
@@ -135,7 +136,7 @@ export function App() {
   };
 
   const whereLabel = (loc: Location) =>
-    loc.kind === 'cloud' ? loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox' : loc.kind === 'github' ? 'GitHub' : loc.kind === 'folder' ? 'OneDrive' : t('save.where.' + loc.kind);
+    loc.kind === 'cloud' || loc.kind === 'folder' ? (loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox') : loc.kind === 'github' ? 'GitHub' : t('save.where.' + loc.kind);
 
   const saveDeps = (): SaveDeps => ({
     browserSave,
@@ -305,6 +306,17 @@ export function App() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ id: string; name: string; updated: string; data: string; others: number } | null>(null);
+  /** « Ouvrir avec Voltaplan » / « Nouveau » depuis Google Drive (paramètre `state` de l'adresse). */
+  const [driveIntent, setDriveIntent] = useState<DriveIntent | null>(null);
+
+  // Google Drive → Voltaplan : demande lue une fois au démarrage, retirée de l'adresse, traitée après un clic
+  useEffect(() => {
+    if (!/[?&]state=/.test(window.location.search)) return;
+    void import('./io/driveOpenWith').then((m) => {
+      const intent = m.takeDriveIntent();
+      if (intent) setDriveIntent(intent);
+    });
+  }, []);
 
   // Brouillon automatique dans le navigateur, un par onglet (toutes les 20 s s'il y a des modifications, et quand
   // l'onglet passe en arrière-plan ou se ferme). Au démarrage, les brouillons d'onglets fermés ou interrompus
@@ -525,6 +537,27 @@ export function App() {
           </button>{' '}
           <button onClick={() => setResume(null)}>{t('save.later')}</button>
         </div>
+      )}
+      {driveIntent && (
+        <DriveOpenPrompt
+          intent={driveIntent}
+          confirmDiscard={confirmDiscard}
+          onClose={() => setDriveIntent(null)}
+          onOpened={(p, name, loc, notes) => {
+            resetHandle();
+            s.loadProject(p, name);
+            location.current = loc;
+            setSaveState(null);
+            setToast({ text: t('driveOpen.opened', { name }), warnings: notes });
+          }}
+          onCreate={(loc) => {
+            resetHandle();
+            s.loadProject(emptyProject(), '');
+            location.current = loc;
+            setSaveState(null);
+            setToast({ text: t('driveOpen.created') });
+          }}
+        />
       )}
       {recover && (
         <div className="toast">

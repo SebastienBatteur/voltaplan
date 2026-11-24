@@ -1,24 +1,74 @@
 /**
- * Projets en dossier (F8) côté application : enregistrement et ouverture d'un dossier OneDrive, import d'une
- * archive dans un dossier, transfert entre services. Logique commune : src/format/folder.ts ; service :
- * src/io/oneDriveFolder.ts (Dropbox, Google Drive et GitHub : même interface `FolderBackend`, à brancher).
+ * Projets en dossier (F8) côté application : enregistrement et ouverture d'un dossier OneDrive, Dropbox ou Google
+ * Drive, import d'une archive dans un dossier, transfert entre services. Logique commune : src/format/folder.ts ;
+ * services : src/io/oneDriveFolder.ts, dropboxFolder.ts, driveFolder.ts (GitHub : même interface, à brancher).
  */
 import type { Project } from '../model/types';
-import { openFromFolder, saveToFolder, transferToFolder, type FolderSaveResult } from '../format/folder';
+import { FOLDER_MODEL, openFromFolder, saveToFolder, transferToFolder, type FolderSaveResult } from '../format/folder';
 import type { FolderBackend } from '../format/storageBackend';
 import { readArchive } from '../format/archive';
 import { mergeSources } from '../format/projectFile';
 import type { MigrationWarning } from '../model/migrate';
-import { withToken, type SaveMode } from './cloud';
+import { PROVIDERS, withToken, type CloudId, type SaveMode } from './cloud';
 import { ConflictError } from './conflict';
-import { OneDriveFolderBackend } from './oneDriveFolder';
+import { listOneDriveFolders, OneDriveFolderBackend, safeFolderName } from './oneDriveFolder';
+import { DropboxFolderBackend, listDropboxFolders } from './dropboxFolder';
+import { createDriveProjectFolder, DriveFolderBackend, listDriveFolders } from './driveFolder';
 import { archiveSources, assetSession, projectWriteInput } from './projectData';
 import { parseProjectChecked, type FolderLocation } from './storage';
 
-/** Appel au dossier du service avec un jeton valide (reconnexion si nécessaire, voir cloud.ts withToken). */
-function defaultRun(loc: Pick<FolderLocation, 'provider' | 'folder'>) {
-  return <T>(fn: (b: FolderBackend) => Promise<T>) => withToken(loc.provider, (token) => fn(new OneDriveFolderBackend(token, loc.folder)));
+/** Dossier de projet d'un service, pour un jeton donné (même interface pour les trois services). */
+export function folderBackend(loc: Pick<FolderLocation, 'provider' | 'folder' | 'folderId'>, token: string, fetchFn?: typeof fetch): FolderBackend {
+  switch (loc.provider) {
+    case 'onedrive':
+      return new OneDriveFolderBackend(token, loc.folder, fetchFn);
+    case 'dropbox':
+      return new DropboxFolderBackend(token, loc.folder, fetchFn);
+    case 'gdrive':
+      // Drive : désigné par son identifiant (deux dossiers peuvent porter le même nom)
+      if (!loc.folderId) throw new Error('Google Drive : dossier de projet sans identifiant');
+      return new DriveFolderBackend(token, loc.folderId, loc.folder, fetchFn);
+  }
 }
+
+/** Appel au dossier du service avec un jeton valide (reconnexion si nécessaire, voir cloud.ts withToken). */
+function defaultRun(loc: Pick<FolderLocation, 'provider' | 'folder' | 'folderId'>) {
+  return <T>(fn: (b: FolderBackend) => Promise<T>) => withToken(loc.provider, (token) => fn(folderBackend(loc, token)));
+}
+
+/** Dossier de projet existant, tel que listé pour l'utilisateur. */
+export interface ProjectFolder {
+  name: string;
+  /** Google Drive seulement. */
+  id?: string;
+  modified?: string;
+}
+
+/** Dossiers de projet du service (dossier de l'application ; Drive : dossiers créés par Voltaplan). */
+export async function listProjectFolders(provider: CloudId): Promise<ProjectFolder[]> {
+  return withToken(provider, async (token): Promise<ProjectFolder[]> => {
+    if (provider === 'onedrive') return listOneDriveFolders(token);
+    if (provider === 'dropbox') return listDropboxFolders(token);
+    return listDriveFolders(token);
+  });
+}
+
+/**
+ * Emplacement d'un NOUVEAU dossier de projet nommé `name` : OneDrive et Dropbox le créent à la première écriture ;
+ * Google Drive le crée tout de suite (dans `parentId` s'il est donné) pour obtenir son identifiant. Renvoie aussi
+ * le dossier existant de même nom, s'il y en a un (remplacement à confirmer par l'utilisateur).
+ */
+export async function prepareProjectFolder(provider: CloudId, name: string, opts: { parentId?: string; existing?: ProjectFolder[] } = {}): Promise<{ loc: FolderLocation; exists: boolean }> {
+  const folder = safeFolderName(name);
+  const list = opts.existing ?? (await listProjectFolders(provider));
+  const same = list.find((f) => f.name === folder);
+  if (same) return { loc: { kind: 'folder', provider, folder, folderId: same.id, modelPath: FOLDER_MODEL }, exists: true };
+  if (provider !== 'gdrive') return { loc: { kind: 'folder', provider, folder, modelPath: FOLDER_MODEL }, exists: false };
+  const created = await withToken('gdrive', (t) => createDriveProjectFolder(t, folder, opts.parentId));
+  return { loc: { kind: 'folder', provider, folder: created.name, folderId: created.id, modelPath: FOLDER_MODEL }, exists: false };
+}
+
+const label = (loc: Pick<FolderLocation, 'provider' | 'folder'>) => PROVIDERS[loc.provider].label + ' : ' + loc.folder;
 
 /**
  * Enregistre le projet dans son dossier : documents manquants d'abord, modèle ensuite (conditionnel). `mode` :
@@ -26,7 +76,7 @@ function defaultRun(loc: Pick<FolderLocation, 'provider' | 'folder'>) {
  * existe), 'overwrite' (remplacement confirmé). Renvoie la nouvelle version du modèle.
  */
 export async function folderSave(loc: FolderLocation, project: Project, mode: SaveMode, run = defaultRun(loc)): Promise<{ rev?: string } & FolderSaveResult> {
-  if (mode === 'update' && !loc.rev) throw new ConflictError('OneDrive : ' + loc.folder, 'version inconnue');
+  if (mode === 'update' && !loc.rev) throw new ConflictError(label(loc), 'version inconnue');
   // Documents vérifiés AVANT toute connexion : un document manquant arrête tout ici (MissingAssetsError)
   const input = await projectWriteInput(project);
   const docs = input.originals.map((o) => ({ sha256: o.sha256, mime: o.mime, size: o.size, blob: o.blob }));
@@ -68,4 +118,16 @@ export async function importArchiveToFolder(archive: Blob, to: FolderBackend, ti
 export async function transferFolder(from: FolderBackend, to: FolderBackend, title: string, modelPath = 'project.json'): Promise<FolderSaveResult> {
   const opened = await openFromFolder(from, modelPath);
   return transferToFolder(opened.projectText, opened.sources, to, title);
+}
+
+/**
+ * Import d'un fichier `.voltaplan` (archive v2) dans un NOUVEAU dossier de projet du service : dossier préparé
+ * (Drive : créé), documents envoyés et vérifiés, modèle créé en dernier. Un dossier de même nom qui existe déjà
+ * n'est jamais complété ni remplacé : ConflictError (choisir un autre nom).
+ */
+export async function importArchiveToCloudFolder(archive: Blob, provider: CloudId, name: string, opts: { parentId?: string } = {}): Promise<FolderLocation> {
+  const { loc, exists } = await prepareProjectFolder(provider, name, opts);
+  if (exists) throw new ConflictError(label(loc), 'existe');
+  const r = await defaultRun(loc)((b) => importArchiveToFolder(archive, b, name));
+  return { ...loc, rev: r.version };
 }

@@ -24,14 +24,20 @@ export type Location =
 
 /**
  * Projet en dossier (format v2, F8) : documents immuables envoyés une fois, modèle seul renvoyé. `modelPath` :
- * project.json, ou une copie de conflit dans le même dossier. `rev` : version du modèle (eTag OneDrive).
+ * project.json, ou une copie de conflit dans le même dossier. `rev` : version du modèle (eTag OneDrive, rev
+ * Dropbox, « version|révision » Google Drive).
+ *  - OneDrive, Dropbox : `folder` est le nom du dossier dans le dossier de l'application ;
+ *  - Google Drive : `folderId` désigne le dossier (plusieurs dossiers peuvent porter le même nom), `folder` est
+ *    son nom affiché.
  */
 export interface FolderLocation {
   kind: 'folder';
-  provider: 'onedrive';
+  provider: CloudId;
   folder: string;
   modelPath: string;
   rev?: string;
+  /** Google Drive : identifiant du dossier de projet. */
+  folderId?: string;
 }
 
 // ---------------------------------------------------------------------------

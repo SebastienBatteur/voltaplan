@@ -14,6 +14,6 @@
     { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }
   ],
   "file_handlers": [
-    { "action": "./", "accept": { "application/json": [".voltaplan", ".openrgie"] } }
+    { "action": "./", "accept": { "application/vnd.voltaplan+zip": [".voltaplan"], "application/json": [".voltaplan", ".openrgie"] } }
   ]
 }

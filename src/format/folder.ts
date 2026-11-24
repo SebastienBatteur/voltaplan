@@ -55,6 +55,8 @@ export interface FolderSaveOptions {
 
 export interface FolderSaveResult {
   version?: string;
+  /** Google Drive : version concurrente détectée après l'envoi, recopiée sous ce nom (voir storageBackend.ts). */
+  concurrentCopy?: string;
   uploaded: number;
   skipped: number;
 }
@@ -93,7 +95,7 @@ export async function saveToFolder(b: FolderBackend, projectText: string, docs: 
   await b.putIfAbsent('README.txt', new Blob([readmeText(title)], { type: 'text/plain' })).catch(() => undefined);
   // Modèle publié en dernier : il ne référence que des documents présents et vérifiés
   const w = await b.writeConditional(opts.modelPath ?? FOLDER_MODEL, projectText, opts.expected);
-  return { version: w.version, uploaded, skipped };
+  return { version: w.version, ...(w.concurrentCopy ? { concurrentCopy: w.concurrentCopy } : {}), uploaded, skipped };
 }
 
 export interface OpenedFolder {

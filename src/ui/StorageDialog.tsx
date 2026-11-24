@@ -28,8 +28,27 @@ import { download } from '../io/files';
 import { isConflict } from '../io/conflict';
 import { useOnline } from './UpdateBanner';
 import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
-import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, withToken, type CloudFile, type CloudId } from '../io/cloud';
+import {
+  CLOUDS,
+  DRIVE_INSTALL_SCOPE,
+  PROVIDERS,
+  clientId,
+  cloudConnect,
+  cloudForget,
+  cloudList,
+  cloudLoad,
+  cloudSave,
+  cloudToken,
+  redirectUri,
+  setClientId,
+  withToken,
+  type CloudFile,
+  type CloudId,
+} from '../io/cloud';
 import { openProjectData } from '../io/projectData';
+import { MIMETYPE } from '../format/manifest';
+import type { ProjectFolder } from '../io/cloudFolder';
+import type { DriveIntent } from '../io/driveOpenWith';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
 
@@ -432,7 +451,18 @@ function BrowserSpace() {
   );
 }
 
-/** Google Drive, OneDrive, Dropbox : identifiant d'application (une fois), connexion, liste, ouvrir, enregistrer. */
+/** Message d'une erreur de connexion ou de service (identifiant manquant, fenêtre bloquée, annulation…). */
+function cloudErrorText(e: unknown, t: (k: string, p?: Record<string, string | number>) => string): string {
+  const m = (e as Error).message;
+  if ((e as Error).name === 'DriveOpenError') return t('driveOpen.error.' + (e as { code: string }).code);
+  return m === 'client-id' ? t('cloud.needClientId') : m === 'popup' ? t('cloud.popupBlocked') : m === 'cancelled' ? t('cloud.cancelled') : errorText(e, t);
+}
+
+/**
+ * Google Drive, OneDrive, Dropbox : identifiant d'application (une fois), connexion, liste, ouvrir, enregistrer.
+ * Deux formes au choix, pour chaque service : dossier de projet (documents envoyés une fois, modèle seul renvoyé)
+ * ou fichier unique `.voltaplan` (archive complète renvoyée à chaque enregistrement).
+ */
 function CloudTab({
   mode,
   name,
@@ -450,8 +480,9 @@ function CloudTab({
   const project = useStore((s) => s.project);
   const [svc, setSvc] = useState<CloudId>('onedrive');
   const [cid, setCid] = useState(clientId('onedrive'));
+  const [form, setForm] = useState<'folder' | 'file'>('folder');
   const [files, setFiles] = useState<CloudFile[] | null>(null);
-  const [folders, setFolders] = useState<string[] | null>(null);
+  const [folders, setFolders] = useState<ProjectFolder[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const run = async (fn: () => Promise<void>) => {
@@ -460,13 +491,55 @@ function CloudTab({
     try {
       await fn();
     } catch (e) {
-      const m = (e as Error).message;
-      setMsg(m === 'client-id' ? t('cloud.needClientId') : m === 'popup' ? t('cloud.popupBlocked') : m === 'cancelled' ? t('cloud.cancelled') : errorText(e, t));
+      setMsg(cloudErrorText(e, t));
     } finally {
       setBusy(false);
     }
   };
   const fileName = safeName(name) + FILE_EXT;
+  const label = PROVIDERS[svc].label;
+
+  const saveFile = () =>
+    run(async () => {
+      setClientId(svc, cid);
+      const existing = (await cloudList(svc)).find((f) => f.name === fileName);
+      if (existing && !confirm(t('storage.overwrite', { name: fileName }))) return;
+      // Remplacement confirmé ci-dessus, sinon création (refusée si un fichier du même nom apparaît entre-temps)
+      const f = await cloudSave(svc, fileName, project, existing ? 'overwrite' : 'create', existing);
+      onSaved(name.trim(), { kind: 'cloud', provider: svc, file: f });
+      onClose();
+    });
+
+  const saveFolder = () =>
+    run(async () => {
+      // Format v2, dossier de projet (F8) : documents envoyés une fois, modèle seul ensuite. Un projet ouvert depuis
+      // un autre service y est transféré (documents lus à leur source, vérifiés, envoyés s'ils manquent).
+      setClientId(svc, cid);
+      const { folderSave, listProjectFolders, prepareProjectFolder } = await import('../io/cloudFolder');
+      const { safeFolderName } = await import('../io/oneDriveFolder');
+      const list = await listProjectFolders(svc);
+      const exists = list.some((f) => f.name === safeFolderName(name.trim()));
+      if (exists && !confirm(t('storage.overwrite', { name: safeFolderName(name.trim()) }))) return;
+      const { loc } = await prepareProjectFolder(svc, name.trim(), { existing: list });
+      const r = await folderSave(loc, project, exists ? 'overwrite' : 'create');
+      onSaved(name.trim(), { ...loc, rev: r.rev });
+      onClose();
+    });
+
+  const importArchive = () =>
+    run(async () => {
+      setClientId(svc, cid);
+      const { pickFile } = await import('../io/files');
+      const file = await pickFile([FILE_EXT, MIMETYPE].join(','));
+      if (!file) return;
+      const { folderOpen, importArchiveToCloudFolder } = await import('../io/cloudFolder');
+      const title = file.name.replace(/\.[^.]*$/, '');
+      const loc = await importArchiveToCloudFolder(file, svc, title);
+      const r = await folderOpen(loc);
+      onOpened(r.project, loc.folder, { ...loc, rev: r.rev });
+      onClose();
+    });
+
   return (
     <div>
       <div className="tabs-row">
@@ -486,7 +559,7 @@ function CloudTab({
           </button>
         ))}
       </div>
-      <p className="muted small">{t('cloud.help', { service: PROVIDERS[svc].label })}</p>
+      <p className="muted small">{t('cloud.help', { service: label })}</p>
       <label className="field">
         <span>{t('cloud.clientId')}</span>
         <input value={cid} placeholder="…" onChange={(e) => setCid(e.target.value)} onBlur={() => setClientId(svc, cid)} />
@@ -494,24 +567,21 @@ function CloudTab({
       <p className="muted small">
         {t('cloud.redirect')} <code>{redirectUri()}</code>
       </p>
+      <fieldset className="cloud-form">
+        <legend>{t('cloudFolder.formTitle')}</legend>
+        <label>
+          <input type="radio" name="cloud-form" checked={form === 'folder'} onChange={() => setForm('folder')} /> <strong>{t('cloudFolder.folder')}</strong>
+          <span className="muted small"> — {t('cloudFolder.folderHelp')}</span>
+        </label>
+        <label>
+          <input type="radio" name="cloud-form" checked={form === 'file'} onChange={() => setForm('file')} /> <strong>{t('cloudFolder.file')}</strong>
+          <span className="muted small"> — {t('cloudFolder.fileHelp')}</span>
+        </label>
+      </fieldset>
       <div className="row">
         {mode === 'save' ? (
-          <button
-            className="primary"
-            disabled={busy || !cid || !name.trim()}
-            onClick={() =>
-              run(async () => {
-                setClientId(svc, cid);
-                const existing = (await cloudList(svc)).find((f) => f.name === fileName);
-                if (existing && !confirm(t('storage.overwrite', { name: fileName }))) return;
-                // Remplacement confirmé ci-dessus, sinon création (refusée si un fichier du même nom apparaît entre-temps)
-                const f = await cloudSave(svc, fileName, project, existing ? 'overwrite' : 'create', existing);
-                onSaved(name.trim(), { kind: 'cloud', provider: svc, file: f });
-                onClose();
-              })
-            }
-          >
-            {t('storage.saveHere')}
+          <button className="primary" disabled={busy || !cid || !name.trim()} title={form === 'folder' ? t('format.saveAsFolderHelp') : undefined} onClick={form === 'folder' ? saveFolder : saveFile}>
+            {t(form === 'folder' ? 'format.saveAsFolder' : 'storage.saveHere')}
           </button>
         ) : (
           <button
@@ -520,36 +590,38 @@ function CloudTab({
             onClick={() =>
               run(async () => {
                 setClientId(svc, cid);
-                setFiles(await cloudList(svc));
+                if (form === 'file') {
+                  setFolders(null);
+                  setFiles(await cloudList(svc));
+                } else {
+                  setFiles(null);
+                  setFolders(await (await import('../io/cloudFolder')).listProjectFolders(svc));
+                }
               })
             }
           >
-            {t('storage.list')}
+            {t(form === 'folder' ? 'format.folders' : 'storage.list')}
           </button>
         )}
-        {svc === 'onedrive' && (
+        {form === 'folder' && (
+          <button title={t('cloudFolder.importHelp')} disabled={busy || !cid} onClick={importArchive}>
+            {t('cloudFolder.import')}
+          </button>
+        )}
+        {svc === 'gdrive' && (
           <button
-            title={t('format.saveAsFolderHelp')}
-            disabled={busy || !cid || (mode === 'save' && !name.trim())}
+            title={t('driveOpen.installHelp')}
+            disabled={busy || !cid}
             onClick={() =>
               run(async () => {
-                // Format v2, dossier de projet (F8) : documents envoyés une fois, modèle seul ensuite
                 setClientId(svc, cid);
-                const { listOneDriveFolders, safeFolderName } = await import('../io/oneDriveFolder');
-                const list = await withToken('onedrive', (tk) => listOneDriveFolders(tk));
-                if (mode === 'open') return setFolders(list.map((f) => f.name));
-                const folder = safeFolderName(name.trim());
-                const exists = list.some((f) => f.name === folder);
-                if (exists && !confirm(t('storage.overwrite', { name: folder }))) return;
-                const { folderSave } = await import('../io/cloudFolder');
-                const loc = { kind: 'folder', provider: 'onedrive', folder, modelPath: 'project.json' } as const;
-                const r = await folderSave(loc, project, exists ? 'overwrite' : 'create');
-                onSaved(name.trim(), { ...loc, rev: r.rev });
-                onClose();
+                // Portée drive.install demandée pour cette connexion seulement : Voltaplan apparaît dans « Ouvrir avec »
+                await cloudConnect('gdrive', { extraScope: DRIVE_INSTALL_SCOPE });
+                setMsg(t('driveOpen.installDone'));
               })
             }
           >
-            {t(mode === 'open' ? 'format.folders' : 'format.saveAsFolder')}
+            {t('driveOpen.install')}
           </button>
         )}
         {cloudToken(svc) && (
@@ -564,25 +636,26 @@ function CloudTab({
           </button>
         )}
       </div>
-      {mode === 'open' && svc === 'onedrive' && folders && (
+      {mode === 'open' && folders && (
         <ul className="storage-list">
           {folders.length === 0 && <li className="muted">{t('storage.empty')}</li>}
-          {folders.map((folder) => (
-            <li key={folder}>
+          {folders.map((f) => (
+            <li key={f.id ?? f.name}>
               <button
                 className="link"
                 onClick={() =>
                   run(async () => {
                     const { folderOpen } = await import('../io/cloudFolder');
-                    const loc = { kind: 'folder', provider: 'onedrive', folder, modelPath: 'project.json' } as const;
+                    const loc = { kind: 'folder', provider: svc, folder: f.name, folderId: f.id, modelPath: 'project.json' } as const;
                     const r = await folderOpen(loc);
-                    onOpened(r.project, folder, { ...loc, rev: r.rev });
+                    onOpened(r.project, f.name, { ...loc, rev: r.rev });
                     onClose();
                   })
                 }
               >
-                {folder}/
+                {f.name}/
               </button>
+              <span className="muted small">{f.modified ? new Date(f.modified).toLocaleString() : ''}</span>
             </li>
           ))}
         </ul>
@@ -611,6 +684,67 @@ function CloudTab({
       )}
       {busy && <p className="muted small">…</p>}
       {msg && <p className="small error-text">{msg}</p>}
+    </div>
+  );
+}
+
+/**
+ * « Ouvrir avec Voltaplan » / « Nouveau → Voltaplan » depuis Google Drive (src/io/driveOpenWith.ts) : rien n'est
+ * lu avant le clic de l'utilisateur, qui autorise aussi la fenêtre de connexion (compte suggéré : celui de Drive).
+ * Le fichier ouvert garde son identifiant et sa version (enregistrement prudent au même endroit) ; un fichier en
+ * lecture seule ou converti (v1) est enregistré dans un NOUVEAU fichier, jamais par-dessus l'original.
+ */
+export function DriveOpenPrompt({
+  intent,
+  confirmDiscard,
+  onOpened,
+  onCreate,
+  onClose,
+}: {
+  intent: DriveIntent;
+  confirmDiscard: () => boolean;
+  onOpened: (p: Project, name: string, loc: Location, notes: string[]) => void;
+  onCreate: (loc: Location) => void;
+  onClose: () => void;
+}) {
+  const t = useStore((s) => s.t);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const others = intent.action === 'open' ? intent.ids.length - 1 : 0;
+
+  const go = async () => {
+    if (!confirmDiscard()) return;
+    setBusy(true);
+    setMsg(null);
+    try {
+      const { runDriveIntent } = await import('../io/driveOpenWith');
+      const r = await runDriveIntent(intent, {
+        // Fenêtre de connexion ouverte par ce clic ; compte suggéré : celui qui a choisi « Ouvrir avec » dans Drive
+        withToken: (fn, loginHint) => withToken('gdrive', fn, (c) => cloudConnect(c, { loginHint })),
+        openData: (data, name) => openProjectData(data, name),
+        openFolder: async (loc) => (await import('../io/cloudFolder')).folderOpen(loc),
+      });
+      if (r.kind === 'create') onCreate(r.loc);
+      else onOpened(r.project, r.name, r.loc, r.notes.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))));
+      onClose();
+    } catch (e) {
+      setMsg(cloudErrorText(e, t));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="toast drive-open" role="alertdialog">
+      <div>{t(intent.action === 'open' ? 'driveOpen.open' : 'driveOpen.create')}</div>
+      {others > 0 && <div className="muted small">{t('driveOpen.others', { n: others })}</div>}
+      {msg && <div className="small error-text">{msg}</div>}
+      <button className="primary" disabled={busy} onClick={() => void go()}>
+        {busy ? '…' : t(intent.action === 'open' ? 'driveOpen.openButton' : 'driveOpen.createButton')}
+      </button>{' '}
+      <button disabled={busy} onClick={onClose}>
+        {t('save.cancel')}
+      </button>
     </div>
   );
 }

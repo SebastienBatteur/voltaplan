@@ -21,7 +21,7 @@ Analyse complète (limites, quota, appareils simultanés, nettoyage) : [google-d
   marquée `keepForever` n'est **jamais** supprimée automatiquement, dans la limite d'un nombre maximal de révisions
   ainsi marquées par fichier (200 selon la documentation **[à vérifier]**).
 
-### Stratégie conservatrice mise en place (`src/io/cloud.ts`)
+### Stratégie conservatrice mise en place (`src/io/drive.ts`)
 
 1. **Avant l'envoi** : relire la version et la révision de tête.
    - Si elles ont changé depuis l'ouverture, c'est un **conflit** : rien n'est envoyé, et notre version est
@@ -81,10 +81,40 @@ mais demande un ménage des anciens modèles. Ce n'est pas implémenté.
 | G2 | Drive : course avec un autre logiciel | modifier le fichier par le client Drive de l'ordinateur pendant un envoi Voltaplan (difficile à provoquer : plusieurs essais) | copie « (conflit …) » créée, ou la version présente dans Gérer les versions |
 | G3 | Drive : plafond | non testable manuellement (plus de 150 enregistrements) : vérifié seulement par les tests automatiques | — |
 
+### Dossiers de projet (F8 : OneDrive, Dropbox, Google Drive)
+
+Choisir « Dossier de projet » dans Enregistrer sous → Drive, OneDrive, Dropbox. Projet d'essai avec au moins trois
+photos, dont une de plus de 10 Mo (et, si possible, un PDF de plus de 160 Mo pour Dropbox).
+
+| # | Scénario | Comment | Résultat attendu |
+|---|---|---|---|
+| F1 | Premier enregistrement | enregistrer en dossier | `project.json`, `README.txt`, `assets/<empreinte>.<ext>` visibles sur le site du service ; Drive : dossier dans « Mon Drive » |
+| F2 | Modification du schéma seul | changer un circuit, Enregistrer | seul `project.json` change (date de modification des photos inchangée) |
+| F3 | Coupure pendant l'envoi des photos | couper le Wi-Fi pendant le premier enregistrement | « En attente » ; au retour du réseau, seules les photos manquantes partent ; `project.json` n'apparaît qu'à la fin |
+| F4 | Deux appareils ajoutent chacun une photo | A et B ouvrent le dossier, ajoutent chacun une photo, enregistrent l'un après l'autre | les deux photos dans `assets/` ; B obtient `project (conflit …).json` qui affiche sa photo ; rien n'est supprimé |
+| F5 | Gros document | PDF > 150 Mo (Dropbox), > 5 Mo (Drive), > 250 Mo (OneDrive) | envoi par tranches ; fichier complet ; une coupure pendant l'envoi reprend sans tout renvoyer |
+| F6 | Espace plein | compte presque plein | message « Espace … plein » ; photos déjà envoyées gardées ; `project.json` inchangé ; pas de nouvel essai en boucle |
+| F7 | Import d'une archive | « Importer un fichier .voltaplan… » | nouveau dossier ; ouverture identique à l'archive |
+| F8 | Transfert entre services | ouvrir un dossier Dropbox, « Enregistrer comme dossier de projet » sur Drive | même projet, mêmes photos ; dossier Dropbox intact |
+| F9 | Drive : version concurrente | difficile à provoquer : deux appareils enregistrent en même temps | soit conflit avant envoi, soit « project (conflit …).json » recopié après coup |
+
+### Google Drive : « Ouvrir avec Voltaplan » (configuration : oauth-configuration.md)
+
+| # | Scénario | Comment | Résultat attendu |
+|---|---|---|---|
+| D1 | Apparition dans le menu | sans Marketplace : bouton « Ajouter à « Ouvrir avec » de Drive » ; puis clic droit sur un `.voltaplan` dans Drive | Voltaplan apparaît dans « Ouvrir avec » (délai possible). Noter si une fiche Marketplace est malgré tout exigée |
+| D2 | Ouvrir | « Ouvrir avec → Voltaplan » sur une archive v2 | bandeau ; clic → connexion (compte suggéré) → projet ouvert ; adresse sans `state` ; recharger ne rouvre rien |
+| D3 | Enregistrer après ouverture | modifier, Enregistrer | même fichier mis à jour (pas de doublon) ; une version de plus dans « Gérer les versions » |
+| D4 | Fichier v1 / lecture seule | ouvrir un ancien `.voltaplan` (JSON) ; puis un fichier partagé en lecture seule | nouveau fichier créé à l'enregistrement, original intact |
+| D5 | Nouveau | Drive → Nouveau → Plus → Voltaplan, dans un sous-dossier | projet vide ; premier Enregistrer crée le fichier dans ce sous-dossier (noter une éventuelle erreur d'autorisation avec `drive.file`) |
+| D6 | Autre compte | ouvrir depuis le compte B alors que Voltaplan est connecté au compte A | message clair (fichier introuvable avec ce compte) ou connexion au bon compte |
+
 ## 4. Résultats
 
 | Scénario | OneDrive | Dropbox | Google Drive | GitHub |
 |---|---|---|---|---|
 | C1 à C10, G1 et G2 | non testé | non testé | non testé | non testé |
+| F1 à F9 | non testé | non testé | non testé | sans objet |
+| D1 à D6 | sans objet | sans objet | non testé | sans objet |
 
 À remplir au fur et à mesure. Chaque écart observé devient une demande de correction.

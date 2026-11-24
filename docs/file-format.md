@@ -12,6 +12,18 @@ Les fichiers `.openrgie` (ancien nom de l'application) s'ouvrent toujours. Déci
 (principe), [ADR-0006](adr/0006-format-v2-implementation.md) (implémentation) ; spécification :
 [SPEC-FORMAT-V2](strategie/SPEC-FORMAT-V2.md) ; mesures : [format-v2-performance.md](format-v2-performance.md).
 
+**Type MIME** (décision du 2026-11-24) : **`application/vnd.voltaplan+zip`** pour l'archive v2, partout où un type
+est déclaré : entrée `mimetype` de l'archive, boîte « Enregistrer sous » du navigateur (`types.accept`), envois
+Google Drive (`mimeType` du fichier), `file_handlers` du manifeste PWA, intégration « Ouvrir avec » de Google Drive,
+filtre « Importer un fichier .voltaplan » des dossiers de projet. Les anciens fichiers v1 (JSON, `.voltaplan` ou
+`.openrgie`) gardent `application/json` et s'ouvrent toujours : le manifeste accepte les deux types, Drive
+reconnaît aussi l'extension `.voltaplan`. Le type n'est qu'une indication : la lecture se fait toujours d'après la
+signature. OneDrive et Dropbox reçoivent le contenu en `application/octet-stream` (exigé par Dropbox, sans effet
+sur OneDrive) ; dans un dossier de projet, `project.json` est en `application/json` et chaque document garde son
+propre type (`image/jpeg`…). Le type `vnd.` n'est pas enregistré auprès de l'IANA **[à envisager si l'application
+est largement diffusée]**. L'application de bureau (Tauri) ne déclare pas d'association de fichiers pour
+l'instant (rien à harmoniser).
+
 ## 1. Le modèle (`project.json`)
 
 JSON lisible, encodé en UTF-8 — la même structure en v1 et en v2 :
@@ -103,12 +115,13 @@ n'est jamais remplacé sans confirmation).
 
 ## 3. Projet en dossier (F8)
 
-Même contenu logique, à plat, dans un dossier cloud (OneDrive aujourd'hui) ou un répertoire local (« Exporter en
-dossier ») :
+Même contenu logique, à plat, dans un dossier cloud (OneDrive, Dropbox, Google Drive) ou un répertoire local
+(« Exporter en dossier ») :
 
 ```
 <Projet>/project.json            modèle ET dossier de preuves : le SEUL fichier modifiable, écrit en dernier,
-                                 de façon conditionnelle (eTag OneDrive, date et taille sur disque)
+                                 de façon conditionnelle (eTag OneDrive, rev Dropbox, stratégie prudente
+                                 Google Drive, date et taille sur disque)
 <Projet>/assets/<sha256>.<ext>   documents originaux, immuables, envoyés une seule fois
 <Projet>/README.txt              explication en clair (écrit une fois)
 <Projet>/project (conflit …).json  copie de conflit éventuelle, à côté (les documents sont partagés)
@@ -124,8 +137,13 @@ dossier ») :
 - **Ouverture** : le modèle d'abord ; les documents sont téléchargés quand on les affiche, vérifiés, puis gardés
   dans le stockage de travail.
 - **Portabilité** : « Exporter en .voltaplan » donne l'archive à tout moment ; une archive s'importe dans un dossier
-  (`importArchiveToFolder`) ; un projet passe d'un service à l'autre (`transferFolder`), sans rien supprimer à la
+  (`importArchiveToFolder`, bouton « Importer un fichier .voltaplan… ») ; un projet passe d'un service à l'autre
+  (`transferFolder`, ou « Enregistrer comme dossier de projet » chez un autre service), sans rien supprimer à la
   source.
+- **Services** : OneDrive (`src/io/oneDriveFolder.ts`, If-Match), Dropbox (`src/io/dropboxFolder.ts`, mode
+  `update` avec la révision, `strict_conflict`), Google Drive (`src/io/driveFolder.ts`, sans If-Match : stratégie
+  prudente de [google-drive.md](google-drive.md) § 8). Gros documents : session d'envoi par tranches (OneDrive au-delà
+  de 250 Mo, Dropbox au-delà de 150 Mo, Drive « resumable » au-delà de 5 Mo) **[limites à vérifier]**.
 
 ## 4. Stockage de travail (navigateur)
 

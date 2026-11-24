@@ -54,8 +54,15 @@ Les décisions F1 à F8 ([DECISIONS.md](../strategie/DECISIONS.md)) et la compar
     sont absents, vérifiés (taille ; relecture et SHA-256 en option), **avant** le modèle ; modèle conditionnel ;
     copie de conflit dans le même dossier ; reprise naturelle après interruption (les documents présents ne sont
     pas renvoyés) ; import d'une archive dans un dossier et transfert entre services. Implémentations : OneDrive
-    (Microsoft Graph : création `fail`, `If-Match`, session d'envoi par tranches en repli), répertoire local (File
-    System Access), mémoire (tests). Dropbox, Google Drive et GitHub : à brancher sur la même interface.
+    (Microsoft Graph : création `fail`, `If-Match`, session d'envoi par tranches en repli), Dropbox (mode `add` sans
+    renommage pour les documents, `update` + révision + `strict_conflict` pour le modèle, session d'envoi au-delà de
+    150 Mo), Google Drive (portée `drive.file`, dossiers marqués `appProperties`, recherche par nom avant envoi,
+    envoi « resumable » au-delà de 5 Mo, modèle sans If-Match : stratégie prudente du point 12 et copie de la
+    version concurrente dans le même dossier), répertoire local (File System Access), mémoire (tests). GitHub : à
+    brancher. Choix « dossier de projet » ou « fichier unique » pour chaque service dans la boîte d'enregistrement.
+    Google Drive « Ouvrir avec Voltaplan » : paramètre `state` validé, ouverture après un clic, voir
+    [google-drive.md](../google-drive.md) § 9. Type MIME unique de l'archive : `application/vnd.voltaplan+zip`
+    ([file-format.md](../file-format.md)).
 11. **Plafonds (F5)** : provisoires (`src/format/limits.ts`) ; 2 Go est un plafond de sécurité, jamais une capacité
     garantie ; limites adaptées à la mémoire de l'appareil pour les entrées compressées, conseil selon l'espace de
     stockage (« projet volumineux », « pas de copie de travail possible »).
@@ -79,7 +86,7 @@ Les décisions F1 à F8 ([DECISIONS.md](../strategie/DECISIONS.md)) et la compar
     | Fermeture brutale pendant la mise à niveau d'IndexedDB | transaction de mise à niveau annulée en entier ; refaite au lancement suivant (magasins manquants seulement), sans perte | — |
     | Fermeture brutale entre un document et le modèle | le document est écrit et relu AVANT que le modèle le référence : aucune référence vers un absent ; un document orphelin est gardé 7 jours (délai de grâce) | — |
     | Fermeture brutale entre le brouillon et le fichier | brouillon de l'onglet fermé proposé au lancement suivant ; envoi en attente proposé (« Reprendre ») avec sa version locale | Tauri : fichier possiblement incomplet (écriture non atomique, autre chantier) |
-    | Deux appareils, dossier | documents immuables tous gardés ; le perdant devient une copie de conflit qui référence ses documents ; **aucune suppression distante** (pas d'opération de suppression) | Google Drive, Dropbox, GitHub en dossier : non branchés |
+    | Deux appareils, dossier | documents immuables tous gardés ; le perdant devient une copie de conflit qui référence ses documents ; **aucune suppression distante** (pas d'opération de suppression) ; OneDrive, Dropbox et Google Drive simulés (`test/cloudFolders.test.ts`) ; Drive : deux dossiers `assets` créés en même temps lus ensemble, deux `project.json` créés en même temps → le second renommé en copie | GitHub en dossier : non branché ; services réels **[à vérifier avec de vrais comptes]** |
     | Deux appareils, archive (OneDrive, Dropbox, Drive, GitHub) | copie de conflit complète (documents compris), original de l'autre jamais réécrit | Google Drive : course pendant l'envoi (voir STOCKAGE-ET-DOMAINE § 7.1) |
 14. **Migration v1 à mémoire réduite** : le fichier v1 est lu par tranches de 4 Mo ; les images base64 sont décodées
     au fil de la lecture en `Blob` (ni texte complet, ni chaîne base64), puis rangées ou réintégrées comme avant ;
