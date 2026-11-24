@@ -81,10 +81,31 @@ Correspondance entre vos 6 niveaux et le moteur actuel (`src/rules/types.ts`, li
 **À garder** : `warning`, `recommendation`, `derogation` et `notApplicable`. Ce ne sont pas des résultats de
 conformité. La gravité (`hazard`) et le caractère bloquant restent séparés du statut (ADR-0002).
 
-**Autres textes à corriger** :
+**Mise en œuvre (novembre 2026, [ADR-0007](../adr/0007-etats-de-connaissance-et-exigences.md) « inconnu ≠ absent »)** :
 
-- slogan `app.tagline` (« Schémas électriques conformes RGIE ») ;
-- mention de dossier `print.draft` (« PROJET — NON CONFORME ») → « PROJET — NON-CONFORMITÉS À TRAITER » ;
+| Niveau | Statut | Libellé (fr) | Attribué quand |
+|---|---|---|---|
+| Non-conformité détectée | `nonCompliant` | « Non-conformité détectée » | exigence physique violée sur données connues ou absence confirmée (en conception : non dessiné = absent) |
+| Anomalie potentielle | `potential` | « Anomalie potentielle » | le constat repose sur une information déduite (`knowledge: 'deduced'`) : valeur de l'assistant non confirmée, local humide reconnu au nom |
+| Vérification manuelle nécessaire | `manualCheck` | « Vérification manuelle nécessaire » | mesure ou vérification sur place (`measureNeeded`), installations particulières |
+| Informations insuffisantes | `insufficientData` | « Informations insuffisantes » | information inconnue (`unknown`) : non dessinée en relevé, valeur non renseignée ; exigences documentaires manquantes |
+| Règle non évaluée | `notEvaluated` | « Règle non évaluée » | référentiel inconnu (la page « Portée de l'analyse » reste à faire) |
+| **Informations contradictoires** (ajout) | `contradictory` | « Informations contradictoires » | dessiné mais déclaré absent ; question « contradiction » ouverte de l'assistant |
+| Résumé | `check.okN` | « Aucune anomalie détectée parmi les N règles vérifiées. » | aucun constat (N = règles du catalogue hors informations) |
+
+Chaque constat porte aussi son **exigence** : « Exigences de l'installation » (physique) ou « Exigences
+documentaires » (dossier, schéma, mentions). Une exigence documentaire n'est jamais affichée comme
+« Non-conformité détectée » ; elle peut bloquer un dossier de réception d'une installation neuve (« bloquant pour
+le dossier de réception »).
+
+**Autres textes** :
+
+- slogan `app.tagline` (« Schémas électriques conformes RGIE ») : à corriger (hors de ce lot) ;
+- mention de dossier `print.draft` : fait, selon la situation (`draftLevel`) : « PROJET — NON-CONFORMITÉS À
+  TRAITER » (non-conformité physique bloquante), « PROJET — VÉRIFICATIONS À FAIRE » (inconnu, déduit,
+  contradictoire, mesure), « PROJET — DOSSIER INCOMPLET » (exigences documentaires seules) ; jamais « non conforme »
+  pour une lacune documentaire ou une inconnue ;
+- phrase de responsabilité ajoutée au panneau Contrôle et aux pages de constats (`check.liability`) ;
 - traductions nl et en équivalentes, à faire relire par des locuteurs du métier.
 
 **Traçabilité de chaque rapport** (page « Portée de l'analyse ») :

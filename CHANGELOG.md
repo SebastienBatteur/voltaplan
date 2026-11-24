@@ -10,6 +10,13 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Dérogations motivées, visibles dans le dossier. « Local avec baignoire ou douche » explicite. Référentiel inconnu signalé.
 - Vérifications manuelles signalées : bornes de recharge, photovoltaïque, dispositions transitoires.
 
+### Contrôle RGIE : inconnu ≠ absent
+- Un élément absent du dessin n'est plus considéré comme absent de l'installation réelle. Installation existante (relevé) : prise de terre, différentiel général ou différentiel 30 mA non dessinés → « Informations insuffisantes », non bloquant, avec les boutons « Confirmer présent / Confirmer absent / Je ne sais pas ». Une absence confirmée redonne une non-conformité (bloquante pour la sécurité). Installation neuve (conception) : le dessin reste la référence, résultats inchangés.
+- Nouveaux statuts : « Anomalie potentielle » (information déduite ou non confirmée), « Informations contradictoires » (dessin et déclaration, ou sources de l'assistant, en désaccord), « Règle non évaluée ». Libellés : « Non-conformité détectée », « Informations insuffisantes », « Vérification manuelle nécessaire » ; résumé « Aucune anomalie détectée parmi les N règles vérifiées ».
+- Exigences documentaires (mentions, schéma incomplet, valeurs non renseignées) séparées des exigences de l'installation, dans le contrôle et dans le dossier : jamais présentées comme des non-conformités de l'installation.
+- Sensibilité d'un différentiel non renseignée : « Informations insuffisantes » au lieu de « non conforme ». Mesures à faire signalées : liaisons équipotentielles, essai des différentiels.
+- Dossier de réception : mention « PROJET — NON-CONFORMITÉS À TRAITER », « PROJET — VÉRIFICATIONS À FAIRE » ou « PROJET — DOSSIER INCOMPLET » selon la situation ; phrase « ni une certification ni un contrôle de conformité » sur les pages de constats. Voir [ADR-0007](docs/adr/0007-etats-de-connaissance-et-exigences.md).
+
 ### Assistant de relevé (prototype)
 - Fichier → Nouveau relevé (installation existante) ; photo du tableau lue par l'IA → brouillon de tableau, protections, circuits et unifilaire, avec des questions pour ce qui n'est pas lisible. Rien n'est inventé ni appliqué sans accord ; acceptation groupée de ce qui est sûr ; relevé figé daté (non certifié).
 - Valeurs reprises d'une photo et non confirmées : signalées au contrôle RGIE ; les constats qui en dépendent sont marqués « à vérifier ».

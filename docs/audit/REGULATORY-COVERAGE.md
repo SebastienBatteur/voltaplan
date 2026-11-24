@@ -18,46 +18,99 @@ L'édition se déduit, de l'élément vers la racine, de : `oldPart`, `installed
 
 ## Statuts
 
+Terminologie : docs/strategie/DECISIONS.md § 3. États de connaissance et exigences : [ADR-0007](../adr/0007-etats-de-connaissance-et-exigences.md).
+
 | Statut | Signification | Bloquant |
 |---|---|---|
-| Non conforme | Non-conformité à l'édition applicable | partie neuve : oui ; partie existante : oui si danger élevé |
-| Information manquante | Donnée nécessaire absente | partie neuve : oui (sauf pouvoir de coupure) |
+| Non-conformité détectée | Règle vérifiée sur des données connues (ou une absence confirmée), et violée | partie neuve : oui ; partie existante : oui si danger élevé |
+| Anomalie potentielle | Le constat repose sur une information déduite ou non confirmée (assistant, nom de pièce) | non |
+| Informations contradictoires | Dessin et déclaration, ou sources de l'assistant, se contredisent | non |
+| Informations insuffisantes | Donnée nécessaire inconnue (non dessinée en relevé, non renseignée) | partie neuve : oui (sauf pouvoir de coupure) ; existant : non |
+| Vérification manuelle nécessaire | Mesure ou vérification sur place (mesures, essais, borne, PV, dispositions transitoires) | non |
+| Règle non évaluée | Référentiel inconnu : aucune règle appliquée | oui |
 | Avertissement | Point à examiner (calculs estimés, sélectivité…) | non |
-| À vérifier | Vérification manuelle (indice d'un local humide, borne, PV, mesures, dispositions transitoires) | non |
 | Recommandation | Mise en conformité conseillée, non exigée pour cette partie | non |
 | Dérogation | Saisie et justifiée par l'utilisateur (motif obligatoire) | non |
 | Non applicable | Réservé (pas encore émis) | — |
 
-Le document de travail reste toujours exportable. Un constat bloquant fait apparaître la mention « PROJET — NON CONFORME » sur le dossier.
+**Inconnu ≠ absent.** En conception (partie neuve sous l'édition en vigueur), le dessin est la référence : un
+équipement non dessiné est absent du projet. En relevé (partie existante), un équipement non dessiné est
+**inconnu** tant que l'utilisateur n'a pas confirmé son absence (`meta.survey` : prise de terre, différentiel
+général, différentiel 30 mA ; boutons « Confirmer présent / Confirmer absent / Je ne sais pas » du contrôle).
+
+**Exigences documentaires** (dossier, schéma, mentions) : jamais présentées comme des non-conformités de
+l'installation ; bloquantes pour un dossier de réception d'une installation neuve (mention « PROJET — DOSSIER
+INCOMPLET »).
+
+Le document de travail reste toujours exportable. Mention du dossier de réception ou complet : « PROJET —
+NON-CONFORMITÉS À TRAITER » (non-conformité physique bloquante), sinon « PROJET — VÉRIFICATIONS À FAIRE »
+(inconnu, déduit, contradictoire, mesure), sinon « PROJET — DOSSIER INCOMPLET » (documentaire bloquant).
 
 ## Règles automatisées
 
-| Règle | Contrôle | Gravité | Existant |
-|---|---|---|---|
-| R-DOC-INSTALLER / ADDRESS / SUPPLY | Mentions obligatoires sur les documents | — | info manquante |
-| R-EARTH-MISSING | Prise de terre dessinée | élevée | non conforme |
-| R-EARTH-VALUE / R-EARTH-30 | Résistance de terre > 100 Ω / > 30 Ω | élevée / modérée | non conforme / avertissement |
-| R-INSULATION | Isolement < 0,5 MΩ | élevée | non conforme |
-| R-BONDING | Liaisons équipotentielles | élevée | non conforme |
-| R-RCD-TEST / R-RCD-TRIP | Essai des différentiels, temps ≤ 300 ms (500 ms type S) | élevée | non conforme |
-| R-RCD-MAIN | Différentiel ≤ 300 mA en tête de chaque circuit | élevée | non conforme |
-| R-RCD30 | 30 mA : local avec baignoire/douche (indiqué), lave-linge, sèche-linge, lave-vaisselle | élevée | non conforme |
-| R-RCD-TYPE-A | Type A pour lave-linge / lave-vaisselle / sèche-linge | modérée | recommandation |
-| R-RCD-SELECTIVITY | Sensibilité aval < amont | faible | avertissement |
-| R-POLES-NO-NEUTRAL | 3 × 230 V : protection 2P | élevée | non conforme |
-| R-CABLE-PROT | Calibre ≤ maximum pour la section | élevée | non conforme |
-| R-CABLE-MIN | Section ≥ 1,5 mm² | élevée | non conforme |
-| R-CABLE-NO-OVERCURRENT | Protection contre les surintensités en amont | élevée | non conforme |
-| R-SOCKET-EARTH | Prise avec terre | élevée | non conforme |
-| R-SOCKET-CHILD | Sécurité enfant | modérée | recommandation |
-| R-SOCKET-MAX | ≤ 8 points de prise par circuit | faible | recommandation |
-| R-SOCKET-SECTION | Prises en 2,5 mm² minimum | modérée | non conforme |
-| R-DEDICATED-CIRCUIT | Circuit spécialisé (four, taque, lave-linge…) | faible | recommandation |
-| R-VDROP / R-ICC-LMAX | Chute de tension, longueur maximale (estimation, voir docs/calc.md) | faible / élevée | avertissement |
-| R-WETROOM-NAME | Nom de pièce évoquant une salle de bain, non confirmé | — | à vérifier |
-| R-EV-MANUAL / R-PV-MANUAL | Borne de recharge, photovoltaïque | — | à vérifier |
-| R-INSTALL-DATE | Installation neuve datée d'avant le 1/6/2020 | — | à vérifier |
-| R-RULESET-UNKNOWN | Référentiel inconnu : aucune règle appliquée | — | bloquant |
+« Exigence » : D = documentaire, P = physique. « Existant » : statut quand la violation est établie (données
+connues ou absence confirmée) dans une partie existante. « Si inconnu » : comportement quand l'information
+manque, est déduite ou contradictoire.
+
+| Règle | Contrôle | Exigence | Gravité | Existant | Si inconnu / déduit / contradictoire |
+|---|---|---|---|---|---|
+| R-DOC-INSTALLER / ADDRESS / SUPPLY | Mentions obligatoires sur les documents | D | — | info insuffisante | (donnée manquante = le constat lui-même) |
+| R-DOC-NOT-DRAWN | Équipement confirmé présent mais non dessiné | D | — | info insuffisante | n'existe que sur déclaration « présent » |
+| R-EARTH-MISSING | Prise de terre | P | élevée | non conforme (absence confirmée) | relevé non dessiné → inconnu (+ question) ; dessinée et déclarée absente → contradictoire ; conception non dessinée → non conforme |
+| R-EARTH-VALUE / R-EARTH-30 | Résistance de terre > 100 Ω / > 30 Ω | P | élevée / modérée | non conforme / avertissement | non mesurée → R-MEAS-MISSING (mesure nécessaire) |
+| R-INSULATION | Isolement < 0,5 MΩ | P | élevée | non conforme | non mesuré → R-MEAS-MISSING |
+| R-MEAS-MISSING | Résistance de terre ou isolement non notés | P | — | vérification (mesure nécessaire) | — |
+| R-BONDING | Liaisons équipotentielles | P | élevée | non conforme (« non » saisi) | non saisi → vérification (mesure nécessaire) |
+| R-RCD-TEST / R-RCD-TRIP | Essai des différentiels, temps ≤ 300 ms (500 ms type S) | P | élevée | non conforme | essai non noté → vérification (mesure nécessaire) |
+| R-PROT-RATING-MISSING | Calibre non renseigné | D | modérée | info insuffisante | la coordination est signalée à part (R-CABLE-PROT en relevé) |
+| R-PROT-KA-MISSING | Pouvoir de coupure non renseigné | D | faible | info insuffisante, jamais bloquant | — |
+| R-RCD-SENS-MISSING | Sensibilité de différentiel non renseignée | D | modérée | info insuffisante | R-RCD-MAIN / R-RCD30 deviennent « inconnu » |
+| R-RCD-MAIN | Différentiel ≤ 300 mA en tête de chaque circuit | P | élevée | non conforme (absence confirmée, ou sensibilités connues > 300 mA) | sensibilité inconnue → inconnu (neuf et existant) ; relevé sans différentiel dessiné → inconnu (+ question) ; déclaré absent alors qu'un différentiel ≤ 300 mA est dessiné → contradictoire ; valeur non confirmée → anomalie potentielle |
+| R-RCD30 | 30 mA : local avec baignoire/douche (indiqué), lave-linge, sèche-linge, lave-vaisselle | P | élevée | non conforme (absence confirmée) | sensibilité inconnue → inconnu ; relevé sans 30 mA dessiné → inconnu (+ question) ; valeur non confirmée → anomalie potentielle ; question « contradiction » → contradictoire |
+| R-WETROOM-NAME | Nom de pièce évoquant une salle de bain, non confirmé | P | élevée | anomalie potentielle (déduite) | `wetRoom` « oui » / « non » règle le cas ; 30 mA déclaré présent → plus de constat |
+| R-RCD-TYPE-A | Type A pour lave-linge / lave-vaisselle / sèche-linge | P | modérée | recommandation | type non renseigné : pas de constat (valeur explicite seulement) |
+| R-RCD-SELECTIVITY | Sensibilité aval < amont | P | faible | avertissement | sensibilités connues seulement |
+| R-POLES-NO-NEUTRAL | 3 × 230 V : protection 2P | P | élevée | non conforme | pôles et alimentation explicites seulement (alimentation inconnue → R-DOC-SUPPLY) |
+| R-CABLE-PROT | Calibre ≤ maximum pour la section | P | élevée | non conforme | relevé : section ou calibre inconnus → inconnu ; conception : la donnée manquante (bloquante) suffit |
+| R-CABLE-MIN | Section ≥ 1,5 mm² | P | élevée | non conforme | section connue seulement |
+| R-CABLE-SECTION-MISSING / DATA-MISSING | Section / données du câble non renseignées | D | modérée | info insuffisante | — |
+| R-CABLE-NO-OVERCURRENT | Protection contre les surintensités en amont | P | élevée | non conforme | protection amont de nature inconnue (appareil non renseigné) → inconnu |
+| R-SOCKET-EARTH | Prise avec terre | P | élevée | non conforme (« sans terre » indiqué) | valeur absente = symbole avec terre (présent dans le dessin) ; valeur non confirmée → anomalie potentielle ; contradiction → contradictoire |
+| R-SOCKET-CHILD | Sécurité enfant | P | modérée | recommandation | idem R-SOCKET-EARTH |
+| R-SOCKET-MAX | ≤ 8 points de prise par circuit | P | faible | recommandation | compte des points dessinés (fait connu) |
+| R-SOCKET-SECTION | Prises en 2,5 mm² minimum | P | modérée | non conforme | sections connues seulement |
+| R-DEDICATED-CIRCUIT | Circuit spécialisé (four, taque, lave-linge…) | P | faible | recommandation | points dessinés (faits connus) |
+| R-CIRCUIT-NAME | Circuit sans nom | D | — | recommandation | — |
+| R-VDROP / R-VDROP-RATING / R-ICC-LMAX | Chute de tension, longueur maximale (estimation, voir docs/calc.md) | P | faible / faible / élevée | avertissement | longueurs connues seulement ; hypothèses affichées |
+| R-EV-MANUAL / R-PV-MANUAL | Borne de recharge, photovoltaïque | P | modérée | vérification | — |
+| R-INSTALL-DATE | Installation neuve datée d'avant le 1/6/2020 | D | — | vérification | — |
+| R-OLD-RGIE | Édition antérieure appliquée (information) | D | — | information | — |
+| R-COUNTRY-OPTION | Désignation qui n'existe pas dans le pays | D | — | avertissement | — |
+| R-RULESET-UNKNOWN | Référentiel inconnu : aucune règle appliquée | P | — | règle non évaluée, bloquant | — |
+| R-UNCONFIRMED (assistant) | Valeurs reprises d'une photo, non confirmées | P | — | vérification (déduit) | les constats de l'élément deviennent « anomalie potentielle » |
+| R-CONTRADICTION (assistant) | Question « contradiction » ouverte | P | — | informations contradictoires | les constats de l'élément deviennent « contradictoires » |
+
+### Audit « absent du dessin ⇒ violation » (novembre 2026)
+
+Chaque règle de `src/rules/be/rgie.ts` a été relue pour repérer les conclusions tirées de l'absence d'un élément
+ou d'une valeur :
+
+| Règle | Motif trouvé | Décision |
+|---|---|---|
+| R-EARTH-MISSING | aucun nœud « terre » ⇒ non conforme | corrigé : `presence()` (conception : absent ; relevé : inconnu ; déclaration ; contradiction) |
+| R-RCD-MAIN | aucun différentiel, ou sensibilité absente (traitée comme infinie) ⇒ non conforme | corrigé : sensibilité absente = inconnu ; aucun différentiel = `presence()` |
+| R-RCD30 | idem, sensibilité absente ⇒ non conforme | corrigé : idem, fait `rcd30` |
+| R-CABLE-NO-OVERCURRENT | appareil de protection non renseigné ⇒ « pas de protection contre les surintensités » | corrigé : inconnu |
+| R-CABLE-PROT | section ou calibre absents ⇒ aucun constat (silence) | corrigé en relevé : « vérification nécessaire » ; en conception, la donnée manquante bloquante suffit |
+| R-BONDING | non saisi ⇒ silence | corrigé : mesure nécessaire |
+| R-RCD-TEST | essai non noté ⇒ silence | corrigé : mesure nécessaire |
+| R-WETROOM-NAME | nom évocateur ⇒ vérification | reclassé : information déduite → anomalie potentielle |
+| R-SOCKET-EARTH / CHILD | `false` explicite seulement | conservé (absence déclarée) ; valeur absente = symbole par défaut |
+| R-SOCKET-MAX / SECTION, R-DEDICATED-CIRCUIT | points ou sections dessinés | conservé : faits connus, valeurs inconnues ignorées |
+| R-POLES-NO-NEUTRAL, R-RCD-TYPE-A, R-RCD-SELECTIVITY, R-CABLE-MIN | valeurs explicites seulement | conservé |
+| R-EARTH-VALUE / 30, R-INSULATION, R-RCD-TRIP | mesures saisies seulement | conservé ; mesures absentes → R-MEAS-MISSING (mesure nécessaire) |
+| R-DOC-*, R-PROT-*-MISSING, R-RCD-SENS-MISSING, R-CABLE-*-MISSING, R-CIRCUIT-NAME | donnée absente | conservé, classé **documentaire** (schéma incomplet), jamais non conforme |
+| R-VDROP / R-ICC-LMAX | longueurs inconnues ignorées | conservé |
 
 ## Points nécessitant une expertise réglementaire
 
