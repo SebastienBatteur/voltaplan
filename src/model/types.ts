@@ -198,4 +198,9 @@ export interface Project {
   measurements: Measurements;
   /** Disposition des tableaux, par id du nœud « tableau ». */
   boards?: Record<string, BoardLayout>;
+  /**
+   * Dossier de preuves de l'assistant (src/assist/evidence.ts) : sources, observations, propositions, questions,
+   * provenance, historique. Facultatif ; jamais lu par le moteur électrique, les calculs ni les exports.
+   */
+  evidence?: import('../assist/evidence').Evidence;
 }

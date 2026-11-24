@@ -9,8 +9,10 @@
  *  - measurements.rcdTests[nodeId]
  *  - meta.syncedIds[]
  *  - meta.derogations[*].nodeId
+ *  - evidence (dossier de preuves de l'assistant) : provenance, propositions, questions (src/assist/evidence.ts)
  * Ajouter ici toute nouvelle référence (et un test dans test/integrity.test.ts).
  */
+import { pruneEvidence } from '../assist/evidence';
 import { ALLOWED_CHILDREN, PROP_SCHEMAS } from './schema';
 import { walk } from './tree';
 import type { Project } from './types';
@@ -67,9 +69,14 @@ export function pruneReferences(project: Project, alsoDerogations = true): Proje
   if (syncedIds && syncedIds.length !== project.meta.syncedIds!.length) changed = true;
   const derogations = alsoDerogations ? project.meta.derogations?.filter((d) => !d.nodeId || has(d.nodeId)) : project.meta.derogations;
   if (derogations && derogations.length !== project.meta.derogations!.length) changed = true;
+  // Dossier de preuves de l'assistant : provenances retirées, propositions et questions closes (rien n'est effacé de
+  // l'historique ni des sources)
+  const evidence = project.evidence ? pruneEvidence(project.evidence, ids) : undefined;
+  if (evidence !== project.evidence) changed = true;
   if (!changed) return project;
   return {
     ...project,
+    ...(evidence ? { evidence } : {}),
     plan: { ...project.plan, pages },
     boards,
     measurements: rcdTests ? { ...project.measurements, rcdTests } : project.measurements,

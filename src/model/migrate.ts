@@ -8,6 +8,7 @@
  * l'utilisateur ne modifie pas l'élément concerné ; un fichier d'une version plus récente est refusé avec un
  * message explicite plutôt qu'ouvert partiellement.
  */
+import { parseEvidence } from '../assist/evidence';
 import { z } from 'zod';
 import { FILE_FORMAT, LEGACY_FORMATS } from '../brand';
 import { validateProject, type Issue } from './integrity';
@@ -120,6 +121,14 @@ export function migrateProject(data: unknown): { project: Project; warnings: Mig
   }
   // Anciens formats (OpenRGIE) : réenregistrés sous le format courant
   const project = { ...parsed.data, format: FILE_FORMAT, version: CURRENT_VERSION } as unknown as Project;
+  // Dossier de preuves de l'assistant illisible : jamais supprimé (il est gardé tel quel sous evidenceRaw et
+  // réenregistré), mais pas utilisé ; le projet s'ouvre normalement.
+  if (project.evidence !== undefined && !parseEvidence(project.evidence)) {
+    const p = project as Project & { evidenceRaw?: unknown };
+    p.evidenceRaw = p.evidence;
+    delete p.evidence;
+    warnings.push({ key: 'file.evidenceUnreadable' });
+  }
   if (LEGACY_FORMATS.includes(format)) warnings.push({ key: 'file.legacyFormat', params: { format } });
   const issues = validateProject(project);
   const errors = issues.filter((i) => i.level === 'error').length;

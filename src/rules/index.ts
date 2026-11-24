@@ -9,6 +9,7 @@ import { belgium } from './be/rgie';
 import type { Finding, RulePack, Severity } from './types';
 import { classify, partContext, projectContext } from './context';
 import { ancestors } from '../model/tree';
+import { withUnconfirmed } from '../assist/unconfirmed';
 
 export type { Derogation, Edition, Finding, FindingStatus, Hazard, RuleMeta, RulePack, Severity } from './types';
 export { severityOf } from './context';
@@ -42,7 +43,8 @@ export function checkProject(project: Project): Finding[] {
     return [{ ruleId: 'R-RULESET-UNKNOWN', severity: 'error', status: 'nonCompliant', blocking: true, hazard: 'none', params: { id: String(project.meta.ruleset) } }];
   // Un référentiel tiers qui ne fournit que la sévérité reste accepté : le statut en est déduit.
   const own = pack.check(project).map((f) => (f.status ? f : { ...f, status: f.severity === 'error' ? 'nonCompliant' : f.severity === 'warning' ? 'warning' : 'recommendation', blocking: f.severity === 'error' } as Finding));
-  return [...own, ...countryOptionFindings(project, pack)];
+  // Valeurs reprises par l'assistant et non confirmées : signalées, et constats concernés marqués « déduits » (A6)
+  return withUnconfirmed(project, [...own, ...countryOptionFindings(project, pack)]);
 }
 
 /**
