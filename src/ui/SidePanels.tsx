@@ -18,7 +18,10 @@ interface Layout {
 }
 
 function load(): Layout {
-  const def: Layout = { treeOpen: true, propsOpen: true, paletteOpen: true, split: 0.5, width: 340 };
+  // Petit écran (téléphone) : colonne masquée par défaut pour laisser la place au schéma, au plan ou au tableau ; la
+  // fine bande la rouvre, et le choix de l'utilisateur est ensuite retenu
+  const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
+  const def: Layout = { treeOpen: true, propsOpen: true, paletteOpen: true, split: 0.5, width: 340, hidden: narrow };
   try {
     return { ...def, ...(JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Layout>) };
   } catch {
