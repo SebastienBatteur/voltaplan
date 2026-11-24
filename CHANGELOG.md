@@ -37,6 +37,16 @@ Détail : [docs/audit/FINAL-REPORT.md](docs/audit/FINAL-REPORT.md).
 - Suppression : plus de références orphelines (tableau, mesures, dérogations…).
 - Ouverture validée et migrable ; message clair pour un fichier tronqué, inconnu ou d'une version plus récente.
 
+### Format v2
+- Projet enregistré en **archive `.voltaplan` (ZIP)** : modèle, documents originaux (photos, PDF) gardés tels quels, manifest avec empreintes SHA-256, README pour récupérer les données sans Voltaplan ([docs/file-format.md](docs/file-format.md), [ADR-0006](docs/adr/0006-format-v2-implementation.md)).
+- Ouverture rapide quelle que soit la taille (seul le modèle est lu ; documents lus et vérifiés à la demande), écriture en flux ; mesures de 10 à 500 Mo dans [docs/format-v2-performance.md](docs/format-v2-performance.md) (ordinateur ; mobile à mesurer).
+- Archives importées validées : chemins en liste blanche, tailles et taux de compression plafonnés, liens et entrées chiffrées refusés, type vérifié par signature (SVG et HTML refusés), CRC et SHA-256 ; un élément invalide est isolé, le reste s'ouvre (mode de récupération, archive tronquée).
+- Anciens projets (JSON) toujours lisibles, convertis à l'ouverture sans jamais réécrire l'original ; « Exporter au format v1 » liste ce qui ne peut pas être gardé.
+- Documents rangés une seule fois sur l'appareil (stockage de travail dédoublonné) ; un document utilisé par un projet, un brouillon ou une version n'est jamais supprimé. Fichier déplacé pendant le travail : documents déjà copiés disponibles, message clair pour les autres.
+- Fonds de plan PDF et photos : l'original est conservé (avant : première page réduite seulement).
+- OneDrive : « Enregistrer comme dossier de projet » (chaque document envoyé une fois, puis seul le modèle) ; « Exporter en dossier » sur ordinateur (Chrome, Edge).
+- Google Drive : révisions conservées limitées en nombre et en taille.
+
 ### Calculs
 - Câbles en aluminium, chute de tension cumulée depuis l'origine, méthode détaillée avec les puissances, bilan de puissance et équilibrage des phases.
 
