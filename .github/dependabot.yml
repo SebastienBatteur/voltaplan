@@ -6,6 +6,11 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 10
+    # Versions majeures (React 19, Vite, Vitest, zustand 5…) : migration à faire à la main, pas de demande automatique.
+    # Les alertes de sécurité (Dependabot security updates) restent actives indépendamment de ce réglage.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
     groups:
       # Outils de développement regroupés pour limiter le nombre de demandes de fusion
       dev-dependencies:
@@ -16,6 +21,9 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
 
   - package-ecosystem: cargo
     directory: /src-tauri

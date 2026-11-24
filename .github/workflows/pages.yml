@@ -22,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pages: read # configure-pages lit la configuration du site
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
