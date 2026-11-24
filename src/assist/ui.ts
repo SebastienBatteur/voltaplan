@@ -72,7 +72,7 @@ export async function draftFromReading(opts: {
         boardId: opts.boardId,
         sha256: hash,
         label: st.t('assist.sourceBoardPhoto'),
-        mime: opts.photoHref.slice(5, opts.photoHref.indexOf(';')) || undefined,
+        mime: opts.photoHref.startsWith('data:') ? opts.photoHref.slice(5, opts.photoHref.indexOf(';')) || undefined : undefined,
         calibration: opts.calibration,
         offset: opts.offset,
         reading: opts.reading,
