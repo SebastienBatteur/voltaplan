@@ -1,0 +1,18 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "exemple-1.jpg",
+  "composed": true,
+  "rows": 1,
+  "perRow": 12,
+  "lang": "fr",
+  "notes": "Exemple SYNTHÉTIQUE inventé (aucune photo fournie) : sert seulement à montrer le format et le rapport.",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 2, "kind": "rcd", "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 300, "rcdType": "A", "label": "A-D", "circuitRef": null },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "label": "PC cuis.", "circuitRef": "A" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 16, "curve": "C", "residualCurrentmA": null, "label": "Prises salon", "circuitRef": "B" },
+    { "row": 0, "startModule": 4, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 10, "curve": "B", "residualCurrentmA": null, "label": "Ecl. ch.1", "circuitRef": "C" },
+    { "row": 0, "startModule": 5, "widthModules": 1, "kind": "mcb", "ratedCurrentA": null, "curve": null, "residualCurrentmA": null, "label": null, "circuitRef": "D" },
+    { "row": 0, "startModule": 6, "widthModules": 1, "kind": "blank" },
+    { "row": 0, "startModule": 7, "widthModules": 1, "kind": "teleswitch", "label": "TL hall" }
+  ]
+}

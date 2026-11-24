@@ -30,6 +30,17 @@ export interface SourceDoc {
   addedAt: string;
   /** Objet de l'arbre concerné (ex. photo d'un tableau → nœud « tableau »). */
   about?: { nodeId: string };
+  /**
+   * Lecture en vigueur de cette source (horodatage `at` de ses observations) : une source relue (nouveau calage,
+   * autre modèle) n'apporte que sa dernière lecture à la fusion. Absent : toutes ses observations.
+   */
+  runAt?: string;
+  /** Photo partielle d'un tableau : première rangée et premier module visibles (positions du tableau). */
+  offset?: { row: number; module: number };
+  /** Calage utilisé (empreinte courte), pour reconnaître une seconde prise quasi identique. */
+  calibration?: string;
+  /** Doublon d'une autre source (même lecture) : gardée pour la trace, sans nouvelles observations. */
+  duplicateOf?: string;
 }
 
 /** Zone d'un document, coordonnées normalisées 0..1. Pour une photo de tableau : rangée et modules. */
@@ -61,7 +72,7 @@ export interface Observation {
   engine?: { provider: string; model: string; promptVersion: string; inputHash?: string };
   at: string;
   /** Objet observé (clé locale, ex. « r0m4 » = rangée 0, module 4). */
-  subject: { kind: 'device' | 'circuit' | 'room' | 'label' | 'symbol' | 'cable' | 'board'; key: string };
+  subject: { kind: 'device' | 'circuit' | 'room' | 'label' | 'symbol' | 'cable' | 'board'; key: string; board?: string };
   facts: Record<string, Fact>;
   /** Observations liées (correspondance, déduction, regroupement, contradiction). */
   refs?: string[];
@@ -74,7 +85,9 @@ export type Basis = 'observed' | 'deduced' | 'aiInferred' | 'proposed' | 'confir
 export type ProposalChange =
   | { op: 'createNode'; tempKey: string; parent: { nodeId: string } | { tempKey: string }; kind: string; props: Record<string, PropValue>; location?: string }
   | { op: 'setProp'; target: { nodeId: string } | { tempKey: string }; prop: string; value: PropValue; previous?: PropValue }
-  | { op: 'place'; target: { nodeId: string } | { tempKey: string }; boardId: string; row: number; col: number };
+  | { op: 'place'; target: { nodeId: string } | { tempKey: string }; boardId: string; row: number; col: number }
+  /** Rattachement d'un nœud existant ailleurs dans l'arbre (ex. sous-tableau sous le câble qui l'alimente). */
+  | { op: 'move'; target: { nodeId: string }; newParent: { nodeId: string } | { tempKey: string } };
 
 export interface Proposal {
   id: string; // prp_…
@@ -100,8 +113,15 @@ export interface Question {
   about: { nodeId?: string; tempKey?: string; prop?: string; proposalId?: string };
   text: { key: string; params?: Record<string, string | number> };
   options?: { value: PropValue; observations: string[]; label?: string }[];
+  /**
+   * Question groupée (« 2,5 mm² pour tous les circuits de prises ? ») : objets concernés. La réponse s'applique à
+   * tous ; « chacun séparément » la remplace par une question par objet.
+   */
+  members?: { nodeId?: string; tempKey?: string; label?: string }[];
   priority: 'high' | 'normal' | 'low';
   status: 'open' | 'answered' | 'dismissed';
+  /** « Tout à vérifier plus tard » : question gardée ouverte, mise de côté dans l'assistant. */
+  deferred?: boolean;
   answer?: PropValue;
   answeredAt?: string;
 }
@@ -188,6 +208,7 @@ export function pruneEvidence(ev: Evidence, alive: Set<string>): Evidence {
     if ('target' in c && 'nodeId' in c.target) ids.push(c.target.nodeId);
     if (c.op === 'createNode' && 'nodeId' in c.parent) ids.push(c.parent.nodeId);
     if (c.op === 'place') ids.push(c.boardId);
+    if (c.op === 'move' && 'nodeId' in c.newParent) ids.push(c.newParent.nodeId);
     return ids;
   };
   let changed = false;

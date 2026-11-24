@@ -20,7 +20,7 @@ import {
   type Placed,
 } from '../board/model';
 import { analyzeRow, boundaries, moduleStats, rowProfile, rowTransform } from '../board/photo';
-import { pickFile } from '../io/files';
+import { download, pickFile } from '../io/files';
 import { importErrorText } from '../io/limits';
 import { readBackground } from '../io/background';
 import { loadRGBA } from '../plan/traceImage';
@@ -30,7 +30,8 @@ import { AiError, isLocalUrl, PROVIDERS } from '../ai/provider';
 import { useOnline } from './UpdateBanner';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
-import { draftFromReading, openAssistant } from '../assist/ui';
+import { aiInputHash, BOARD_PROMPT_VERSION, calibrationKey, draftFromReading, hasCachedReading, openAssistant, sha256 } from '../assist/ui';
+import { addBoard } from '../assist/boards';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
 import {
   closeKind,
@@ -149,6 +150,8 @@ export function BoardView() {
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  /** Rangées montrées par la photo à caler (une photo par rangée possible) ; `to` = -1 : jusqu'à la dernière. */
+  const [span, setSpan] = useState<{ from: number; to: number }>({ from: 0, to: -1 });
   const [aiDiffs, setAiDiffs] = useState<{ diffs: DeviceDiff[]; extra: ExtraDevice[]; proposals: Proposal[]; notes: string | null } | null>(
     null,
   );
@@ -184,6 +187,15 @@ export function BoardView() {
     );
 
   const save = (l: BoardLayout) => setBoardLayout(enc.board.id, l);
+  // Rangées de la photo à caler, et rangées calées de la photo actuelle (photo partielle : décalées de `firstRow`)
+  const spanFrom = Math.min(Math.max(0, span.from), size.rows - 1);
+  const spanTo = span.to < 0 ? size.rows - 1 : Math.min(Math.max(span.to, spanFrom), size.rows - 1);
+  const spanRows = spanTo - spanFrom + 1;
+  const phFirst = Math.min(layout.photo?.firstRow ?? 0, size.rows - 1);
+  const phRows = layout.photo?.rows?.slice(0, size.rows - phFirst) ?? [];
+  const phPartial = !!layout.photo?.rows && (phFirst > 0 || phRows.length < size.rows);
+  /** Relevé en cours sur ce tableau (une photo déjà lue par l'assistant) : une nouvelle photo complète le brouillon. */
+  const surveying = !!project.evidence?.sources.some((s) => s.kind === 'boardPhoto' && s.about?.nodeId === enc.board.id);
   const nameOf = (n: ElNode) => {
     // Étiquette (RGIE 3.1.3) : repère du circuit et usage ; différentiel : sensibilité
     if (n.props.circuitName) return [numbering.get(n.id), String(n.props.circuitName)].filter(Boolean).join(' ');
@@ -258,7 +270,7 @@ export function BoardView() {
       const h = (img.h / img.w) * w;
       save({ ...layout, photo: { href: img.href, x: MARGIN, y: fieldTop, w, h, opacity: 0.6, imgW: img.w, imgH: img.h } });
       setCorners([]);
-      setMsg(t('board.photoRow', { row: 1, end: t('board.photoRowLeft') }));
+      setMsg(t('board.photoRow', { row: spanFrom + 1, end: t('board.photoRowLeft') }));
     } catch (e) {
       setMsg(importErrorText(e, t));
     } finally {
@@ -277,8 +289,8 @@ export function BoardView() {
     const ph = layout.photo;
     if (!ph) return;
     const rows = [];
-    for (let r = 0; r < size.rows; r++) rows.push({ a: toPhotoPx(pts[2 * r]), b: toPhotoPx(pts[2 * r + 1]) });
-    save({ ...layout, photo: { ...ph, rows } });
+    for (let r = 0; r < spanRows; r++) rows.push({ a: toPhotoPx(pts[2 * r]), b: toPhotoPx(pts[2 * r + 1]) });
+    save({ ...layout, photo: { ...ph, rows, firstRow: spanFrom || undefined } });
     setCorners(null);
     setMsg(t('board.photoFitted'));
   };
@@ -288,6 +300,10 @@ export function BoardView() {
     const ph = layout.photo;
     if (!ph?.rows) {
       setMsg(t('board.photoCalibrateFirst'));
+      return;
+    }
+    if (phPartial) {
+      setMsg(t('assist.partialPhotoOnly'));
       return;
     }
     setBusy(true);
@@ -345,8 +361,8 @@ export function BoardView() {
     try {
       const g = toGray(await loadRGBA(ph.href));
       const res = new Map<string, 'ok' | 'width' | 'unsure'>();
-      ph.rows.forEach((line, r) => {
-        if (r >= size.rows) return;
+      phRows.forEach((line, i) => {
+        const r = i + phFirst;
         const pxPerMm = Math.hypot(line.b.x - line.a.x, line.b.y - line.a.y) / (size.perRow * MOD);
         const prof = rowProfile(g, line.a, line.b, 0.3 * DEV_H * pxPerMm);
         const bounds = boundaries(prof, size.perRow);
@@ -383,23 +399,60 @@ export function BoardView() {
     const tick = window.setInterval(() => setMsg(`${t('ai.reading')} ${Math.round((Date.now() - t0) / 1000)} s`), 1000);
     try {
       // Image composée (rangées redressées + règle des modules) si la photo est calée, sinon photo réduite
-      const calibrated = !!ph.rows && ph.rows.length >= size.rows;
-      const image = calibrated ? await composeBoardImage(ph.href, ph.rows!.slice(0, size.rows), size.perRow) : await shrinkPhoto(ph.href);
-      const reading = await readBoardPhoto({
-        config: { provider: ai.provider, model: ai.model, baseUrl: ai.baseUrl, apiKey: key ?? undefined },
-        photoDataUrl: image,
-        rows: size.rows,
-        perRow: size.perRow,
-        lang,
-        composed: calibrated,
-      });
-      if (!enc.devices.length) {
-        // Tableau encore vide (relevé d'une installation existante) : premier brouillon proposé, rien n'est appliqué
-        const summary = await draftFromReading({ reading, boardId: enc.board.id, photoHref: ph.href, engine: { provider: ai.provider, model: ai.model, promptVersion: 'board-photo-1' } });
-        setMsg(t('assist.draftReady', { devices: summary.devices, questions: summary.questions }));
+      const calibrated = phRows.length > 0;
+      const draftMode = !enc.devices.length || surveying;
+      if (phPartial && !draftMode) {
+        setMsg(t('assist.partialPhotoOnly'));
+        return;
+      }
+      const image = calibrated ? await composeBoardImage(ph.href, phRows, size.perRow) : await shrinkPhoto(ph.href);
+      const engine = { provider: ai.provider, model: ai.model, promptVersion: BOARD_PROMPT_VERSION };
+      const photoSha = await sha256(ph.href);
+      const inputHash = await aiInputHash(image, engine);
+      // Même photo, même image envoyée, même modèle : lecture déjà faite, aucun nouvel appel (cache)
+      const cached = draftMode && hasCachedReading(photoSha, inputHash, enc.board.id);
+      const reading = cached
+        ? undefined
+        : await readBoardPhoto({
+            config: { provider: ai.provider, model: ai.model, baseUrl: ai.baseUrl, apiKey: key ?? undefined },
+            photoDataUrl: image,
+            rows: calibrated ? phRows.length : size.rows,
+            perRow: size.perRow,
+            lang,
+            composed: calibrated,
+          });
+      if (draftMode) {
+        // Relevé d'une installation existante : brouillon proposé (fusionné avec les autres photos du tableau), rien
+        // n'est appliqué
+        const r = await draftFromReading({
+          reading,
+          boardId: enc.board.id,
+          photoHref: ph.href,
+          photoSha,
+          engine: { ...engine, inputHash },
+          calibration: calibrationKey(phRows),
+          offset: { row: phFirst, module: 0 },
+        });
+        if (r.duplicateOf) {
+          const dup = useStore.getState().project.evidence?.sources.find((x) => x.id === r.duplicateOf);
+          setMsg(t('assist.duplicatePhoto', { label: dup?.label ?? '' }));
+          return;
+        }
+        const sum = r.summary!;
+        setMsg(
+          [
+            r.cached ? t('assist.cachedReading') : '',
+            t('assist.draftReady', { devices: sum.devices, questions: sum.questions }),
+            sum.sources > 1 ? t('assist.draftMerged', { sources: sum.sources, contradictions: sum.contradictions }) : '',
+            sum.others ? t('assist.othersSeen', { n: sum.others }) : '',
+          ]
+            .filter(Boolean)
+            .join(' '),
+        );
         openAssistant();
         return;
       }
+      if (!reading) return;
       // Disposer les appareils du projet aux places lues sur la photo (annulable), puis comparer
       const { slots, unplaced: left, props, proposals } = layoutFromReading(enc.devices, reading, size.perRow, nameOf, circuitsOf);
       const next: BoardLayout = { ...layout, slots };
@@ -431,6 +484,37 @@ export function BoardView() {
       else setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
     } finally {
       window.clearInterval(tick);
+      setBusy(false);
+    }
+  };
+
+  /** Nouveau tableau (sous-tableau), alimentation inconnue : l'assistant proposera de le rattacher à son circuit. */
+  const addSubBoard = () => {
+    const name = prompt(t('assist.addBoardPrompt'), t('assist.subBoardDefault'));
+    if (!name?.trim()) return;
+    let id = '';
+    applyProject((p) => {
+      const r = addBoard(p, name.trim());
+      id = r.boardId;
+      return r.project;
+    });
+    const i = enclosures(useStore.getState().project.roots).findIndex((e) => e.board.id === id);
+    if (i >= 0) setIdx(i);
+    setMsg(t('assist.boardAdded'));
+  };
+
+  /** Enregistre l'image composée (celle envoyée à l'IA), sans rien envoyer. */
+  const saveAiImage = async () => {
+    const ph = layout.photo;
+    if (!ph || !phRows.length) return;
+    setBusy(true);
+    try {
+      const url = await composeBoardImage(ph.href, phRows, size.perRow);
+      const bin = atob(url.slice(url.indexOf(',') + 1));
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      await download(new Blob([bytes], { type: 'image/jpeg' }), `tableau-${phRows.length}r-${size.perRow}m.jpg`);
+    } finally {
       setBusy(false);
     }
   };
@@ -520,6 +604,11 @@ export function BoardView() {
               {labelFn.title(e.board)}
             </button>
           ))}
+        {(project.evidence || project.meta.installationKind === 'existing') && (
+          <button onClick={addSubBoard} title={t('assist.addBoardHelp')}>
+            {t('assist.addBoard')}
+          </button>
+        )}
         <label className="inline">
           {t('board.rows')}
           <NumberField min={1} max={12} value={size.rows} onCommit={(n) => setProps(enc.board.id, { rows: Math.round(n) })} />
@@ -550,13 +639,48 @@ export function BoardView() {
               onClick={() => {
                 setCorners([]);
                 // Recalage : on revient à la photo brute
-                save({ ...layout, photo: { ...layout.photo!, rows: undefined } });
-                setMsg(t('board.photoRow', { row: 1, end: t('board.photoRowLeft') }));
+                save({ ...layout, photo: { ...layout.photo!, rows: undefined, firstRow: undefined } });
+                setMsg(t('board.photoRow', { row: spanFrom + 1, end: t('board.photoRowLeft') }));
               }}
             >
               {t('board.photoFit')}
             </button>
-            <button onClick={layoutFromPhoto} disabled={busy || !layout.photo.rows} title={t('board.fromPhotoHelp')}>
+            {corners && size.rows > 1 && (
+              // Photo d'une partie du tableau (une photo par rangée) : rangées visibles sur cette photo
+              <label className="inline" title={t('assist.photoRowsHelp')}>
+                {t('assist.photoRows')}
+                <select
+                  value={spanFrom}
+                  onChange={(e) => {
+                    setSpan({ from: Number(e.target.value), to: Math.max(Number(e.target.value), spanTo) });
+                    setCorners([]);
+                    setMsg(t('board.photoRow', { row: Number(e.target.value) + 1, end: t('board.photoRowLeft') }));
+                  }}
+                >
+                  {Array.from({ length: size.rows }, (_, i) => (
+                    <option key={i} value={i}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+                {t('assist.photoRowsTo')}
+                <select
+                  value={spanTo}
+                  onChange={(e) => {
+                    setSpan({ from: spanFrom, to: Number(e.target.value) });
+                    setCorners([]);
+                    setMsg(t('board.photoRow', { row: spanFrom + 1, end: t('board.photoRowLeft') }));
+                  }}
+                >
+                  {Array.from({ length: size.rows - spanFrom }, (_, i) => (
+                    <option key={i} value={spanFrom + i}>
+                      {spanFrom + i + 1}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <button onClick={layoutFromPhoto} disabled={busy || !layout.photo.rows || phPartial} title={t('board.fromPhotoHelp')}>
               {t('board.fromPhoto')}
             </button>
             <button onClick={compare} disabled={busy || !devs.length}>
@@ -616,6 +740,12 @@ export function BoardView() {
                   ✕
                 </button>
               </form>
+            )}
+            {aiAllowed && phRows.length > 0 && (
+              // Transparence : l'image exacte qui serait envoyée à l'IA (aussi utile pour le banc d'évaluation)
+              <button onClick={saveAiImage} disabled={busy} title={t('assist.saveAiImageHelp')}>
+                {t('assist.saveAiImage')}
+              </button>
             )}
             <label className="inline">
               {t('plan.bgOpacity')}
@@ -773,10 +903,10 @@ export function BoardView() {
           }
           if (corners) {
             const pts = [...corners, pz.toSvg(e.clientX, e.clientY)];
-            if (pts.length === 2 * size.rows) finishCalibration(pts);
+            if (pts.length === 2 * spanRows) finishCalibration(pts);
             else {
               setCorners(pts);
-              setMsg(t('board.photoRow', { row: Math.floor(pts.length / 2) + 1, end: t(pts.length % 2 ? 'board.photoRowRight' : 'board.photoRowLeft') }));
+              setMsg(t('board.photoRow', { row: spanFrom + Math.floor(pts.length / 2) + 1, end: t(pts.length % 2 ? 'board.photoRowRight' : 'board.photoRowLeft') }));
             }
             return;
           }
@@ -787,7 +917,8 @@ export function BoardView() {
         {/* Enveloppe et rails */}
         <rect x={MARGIN - 12} y={ROW0 - 12} width={size.perRow * MOD + 24} height={size.rows * ROW_PITCH + 4} rx={6} className="board-frame" />
         {layout.photo?.rows &&
-          layout.photo.rows.slice(0, size.rows).map((line, r) => {
+          phRows.map((line, i) => {
+            const r = i + phFirst;
             const cy = rowTop(r) + DEV_H / 2;
             const tf = rowTransform(line.a, line.b, { x: MARGIN, y: cy }, { x: MARGIN + size.perRow * MOD, y: cy });
             return (

@@ -1,0 +1,15 @@
+{
+  "format": "voltaplan-ai-eval/1",
+  "image": "NOM-DE-LA-PHOTO.jpg",
+  "composed": true,
+  "rows": 2,
+  "perRow": 13,
+  "lang": "fr",
+  "notes": "Tableau d'essai, étiquettes portant des noms floutées. Vérifié sur place le JJ/MM/AAAA.",
+  "devices": [
+    { "row": 0, "startModule": 0, "widthModules": 2, "kind": "rcd", "ratedCurrentA": 40, "curve": null, "residualCurrentmA": 300, "rcdType": "A", "label": "A-F", "circuitRef": null },
+    { "row": 0, "startModule": 2, "widthModules": 1, "kind": "mcb", "ratedCurrentA": 20, "curve": "C", "residualCurrentmA": null, "rcdType": null, "label": "PRISES CUISINE", "circuitRef": "A" },
+    { "row": 0, "startModule": 3, "widthModules": 1, "kind": "mcb", "ratedCurrentA": null, "curve": "B", "label": "ECL. SALON" },
+    { "row": 1, "startModule": 0, "widthModules": 1, "kind": "teleswitch" }
+  ]
+}
