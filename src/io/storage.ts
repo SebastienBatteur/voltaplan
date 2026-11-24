@@ -60,18 +60,49 @@ export const isDraftId = (id: string) => id === AUTOSAVE_ID || id.startsWith(AUT
 export const VERSIONS_PER_PROJECT = 20;
 export const VERSIONS_TOTAL = 300;
 
-function db(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(DB, 2);
+/**
+ * Magasins du format v2 (src/format/assetsIdb.ts) : documents originaux immuables, clé SHA-256 (un seul exemplaire
+ * quel que soit le nombre de projets, versions ou brouillons qui les référencent), et cache des images dérivées.
+ * Les versions et brouillons ne contiennent que le modèle (JSON avec des références « asset:<sha256> »).
+ */
+export const ASSETS_STORE = 'assets';
+export const DERIVED_STORE = 'derived';
+const DB_VERSION = 3;
+
+let dbPromise: Promise<IDBDatabase> | null = null;
+
+/** Connexion partagée ; fermée si un autre onglet (plus récent) doit mettre la base à niveau. */
+export function openDb(): Promise<IDBDatabase> {
+  dbPromise ??= new Promise<IDBDatabase>((resolve, reject) => {
+    const req = indexedDB.open(DB, DB_VERSION);
     req.onupgradeneeded = () => {
+      // Mise à niveau sans perte : seuls des magasins manquants sont créés
       const d = req.result;
       if (!d.objectStoreNames.contains(STORE)) d.createObjectStore(STORE, { keyPath: 'id' });
       if (!d.objectStoreNames.contains(VERSIONS)) d.createObjectStore(VERSIONS, { keyPath: 'vid' });
+      if (!d.objectStoreNames.contains(ASSETS_STORE)) d.createObjectStore(ASSETS_STORE, { keyPath: 'sha256' });
+      if (!d.objectStoreNames.contains(DERIVED_STORE)) d.createObjectStore(DERIVED_STORE, { keyPath: 'key' });
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    req.onsuccess = () => {
+      const d = req.result;
+      d.onversionchange = () => {
+        d.close();
+        dbPromise = null;
+      };
+      d.onclose = () => {
+        dbPromise = null;
+      };
+      resolve(d);
+    };
+    req.onerror = () => {
+      dbPromise = null;
+      reject(req.error);
+    };
   });
+  return dbPromise;
 }
+
+const db = openDb;
 
 function tx<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBRequest<T>, store = STORE): Promise<T> {
   return db().then(
@@ -186,6 +217,9 @@ export async function addVersion(key: string, name: string, project: Project, re
   }
   const { perKey, total } = await currentRetention();
   for (const v of versionsToDelete(await listVersions(), perKey, total)) await tx('readwrite', (s) => s.delete(v), VERSIONS);
+  // Puis, selon l'espace : images dérivées, et documents qu'aucun modèle gardé ne référence (jamais un document
+  // référencé par un projet, un brouillon ou une version). En arrière-plan, sans bloquer l'enregistrement.
+  void import('../format/assetsIdb').then((m) => m.reclaimWorkingSpace()).catch(() => undefined);
 }
 
 // ---------------------------------------------------------------------------
