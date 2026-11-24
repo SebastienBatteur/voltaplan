@@ -28,7 +28,7 @@ import { download } from '../io/files';
 import { isConflict } from '../io/conflict';
 import { useOnline } from './UpdateBanner';
 import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
-import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, type CloudFile, type CloudId } from '../io/cloud';
+import { CLOUDS, PROVIDERS, clientId, cloudForget, cloudList, cloudLoad, cloudSave, cloudToken, redirectUri, setClientId, withToken, type CloudFile, type CloudId } from '../io/cloud';
 import { openProjectData } from '../io/projectData';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
@@ -166,6 +166,20 @@ export function StorageDialog({
                   }
                 >
                   {t('format.exportV1')}
+                </button>
+              )}
+              {mode === 'save' && 'showDirectoryPicker' in window && (
+                <button
+                  title={t('format.exportFolderHelp')}
+                  onClick={() =>
+                    run(async () => {
+                      const { exportToDirectory } = await import('../io/directoryBackend');
+                      const r = await exportToDirectory(project, name, (f) => window.confirm(t('storage.overwrite', { name: f })));
+                      if (r) window.alert(t('format.exportFolderDone', { n: r.files, folder: r.folder }));
+                    })
+                  }
+                >
+                  {t('format.exportFolder')}
                 </button>
               )}
             </div>
@@ -437,6 +451,7 @@ function CloudTab({
   const [svc, setSvc] = useState<CloudId>('onedrive');
   const [cid, setCid] = useState(clientId('onedrive'));
   const [files, setFiles] = useState<CloudFile[] | null>(null);
+  const [folders, setFolders] = useState<string[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const run = async (fn: () => Promise<void>) => {
@@ -463,6 +478,7 @@ function CloudTab({
               setSvc(c);
               setCid(clientId(c));
               setFiles(null);
+              setFolders(null);
               setMsg(null);
             }}
           >
@@ -511,17 +527,66 @@ function CloudTab({
             {t('storage.list')}
           </button>
         )}
+        {svc === 'onedrive' && (
+          <button
+            title={t('format.saveAsFolderHelp')}
+            disabled={busy || !cid || (mode === 'save' && !name.trim())}
+            onClick={() =>
+              run(async () => {
+                // Format v2, dossier de projet (F8) : documents envoyés une fois, modèle seul ensuite
+                setClientId(svc, cid);
+                const { listOneDriveFolders, safeFolderName } = await import('../io/oneDriveFolder');
+                const list = await withToken('onedrive', (tk) => listOneDriveFolders(tk));
+                if (mode === 'open') return setFolders(list.map((f) => f.name));
+                const folder = safeFolderName(name.trim());
+                const exists = list.some((f) => f.name === folder);
+                if (exists && !confirm(t('storage.overwrite', { name: folder }))) return;
+                const { folderSave } = await import('../io/cloudFolder');
+                const loc = { kind: 'folder', provider: 'onedrive', folder, modelPath: 'project.json' } as const;
+                const r = await folderSave(loc, project, exists ? 'overwrite' : 'create');
+                onSaved(name.trim(), { ...loc, rev: r.rev });
+                onClose();
+              })
+            }
+          >
+            {t(mode === 'open' ? 'format.folders' : 'format.saveAsFolder')}
+          </button>
+        )}
         {cloudToken(svc) && (
           <button
             onClick={() => {
               cloudForget(svc);
               setFiles(null);
+              setFolders(null);
             }}
           >
             {t('cloud.disconnect')}
           </button>
         )}
       </div>
+      {mode === 'open' && svc === 'onedrive' && folders && (
+        <ul className="storage-list">
+          {folders.length === 0 && <li className="muted">{t('storage.empty')}</li>}
+          {folders.map((folder) => (
+            <li key={folder}>
+              <button
+                className="link"
+                onClick={() =>
+                  run(async () => {
+                    const { folderOpen } = await import('../io/cloudFolder');
+                    const loc = { kind: 'folder', provider: 'onedrive', folder, modelPath: 'project.json' } as const;
+                    const r = await folderOpen(loc);
+                    onOpened(r.project, folder, { ...loc, rev: r.rev });
+                    onClose();
+                  })
+                }
+              >
+                {folder}/
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       {mode === 'open' && files && (
         <ul className="storage-list">
           {files.length === 0 && <li className="muted">{t('storage.empty')}</li>}

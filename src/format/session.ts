@@ -22,6 +22,9 @@ export interface DocSource {
   /** Contenu vérifié (AssetIntegrityError ou erreur réseau sinon). */
   open(signal?: AbortSignal): Promise<Blob>;
   name?: string;
+  /** Type et taille annoncés (archive), connus sans lire le contenu. */
+  mime?: string;
+  size?: number;
 }
 
 export type UnavailableReason = 'missing' | 'unreadable' | 'invalid' | 'storage';

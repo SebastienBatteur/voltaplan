@@ -19,7 +19,20 @@ export type Location =
   | { kind: 'device' }
   | { kind: 'browser'; id: string; rev?: number }
   | { kind: 'github'; repo: string; branch: string; path: string; sha?: string }
-  | { kind: 'cloud'; provider: CloudId; file: CloudFile };
+  | { kind: 'cloud'; provider: CloudId; file: CloudFile }
+  | FolderLocation;
+
+/**
+ * Projet en dossier (format v2, F8) : documents immuables envoyés une fois, modèle seul renvoyé. `modelPath` :
+ * project.json, ou une copie de conflit dans le même dossier. `rev` : version du modèle (eTag OneDrive).
+ */
+export interface FolderLocation {
+  kind: 'folder';
+  provider: 'onedrive';
+  folder: string;
+  modelPath: string;
+  rev?: string;
+}
 
 // ---------------------------------------------------------------------------
 // Navigateur (IndexedDB)

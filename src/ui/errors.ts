@@ -5,6 +5,7 @@ import { ArchiveError, AssetIntegrityError } from '../format/archive';
 import { AssetStoreError } from '../format/assets';
 import { AssetUnavailableError } from '../format/session';
 import { MissingAssetsError } from '../io/projectData';
+import { RemoteAssetMismatchError } from '../format/folder';
 
 type T = (k: string, p?: Record<string, string | number>) => string;
 
@@ -19,5 +20,6 @@ export function errorText(e: unknown, t: T): string {
   if (e instanceof AssetUnavailableError) return t('format.docUnavailable.' + e.reason);
   if (e instanceof AssetIntegrityError) return t('format.docUnavailable.invalid');
   if (e instanceof AssetStoreError) return t('format.assetError.' + e.code);
+  if (e instanceof RemoteAssetMismatchError) return t('format.remoteAssetMismatch', { path: e.path });
   return importErrorText(e, t);
 }

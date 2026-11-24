@@ -23,6 +23,7 @@ import type { Project } from '../model/types';
 import { FILE_EXT, STORAGE_PREFIX } from '../brand';
 import { AuthError, ConflictError, conflictName } from './conflict';
 import { MIMETYPE } from '../format/manifest';
+import { listPending } from './storage';
 
 /** Contenu envoyé : archive v2 (Blob) ; texte accepté pour les tests et les anciens appels. */
 export type CloudData = Blob | string;
@@ -263,7 +264,10 @@ export const PROVIDERS: Record<CloudId, Provider> = {
           if (now !== existing.rev) throw new ConflictError('Google Drive : ' + name, `version ${existing.rev} → ${now}`);
         }
         const current = now?.split('|')[1];
-        if (current) await drivePin(token, existing.id, current);
+        // Révisions jamais libérées : celle que nous remplaçons, celle de l'ouverture, celles qu'un enregistrement
+        // en attente (conflit ou hors ligne) désigne encore.
+        const protect = new Set([current, existing.rev?.split('|')[1], ...pendingDriveRevisions(existing.id)].filter((x): x is string => !!x));
+        if (current) await drivePin(token, existing.id, current, protect);
         const r = await check(
           await fetch(`https://www.googleapis.com/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media&keepRevisionForever=true&fields=id,name,size,modifiedTime,version,headRevisionId`, {
             method: 'PATCH',
@@ -291,7 +295,9 @@ export const PROVIDERS: Record<CloudId, Provider> = {
         }
         // Drive limite le nombre de révisions conservées indéfiniment par fichier : on libère les plus anciennes
         // au-delà d'un seuil (jamais les plus récentes). Échec sans conséquence pour l'enregistrement.
-        await driveReleaseOldPins(token, existing.id).catch(() => undefined);
+        const head2 = saved.rev?.split('|')[1];
+        if (head2) protect.add(head2);
+        await driveReleaseOldPins(token, existing.id, { fileSize: saved.size ?? asBody(data).size, protect }).catch(() => undefined);
         return saved;
       }
       // Création : Drive admet plusieurs fichiers de même nom, un fichier existant n'est donc jamais remplacé.
@@ -337,7 +343,7 @@ async function driveRevisionsBetween(token: string, id: string, from: string, to
 }
 
 /** Marque une révision « à conserver indéfiniment ». Plafond atteint : on libère d'anciennes révisions et on réessaie. */
-async function drivePin(token: string, id: string, rev: string): Promise<void> {
+async function drivePin(token: string, id: string, rev: string, protect: Set<string>): Promise<void> {
   const pin = () =>
     fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rev)}?fields=id,keepForever`, {
       method: 'PATCH',
@@ -347,20 +353,85 @@ async function drivePin(token: string, id: string, rev: string): Promise<void> {
   const r = await pin();
   if (r.ok) return;
   if (r.status === 401) throw new AuthError('Google Drive');
-  await driveReleaseOldPins(token, id, DRIVE_PINS_KEEP / 2);
+  // Refus (plafond du service probablement atteint) : libération plus large, puis nouvel essai
+  await driveReleaseOldPins(token, id, { fileSize: 0, protect, maxCount: DRIVE_PINS_MAX_COUNT / 2 });
   await check(await pin());
 }
 
-/** Seuils de conservation des révisions « indéfinies » (Drive en limite le nombre par fichier [à vérifier : 200]). */
+/**
+ * Révisions « conservées indéfiniment » (keepForever) d'un fichier Drive. Elles comptent dans l'espace de
+ * stockage de l'utilisateur [à vérifier] : avec le format v1 (photos intégrées, jusqu'à 50 Mo par fichier), 150
+ * révisions pourraient occuper plusieurs Go. On en garde tant que les DEUX limites sont respectées :
+ *  - nombre ≤ DRIVE_PINS_MAX_COUNT (le service en accepte 200 par fichier [à vérifier]) ;
+ *  - taille totale ≤ budget = max(DRIVE_PINS_SIZE_FACTOR × taille actuelle du fichier, DRIVE_PINS_MIN_BUDGET).
+ * Jamais libérées : les DRIVE_PINS_RECENT dernières révisions, et celles qu'un conflit ou un enregistrement en
+ * attente désigne encore. Avec les dossiers de projet (F8), seul le modèle (petit) est modifiable : le budget
+ * concerne surtout les fichiers v1 et les archives.
+ */
+export const DRIVE_PINS_MAX_COUNT = 100;
+export const DRIVE_PINS_SIZE_FACTOR = 10;
+export const DRIVE_PINS_MIN_BUDGET = 200 * 1024 * 1024;
+export const DRIVE_PINS_RECENT = 20;
+/** Anciens seuils (nombre seul), gardés pour pinsToRelease. */
 export const DRIVE_PINS_MAX = 150;
 export const DRIVE_PINS_KEEP = 100;
 
-async function driveReleaseOldPins(token: string, id: string, keep = DRIVE_PINS_KEEP): Promise<void> {
+export interface DriveRevision {
+  id: string;
+  keepForever?: boolean;
+  /** Octets (l'API renvoie une chaîne). */
+  size?: number | string;
+  modifiedTime?: string;
+}
+
+export const drivePinsBudget = (fileSize: number) => Math.max(DRIVE_PINS_SIZE_FACTOR * Math.max(0, fileSize), DRIVE_PINS_MIN_BUDGET);
+
+/**
+ * Fonction pure (testée) : révisions conservées à libérer, des plus anciennes aux plus récentes, jusqu'à respecter
+ * le nombre ET le budget de taille. Ordre chronologique d'après modifiedTime (à défaut, l'ordre de la liste).
+ */
+export function pinsToReleaseBySize(
+  revs: DriveRevision[],
+  opts: { fileSize: number; protect?: Set<string>; maxCount?: number; budget?: number; recent?: number },
+): string[] {
+  const maxCount = opts.maxCount ?? DRIVE_PINS_MAX_COUNT;
+  const budget = opts.budget ?? drivePinsBudget(opts.fileSize);
+  const recent = opts.recent ?? DRIVE_PINS_RECENT;
+  const ordered = revs.every((r) => r.modifiedTime) ? [...revs].sort((a, b) => a.modifiedTime!.localeCompare(b.modifiedTime!)) : revs;
+  const untouchable = new Set([...ordered.slice(Math.max(0, ordered.length - recent)).map((r) => r.id), ...(opts.protect ?? [])]);
+  const pinned = ordered.filter((r) => r.keepForever);
+  let count = pinned.length;
+  let bytes = pinned.reduce((t, r) => t + (Number(r.size) || 0), 0);
+  const out: string[] = [];
+  for (const r of pinned) {
+    if (count <= maxCount && bytes <= budget) break;
+    if (untouchable.has(r.id)) continue;
+    out.push(r.id);
+    count--;
+    bytes -= Number(r.size) || 0;
+  }
+  return out;
+}
+
+/** Révisions Drive encore désignées par un enregistrement en attente (conflit, hors ligne) pour ce fichier. */
+function pendingDriveRevisions(fileId: string): string[] {
+  try {
+    return listPending()
+      .map((p) => (p.loc.kind === 'cloud' && p.loc.provider === 'gdrive' && p.loc.file.id === fileId ? p.loc.file.rev?.split('|')[1] : undefined))
+      .filter((x): x is string => !!x);
+  } catch {
+    return [];
+  }
+}
+
+async function driveReleaseOldPins(token: string, id: string, opts: { fileSize: number; protect: Set<string>; maxCount?: number }): Promise<void> {
   const r = await check(
-    await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id,keepForever)&pageSize=1000`, { headers: { Authorization: 'Bearer ' + token } }),
+    await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions?fields=revisions(id,keepForever,size,modifiedTime)&pageSize=1000`, {
+      headers: { Authorization: 'Bearer ' + token },
+    }),
   );
-  const revs = ((await r.json()) as { revisions?: { id: string; keepForever?: boolean }[] }).revisions ?? [];
-  for (const rid of pinsToRelease(revs, keep === DRIVE_PINS_KEEP ? DRIVE_PINS_MAX : keep, keep))
+  const revs = ((await r.json()) as { revisions?: DriveRevision[] }).revisions ?? [];
+  for (const rid of pinsToReleaseBySize(revs, opts))
     await check(
       await fetch(`https://www.googleapis.com/drive/v3/files/${encodeURIComponent(id)}/revisions/${encodeURIComponent(rid)}`, {
         method: 'PATCH',
@@ -371,8 +442,9 @@ async function driveReleaseOldPins(token: string, id: string, keep = DRIVE_PINS_
 }
 
 /**
- * Fonction pure (testée) : révisions « conservées indéfiniment » à libérer, des plus anciennes aux plus récentes,
- * seulement quand il y en a plus de `max`, pour revenir à `keep`. Les 20 dernières révisions ne sont jamais libérées.
+ * Fonction pure (testée) : révisions « conservées indéfiniment » à libérer selon le seul nombre (ancienne règle,
+ * remplacée par pinsToReleaseBySize), seulement quand il y en a plus de `max`, pour revenir à `keep`. Les 20
+ * dernières révisions ne sont jamais libérées.
  */
 export function pinsToRelease(revs: { id: string; keepForever?: boolean }[], max = DRIVE_PINS_MAX, keep = DRIVE_PINS_KEEP): string[] {
   const pinned = revs.slice(0, Math.max(0, revs.length - 20)).filter((r) => r.keepForever);

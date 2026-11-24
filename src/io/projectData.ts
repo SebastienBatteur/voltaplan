@@ -83,7 +83,7 @@ export function reportWarnings(r: ArchiveReport): MigrationWarning[] {
 /** Sources de la session pour les documents d'une archive ouverte (lecture paresseuse, vérifiée). */
 export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSource>; derived: Map<string, DocSource> } {
   const originals = new Map<string, DocSource>();
-  for (const [sha, d] of a.originals) originals.set(sha, { open: (s) => d.open(s), name: d.name });
+  for (const [sha, d] of a.originals) originals.set(sha, { open: (s) => d.open(s), name: d.name, mime: d.mime, size: d.size });
   const derived = new Map<string, DocSource>();
   for (const d of a.derived) if (d.of && d.derivedRole) derived.set(`${d.of}-${d.derivedRole}`, { open: (s) => d.open(s) });
   return { originals, derived };

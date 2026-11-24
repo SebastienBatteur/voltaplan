@@ -134,7 +134,7 @@ export function App() {
   };
 
   const whereLabel = (loc: Location) =>
-    loc.kind === 'cloud' ? loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox' : loc.kind === 'github' ? 'GitHub' : t('save.where.' + loc.kind);
+    loc.kind === 'cloud' ? loc.provider === 'gdrive' ? 'Google Drive' : loc.provider === 'onedrive' ? 'OneDrive' : 'Dropbox' : loc.kind === 'github' ? 'GitHub' : loc.kind === 'folder' ? 'OneDrive' : t('save.where.' + loc.kind);
 
   const saveDeps = (): SaveDeps => ({
     browserSave,
@@ -143,6 +143,7 @@ export function App() {
     githubToken: getGithubToken,
     githubSettings: loadGithubSettings,
     deviceSave: (project, fileName) => saveProject(project, fileName, false),
+    folderSave: async (...a) => (await import('./io/cloudFolder')).folderSave(...a),
     addVersion,
     setPending,
     clearPending,

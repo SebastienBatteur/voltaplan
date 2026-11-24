@@ -14,7 +14,7 @@
 import type { Project } from '../model/types';
 import { conflictName, isAuthError, isConflict, isNetworkError } from './conflict';
 import type { CloudFile, CloudId, SaveMode } from './cloud';
-import type { GithubSettings, LocalVersion, Location, PendingSave } from './storage';
+import type { FolderLocation, GithubSettings, LocalVersion, Location, PendingSave } from './storage';
 
 export interface SaveDeps {
   browserSave: (id: string, name: string, project: Project, expectedRev: number | 'any') => Promise<number>;
@@ -23,6 +23,8 @@ export interface SaveDeps {
   githubToken: () => string | null;
   githubSettings: () => GithubSettings;
   deviceSave: (project: Project, fileName: string) => Promise<string | null>;
+  /** Projet en dossier (format v2, F8) : documents puis modèle conditionnel ; renvoie la version du modèle. */
+  folderSave?: (loc: FolderLocation, project: Project, mode: SaveMode) => Promise<{ rev?: string }>;
   addVersion: (key: string, name: string, project: Project, reason: LocalVersion['reason']) => Promise<void>;
   /** Enregistrement à reprendre (persistant) ; effacé dès qu'un enregistrement aboutit à cet emplacement. */
   setPending: (p: PendingSave) => void;
@@ -56,6 +58,8 @@ export function locationKey(loc: Location, fileName: string): string {
       return `cloud:${loc.provider}:${loc.file.id}`;
     case 'github':
       return `github:${loc.repo}@${loc.branch}:${loc.path}`;
+    case 'folder':
+      return `folder:${loc.provider}:${loc.folder}/${loc.modelPath}`;
     default:
       return `device:${fileName || 'sans-nom'}`;
   }
@@ -66,7 +70,7 @@ const baseOf = (path: string) => path.slice(path.lastIndexOf('/') + 1);
 
 /** Enregistre `project` à l'emplacement `loc`, sans jamais écraser une version modifiée ailleurs. */
 export async function saveAt(loc: Location, project: Project, fileName: string, deps: SaveDeps): Promise<SaveOutcome> {
-  const name = loc.kind === 'cloud' ? loc.file.name : loc.kind === 'github' ? baseOf(loc.path) : fileName || project.meta.title || 'projet';
+  const name = loc.kind === 'cloud' ? loc.file.name : loc.kind === 'github' ? baseOf(loc.path) : loc.kind === 'folder' ? loc.folder : fileName || project.meta.title || 'projet';
   const key = locationKey(loc, fileName);
   const keep = (reason: LocalVersion['reason']) => deps.addVersion(key, name, project, reason).catch(() => undefined);
   /** Attente : version gardée et envoi mémorisé (survit à la fermeture). */
@@ -118,6 +122,11 @@ async function write(
       const { concurrentCopy, ...file } = await deps.cloudSave(loc.provider, loc.file.name, project, 'update', loc.file);
       return { loc: { ...loc, file: { ...loc.file, ...file } }, name: file.name, concurrentCopy };
     }
+    case 'folder': {
+      if (!deps.folderSave) throw new Error('dossier : non pris en charge');
+      const { rev } = await deps.folderSave(loc, project, 'update');
+      return { loc: { ...loc, rev }, name: loc.folder };
+    }
     case 'github': {
       const token = deps.githubToken();
       if (!token) return { auth: true };
@@ -142,6 +151,13 @@ async function writeCopy(loc: Exclude<Location, { kind: 'device' }>, project: Pr
     case 'cloud': {
       const file = await deps.cloudSave(loc.provider, copyName, project, 'create');
       return { kind: 'cloud', provider: loc.provider, file };
+    }
+    case 'folder': {
+      // Copie de conflit dans le même dossier : les documents (immuables) sont partagés, rien n'est renvoyé
+      if (!deps.folderSave) throw new Error('dossier : non pris en charge');
+      const copy: FolderLocation = { ...loc, modelPath: dirOf(loc.modelPath) + conflictName(baseOf(loc.modelPath), deps.now()), rev: undefined };
+      const { rev } = await deps.folderSave(copy, project, 'create');
+      return { ...copy, rev };
     }
     case 'github': {
       const token = deps.githubToken();
