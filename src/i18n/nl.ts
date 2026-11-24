@@ -1,6 +1,7 @@
 import type { Dict } from './fr';
 
 export const nl: Partial<Dict> = {
+  'app.title': 'Voltaplan',
   'app.tagline': 'Elektrische schema’s volgens het AREI',
   'menu.new': 'Nieuw',
   'menu.open': 'Openen…',
