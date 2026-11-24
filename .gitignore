@@ -14,4 +14,6 @@ test/fixtures/*.jpg
 test/fixtures/*.png
 
 # Copies de travail temporaires (agents)
-.claude/worktrees/
+# Réglages locaux de l'outil de développement : seul launch.json (ports de dev) est partagé
+.claude/*
+!.claude/launch.json
