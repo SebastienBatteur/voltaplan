@@ -121,3 +121,28 @@ Checklist pratique des 15 scénarios F1 à F9 et D1 à D6, avec ce que fait le p
 | D1 à D6 | sans objet | sans objet | non testé | sans objet |
 
 À remplir au fur et à mesure. Chaque écart observé devient une demande de correction.
+
+### Journal des essais réels
+
+**2026-11-24, voltaplan.org (3b8cfe8), navigateur intégré de Claude Desktop, comptes d'essai du propriétaire.**
+Projet « Essai cloud (a supprimer) », sans photo ni donnée de client. Connexions OAuth faites par le propriétaire
+(la fenêtre de connexion ne s'ouvre que sur un clic humain) ; le reste piloté et vérifié par Claude (journal des
+requêtes du navigateur, site du service).
+
+| # | Service | Résultat | Preuve |
+|---|---|---|---|
+| F1 | Google Drive | ✅ réel : dossier créé, `project.json` et `README.txt` présents ; pas de `assets/` (aucune photo) | drive.google.com ; requêtes 200 ; liste « Dossiers de projet » |
+| F1 | OneDrive | ✅ réel : `README.txt` et `project.json` créés (201) dans `Apps/…` | requêtes Graph 201 |
+| F1 | Dropbox | ✅ réel : `README.txt` et `project.json` envoyés (200) ; dossier listé par Voltaplan | requêtes Dropbox ; liste « Dossiers de projet » |
+| F2 | Dropbox | ⚠️ réel partiel : seul le modèle change, mais `README.txt` est renvoyé à chaque enregistrement (mode `add`, contenu identique : Dropbox répond 200). Sans photo, la non-réexpédition des documents reste à vérifier | 1 `list_folder` (409, pas de `assets/`), 2 `upload` |
+| D1 | Google Drive | ⏳ autorisation `drive.install` accordée par le propriétaire ; apparition dans « Ouvrir avec » à vérifier | message de Voltaplan |
+
+Observations :
+
+- **O1** : environ 7 minutes après la connexion OneDrive, le jeton n'était plus en mémoire (bouton « Se déconnecter »
+  absent, nouvelle connexion demandée), alors que Google Drive et Dropbox restaient connectés. Cause inconnue : à
+  reproduire (déconnexion manuelle ? durée du jeton ?).
+- **O2** : `README.txt` renvoyé à chaque enregistrement Dropbox (une petite requête, sans nouveau fichier). Confirme
+  que Dropbox accepte un `add` de contenu identique. Amélioration possible : ne l'écrire que s'il manque.
+- **O3** : la liste des dossiers Dropbox n'affiche pas de date (Google Drive oui). Cosmétique.
+
