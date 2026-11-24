@@ -275,3 +275,42 @@ export function inRotatedRect(p: Pt, center: Pt, w: number, h: number, angle: nu
   const y = dx * Math.sin(a) + dy * Math.cos(a);
   return Math.abs(x) <= w / 2 + tol && Math.abs(y) <= h / 2 + tol;
 }
+
+/** Distance maximale (mm) entre un élément posé au mur et le mur vers lequel on l'oriente. */
+export const WALL_FACING_MAX = 1500;
+
+/**
+ * Rotation (degrés) qui tourne vers le mur le plus proche le côté gauche d'un symbole de plan (là où arrive
+ * son trait de raccordement), ou null s'il n'y a pas de mur à moins de `max` mm.
+ */
+export function wallFacing(page: PlanPage, p: Pt, max = WALL_FACING_MAX): number | null {
+  let best: Pt | null = null;
+  let bd = Infinity;
+  for (const w of page.walls) {
+    const { q, d } = project(p, w.a, w.b);
+    if (d < bd) {
+      bd = d;
+      best = q;
+    }
+  }
+  if (!best || bd > max) return null;
+  const dx = best.x - p.x;
+  const dy = best.y - p.y;
+  if (Math.hypot(dx, dy) < 1) return null;
+  // Le trait part vers -x : on tourne (-1, 0) sur la direction du mur
+  const deg = Math.round((Math.atan2(-dy, -dx) * 180) / Math.PI);
+  return ((deg % 360) + 360) % 360;
+}
+
+/** Oriente vers le mur les symboles en rotation automatique (après un placement, un déplacement, un mur modifié). */
+export function orientSymbols(page: PlanPage): PlanPage {
+  let changed = false;
+  const symbols = page.symbols.map((s) => {
+    if (!s.autoRotate) return s;
+    const r = wallFacing(page, s.pos);
+    if (r === null || r === s.rotation) return s;
+    changed = true;
+    return { ...s, rotation: r };
+  });
+  return changed ? { ...page, symbols } : page;
+}

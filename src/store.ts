@@ -9,11 +9,14 @@ import {
   findNode,
   findParent,
   insertChild,
+  insertInSeries,
   moveSibling,
   removeNode,
   updateNode,
 } from './model/tree';
 import { detectLang, translate, type Lang } from './i18n';
+import { orientSymbols } from './plan/geometry';
+import { isWallMounted } from './unifilar/symbols';
 
 export type View = 'unifilar' | 'plan' | 'board' | 'bom' | 'project' | 'check';
 
@@ -41,6 +44,8 @@ interface State {
   setProps: (id: string, patch: Record<string, PropValue>) => void;
   setLocation: (id: string, location: string) => void;
   addChild: (parentId: string, kind: NodeKind) => void;
+  /** Protection en série sous une protection (même circuit) : reprend les câbles en dessous. */
+  insertSeries: (protectionId: string, props?: ElNode['props']) => string;
   remove: (id: string) => void;
   duplicate: (id: string) => void;
   move: (id: string, delta: number) => void;
@@ -64,6 +69,12 @@ interface State {
 }
 
 const HISTORY = 100;
+
+/** Élément posé au mur (trait de raccordement orienté vers le mur sur le plan). */
+const wallMounted = (p: Project, nodeId: string) => {
+  const n = findNode(p.roots, nodeId) ?? findNode(p.loose, nodeId);
+  return !!n && isWallMounted(n);
+};
 
 export const useStore = create<State>((set, get) => {
   /** Applique une modification du projet en l'ajoutant à l'historique. */
@@ -124,6 +135,21 @@ export const useStore = create<State>((set, get) => {
       commit((p) => ({ ...p, roots: insertChild(p.roots, parentId, node) }));
       set({ selectedId: node.id });
     },
+    insertSeries: (protectionId, props = {}) => {
+      const up = findNode(get().project.roots, protectionId);
+      const node = createNode('protection', {
+        device: 'mcb',
+        poles: up?.props.poles,
+        ratedCurrent: up?.props.ratedCurrent,
+        curve: up?.props.curve,
+        phase: up?.props.phase,
+        ...props,
+        series: true,
+      });
+      commit((p) => ({ ...p, roots: insertInSeries(p.roots, protectionId, node) }));
+      set({ selectedId: node.id });
+      return node.id;
+    },
     remove: (id) => {
       const parent = findParent(get().project.roots, id);
       commit((p) => {
@@ -164,7 +190,9 @@ export const useStore = create<State>((set, get) => {
         plan: {
           ...p.plan,
           pages: p.plan.pages.map((pg, i) =>
-            i === pageIndex ? { ...pg, symbols: [...pg.symbols.filter((s) => s.nodeId !== nodeId), { nodeId, pos, rotation: 0 }] } : { ...pg, symbols: pg.symbols.filter((s) => s.nodeId !== nodeId) },
+            i === pageIndex
+              ? orientSymbols({ ...pg, symbols: [...pg.symbols.filter((s) => s.nodeId !== nodeId), { nodeId, pos, rotation: 0, autoRotate: wallMounted(p, nodeId) || undefined }] })
+              : { ...pg, symbols: pg.symbols.filter((s) => s.nodeId !== nodeId) },
           ),
         },
       }));
@@ -173,12 +201,12 @@ export const useStore = create<State>((set, get) => {
     moveSymbol: (nodeId, pos) =>
       commit((p) => ({
         ...p,
-        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, pos } : s)) })) },
+        plan: { ...p.plan, pages: p.plan.pages.map((pg) => orientSymbols({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, pos } : s)) })) },
       })),
     rotateSymbol: (nodeId, deg) =>
       commit((p) => ({
         ...p,
-        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, rotation: (s.rotation + deg) % 360 } : s)) })) },
+        plan: { ...p.plan, pages: p.plan.pages.map((pg) => ({ ...pg, symbols: pg.symbols.map((s) => (s.nodeId === nodeId ? { ...s, rotation: (s.rotation + deg) % 360, autoRotate: undefined } : s)) })) },
       })),
     setBoardLayout: (boardId, layout) => commit((p) => ({ ...p, boards: { ...p.boards, [boardId]: layout } })),
     unplaceSymbol: (nodeId) =>
@@ -188,7 +216,8 @@ export const useStore = create<State>((set, get) => {
       })),
     editPage: (fn) => {
       const { pageIndex } = get();
-      commit((p) => ({ ...p, plan: { ...p.plan, pages: p.plan.pages.map((pg, i) => (i === pageIndex ? fn(pg) : pg)) } }));
+      // Murs modifiés : les éléments posés au mur suivent
+      commit((p) => ({ ...p, plan: { ...p.plan, pages: p.plan.pages.map((pg, i) => (i === pageIndex ? orientSymbols(fn(pg)) : pg)) } }));
     },
     addPage: (name) => {
       commit((p) => ({ ...p, plan: { ...p.plan, pages: [...p.plan.pages, emptyPage(name)] } }));

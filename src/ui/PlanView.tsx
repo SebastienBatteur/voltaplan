@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
-import { Symbol, symbolSize } from '../unifilar/symbols';
+import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
 import type { ElNode, PlanPage, Pt } from '../model/types';
 import { uid } from '../model/tree';
 import {
@@ -22,6 +22,8 @@ import {
   translateWall,
 } from '../plan/geometry';
 import { PlanItemPanel } from './PlanItemPanel';
+import { usePlanUi, type PlanTool } from './planUi';
+import { PlanAddDialog } from './PlanAddDialog';
 import { FURNITURE, FURNITURE_GROUPS, FurnitureShape, type FurnitureKind } from '../plan/furniture';
 import { readBackground } from '../io/background';
 import { pickFile } from '../io/files';
@@ -33,7 +35,7 @@ export const S = 12;
 /** Largeur par défaut d'un fond de plan importé, avant mise à l'échelle (mm). */
 const BG_DEFAULT_W = 12000;
 
-type Tool = 'select' | 'wall' | 'door' | 'window' | 'label' | 'scale' | 'align' | 'rectify' | 'furniture';
+type Tool = PlanTool;
 export type PlanSel = { type: 'wall' | 'opening' | 'label' | 'image' | 'furniture'; index: number } | null;
 /** Glisser d'un élément du plan : la page d'origine est gardée pour annuler en une étape. */
 type ItemDrag = { sel: NonNullable<PlanSel>; handle?: 'a' | 'b'; start: Pt; orig: PlanPage; moved: boolean };
@@ -55,7 +57,7 @@ export function PlanSymbol({ node, selected, sev, chain }: { node: ElNode; selec
   return (
     <g className={'hit sym' + (selected ? ' selected' : chain ? ' chain' : '')} transform={`translate(${-s.w / 2},0)`}>
       <rect x={-2} y={-s.h / 2 - 2} width={s.w + 4} height={s.h + 4} className="hitbox" />
-      <Symbol node={node} orient="h" />
+      <Symbol node={node} orient="h" bare={!isWallMounted(node)} />
       {sev && <circle cx={s.w + 2} cy={-s.h / 2 - 2} r={4} className={'mark ' + sev} />}
     </g>
   );
@@ -243,9 +245,13 @@ export function PlanView() {
   const pz = usePanZoom(bounds, fileName + '|' + page.id);
   const [dragging, setDragging] = useState<{ id: string; pos: Pt; start: Pt; moved: boolean } | null>(null);
   const draggingRef = useRef(dragging);
+  const lastPointer = useRef<{ x: number; y: number } | null>(null);
   draggingRef.current = dragging;
 
-  const [tool, setTool] = useState<Tool>('select');
+  const tool = usePlanUi((u) => u.tool);
+  const setTool = usePlanUi((u) => u.setTool);
+  const furnKind = usePlanUi((u) => u.furnKind);
+  const elementKind = usePlanUi((u) => u.elementKind);
   const [chain, setChain] = useState<Pt | null>(null);
   const [cursor, setCursor] = useState<Pt | null>(null);
   const [scalePts, setScalePts] = useState<Pt[]>([]);
@@ -253,9 +259,10 @@ export function PlanView() {
   const [thickness, setThickness] = useState(200);
   const [busy, setBusy] = useState(false);
   const [itemDrag, setItemDrag] = useState<ItemDrag | null>(null);
-  const [furnKind, setFurnKind] = useState<FurnitureKind | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
   const [preview, setPreview] = useState<PlanPage | null>(null);
+  /** Ajout d'un élément de l'unifilaire à cet endroit du plan (clic droit, ou outil « Élément »). */
+  const [adding, setAdding] = useState<{ at: { x: number; y: number }; pos: Pt } | null>(null);
 
   /** Tolérance d'accroche : 12 pixels écran, en mm. */
   const tol = () => {
@@ -282,6 +289,17 @@ export function PlanView() {
     if (sym) pz.reveal(sym.pos.x, sym.pos.y);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedId]);
+
+  // Outil choisi dans la palette de gauche : dessin en cours abandonné, placement annulé
+  useEffect(() => {
+    setChain(null);
+    setScalePts([]);
+    if (tool !== 'select') {
+      setSel(null);
+      if (useStore.getState().placingId) startPlacing(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tool]);
 
   // On repart de zéro en changeant de page
   useEffect(() => {
@@ -392,10 +410,13 @@ export function PlanView() {
         const index = (page.furniture ?? []).length;
         editPage((pg) => ({ ...pg, furniture: [...(pg.furniture ?? []), item] }));
         setTool('select');
-        setFurnKind(null);
         setSel({ type: 'furniture', index });
         return;
       }
+      case 'element':
+        // Outil « Élément » (palette) : même fenêtre que le clic droit, avec l'élément choisi
+        if (lastPointer.current) setAdding({ at: lastPointer.current, pos: p });
+        return;
       case 'rectify': {
         // 4 coins d'un rectangle connu (façades), puis ses dimensions réelles.
         const pts = [...scalePts, p];
@@ -439,12 +460,18 @@ export function PlanView() {
   };
 
   const placingNode = placingId ? find(placingId) : undefined;
+  const isWallNode = (id: string) => {
+    const n = find(id);
+    return !!n && isWallMounted(n);
+  };
   const selSymbol = selectedId ? page.symbols.find((s) => s.nodeId === selectedId) : undefined;
   const snapped = cursor && tool === 'wall' ? snapPoint(cursor, page, tol(), chain) : null;
   const bg = page.images.find((i) => i.background);
   const hint =
     tool === 'furniture'
       ? t('plan.hint.furniture', { name: furnKind ? t('furniture.' + furnKind) : '' })
+      : tool === 'element'
+      ? t('plan.hint.element', { name: elementKind ? t('kind.' + elementKind) : '' })
       : tool === 'align'
       ? t('plan.hint.align' + scalePts.length)
       : tool === 'rectify'
@@ -487,7 +514,7 @@ export function PlanView() {
                             title={t('furniture.' + k)}
                             onClick={() => {
                               chooseTool('furniture');
-                              setFurnKind(k);
+                              usePlanUi.getState().pickFurniture(k);
                               setCatalogOpen(false);
                             }}
                           >
@@ -570,8 +597,21 @@ export function PlanView() {
             />
           </label>
         )}
+        {page.walls.length > 0 && page.symbols.some((x) => !x.autoRotate && isWallNode(x.nodeId)) && (
+          // Prises, interrupteurs, appliques… : trait de raccordement tourné vers le mur le plus proche
+          <button title={t('plan.faceWallsHelp')} onClick={() => editPage((pg) => ({ ...pg, symbols: pg.symbols.map((x) => (isWallNode(x.nodeId) ? { ...x, autoRotate: true } : x)) }))}>
+            {t('plan.faceWalls')}
+          </button>
+        )}
         {selSymbol && (
           <>
+            {isWallNode(selSymbol.nodeId) && !selSymbol.autoRotate && (
+              <button
+                onClick={() => editPage((pg) => ({ ...pg, symbols: pg.symbols.map((x) => (x.nodeId === selSymbol.nodeId ? { ...x, autoRotate: true } : x)) }))}
+              >
+                {t('plan.faceWall')}
+              </button>
+            )}
             <button onClick={() => rotateSymbol(selSymbol.nodeId, 90)}>{t('plan.rotate')}</button>
             <button onClick={() => unplaceSymbol(selSymbol.nodeId)}>{t('plan.unplace')}</button>
           </>
@@ -604,6 +644,18 @@ export function PlanView() {
       )}
       {empty && tool === 'select' && <div className="empty-hint">{t('plan.empty')}</div>}
       {sel && tool === 'select' && <PlanItemPanel page={page} sel={sel} onDelete={deleteSel} />}
+      {adding && (
+        <PlanAddDialog
+          at={adding.at}
+          pos={adding.pos}
+          page={page}
+          initialKind={elementKind}
+          onClose={() => {
+            setAdding(null);
+            if (tool === 'element') setTool('select');
+          }}
+        />
+      )}
       <svg
         ref={pz.svgRef}
         className={'canvas plan' + (placingId || tool !== 'select' ? ' placing' : '') + (pz.panning ? ' panning' : '')}
@@ -702,11 +754,18 @@ export function PlanView() {
             return;
           }
           if (e.button !== 0) return;
+          lastPointer.current = { x: e.clientX, y: e.clientY };
           const p = pz.toSvg(e.clientX, e.clientY);
           if (placingId) placeSymbol(placingId, { x: Math.round(p.x), y: Math.round(p.y) });
           else onClick(p);
         }}
         onDoubleClick={() => setChain(null)}
+        onContextMenu={(e) => {
+          // Clic droit : ajouter un élément de l'unifilaire à cet endroit
+          e.preventDefault();
+          setChain(null);
+          setAdding({ at: { x: e.clientX, y: e.clientY }, pos: pz.toSvg(e.clientX, e.clientY) });
+        }}
       >
         <rect data-bg="1" x={pz.vb.x - 1e6} y={pz.vb.y - 1e6} width={2e6 + pz.vb.w} height={2e6 + pz.vb.h} className="canvas-bg" />
         <Walls page={preview ?? page} sel={sel} />

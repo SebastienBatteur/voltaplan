@@ -66,6 +66,7 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'phase', type: 'enum', options: ['', 'L1', 'L2', 'L3'] },
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'oldPart', type: 'bool' },
+    { key: 'series', type: 'bool' },
     { key: 'reference', type: 'text' },
   ],
   board: [

@@ -84,12 +84,18 @@ export function cloneWithNewIds(node: ElNode): ElNode {
   return { ...node, id: uid(), props: { ...node.props }, source: undefined, children: node.children.map(cloneWithNewIds) };
 }
 
-/** Éléments en aval d'un nœud, sans descendre dans un sous-tableau ou une autre protection. */
+/**
+ * Protection montée en série dans le même circuit (ex. disjoncteur connecté avec mesure derrière le disjoncteur
+ * du circuit) : elle fait partie du circuit au-dessus, ne prend pas de lettre et n'en crée pas un nouveau.
+ */
+export const isSeries = (n: ElNode): boolean => n.kind === 'protection' && n.props.series === true;
+
+/** Éléments en aval d'un nœud, sans descendre dans un sous-tableau ou une autre protection (sauf en série). */
 export function circuitContent(circuit: ElNode): ElNode[] {
   const out: ElNode[] = [];
   const rec = (list: ElNode[]) => {
     for (const c of list) {
-      if (c.kind === 'board' || c.kind === 'protection') continue;
+      if (c.kind === 'board' || (c.kind === 'protection' && !isSeries(c))) continue;
       out.push(c);
       rec(c.children);
     }
@@ -103,7 +109,21 @@ export function circuitContent(circuit: ElNode): ElNode[] {
  * d'utilisation (et pas seulement un câble d'alimentation vers un sous-tableau).
  */
 export function isCircuit(n: ElNode): boolean {
-  return n.kind === 'protection' && n.children.some((c) => c.kind === 'cable') && circuitContent(n).some((c) => c.kind !== 'cable');
+  if (n.kind !== 'protection' || isSeries(n)) return false;
+  const content = circuitContent(n);
+  return content.some((c) => c.kind === 'cable') && content.some((c) => c.kind !== 'cable' && c.kind !== 'protection');
+}
+
+/**
+ * Insère une protection en série sous `parentId` : elle reprend les enfants du parent qu'elle peut porter
+ * (câbles, sous-tableaux, protections) ; le parent ne garde que les autres. Le circuit ne change pas.
+ */
+export function insertInSeries(nodes: ElNode[], parentId: string, child: ElNode): ElNode[] {
+  return updateNode(nodes, parentId, (p) => {
+    const allowed = new Set<string>(['cable', 'board', 'protection']);
+    const moved = p.children.filter((c) => allowed.has(c.kind));
+    return { ...p, children: [...p.children.filter((c) => !allowed.has(c.kind)), { ...child, children: [...child.children, ...moved] }] };
+  });
 }
 
 export function isRcd(n: ElNode): boolean {
@@ -150,7 +170,7 @@ export function computeNumbering(roots: ElNode[]): Map<string, string> {
     const commands: ElNode[] = [];
     const rec = (list: ElNode[]) => {
       for (const c of list) {
-        if (c.kind === 'board' || (c.kind === 'protection' && c !== circuit)) continue; // sous-tableau : numérotation propre
+        if (c.kind === 'board' || (c.kind === 'protection' && c !== circuit && !isSeries(c))) continue; // sous-tableau : numérotation propre
         if (NUMBERED.has(c.kind)) labels.set(c.id, `${letter}${sep}${++k}`);
         else if (COMMANDS.has(c.kind)) commands.push(c);
         rec(c.children);

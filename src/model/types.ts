@@ -147,7 +147,11 @@ export interface PlanPage {
   /** Mobilier (pictogrammes vectoriels, voir src/plan/furniture.tsx). Absent dans les anciens fichiers. */
   furniture?: Furniture[];
   /** Position des symboles des nœuds électriques sur le plan. */
-  symbols: { nodeId: string; pos: Pt; rotation: number; labelSide?: string }[];
+  /**
+   * Symboles placés. `autoRotate` : élément posé au mur (prise, interrupteur, applique…) dont le trait de
+   * raccordement est tourné automatiquement vers le mur le plus proche ; une rotation à la main l'arrête.
+   */
+  symbols: { nodeId: string; pos: Pt; rotation: number; labelSide?: string; autoRotate?: boolean }[];
   /** Textes libres (noms de pièces). */
   labels: { id: string; text: string; pos: Pt; size?: number }[];
 }

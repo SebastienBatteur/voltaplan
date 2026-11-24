@@ -1,7 +1,7 @@
 import { NumberField } from './NumberField';
 import { useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
-import { ancestors, createNode, insertChild, mapTree } from '../model/tree';
+import { ancestors, createNode, insertChild, insertInSeries, isCircuit, mapTree } from '../model/tree';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
@@ -53,6 +53,10 @@ const ISSUE_OF: Record<Proposal['prop'], string> = {
 
 /** Valeur du menu « Associer à… » pour créer une nouvelle protection. */
 const NEW = '__new';
+/** Préfixe de valeur : créer l'appareil en série sous ce circuit. */
+const SERIES = '__series:';
+/** Appareils de la photo qui peuvent être un disjoncteur en série (disjoncteur connecté, module avec mesure…). */
+const SERIES_KINDS = new Set(['mcb', 'rcbo', 'domotic', 'meter', 'other']);
 
 /** Dimensions du dessin (mm, échelle réelle) : module DIN de 17,5 mm. */
 export const MOD = 17.5;
@@ -458,6 +462,33 @@ export function BoardView() {
     select(node.id);
     setMsg(t('ai.created'));
   };
+  /** Circuits de ce tableau sous lesquels un appareil de la photo peut être monté en série. */
+  const seriesTargets = enc ? enc.devices.filter((n) => isCircuit(n)) : [];
+  /** Disjoncteur vu sur la photo, monté en série derrière le disjoncteur d'un circuit (ex. EARU derrière O). */
+  const createInSeries = (x: ExtraDevice, upId: string) => {
+    const up = enc.devices.find((n) => n.id === upId);
+    if (!up) return;
+    const read = protectionFromReading(x.seen);
+    // Calibre : celui du circuit (le seuil réglé ne dépasse pas la protection au-dessus), à corriger au besoin
+    const node = createNode('protection', {
+      device: read.device === 'rcbo' ? 'rcbo' : 'mcb',
+      poles: up.props.poles,
+      ratedCurrent: up.props.ratedCurrent,
+      curve: up.props.curve,
+      phase: up.props.phase,
+      modules: read.modules,
+      ...(read.reference ? { reference: read.reference } : {}),
+      series: true,
+    });
+    applyProject((p) => ({
+      ...p,
+      roots: insertInSeries(p.roots, upId, node),
+      boards: { ...p.boards, [enc.board.id]: { ...layout, slots: { ...layout.slots, [node.id]: { row: x.row, col: x.startModule } } } },
+    }));
+    setAiDiffs((d) => (d ? { ...d, extra: d.extra.filter((e) => e !== x) } : d));
+    select(node.id);
+    setMsg(t('ai.createdSeries', { circuit: nameOf(up) }));
+  };
   const target = drag && dragged && drag.moved ? slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged)) : null;
 
   return (
@@ -618,10 +649,27 @@ export function BoardView() {
                 {t('ai.diff.extra2', { row: x.row + 1, col: x.startModule + 1, kind: t('ai.kind.' + x.kind), model: x.model ? ` ${x.model}` : '' })}{' '}
                 {(PROTECTION_KINDS.has(x.kind) || x.kind === 'other' || associable.length > 0) && (
                   // Types proches d'abord, puis tout autre élément de l'unifilaire de ce tableau (choix libre)
-                  <select value="" onChange={(e) => (e.target.value === NEW ? createFromPhoto(x) : e.target.value && associate(x, e.target.value))}>
+                  <select
+                    value=""
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v === NEW) createFromPhoto(x);
+                      else if (v.startsWith(SERIES)) createInSeries(x, v.slice(SERIES.length));
+                      else if (v) associate(x, v);
+                    }}
+                  >
                     <option value="">{t('ai.associate')}</option>
                     {(PROTECTION_KINDS.has(x.kind) || x.kind === 'other') && (
                       <option value={NEW}>{t('ai.newProtection', { kind: t('ai.kind.' + (x.kind === 'other' ? 'mcb' : x.kind)) })}</option>
+                    )}
+                    {SERIES_KINDS.has(x.kind) && seriesTargets.length > 0 && (
+                      <optgroup label={t('ai.inSeries')}>
+                        {seriesTargets.map((n) => (
+                          <option key={n.id} value={SERIES + n.id}>
+                            {t('ai.inSeriesUnder', { circuit: nameOf(n) })}
+                          </option>
+                        ))}
+                      </optgroup>
                     )}
                     {x.kind !== 'other' && associable.some((n) => closeKind(x.kind, n)) && (
                       <optgroup label={t('ai.closeKinds')}>

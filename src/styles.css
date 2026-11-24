@@ -1470,3 +1470,115 @@ body.resizing-h * {
   background: var(--border);
   margin: 4px 6px;
 }
+
+/* Palette « Éléments » (colonne de gauche) */
+.side-palette {
+  flex: 0 1 auto;
+  max-height: 45%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-top: 1px solid var(--border);
+}
+.palette {
+  overflow: auto;
+  padding: 4px 10px 10px;
+}
+.palette-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 8px 0 4px;
+}
+.palette-group summary {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 0;
+}
+.palette-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 2px 0 6px;
+}
+.palette-items.icons button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+  gap: 2px;
+  padding: 4px 2px;
+  font-size: 10px;
+  line-height: 1.1;
+  text-align: center;
+}
+.palette-items button.dim {
+  opacity: 0.45;
+}
+.palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 6px;
+}
+.palette-list button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.palette-list .palette-icon {
+  width: 36px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+.palette-icon {
+  width: 48px;
+  height: 30px;
+}
+.palette-icon line,
+.palette-icon path,
+.palette-icon circle,
+.palette-icon rect,
+.palette-icon ellipse {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  fill: none;
+}
+.palette-icon .fill {
+  fill: var(--ink);
+}
+.palette-icon .bg {
+  fill: var(--panel);
+}
+.palette-icon .nofill {
+  fill: none;
+}
+.palette-icon text {
+  fill: var(--ink);
+  stroke: none;
+}
+/* Ajout d'un élément depuis le plan */
+.plan-add {
+  min-width: 320px;
+  max-width: 420px;
+  padding: 8px 10px;
+  gap: 6px;
+}
+.plan-add select {
+  width: 100%;
+}
+.plan-add .row button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  text-align: center;
+  padding: 5px 12px;
+}
+.plan-add .row button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}

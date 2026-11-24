@@ -7,6 +7,8 @@ const KEY = STORAGE_PREFIX + 'sidePanels';
 interface Layout {
   treeOpen: boolean;
   propsOpen: boolean;
+  /** Palette « Éléments » (sous « Propriétés »). */
+  paletteOpen?: boolean;
   /** Part de la hauteur donnée à « Installation » quand les deux sont ouverts (0,15 … 0,85). */
   split: number;
   /** Largeur de la colonne (px). */
@@ -16,7 +18,7 @@ interface Layout {
 }
 
 function load(): Layout {
-  const def: Layout = { treeOpen: true, propsOpen: true, split: 0.5, width: 340 };
+  const def: Layout = { treeOpen: true, propsOpen: true, paletteOpen: true, split: 0.5, width: 340 };
   try {
     return { ...def, ...(JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Layout>) };
   } catch {
@@ -25,11 +27,11 @@ function load(): Layout {
 }
 
 /**
- * Colonne de gauche : « Installation » et « Propriétés ».
+ * Colonne de gauche : « Installation », « Propriétés » et la palette « Éléments ».
  * Chaque partie se replie en cliquant son titre ; la séparation entre les deux se fait glisser ;
  * le bord droit de la colonne aussi (largeur). La disposition est retenue sur cet appareil.
  */
-export function SidePanels({ tree, props }: { tree: ReactNode; props: ReactNode }) {
+export function SidePanels({ tree, props, palette }: { tree: ReactNode; props: ReactNode; palette?: ReactNode }) {
   const t = useStore((s) => s.t);
   const [l, setL] = useState<Layout>(load);
   const ref = useRef<HTMLElement>(null);
@@ -70,7 +72,7 @@ export function SidePanels({ tree, props }: { tree: ReactNode; props: ReactNode 
   };
 
   const both = l.treeOpen && l.propsOpen;
-  const header = (key: 'treeOpen' | 'propsOpen', label: string) => (
+  const header = (key: 'treeOpen' | 'propsOpen' | 'paletteOpen', label: string) => (
     <h3>
       <button className="side-toggle" aria-expanded={l[key]} onClick={() => setL((x) => ({ ...x, [key]: !x[key] }))}>
         <span className="twisty">{l[key] ? '▾' : '▸'}</span> {label}
@@ -99,6 +101,12 @@ export function SidePanels({ tree, props }: { tree: ReactNode; props: ReactNode 
         {header('propsOpen', t('panel.props'))}
         {l.propsOpen && props}
       </section>
+      {palette && (
+        <section className={'side-palette' + (l.paletteOpen ? '' : ' folded')}>
+          {header('paletteOpen', t('panel.palette'))}
+          {l.paletteOpen && palette}
+        </section>
+      )}
       <div className="side-resizer" role="separator" aria-orientation="vertical" title={t('panel.resize')} onPointerDown={start('width')} />
     </aside>
   );

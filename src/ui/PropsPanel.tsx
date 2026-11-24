@@ -68,7 +68,7 @@ export function PropsPanel() {
   const project = useStore((s) => s.project);
   const t = useStore((s) => s.t);
   const view = useStore((s) => s.view);
-  const { setLocation, remove, duplicate, move, setView, startPlacing } = useStore.getState();
+  const { setLocation, remove, duplicate, move, setView, startPlacing, insertSeries } = useStore.getState();
   const { find, numbering, byNode, labelFn } = useDerived();
   const node = selectedId ? find(selectedId) : undefined;
   const [adding, setAdding] = useState<{ x: number; y: number } | null>(null);
@@ -126,6 +126,11 @@ export function PropsPanel() {
             ↓
           </button>
           {node.kind !== 'origin' && <button onClick={() => duplicate(node.id)}>{t('action.duplicate')}</button>}
+          {node.kind === 'protection' && (
+            <button onClick={() => insertSeries(node.id)} title={t('action.insertSeriesHelp')}>
+              {t('action.insertSeries')}
+            </button>
+          )}
           {node.kind !== 'origin' && (
             <button className="danger" onClick={() => remove(node.id)}>
               {t('action.delete')}

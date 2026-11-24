@@ -1,4 +1,5 @@
 import { AiSettingsDialog } from './ui/AiSettingsDialog';
+import { ElementsPanel } from './ui/ElementsPanel';
 import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
 import { PrintDialog } from './print/PrintDialog';
@@ -273,7 +274,7 @@ export function App() {
       )}
       <main className={showSide ? 'with-side' : ''}>
         {showSide && (
-          <SidePanels tree={<TreePanel />} props={<PropsPanel />} />
+          <SidePanels tree={<TreePanel />} props={<PropsPanel />} palette={<ElementsPanel />} />
         )}
         <section className="content">
           {s.view === 'unifilar' && <UnifilarView />}

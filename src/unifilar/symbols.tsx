@@ -690,7 +690,7 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
  * `up` : unifilaire dessiné de bas en haut (le fil arrive par le bas). Les symboles orientés — la prise de terre,
  * dont les barres terminent la ligne — sont alors retournés pour que la tige rejoigne le fil.
  */
-export function Symbol({ node, orient, up }: { node: ElNode; orient: 'v' | 'h'; up?: boolean }) {
+export function Symbol({ node, orient, up, bare }: { node: ElNode; orient: 'v' | 'h'; up?: boolean; bare?: boolean }) {
   if (orient === 'v' && up && node.kind === 'earth') {
     const { h } = symbolSize(node, 'v');
     return (
@@ -699,5 +699,20 @@ export function Symbol({ node, orient, up }: { node: ElNode; orient: 'v' | 'h'; 
       </g>
     );
   }
-  return orient === 'v' ? <Vertical n={node} /> : <Horizontal n={node} />;
+  return orient === 'v' ? <Vertical n={node} /> : <Horizontal n={node} bare={bare} />;
+}
+
+/**
+ * Élément posé au mur : sur le plan, il garde son petit trait de raccordement, tourné vers le mur (prise,
+ * interrupteur, bouton-poussoir, sonnerie, applique). Les autres (point lumineux au plafond, tube néon,
+ * appareil, moteur, éléments carrés…) sont dessinés sans ce trait.
+ */
+export function isWallMounted(n: ElNode): boolean {
+  return (
+    n.kind === 'socket' ||
+    n.kind === 'switch' ||
+    n.kind === 'pushButton' ||
+    n.kind === 'bell' ||
+    (n.kind === 'light' && String(n.props.lightType ?? 'standard') === 'wall')
+  );
 }
