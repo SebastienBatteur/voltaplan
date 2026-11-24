@@ -1,8 +1,12 @@
 # Voltaplan
 
-Application **open source** pour dessiner simplement les **schémas unifilaires**, les **plans de position** et (bientôt) la **disposition des tableaux** d'une installation électrique domestique, avec **vérification RGIE** (Belgique), en vue du contrôle par un organisme agréé (Vinçotte, BTV, ACA…).
+Application **gratuite et open source** de création de schémas électriques — **schéma unifilaire**, **plan de position**, **tableau** — et d'**assistance réglementaire RGIE** (Belgique), pour préparer le dossier d'une installation domestique et son contrôle par un organisme agréé.
 
-> ⚠️ Les vérifications RGIE sont une **aide**. Elles ne remplacent ni le texte officiel du RGIE (Livre 1, 2020) ni l'avis de l'organisme agréé.
+**Gratuite, sans publicité, sans compte, sans serveur** : vos projets restent sur votre appareil ou dans votre propre stockage (fichier, OneDrive, Google Drive, Dropbox, GitHub). L'IA est facultative, avec votre propre clé ou un modèle local. Fonctionne hors connexion.
+
+**En ligne** : https://sebastienbatteur.github.io/voltaplan/ (guide et application). **Soutenir le projet** (facultatif) : bouton *Sponsor* du dépôt.
+
+> ⚠️ **Aide à la vérification, pas de certification.** Les vérifications RGIE ne remplacent ni le texte officiel du RGIE ni le contrôle par un organisme agréé. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée **parmi les règles vérifiées**, avec les informations saisies. Voir [les conditions d'utilisation](docs/CONDITIONS.md).
 
 ## Ce qui fonctionne (v0.1)
 
@@ -20,7 +24,7 @@ Application **open source** pour dessiner simplement les **schémas unifilaires*
   - « Local avec baignoire ou douche » indiqué explicitement (le nom de la pièce n'est qu'un indice à confirmer).
 - **Langues** : français, néerlandais, anglais, allemand (partiel).
 - **Tableau** : rangées DIN (12 ou 13 modules), appareils en glisser-déposer à leur largeur réelle (disjoncteur 1P+N en 1 ou 2 modules, différentiel 2 ou 4 modules…), disposition automatique, réserve, étiquettes. **Photo du tableau** : calage par les 4 coins, comparaison sans IA (largeur et place de chaque appareil), et en option lecture par l'IA (type, calibre, courbe, sensibilité) comparée au matériel défini ; confirmation appareil par appareil.
-- **Dossier imprimable / PDF** (A4 ou A3 paysage) : unifilaire (découpé sur plusieurs pages si nécessaire), plans, tableau, liste des circuits, légende automatique des symboles utilisés, étiquettes du tableau à l'échelle 1:1, constats du contrôle. Cartouche sur chaque page : version et date, installateur (nom, qualité, TVA), adresse, tension et nature du courant, EAN, cases de signature installateur / organisme agréé / propriétaire. Mention « PROJET — NON CONFORME » tant qu'une installation neuve a des non-conformités.
+- **Dossier imprimable / PDF** (A4 ou A3 paysage) : unifilaire (découpé sur plusieurs pages si nécessaire), plans, tableau, liste des circuits, légende automatique des symboles utilisés, étiquettes du tableau à l'échelle 1:1, constats du contrôle. Cartouche sur chaque page : version et date, installateur (nom, qualité, TVA), adresse, tension et nature du courant, EAN, cases de signature installateur / organisme agréé / propriétaire. Mention « PROJET » tant que des constats bloquants restent à traiter.
 - **Mesures** : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel (temps de déclenchement, circuits protégés), date et appareil de mesure ; contrôlées (≤ 300 ms, 500 ms pour un « S ») et imprimées sur la page « Mesures » du dossier.
 - **Trikker** : import et **export** (.trik, Windows-1252 comme Trikker) ; aller-retour vérifié sur des fichiers réels (schéma, numérotation, plan, pièces, adresses).
 - **Hors ligne** : la version web s'installe comme une application (PWA) et fonctionne sans connexion après la première visite.
@@ -130,7 +134,7 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 2. ✅ Plan : dessin des murs, portes et fenêtres, fond de plan photo/PDF mis à l'échelle (2 points + cote) ; ✅ symboles du RGIE ; ✅ unifilaire de bas en haut
 3. ✅ Tableau : rangées DIN, glisser-déposer, photo et validation du matériel, étiquettes 1:1
 4. ✅ Export PDF / impression du dossier (A4, A3 : cartouche, légende, circuits, mesures, étiquettes 1:1)
-5. ⏳ Import photo/PDF : manuel assisté d'abord ; IA optionnelle (clé API configurée par l'utilisateur, choix de ce que l'IA peut générer) ; étude d'un petit modèle local
+5. ⏳ Assistant de relevé : ✅ premier parcours (photo du tableau → brouillon, questions, relevé figé) ; ⏳ plusieurs photos et tableaux, documents existants, plans d'architecte, plan de position. IA facultative (votre clé, ou un modèle local)
 6. ✅ Export Trikker ; ✅ PWA hors ligne ; ✅ version de bureau Tauri et workflows de paquets — ⏳ Eendraadschema (format à étudier)
 
 ## Projets proches
@@ -138,6 +142,14 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 - [Eendraadschema](https://github.com/igoethal/eendraadschema) (GPL, belge, AREI) : unifilaire + plan de situation dans le navigateur.
 - [QElectroTech](https://qelectrotech.org) (GPL) : schémas électriques généralistes, sans règles RGIE.
 - Trikker : gratuit mais pas open source.
+
+## Contribuer
+
+Contributions bienvenues : code, **signalement d'une règle RGIE incorrecte**, traductions, tests sur de vraies installations (sans données de clients). Voir [CONTRIBUTING.md](CONTRIBUTING.md). Les commits sont signés selon le DCO (`git commit -s`).
+
+## Soutenir Voltaplan
+
+Voltaplan est et restera **entièrement gratuit**, sans fonction réservée. Un don est **facultatif** et ne débloque rien : il aide à couvrir le temps de maintenance et de relecture réglementaire. Bouton *Sponsor* du dépôt (GitHub Sponsors).
 
 ## Sécurité
 

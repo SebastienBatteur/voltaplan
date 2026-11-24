@@ -2,7 +2,7 @@ import type { Dict } from './fr';
 
 /** Allemand (optionnel) : les clés manquantes retombent sur l'anglais. */
 export const de: Partial<Dict> = {
-  'app.tagline': 'Elektroschaltpläne nach belgischer AREI/RGIE',
+  'app.tagline': 'Elektroschaltpläne mit Prüfhilfe nach belgischer AREI/RGIE',
   'menu.new': 'Neu',
   'menu.open': 'Öffnen…',
   'menu.save': 'Speichern',

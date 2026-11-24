@@ -1,0 +1,19 @@
+name: Traduction
+description: Terme incorrect ou manquant en néerlandais, anglais ou allemand.
+title: "[Traduction] "
+labels: ["traduction"]
+body:
+  - type: dropdown
+    id: langue
+    attributes:
+      label: Langue
+      options: [Nederlands, English, Deutsch, Français]
+    validations:
+      required: true
+  - type: textarea
+    id: texte
+    attributes:
+      label: Texte actuel et proposition
+      description: Où le texte apparaît, texte actuel, texte proposé (terminologie du métier si possible).
+    validations:
+      required: true

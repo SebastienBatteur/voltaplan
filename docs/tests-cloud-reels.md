@@ -8,6 +8,8 @@ procédure sert à le vérifier avec **tes propres comptes**.
 
 ## 1. Google Drive : analyse détaillée
 
+Analyse complète (limites, quota, appareils simultanés, nettoyage) : [google-drive.md](google-drive.md).
+
 ### Ce que l'API permet
 
 - L'API Drive v3 n'offre **pas d'écriture conditionnelle** (pas d'équivalent à `If-Match`) **[à vérifier sur la

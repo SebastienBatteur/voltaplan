@@ -1,0 +1,65 @@
+name: Règle RGIE fausse, manquante ou mal formulée
+description: Signaler une anomalie du contrôle réglementaire (aide à la vérification, pas de certification).
+title: "[RGIE] "
+labels: ["réglementaire"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci ! **Aucune donnée de client** : pas de dossier, de photo, de nom ni d'adresse (le ticket est public).
+        Recréez un petit projet d'essai si nécessaire.
+  - type: input
+    id: regle
+    attributes:
+      label: Règle concernée
+      description: Identifiant affiché dans le contrôle (ex. R-RCD30), ou « règle manquante ».
+    validations:
+      required: true
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Édition du RGIE
+      options:
+        - Livre 1 (depuis le 1/6/2020)
+        - Ancien RGIE (1981–2020)
+        - Avant 1981
+        - Je ne sais pas
+    validations:
+      required: true
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type d'anomalie
+      options:
+        - Faux positif (signalé à tort)
+        - Faux négatif (non signalé)
+        - Mauvaise gravité ou mauvais statut (bloquant, recommandation…)
+        - Texte ou conseil incorrect
+        - Règle manquante
+    validations:
+      required: true
+  - type: textarea
+    id: cas
+    attributes:
+      label: Cas concret
+      description: Installation neuve ou existante, local, appareil, calibre, section… et ce que Voltaplan affiche.
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Résultat attendu
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: Article ou section du RGIE, publication officielle, avis d'un organisme agréé. Ne recopiez pas de texte de norme protégé.
+  - type: checkboxes
+    id: confidentialite
+    attributes:
+      label: Confidentialité
+      options:
+        - label: Ce ticket ne contient aucune donnée personnelle ni document de client.
+          required: true

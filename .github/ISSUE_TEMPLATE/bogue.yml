@@ -1,0 +1,59 @@
+name: Bogue
+description: Quelque chose ne fonctionne pas comme prévu.
+title: "[Bogue] "
+labels: ["bogue"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Aucune donnée de client** (ticket public). Pour une faille de sécurité, utilisez le signalement privé (voir SECURITY.md).
+  - type: textarea
+    id: quoi
+    attributes:
+      label: Ce qui se passe
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Étapes pour reproduire
+      placeholder: "1. Ouvrir…\n2. Cliquer sur…\n3. …"
+    validations:
+      required: true
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce qui était attendu
+  - type: dropdown
+    id: version
+    attributes:
+      label: Où
+      options:
+        - Version web (navigateur)
+        - Application installée sur l'écran d'accueil (PWA)
+        - Application de bureau (Windows)
+        - Application de bureau (macOS)
+        - Application de bureau (Linux)
+    validations:
+      required: true
+  - type: input
+    id: navigateur
+    attributes:
+      label: Navigateur et système
+      placeholder: "ex. Chrome 131 / Windows 11, Safari / iPhone iOS 18"
+  - type: dropdown
+    id: perte
+    attributes:
+      label: Des données ont-elles été perdues ?
+      options:
+        - Non
+        - Oui (précisez ci-dessus ; vérifiez aussi Fichier → Versions locales)
+    validations:
+      required: true
+  - type: checkboxes
+    id: confidentialite
+    attributes:
+      label: Confidentialité
+      options:
+        - label: Ce ticket ne contient aucune donnée personnelle ni document de client.
+          required: true

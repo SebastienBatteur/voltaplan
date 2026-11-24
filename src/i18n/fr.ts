@@ -1,7 +1,7 @@
 /** Dictionnaire de référence (français). Les autres langues reprennent les mêmes clés. */
 export const fr = {
   'app.title': 'Voltaplan',
-  'app.tagline': 'Schémas électriques conformes RGIE',
+  'app.tagline': 'Schémas électriques et aide à la vérification RGIE',
   'menu.new': 'Nouveau',
   'menu.open': 'Ouvrir…',
   'menu.save': 'Enregistrer',

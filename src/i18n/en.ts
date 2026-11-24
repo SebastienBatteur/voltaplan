@@ -2,7 +2,7 @@ import type { Dict } from './fr';
 
 export const en: Partial<Dict> = {
   'app.title': 'Voltaplan',
-  'app.tagline': 'Electrical diagrams compliant with the Belgian RGIE/AREI',
+  'app.tagline': 'Electrical diagrams with RGIE/AREI checking assistance',
   'menu.new': 'New',
   'menu.open': 'Open…',
   'menu.save': 'Save',
