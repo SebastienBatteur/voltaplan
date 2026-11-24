@@ -53,7 +53,7 @@ import { emptyProject, walk } from './model/tree';
 import { assetSession } from './io/projectData';
 import { makeDisplayImage } from './io/background';
 import { setOpenModels } from './format/assetsIdb';
-import { LegalFooter } from './ui/LegalFooter';
+import { LegalFooter, LegalLinks } from './ui/LegalFooter';
 
 // Format v2 : images d'affichage régénérées au besoin ; le projet ouvert compte comme référence (jamais de
 // suppression d'un document qu'il utilise, même avant son enregistrement).
@@ -443,6 +443,8 @@ export function App() {
               ))}
             </select>
           </label>
+          <div className="menu-sep" />
+          <LegalLinks menu />
         </ToolbarMore>
       </header>
 

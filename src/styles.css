@@ -1994,3 +1994,29 @@ body.resizing-h * {
     -webkit-touch-callout: none;
   }
 }
+
+/* Liens légaux : dans le menu « ⋯ » quand la barre est compacte (téléphone, tablette au doigt), pour laisser
+ * toute la hauteur au dessin ; pied de page inchangé sur ordinateur. */
+.toolbar-more-list a {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: var(--text);
+  text-decoration: none;
+}
+.toolbar-more-list a:hover,
+.toolbar-more-list a:focus-visible {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+@media (pointer: coarse) {
+  .toolbar-more-list a {
+    min-height: 44px;
+  }
+}
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+  .legal-footer {
+    display: none;
+  }
+}

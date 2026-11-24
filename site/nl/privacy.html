@@ -38,7 +38,8 @@
 <ul>
 <li><strong>Artificiële intelligentie</strong> (facultatief, standaard uit): de foto van het bord, verkleind, naar de aanbieder die <em>u</em> instelt met <em>uw</em> sleutel (Anthropic, OpenAI, Google Gemini, Mistral) of naar een lokaal model op uw computer. De ontvanger wordt vóór verzending getoond. Zijn voorwaarden gelden en de kosten zijn voor u.</li>
 <li><strong>Google Drive</strong>: aanmelden bij Google, daarna lezen en schrijven van <strong>alleen de bestanden en mappen die Voltaplan heeft gemaakt of waarmee ze geopend zijn</strong> (machtiging <code>drive.file</code>). Voltaplan ziet de rest van uw Drive niet.</li>
-<li><strong>OneDrive</strong>: alleen de eigen map van de toepassing (<code>Files.ReadWrite.AppFolder</code>). <strong>Dropbox</strong>: alleen de app-map.</li>
+<li><strong>OneDrive</strong>: één enkele machtiging, <code>Files.ReadWrite.AppFolder</code>: alleen lezen en schrijven in de map « Apps/Voltaplan » van uw OneDrive. Geen profiel, geen e-mail, geen offline toegang. Toegang intrekken: <a href="https://account.live.com/consent/Manage">account.live.com/consent/Manage</a> (persoonlijk account) of <a href="https://myapps.microsoft.com">myapps.microsoft.com</a> (werkaccount).</li>
+<li><strong>Dropbox</strong>: toepassing beperkt tot de map « Apps/Voltaplan » (toegang « App folder »), met <code>files.metadata.read</code> (projecten oplijsten, hun revisie lezen), <code>files.content.read</code> en <code>files.content.write</code> (openen, opslaan). Geen profiel, geen delen, geen offline toegang. Toegang intrekken: <a href="https://www.dropbox.com/account/connected_apps">dropbox.com/account/connected_apps</a>.</li>
 <li><strong>GitHub</strong>: de repository die u opgeeft, met uw persoonlijke token.</li>
 <li><strong>Hosting van de website</strong> (GitHub Pages): de gewone verzoeken om de toepassing te downloaden (IP-adres, browser), zoals bij elke website. Voltaplan voegt geen cookies of trackers toe.</li>
 </ul>

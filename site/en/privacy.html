@@ -38,7 +38,8 @@
 <ul>
 <li><strong>Artificial intelligence</strong> (optional, off by default): the board photo, reduced, to the provider <em>you</em> configure with <em>your</em> key (Anthropic, OpenAI, Google Gemini, Mistral) or to a local model on your computer. The recipient is shown before sending. Its terms apply and its cost is yours.</li>
 <li><strong>Google Drive</strong>: Google sign-in, then reading and writing <strong>only the files and folders created by Voltaplan or opened with it</strong> (<code>drive.file</code> permission). Voltaplan cannot see the rest of your Drive.</li>
-<li><strong>OneDrive</strong>: only the app's own folder (<code>Files.ReadWrite.AppFolder</code>). <strong>Dropbox</strong>: only the app folder.</li>
+<li><strong>OneDrive</strong>: a single permission, <code>Files.ReadWrite.AppFolder</code>: read and write only in the “Apps/Voltaplan” folder of your OneDrive. No profile, no email, no offline access. Revoke access: <a href="https://account.live.com/consent/Manage">account.live.com/consent/Manage</a> (personal account) or <a href="https://myapps.microsoft.com">myapps.microsoft.com</a> (work account).</li>
+<li><strong>Dropbox</strong>: app restricted to the “Apps/Voltaplan” folder (“App folder” access), with <code>files.metadata.read</code> (list projects, read their revision), <code>files.content.read</code> and <code>files.content.write</code> (open, save). No profile, no sharing, no offline access. Revoke access: <a href="https://www.dropbox.com/account/connected_apps">dropbox.com/account/connected_apps</a>.</li>
 <li><strong>GitHub</strong>: the repository you specify, with your personal token.</li>
 <li><strong>Website hosting</strong> (GitHub Pages): the usual requests to download the application (IP address, browser), as for any website. No cookies or trackers are added by Voltaplan.</li>
 </ul>

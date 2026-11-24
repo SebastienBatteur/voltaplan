@@ -17,21 +17,35 @@ export function legalUrls(lang: Lang) {
   return { privacy: p + 'privacy.html', terms: p + 'terms.html' };
 }
 
-export function LegalFooter() {
+const SOURCE = 'https://github.com/SebastienBatteur/voltaplan';
+
+/** Liens légaux ; `menu` : entrées du menu « ⋯ » de la barre compacte (le pied de page y est masqué). */
+export function LegalLinks({ menu }: { menu?: boolean }) {
   const t = useStore((s) => s.t);
   const lang = useStore((s) => s.lang);
   const u = legalUrls(lang);
+  const role = menu ? 'menuitem' : undefined;
   return (
-    <footer className="legal-footer">
-      <a href={u.privacy} target="_blank" rel="noopener">
+    <>
+      <a href={u.privacy} target="_blank" rel="noopener" role={role}>
         {t('legal.privacy')}
       </a>
-      <a href={u.terms} target="_blank" rel="noopener">
+      <a href={u.terms} target="_blank" rel="noopener" role={role}>
         {t('legal.terms')}
       </a>
-      <a href="https://github.com/SebastienBatteur/voltaplan" target="_blank" rel="noopener">
+      <a href={SOURCE} target="_blank" rel="noopener" role={role}>
         {t('legal.source')}
+        {menu ? ' (AGPL-3.0)' : ''}
       </a>
+    </>
+  );
+}
+
+/** Pied de page de l'application sur grand écran ; masqué par la feuille de style quand la barre est compacte. */
+export function LegalFooter() {
+  return (
+    <footer className="legal-footer">
+      <LegalLinks />
       <span>AGPL-3.0</span>
     </footer>
   );
