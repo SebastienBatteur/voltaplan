@@ -2,6 +2,13 @@
 # et que les paquets se fabriquent sur Windows, macOS et Linux. Aucune release, aucun envoi :
 # les paquets et le Cargo.lock résolu sont seulement déposés en « artifacts » du run (7 jours).
 # La publication reste dans release.yml (tag « v* »).
+#
+# Coût : macOS compte ×10 et Windows ×2 sur un dépôt privé [à vérifier]. D'où :
+#  - déclenchement seulement si src-tauri/, package.json, package-lock.json ou ce workflow changent ;
+#  - un premier job Linux de quelques secondes (« pertinence ») qui, quand seuls package.json /
+#    package-lock.json ont changé, ne lance la construction que si la modification touche un paquet Tauri
+#    (@tauri-apps/*, dont la version doit rester alignée sur les crates) ; les mises à jour d'outils de
+#    développement (Dependabot) ne relancent donc pas trois constructions natives.
 name: Desktop build
 
 on:
@@ -12,16 +19,67 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/desktop-build.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'src-tauri/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/desktop-build.yml'
 
 permissions:
   contents: read
 
 concurrency:
-  group: desktop-build-${{ github.ref }}
-  cancel-in-progress: true
+  group: desktop-build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
 
 jobs:
+  pertinence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      build: ${{ steps.decide.outputs.build }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: decide
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          # Pas de pipefail : « grep -q » ferme le tube dès la première correspondance, ce qui ferait échouer
+          # la commande précédente (SIGPIPE) et inverserait le test.
+          set -eu
+          decide() { echo "build=$1" >> "$GITHUB_OUTPUT"; echo "Construction : $1 ($2)"; }
+          if [ "$EVENT" = "workflow_dispatch" ]; then decide true "lancement manuel"; exit 0; fi
+          if [ "$EVENT" = "pull_request" ]; then
+            RANGE="$PR_BASE...$PR_HEAD"
+          elif [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] || ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
+            decide true "historique du push inconnu"; exit 0
+          else
+            RANGE="$BEFORE..$AFTER"
+          fi
+          FILES=$(git diff --name-only "$RANGE")
+          echo "$FILES"
+          if echo "$FILES" | grep -qE '^(src-tauri/|\.github/workflows/desktop-build\.yml$)'; then
+            decide true "src-tauri ou workflow modifié"; exit 0
+          fi
+          if git diff "$RANGE" -- package.json package-lock.json | grep -E '^[-+]' | grep -qi 'tauri'; then
+            decide true "paquet Tauri modifié"; exit 0
+          fi
+          decide false "dépendances modifiées sans paquet Tauri"
+
   build:
+    needs: pertinence
+    if: needs.pertinence.outputs.build == 'true'
     permissions:
       contents: read
     strategy:

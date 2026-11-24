@@ -1,24 +1,46 @@
-# Tests à chaque push et pull request : typage, tests unitaires, construction de la version web,
-# audit des dépendances livrées et recherche de secrets dans l'historique.
+# Tests rapides à chaque modification du code : typage, lint, tous les tests Vitest (dont la matrice
+# réglementaire test/rules.matrix.test.ts), construction de la version web, audit des dépendances livrées.
+# Linux seulement (minutes ×1) ; Windows et macOS sont dans ci-multi-os.yml (voir docs/ci.md).
+# La recherche de secrets est dans secrets.yml : elle tourne aussi sur les changements de documentation.
 name: CI
 
 on:
   push:
     branches: [main]
+    # Ignoré seulement si TOUS les fichiers modifiés sont dans cette liste : un changement mixte
+    # (documentation + code) lance tout. Liste identique pour pull_request ci-dessous.
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'site/**'
+      - 'LICENSE'
   pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'site/**'
+      - 'LICENSE'
+  schedule:
+    # Chaque semaine : nouvelles vulnérabilités publiées (npm audit) même sans modification du code.
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  # Une seule exécution par demande de fusion / branche. Les exécutions plus anciennes d'une demande de fusion
+  # ou d'une branche de travail sont annulées ; sur main, l'exécution en cours va à son terme (chaque commit
+  # de main garde un résultat), seules les exécutions en attente sont remplacées par la plus récente.
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || github.ref != 'refs/heads/main' }}
+
 jobs:
   test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,19 +50,23 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      # Tous les tests Vitest, dont la matrice réglementaire : jamais filtrés.
       - run: npm test
       - run: npm run build
       - name: Version web (dist)
-        if: matrix.os == 'ubuntu-latest'
+        # Seulement sur main (et lancement manuel) : les demandes de fusion n'en ont pas besoin,
+        # et le stockage des artifacts est décompté sur un dépôt privé.
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: voltaplan-web
           path: dist
-          retention-days: 14
+          retention-days: 7
 
   audit:
     # Dépendances livrées avec l'application (hors outils de développement) : bloquant au-delà de « high ».
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:
@@ -49,15 +75,3 @@ jobs:
         with:
           node-version: 20
       - run: npm audit --audit-level=high --omit=dev
-
-  secrets:
-    # Recherche de secrets dans tout l'historique (image officielle de gitleaks, version figée).
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: gitleaks
-        run: docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.30.1 git /repo --config /repo/.gitleaks.toml --redact --verbose --no-banner
