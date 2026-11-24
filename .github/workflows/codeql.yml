@@ -38,9 +38,11 @@ jobs:
           name: codeql-sarif
           path: codeql-results
           retention-days: 30
-      - name: Alertes CodeQL
+      - name: Alertes CodeQL (hors exceptions justifiées dans .github/codeql-accepted.txt)
         run: |
-          n=$(jq '[.runs[].results[]] | length' codeql-results/*.sarif)
-          echo "Alertes CodeQL : $n"
-          jq -r '.runs[].results[] | "\(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) \(.message.text)"' codeql-results/*.sarif
-          test "$n" -eq 0
+          jq -r '.runs[].results[] | "\(.ruleId) \(.locations[0].physicalLocation.artifactLocation.uri)"' codeql-results/*.sarif | sort -u > alerts.txt
+          grep -v '^#' .github/codeql-accepted.txt | grep -v '^\s*$' | sort -u > accepted.txt
+          comm -23 alerts.txt accepted.txt > new.txt
+          echo "Alertes : $(wc -l < alerts.txt), acceptées : $(comm -12 alerts.txt accepted.txt | wc -l), nouvelles : $(wc -l < new.txt)"
+          cat new.txt
+          test ! -s new.txt

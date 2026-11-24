@@ -1,0 +1,7 @@
+# Alertes CodeQL examinées et acceptées : « règle fichier », une par ligne, avec sa justification au-dessus.
+# Toute autre alerte fait échouer le job CodeQL.
+
+# DOMParser.parseFromString(xml, 'application/xml') : le fichier Trikker est lu comme XML dans un document inerte
+# (aucun script exécuté, rien n'est inséré dans la page) ; les DTD sont refusées avant (hasDtd) et seules les images
+# base64 validées sont reprises. Faux positif.
+js/xss-through-dom src/import/trikker.ts
