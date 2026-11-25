@@ -10,9 +10,11 @@
  * identifiants de fichier et de dossier, validés (zod, caractères [A-Za-z0-9_-], longueur bornée), toujours
  * encodés (encodeURIComponent) dans les adresses de l'API Drive ; jamais inséré dans la page comme HTML, jamais
  * suivi comme adresse. Rien n'est ouvert sans un clic de l'utilisateur (le clic autorise aussi la fenêtre de
- * connexion). Le paramètre est retiré de l'adresse dès sa lecture (un rechargement ne relance rien).
+ * connexion). Le paramètre est retiré de l'adresse dès sa lecture (un favori ne relance rien) ; la demande reste en
+ * attente dans l'onglet jusqu'à la réponse de l'utilisateur, 10 minutes au plus (voir DRIVE_PENDING_KEY).
  */
 import { z } from 'zod';
+import { STORAGE_PREFIX } from '../brand';
 import { DRIVE_FOLDER_MIME, driveGet, driveMedia, driveVersion, type DriveCtx, type Fetch } from './drive';
 import { DRIVE_APP_PROP } from './driveFolder';
 import type { CloudFile } from './cloud';
@@ -83,12 +85,62 @@ export function parseDriveState(search: string): DriveIntent | null {
 }
 
 /**
- * Lit la demande de Drive dans l'adresse de la page et retire `state` de l'adresse (history.replaceState) : un
- * rechargement ou un favori ne relance rien. Les autres paramètres (ex. `lang`) sont gardés.
+ * Demande de Drive en attente de réponse, gardée pour CET onglet seulement (sessionStorage) : le rechargement proposé
+ * par une mise à jour (« Recharger ») ne la perd plus (écart S10, séance réelle du 2026-11-25). Effacée dès que
+ * l'utilisateur répond (bandeau accepté ou annulé) ; ignorée après 10 minutes. Relue, elle repasse par la même
+ * validation, et n'agit toujours qu'après un clic.
  */
-export function takeDriveIntent(loc: Pick<globalThis.Location, 'search' | 'href'> = location, hist: Pick<History, 'replaceState' | 'state'> = history): DriveIntent | null {
-  if (!/[?&]state=/.test(loc.search)) return null;
+export const DRIVE_PENDING_KEY = STORAGE_PREFIX + 'driveIntent';
+const PENDING_MAX_MS = 10 * 60 * 1000;
+type PendingStore = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'> | undefined;
+function tabStore(): PendingStore {
+  try {
+    return typeof sessionStorage === 'undefined' ? undefined : sessionStorage;
+  } catch {
+    return undefined; // stockage refusé (navigation privée stricte) : comportement d'avant, sans reprise
+  }
+}
+
+/** La demande en attente a reçu sa réponse : elle n'est plus reprise au rechargement. */
+export function clearPendingDriveIntent(store: PendingStore = tabStore()): void {
+  try {
+    store?.removeItem(DRIVE_PENDING_KEY);
+  } catch {
+    /* sans conséquence */
+  }
+}
+
+/**
+ * Lit la demande de Drive dans l'adresse de la page et retire `state` de l'adresse (history.replaceState) : un favori
+ * ne relance rien. Les autres paramètres (ex. `lang`) sont gardés. Sans `state` dans l'adresse : demande encore en
+ * attente dans cet onglet (rechargement avant réponse), s'il y en a une.
+ */
+export function takeDriveIntent(
+  loc: Pick<globalThis.Location, 'search' | 'href'> = location,
+  hist: Pick<History, 'replaceState' | 'state'> = history,
+  store: PendingStore = tabStore(),
+  now = Date.now(),
+): DriveIntent | null {
+  if (!/[?&]state=/.test(loc.search)) {
+    try {
+      const saved = JSON.parse(store?.getItem(DRIVE_PENDING_KEY) ?? 'null') as { state?: unknown; at?: unknown } | null;
+      const fresh = saved && typeof saved.state === 'string' && typeof saved.at === 'number' && now - saved.at >= 0 && now - saved.at < PENDING_MAX_MS;
+      const intent = fresh ? parseDriveState('?state=' + encodeURIComponent(saved.state as string)) : null;
+      if (!intent) clearPendingDriveIntent(store);
+      return intent;
+    } catch {
+      clearPendingDriveIntent(store);
+      return null;
+    }
+  }
   const intent = parseDriveState(loc.search);
+  if (intent) {
+    try {
+      store?.setItem(DRIVE_PENDING_KEY, JSON.stringify({ state: new URLSearchParams(loc.search).get('state'), at: now }));
+    } catch {
+      /* stockage plein ou refusé : la demande reste traitée, seulement sans reprise au rechargement */
+    }
+  }
   try {
     const u = new URL(loc.href);
     u.searchParams.delete('state');

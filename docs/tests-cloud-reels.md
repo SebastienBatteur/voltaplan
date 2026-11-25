@@ -308,7 +308,9 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
   bandeau Drive placé en haut (il ne peut plus être recouvert par un autre message). ✅ **Revérifié en réel** (d27995b) :
   bandeau « Créer le projet » affiché en haut ; « Nouveau projet.voltaplan » créé dans Mon Drive › Essai cloud
   2026-11-25 (à supprimer), le sous-dossier choisi. La cause supposée (clé vide) est donc confirmée.
-- **S10** (à corriger) : quand Drive ouvre Voltaplan alors qu'une nouvelle version est en attente, l'onglet
+- **S10** (corrigé, à revérifier en réel à la prochaine mise à jour) : la demande de Drive est gardée pour l'onglet
+  (sessionStorage) jusqu'à la réponse de l'utilisateur, 10 minutes au plus, revalidée à la relecture, effacée dès
+  que le bandeau est accepté ou annulé. Tests : `test/driveOpenWith.test.ts`. Constat initial : quand Drive ouvre Voltaplan alors qu'une nouvelle version est en attente, l'onglet
   démarre sur l'ancienne version (cache) et propose « Recharger » ; recharger fait perdre la demande de Drive (déjà
   retirée de l'adresse). Constaté au 1er essai de D5 après la correction.
 - **S9** (corrigé) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
@@ -335,5 +337,5 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
 - **O5** (mineur) : le premier enregistrement après un import réécrit `README.txt` (texte différent de celui écrit à
   l'import, probablement le titre). Une requête de plus, sans effet sur les données.
 
-Reste à faire en réel : D4 et D6 (second compte Google), F6 (compte presque plein), Android ; S10 à corriger. S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
+Reste à faire en réel : D4 et D6 (second compte Google), F6 (compte presque plein), Android ; S10 à revérifier en réel. S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
 

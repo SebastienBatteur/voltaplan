@@ -30,7 +30,7 @@ import { VersionsDialog } from './ui/VersionsDialog';
 import { AssistPanel } from './ui/AssistPanel';
 import { ASSIST_EVENT } from './assist/ui';
 import { newExistingProject } from './assist/project';
-import { APP_NAME, FILE_EXT, LEGACY_EXTS } from './brand';
+import { APP_NAME, FILE_EXT, LEGACY_EXTS, STORAGE_PREFIX } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
 import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
@@ -336,12 +336,20 @@ export function App() {
 
   // Google Drive → Voltaplan : demande lue une fois au démarrage, retirée de l'adresse, traitée après un clic
   useEffect(() => {
-    if (!/[?&]state=/.test(window.location.search)) return;
+    const inUrl = /[?&]state=/.test(window.location.search);
+    // Demande encore sans réponse dans cet onglet (rechargement, ex. « Recharger » d'une mise à jour : écart S10)
+    let pending = false;
+    try {
+      pending = !!sessionStorage.getItem(STORAGE_PREFIX + 'driveIntent');
+    } catch {
+      /* stockage refusé */
+    }
+    if (!inUrl && !pending) return;
     void import('./io/driveOpenWith').then((m) => {
       const intent = m.takeDriveIntent();
       // Demande présente mais non reconnue : on le dit, au lieu d'ouvrir l'application comme si de rien n'était
       if (intent) setDriveIntent(intent);
-      else setToast({ text: t('driveOpen.unrecognized') });
+      else if (inUrl) setToast({ text: t('driveOpen.unrecognized') });
     });
     // Une seule fois, au démarrage (la demande est retirée de l'adresse dès sa lecture)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -571,7 +579,11 @@ export function App() {
         <DriveOpenPrompt
           intent={driveIntent}
           confirmDiscard={confirmDiscard}
-          onClose={() => setDriveIntent(null)}
+          onClose={() => {
+            // Réponse donnée (ouvert, créé ou annulé) : plus de reprise au rechargement
+            setDriveIntent(null);
+            void import('./io/driveOpenWith').then((m) => m.clearPendingDriveIntent());
+          }}
           onOpened={(p, name, loc, notes) => {
             resetHandle();
             s.loadProject(p, name);

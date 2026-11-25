@@ -6,7 +6,7 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import { createDriveProjectFolder, DriveFolderBackend } from '../src/io/driveFolder';
-import { DriveOpenError, fetchDriveFile, parseDriveState, resourceKeysHeader, runDriveIntent, takeDriveIntent, type DriveIntent } from '../src/io/driveOpenWith';
+import { clearPendingDriveIntent, DRIVE_PENDING_KEY, DriveOpenError, fetchDriveFile, parseDriveState, resourceKeysHeader, runDriveIntent, takeDriveIntent, type DriveIntent } from '../src/io/driveOpenWith';
 import { folderOpen } from '../src/io/cloudFolder';
 import { assetSession, openProjectData, serializeProject } from '../src/io/projectData';
 import { emptyProject } from '../src/model/tree';
@@ -88,6 +88,57 @@ describe('paramètre state de Drive', () => {
     const replace3 = vi.fn();
     expect(takeDriveIntent({ href: 'https://voltaplan.org/app/?lang=fr', search: '?lang=fr' }, { replaceState: replace3, state: null })).toBeNull();
     expect(replace3).not.toHaveBeenCalled();
+  });
+
+  describe('demande en attente dans l’onglet (S10 : « Recharger » d’une mise à jour ne la perd plus)', () => {
+    const memory = () => {
+      const m = new Map<string, string>();
+      return { getItem: (k: string) => m.get(k) ?? null, setItem: (k: string, v: string) => void m.set(k, v), removeItem: (k: string) => void m.delete(k), m };
+    };
+    const noop = { replaceState: () => undefined, state: null };
+    const href = `https://voltaplan.org/app/${q({ action: 'create', folderId: ID, folderResourceKey: '' })}`;
+    const clean = { href: 'https://voltaplan.org/app/', search: '' };
+
+    it('lue dans l’adresse, gardée ; retrouvée au rechargement (adresse sans state), jusqu’à la réponse', () => {
+      const store = memory();
+      const T = 1_000_000;
+      expect(takeDriveIntent({ href, search: new URL(href).search }, noop, store, T)).toMatchObject({ action: 'create', folderId: ID });
+      expect(store.m.has(DRIVE_PENDING_KEY)).toBe(true);
+      // Rechargement 2 minutes plus tard : même demande, de nouveau validée
+      expect(takeDriveIntent(clean, noop, store, T + 120_000)).toMatchObject({ action: 'create', folderId: ID });
+      // Réponse donnée : plus rien au rechargement suivant
+      clearPendingDriveIntent(store);
+      expect(takeDriveIntent(clean, noop, store, T + 130_000)).toBeNull();
+    });
+
+    it('ignorée et effacée après 10 minutes', () => {
+      const store = memory();
+      takeDriveIntent({ href, search: new URL(href).search }, noop, store, 0);
+      expect(takeDriveIntent(clean, noop, store, 10 * 60 * 1000)).toBeNull();
+      expect(store.m.has(DRIVE_PENDING_KEY)).toBe(false);
+    });
+
+    it('contenu gardé modifié ou invalide : rejeté par la même validation, puis effacé', () => {
+      const store = memory();
+      store.setItem(DRIVE_PENDING_KEY, JSON.stringify({ state: JSON.stringify({ action: 'create', folderId: 'x/../y' }), at: 0 }));
+      expect(takeDriveIntent(clean, noop, store, 1)).toBeNull();
+      expect(store.m.has(DRIVE_PENDING_KEY)).toBe(false);
+      store.setItem(DRIVE_PENDING_KEY, '{pas du json');
+      expect(takeDriveIntent(clean, noop, store, 1)).toBeNull();
+      expect(store.m.has(DRIVE_PENDING_KEY)).toBe(false);
+    });
+
+    it('demande invalide dans l’adresse : rien n’est gardé', () => {
+      const store = memory();
+      expect(takeDriveIntent({ href: 'https://voltaplan.org/app/?state=%3Cscript%3E', search: '?state=%3Cscript%3E' }, noop, store, 0)).toBeNull();
+      expect(store.m.size).toBe(0);
+    });
+
+    it('stockage indisponible : la demande est traitée quand même, sans reprise', () => {
+      const broken = { getItem: () => { throw new Error('refusé'); }, setItem: () => { throw new Error('refusé'); }, removeItem: () => { throw new Error('refusé'); } };
+      expect(takeDriveIntent({ href, search: new URL(href).search }, noop, broken, 0)).toMatchObject({ action: 'create' });
+      expect(takeDriveIntent(clean, noop, broken, 1)).toBeNull();
+    });
   });
 });
 
