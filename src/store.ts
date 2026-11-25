@@ -13,6 +13,8 @@ interface State {
   project: Project;
   fileName: string;
   dirty: boolean;
+  /** Augmenté à chaque projet chargé (ouvert, créé, récupéré) : la page d'accueil se ferme. */
+  loadSeq: number;
   selectedId: string | null;
   view: View;
   lang: Lang;
@@ -79,6 +81,7 @@ export const useStore = create<State>((set, get) => {
     project: emptyProject(),
     fileName: '',
     dirty: false,
+    loadSeq: 0,
     selectedId: null,
     view: 'unifilar',
     lang,
@@ -104,7 +107,8 @@ export const useStore = create<State>((set, get) => {
       set({
         // Projet sans numéro de dossier (fichier ancien, import) : numéro proposé, sans marquer le projet modifié
         project: project.meta.docNumber?.trim() ? project : { ...project, meta: { ...project.meta, docNumber: autoDocNumber(project.meta.date) } },
-        fileName, dirty: false, selectedId: null, past: [], future: [], pageIndex: 0, placingId: null }),
+        fileName,
+        loadSeq: get().loadSeq + 1, dirty: false, selectedId: null, past: [], future: [], pageIndex: 0, placingId: null }),
     markSaved: (fileName) => set((s) => ({ dirty: false, fileName: fileName ?? s.fileName })),
 
     setProps: (id, patch) =>

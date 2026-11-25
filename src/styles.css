@@ -2579,3 +2579,189 @@ body.resizing-h * {
   height: auto;
   border-radius: 4px;
 }
+
+/* Page d'accueil « Mes projets » (src/ui/HomeScreen.tsx) */
+.home {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  background: var(--bg);
+}
+.home-inner {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 20px 16px 32px;
+}
+.home-head h1 {
+  margin: 0 0 4px;
+  font-size: 24px;
+}
+.home-head p {
+  margin: 0 0 16px;
+}
+.home h2 {
+  font-size: 16px;
+  margin: 24px 0 8px;
+}
+.home-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+.home-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 110px;
+  padding: 12px 14px;
+  text-align: left;
+  border-radius: 10px;
+  background: var(--panel);
+  white-space: normal;
+}
+.home-card.primary {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+.home-card.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent) inset;
+}
+.home-card-icon {
+  font-size: 22px;
+  line-height: 1;
+  color: var(--accent);
+}
+.home-card strong {
+  font-size: 15px;
+}
+.home-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.home-list li {
+  display: flex;
+  gap: 6px;
+}
+.home-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding: 10px 12px;
+  text-align: left;
+  border-radius: 8px;
+  background: var(--panel);
+}
+.home-item-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.home-item-main strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.home-item-side {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.home-forget {
+  flex: 0 0 auto;
+  background: none;
+  border-color: transparent;
+  color: var(--muted);
+}
+.home-privacy {
+  margin-top: 24px;
+}
+.status-badge {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.status-badge.ready {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+.status-badge.inspected {
+  border-color: var(--ok);
+  color: var(--ok);
+}
+
+/* Assistant de nouveau projet (src/ui/NewProjectWizard.tsx) */
+.wizard {
+  width: min(560px, 100%);
+}
+.wizard-steps {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  counter-reset: step;
+}
+.wizard-steps li {
+  flex: 1;
+  padding: 4px 0;
+  border-top: 3px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  counter-increment: step;
+}
+.wizard-steps li::before {
+  content: counter(step) '. ';
+}
+.wizard-steps li.done {
+  border-top-color: var(--accent);
+}
+.wizard-steps li.current {
+  border-top-color: var(--accent);
+  color: var(--text);
+  font-weight: 600;
+}
+.wizard-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+@media (max-width: 520px) {
+  .wizard-choice {
+    grid-template-columns: 1fr;
+  }
+}
+.wizard-nav {
+  margin-top: 12px;
+  align-items: center;
+}
+@media (max-width: 520px) {
+  /* Téléphone : cartes sur 2 colonnes, sans le texte d'aide, pour voir vite les projets récents */
+  .home-actions {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .home-actions .home-card {
+    min-height: 76px;
+  }
+  .home-actions .home-card .muted {
+    display: none;
+  }
+  .home-card strong {
+    font-size: 14px;
+  }
+}

@@ -215,12 +215,18 @@ export function emptyPage(name: string): PlanPage {
  * l'installateur qui le donne, pas l'organisme agréé. Date du projet + 3 caractères au hasard (ex. 2026-11-25-K7Q),
  * modifiable dans l'onglet Projet.
  */
+/** Date du jour au format AAAA-MM-JJ, à l'heure locale (et non UTC : un projet créé à 0 h 30 garde sa date). */
+export function localIsoDate(d = new Date()): string {
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+
 export function autoDocNumber(date: string): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
   const rnd = new Uint8Array(3);
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) crypto.getRandomValues(rnd);
   else for (let i = 0; i < rnd.length; i++) rnd[i] = Math.floor(Math.random() * 256);
-  const day = /^\d{4}-\d{2}-\d{2}/.test(date) ? date.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  const day = /^\d{4}-\d{2}-\d{2}/.test(date) ? date.slice(0, 10) : localIsoDate();
   return day + '-' + [...rnd].map((b) => chars[b % chars.length]).join('');
 }
 
@@ -240,8 +246,8 @@ export function emptyProject(): Project {
       client: { address: { country: 'Belgique' } },
       site: { country: 'Belgique' },
       installer: { address: {} },
-      date: new Date().toISOString().slice(0, 10),
-      docNumber: autoDocNumber(new Date().toISOString().slice(0, 10)),
+      date: localIsoDate(),
+      docNumber: autoDocNumber(localIsoDate()),
       supply: '2 x 230V ~ 50Hz',
       earthing: 'TT',
       installationKind: 'new',

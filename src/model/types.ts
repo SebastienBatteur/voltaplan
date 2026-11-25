@@ -55,6 +55,8 @@ export type SurveyFact = 'earth' | 'rcd' | 'rcd30';
 /** Déclaration explicite de l'utilisateur : confirmé présent ou confirmé absent (clé absente = inconnu). */
 export type SurveyStatement = 'present' | 'absent';
 export type InstallationKind = 'new' | 'existing';
+/** Avancement du dossier, choisi par l'utilisateur (étiquette personnelle, sans lien avec un organisme). */
+export type ProjectStatus = 'draft' | 'ready' | 'inspected';
 
 export interface Address {
   street?: string;
@@ -98,6 +100,8 @@ export interface ProjectMeta {
   revisions?: Revision[];
   /** Numéro du dossier (RGIE 3.1.2 : « numéro, version et date de la version » sur les schémas et plans). */
   docNumber?: string;
+  /** Avancement du dossier : en cours, prêt pour le contrôle, contrôlé. Absent = en cours. */
+  status?: ProjectStatus;
   /** Référentiel (pays et règlement), voir src/rules. Absent = « BE-RGIE ». */
   ruleset?: string;
   /** Sens de l'unifilaire : 'up' (défaut, alimentation en bas comme la figure 3.1 du RGIE) ou 'down'. */

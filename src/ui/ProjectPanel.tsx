@@ -238,6 +238,17 @@ export function ProjectPanel() {
           <input value={meta.docNumber ?? ''} placeholder={t('project.docNumberHint')} onChange={(e) => setMeta({ docNumber: e.target.value })} />
         </label>
         <p className="muted small">{t('project.docNumberHelp')}</p>
+        <label className="field">
+          <span>{t('project.status')}</span>
+          <select value={meta.status ?? 'draft'} onChange={(e) => setMeta({ status: e.target.value as 'draft' | 'ready' | 'inspected' })}>
+            {(['draft', 'ready', 'inspected'] as const).map((st) => (
+              <option key={st} value={st}>
+                {t('status.' + st)}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="muted small">{t('project.statusHelp')}</p>
         {revisions.map((r, i) => (
           <div key={i} className="revision">
             <input className="rev-version" value={r.version} onChange={(e) => setRev(i, { version: e.target.value })} aria-label={t('project.revVersion')} />

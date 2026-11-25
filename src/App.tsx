@@ -6,10 +6,14 @@ import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
 import { PrintDialog } from './print/PrintDialog';
 import { DriveOpenPrompt, StorageDialog } from './ui/StorageDialog';
+import { HomeScreen } from './ui/HomeScreen';
+import { NewProjectWizard } from './ui/NewProjectWizard';
+import { forgetRecent, rememberRecent, type RecentEntry } from './io/recent';
 import type { DriveIntent } from './io/driveOpenWith';
 import {
   addVersion,
   browserDelete,
+  browserLoad,
   browserSave,
   clearPending,
   draftId,
@@ -32,7 +36,6 @@ import { conflictName } from './io/conflict';
 import { VersionsDialog } from './ui/VersionsDialog';
 import { AssistPanel } from './ui/AssistPanel';
 import { ASSIST_EVENT } from './assist/ui';
-import { newExistingProject } from './assist/project';
 import { APP_NAME, FILE_EXT, LEGACY_EXTS, STORAGE_PREFIX } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
@@ -136,6 +139,17 @@ export function App() {
   const sending = useRef(false);
   /** « Ouvrir avec Voltaplan » / « Nouveau » depuis Google Drive (paramètre `state` de l'adresse). */
   const [driveIntent, setDriveIntent] = useState<DriveIntent | null>(null);
+  // Page d'accueil « Mes projets » : au lancement quand rien n'est ouvert (pas un lien Drive ni un transfert IA)
+  const [homeOpen, setHomeOpen] = useState(
+    () => !AI_INCOMING && typeof window !== 'undefined' && !new URLSearchParams(window.location.search).has('state') && !useStore.getState().fileName,
+  );
+  const [wizardKind, setWizardKind] = useState<'new' | 'existing' | null>(null);
+  // Un projet chargé (ouvert, créé, récupéré) ferme la page d'accueil
+  const loadSeq = useStore((st) => st.loadSeq);
+  const firstSeq = useRef(loadSeq);
+  useEffect(() => {
+    if (loadSeq !== firstSeq.current) setHomeOpen(false);
+  }, [loadSeq]);
   /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
   const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
@@ -426,6 +440,50 @@ export function App() {
     };
   }, []);
   const showSide = s.view === 'unifilar' || s.view === 'plan' || s.view === 'board';
+  useEffect(() => {
+    if (!s.dirty && s.fileName) rememberRecent(useStore.getState().project, s.fileName, location.current);
+  }, [s.dirty, s.fileName, s.loadSeq, s.project.meta.status]);
+
+  const createProject = (p: import('./model/types').Project) => {
+    resetHandle();
+    location.current = { kind: 'device' };
+    s.loadProject(p, '');
+    setSaveState(null);
+    setWizardKind(null);
+    setHomeOpen(false);
+    if (p.meta.installationKind === 'existing') {
+      s.setView('board');
+      setToast({ text: t('assist.newSurveyHelp') });
+    } else s.setView('unifilar');
+  };
+
+  const openRecent = async (e: RecentEntry) => {
+    if (!confirmDiscard()) return;
+    if (e.loc.kind === 'browser') {
+      try {
+        const entry = await browserLoad(e.loc.id);
+        if (!entry) {
+          forgetRecent(e.key);
+          setToast({ text: t('home.notFound', { name: e.title }) });
+          return;
+        }
+        resetHandle();
+        s.loadProject(parseProject(entry.data, entry.name), entry.name);
+        location.current = { kind: 'browser', id: entry.id, rev: entry.rev };
+        setSaveState(null);
+      } catch (err) {
+        setToast({ text: errorText(err, t) });
+      }
+      return;
+    }
+    if (e.loc.kind === 'device') {
+      setToast({ text: t('home.reopenDevice', { name: e.name }) });
+      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
+      return;
+    }
+    setToast({ text: t('home.reopenCloud', { name: e.name, where: whereLabel(e.loc) }) });
+    setStorage('open');
+  };
 
   return (
     <NoticeHost.Provider value={noticeEl}>
@@ -436,26 +494,17 @@ export function App() {
         </div>
         <FileMenu
           actions={[
+            { label: t('menu.home'), run: () => setHomeOpen(true) },
             {
               label: t('menu.new'),
               run: () => {
-                if (!confirmDiscard()) return;
-                resetHandle();
-                location.current = { kind: 'device' };
-                s.loadProject(emptyProject(), '');
-                setSaveState(null);
+                if (confirmDiscard()) setWizardKind('new');
               },
             },
             {
               label: t('menu.newSurvey'),
               run: () => {
-                if (!confirmDiscard()) return;
-                resetHandle();
-                location.current = { kind: 'device' };
-                s.loadProject(newExistingProject(t('assist.newSurveyTitle')), '');
-                setSaveState(null);
-                s.setView('board');
-                setToast({ text: t('assist.newSurveyHelp') });
+                if (confirmDiscard()) setWizardKind('existing');
               },
             },
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
@@ -697,6 +746,21 @@ export function App() {
           </button>
         </Notice>
       )}
+      {wizardKind && <NewProjectWizard initialKind={wizardKind} onClose={() => setWizardKind(null)} onCreate={createProject} />}
+      {homeOpen ? (
+        <HomeScreen
+          canClose={!!s.fileName || s.dirty}
+          onClose={() => setHomeOpen(false)}
+          onNew={(k) => {
+            if (confirmDiscard()) setWizardKind(k);
+          }}
+          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','))}
+          onOpenStorage={() => setStorage('open')}
+          onImportTrikker={() => void open('.trik')}
+          onOpenRecent={(e) => void openRecent(e)}
+          whereLabel={(e) => whereLabel(e.loc)}
+        />
+      ) : (
       <main className={showSide ? 'with-side' : ''}>
         {showSide && (
           <SidePanels tree={<TreePanel />} props={<PropsPanel />} palette={<ElementsPanel />} />
@@ -710,6 +774,7 @@ export function App() {
           {s.view === 'check' && <CheckPanel />}
         </section>
       </main>
+      )}
       <div className="notices" ref={setNoticeEl} aria-live="polite" />
       <TouchHelp />
       <LegalFooter onAbout={() => setAboutOpen(true)} />
