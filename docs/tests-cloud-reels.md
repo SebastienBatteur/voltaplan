@@ -314,6 +314,16 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
 - **S9** (corrigé) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
   l'appareil ; il renvoie maintenant au bandeau.
 
+- **F8** ✅ (Dropbox → Google Drive) : « Essai cloud 2026-11-25 (à supprimer) » ouvert depuis Dropbox (20 modules, image
+  de plan F10), enregistré sur Drive en dossier « Essai transfert F8 (à supprimer) » : 2 dossiers créés, 3 envois
+  (image, README, modèle) ; rouvert depuis Drive : 20 modules, image 1600×1000 ; côté Dropbox, uniquement des
+  lectures (aucune écriture). Remarque : l'image relue peut venir du cache local de l'onglet.
+- **S11** (bloquant OneDrive, à corriger) : **ouvrir un dossier OneDrive échoue** (« Failed to fetch »). Le
+  téléchargement de `project.json` est redirigé par Graph vers `https://my.microsoftpersonalcontent.com/…`
+  (comptes personnels), domaine absent de la CSP (`connect-src`, `src/security/csp.ts`, où il était marqué « à
+  vérifier avec de vrais comptes »). F2 et F7 OneDrive bloqués tant que ce n'est pas corrigé. Incident d'essai :
+  le script de F2 a ensuite modifié (21 modules) et enregistré la copie Drive « Essai transfert F8 », projet d'essai.
+
 Reste à faire en réel : D1 (apparition dans « Ouvrir avec »), D2 à D6, F8, F1/F2/F7 OneDrive complets, F6 (compte
 presque plein). S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
 
