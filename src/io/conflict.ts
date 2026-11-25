@@ -28,7 +28,14 @@ export const isConflict = (e: unknown): e is ConflictError => e instanceof Confl
  * navigateur et l'enregistrement est repris au prochain clic sur « Enregistrer ».
  */
 export class AuthError extends Error {
-  constructor(readonly where: string) {
+  /**
+   * `login` : aucune connexion encore ouverte dans cet onglet (première connexion, fenêtre bloquée) ; `expired` :
+   * jeton expiré ou révoqué. Seul le message change.
+   */
+  constructor(
+    readonly where: string,
+    readonly reason: 'expired' | 'login' = 'expired',
+  ) {
     super(`Connexion à ${where} à refaire.`);
     this.name = 'AuthError';
   }

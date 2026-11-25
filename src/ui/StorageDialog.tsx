@@ -25,7 +25,7 @@ import { uid } from '../model/tree';
 import { FILE_EXT } from '../brand';
 import type { Project } from '../model/types';
 import { download } from '../io/files';
-import { isConflict } from '../io/conflict';
+import { isAuthError, isConflict } from '../io/conflict';
 import { useOnline } from './UpdateBanner';
 import { formatBytes, needsInstallAdvice, requestPersistence, storageInfo, type StorageInfo } from '../io/persist';
 import {
@@ -83,6 +83,8 @@ export function StorageDialog({
   const [ghFiles, setGhFiles] = useState<{ name: string; path: string; size: number }[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  /** Message de réussite (en vert, pas en rouge comme les erreurs). */
+  const [note, setNote] = useState<string | null>(null);
   const unlocked = getGithubToken();
   /** Bouton « Déverrouiller » / « Enregistrer la clé » du jeton : Entrée dans ses champs a le même effet. */
   const tokenBtn = useRef<HTMLButtonElement>(null);
@@ -95,6 +97,7 @@ export function StorageDialog({
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
     setMsg(null);
+    setNote(null);
     try {
       await fn();
     } catch (e) {
@@ -315,7 +318,7 @@ export function StorageDialog({
                       }
                       setPass('');
                       setGhTokenInput('');
-                      setMsg(t('storage.tokenReady'));
+                      setNote(t('storage.tokenReady'));
                     })
                   }
                 >
@@ -393,6 +396,7 @@ export function StorageDialog({
 
         {busy && <p className="muted small">…</p>}
         {msg && <p className="small error-text">{msg}</p>}
+        {note && <p className="small ok-text">{note}</p>}
         <div className="row end">
           <button onClick={onClose}>{t('ai.close')}</button>
         </div>
@@ -455,6 +459,8 @@ function BrowserSpace() {
 function cloudErrorText(e: unknown, t: (k: string, p?: Record<string, string | number>) => string): string {
   const m = (e as Error).message;
   if ((e as Error).name === 'DriveOpenError') return t('driveOpen.error.' + (e as { code: string }).code);
+  // Dans cette fenêtre, une connexion impossible se règle par un nouveau clic sur le bouton (pas « Enregistrer »)
+  if (isAuthError(e)) return t('cloud.needsLogin', { where: e.where });
   return m === 'client-id' ? t('cloud.needClientId') : m === 'popup' ? t('cloud.popupBlocked') : m === 'cancelled' ? t('cloud.cancelled') : errorText(e, t);
 }
 
@@ -485,9 +491,11 @@ function CloudTab({
   const [folders, setFolders] = useState<ProjectFolder[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [note, setNote] = useState<string | null>(null);
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
     setMsg(null);
+    setNote(null);
     try {
       await fn();
     } catch (e) {
@@ -617,7 +625,7 @@ function CloudTab({
                 setClientId(svc, cid);
                 // Portée drive.install demandée pour cette connexion seulement : Voltaplan apparaît dans « Ouvrir avec »
                 await cloudConnect('gdrive', { extraScope: DRIVE_INSTALL_SCOPE });
-                setMsg(t('driveOpen.installDone'));
+                setNote(t('driveOpen.installDone'));
               })
             }
           >
@@ -684,6 +692,7 @@ function CloudTab({
       )}
       {busy && <p className="muted small">…</p>}
       {msg && <p className="small error-text">{msg}</p>}
+      {note && <p className="small ok-text">{note}</p>}
     </div>
   );
 }

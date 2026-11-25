@@ -275,7 +275,11 @@ mise en place de l'enregistreur).
   sans la correction). Dropbox (au-delà de 150 Mo) et OneDrive (au-delà de 250 Mo) : non traités, tailles
   inatteignables par un document importé (50 Mo au plus). La session d'envoi par tranches de Drive n'est pas
   gardée. Piste : la garder (en mémoire) et reprendre au dernier octet accepté.
-- **S6 : messages.** « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
+- **S6 (corrigé) : messages.** Correction : la connexion à refaire porte sa raison (`AuthError.reason` : première
+  connexion ou session expirée) ; première connexion : « Connexion à … nécessaire » (enregistrement) ou « La fenêtre de
+  connexion n'a pas pu s'ouvrir : cliquez à nouveau sur le bouton » (fenêtre des services) ; messages de réussite en
+  vert ; « Projet ouvert : … » à l'ouverture d'un projet, « Import terminé » gardé pour Trikker. Tests :
+  `test/authMessages.test.ts`. « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
   Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge ; « Import terminé : 4 éléments… » affiché à
   l'ouverture d'un simple projet `.voltaplan` (le mot « Import » prête à confusion).
 - **S7 (hors code) : Dropbox affiche « peu d'utilisateurs… »** avant de connecter l'application (statut

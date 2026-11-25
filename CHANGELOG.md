@@ -21,6 +21,9 @@
 - **Reprise automatique d'un envoi en attente**, même quand le navigateur ne signale pas le retour du réseau
   (Windows avec une autre carte réseau active) : nouvel essai à 10 s, 30 s, 1 min, 2 min, puis toutes les 5 min.
   Jamais deux envois à la fois : un second clic sur « Enregistrer » pendant un envoi est ignoré.
+- **Messages plus justes** : une première connexion bloquée ne parle plus de « session expirée » ; les messages de
+  réussite (autorisation donnée, jeton prêt) sont en vert ; ouvrir un projet affiche « Projet ouvert » (« Import
+  terminé » reste réservé aux fichiers Trikker).
 - **Google Drive : un gros document interrompu reprend où il s'était arrêté** à l'essai suivant (au lieu de repartir
   de zéro), tant que l'onglet reste ouvert.
 

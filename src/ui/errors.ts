@@ -16,7 +16,7 @@ export function errorText(e: unknown, t: T): string {
   if (e instanceof StorageFullError) return e.where === 'device' ? t('storage.full.device') : t('storage.full.cloud', { where: e.where });
   if (e instanceof FileTooLargeError) return t('storage.tooLarge', { where: e.where, size: Math.ceil(e.size / 1048576), limit: Math.floor(e.limit / 1048576) });
   if (isQuotaError(e)) return t('storage.quota');
-  if (isAuthError(e)) return t('save.needsAuth', { where: e.where });
+  if (isAuthError(e)) return t(e.reason === 'login' ? 'save.needsLogin' : 'save.needsAuth', { where: e.where });
   // Format v2 (src/format)
   if (e instanceof ArchiveError) return t('format.error.' + e.code);
   if (e instanceof MissingAssetsError) return t('format.missingOnSave', { n: e.missing.length, list: e.missing.map((m) => m.label || m.sha256.slice(0, 12)).join(', ') });

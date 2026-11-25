@@ -89,7 +89,8 @@ export function App() {
       setSaveState(null);
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
-      setToast({ text: t('import.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      // Fichier Trikker : import ; projet Voltaplan : simple ouverture
+      setToast({ text: t(/\.trik$/i.test(file.name) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -192,7 +193,7 @@ export function App() {
         // le prochain clic sur « Enregistrer » ouvre la connexion (le navigateur l'exige après un clic).
         setSaveState({ kind: 'pending', where: whereLabel(r.loc), auth: true });
         if (r.loc.kind === 'github' && !getGithubToken()) setStorage('save');
-        else setToast({ text: t('save.needsAuth', { where: whereLabel(r.loc) }) });
+        else setToast({ text: t(r.login ? 'save.needsLogin' : 'save.needsAuth', { where: whereLabel(r.loc) }) });
         break;
       case 'cancelled':
         setSaveState(null);

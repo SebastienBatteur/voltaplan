@@ -408,11 +408,14 @@ export async function cloudConnect(id: CloudId, opts: { loginHint?: string; extr
  */
 export async function withToken<T>(id: CloudId, fn: (token: string) => Promise<T>, connect: (id: CloudId) => Promise<string> = cloudConnect): Promise<T> {
   const label = PROVIDERS[id].label;
+  // Jeton déjà obtenu dans cet onglet (expiré ou non) : une connexion refusée est une session expirée ; sinon, c'est
+  // une première connexion (message sans « session expirée »).
+  const reason = tokens[id] ? 'expired' : 'login';
   const fresh = async () => {
     try {
       return await connect(id);
     } catch (e) {
-      if ((e as Error).message === 'popup') throw new AuthError(label);
+      if ((e as Error).message === 'popup') throw new AuthError(label, reason);
       throw e;
     }
   };
@@ -420,12 +423,12 @@ export async function withToken<T>(id: CloudId, fn: (token: string) => Promise<T
   try {
     return await fn(first ?? (await fresh()));
   } catch (e) {
-    if (!(e instanceof AuthError) || !first) throw e instanceof AuthError ? new AuthError(label) : e;
+    if (!(e instanceof AuthError) || !first) throw e instanceof AuthError ? new AuthError(label, e.reason) : e;
     cloudForget(id);
     try {
       return await fn(await fresh());
     } catch (e2) {
-      throw e2 instanceof AuthError ? new AuthError(label) : e2;
+      throw e2 instanceof AuthError ? new AuthError(label, e2.reason) : e2;
     }
   }
 }

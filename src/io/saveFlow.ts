@@ -51,7 +51,8 @@ export type SaveOutcome =
    * Connexion à refaire (jeton GitHub verrouillé, jeton expiré, fenêtre de connexion bloquée) : version gardée,
    * envoi en attente ; il reprend au prochain « Enregistrer » (un clic autorise la fenêtre de connexion).
    */
-  | { status: 'needsAuth'; loc: Location; name: string };
+  /** `login` : première connexion (rien n'a expiré). */
+  | { status: 'needsAuth'; loc: Location; name: string; login?: boolean };
 
 /** Clé stable d'un emplacement (versions locales, messages). */
 export function locationKey(loc: Location, fileName: string): string {
@@ -81,10 +82,10 @@ export async function saveAt(loc: Location, project: Project, fileName: string, 
   const key = locationKey(loc, fileName);
   const keep = (reason: LocalVersion['reason']) => deps.addVersion(key, name, project, reason).catch(() => undefined);
   /** Attente : version gardée et envoi mémorisé (survit à la fermeture). */
-  const wait = async (reason: PendingSave['reason']): Promise<SaveOutcome> => {
+  const wait = async (reason: PendingSave['reason'], login = false): Promise<SaveOutcome> => {
     await keep('pending');
     deps.setPending({ key, loc, fileName, name, at: deps.now().toISOString(), reason });
-    return reason === 'auth' ? { status: 'needsAuth', loc, name } : { status: 'pending', loc, name };
+    return reason === 'auth' ? { status: 'needsAuth', loc, name, ...(login ? { login } : {}) } : { status: 'pending', loc, name };
   };
   try {
     const saved = await write(loc, project, fileName, deps);
@@ -95,7 +96,7 @@ export async function saveAt(loc: Location, project: Project, fileName: string, 
     return { status: 'saved', loc: saved.loc, name: saved.name, concurrentCopy: saved.concurrentCopy };
   } catch (e) {
     if (isNetworkError(e)) return wait('offline');
-    if (isAuthError(e)) return wait('auth');
+    if (isAuthError(e)) return wait('auth', e.reason === 'login');
     if (isDestinationFull(e)) {
       // Rien n'est perdu (version locale), et aucune reprise automatique : elle échouerait en boucle
       await keep('pending');
@@ -112,7 +113,7 @@ export async function saveAt(loc: Location, project: Project, fileName: string, 
     } catch (e2) {
       // Copie impossible pour l'instant : notre version reste dans les versions locales (raison « conflit »)
       if (isNetworkError(e2)) return wait('offline');
-      if (isAuthError(e2)) return wait('auth');
+      if (isAuthError(e2)) return wait('auth', e2.reason === 'login');
       throw e2;
     }
   }
