@@ -68,6 +68,10 @@ Avec `--release`, il exige en plus :
 - le commit et la version attendus ;
 - un code source correspondant **accessible** (requête HEAD).
 
+Constaté le 2026-11-25 : si l'archive `…/archive/<commit>.tar.gz` est demandée **avant** l'envoi du commit sur
+GitHub, elle reste en 404 pendant plusieurs minutes, même après l'envoi (réponse négative mise en cache). La
+vérification fait trois essais espacés. En CI, le tag est toujours poussé avant, donc le cas ne se produit pas.
+
 Site assemblé : `npm run provenance -- well-known <site> app`, puis `npm run provenance -- verify-site <site>`.
 
 ## Dans la CI

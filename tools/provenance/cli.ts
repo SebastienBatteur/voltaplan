@@ -43,13 +43,18 @@ async function main() {
       const expectedCommit = flag('--commit');
       if (info && expectedCommit && info.repository.commit !== expectedCommit) errors.push(`commit ${info.repository.commit} ≠ commit attendu ${expectedCommit}`);
       if (info && rest.includes('--release')) {
+        // Trois essais espacés : une archive demandée AVANT l'envoi du commit reste quelques minutes en 404 (cache
+        // de GitHub, constaté le 2026-11-25) ; en CI, le tag est toujours poussé avant.
         const checkUrl = async (u: string) => {
-          try {
-            const r = await fetch(u, { method: 'HEAD', redirect: 'follow' });
-            return r.ok;
-          } catch {
-            return false;
+          for (let i = 0; i < 3; i++) {
+            try {
+              if ((await fetch(u, { method: 'HEAD', redirect: 'follow' })).ok) return true;
+            } catch {
+              /* réseau : nouvel essai */
+            }
+            await new Promise((r) => setTimeout(r, 5000));
           }
+          return false;
         };
         errors.push(...(await verifyRelease(info, { commit: flag('--commit'), version: flag('--version'), checkUrl })));
       }
