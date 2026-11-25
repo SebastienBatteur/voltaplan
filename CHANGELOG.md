@@ -42,8 +42,9 @@
   dossier, vérifié, puis il remplace l'ancien ; la version précédente est gardée en `.bak`. Une coupure, un disque
   plein ou un fichier verrouillé ne laissent jamais un projet vide ou tronqué (essai réel sous Windows, dossier
   OneDrive compris). « Ouvrir » passe par la boîte du système : « Enregistrer » réécrit ensuite le fichier ouvert.
-  Message clair quand le fichier est utilisé par un autre logiciel ; avertissement à la fermeture de la fenêtre
-  s'il reste des modifications non enregistrées.
+  Message clair quand le fichier est utilisé par un autre logiciel (ces deux points revérifiés dans l'application
+  installée) ; avertissement à la fermeture de la fenêtre s'il reste des modifications non enregistrées, géré côté
+  Rust (la version côté page ne s'affichait pas dans l'application installée).
 - **Reconnexion avant l'expiration de la session (R2).** Cinq minutes avant la fin de la session du service où est
   enregistré le projet, un repère discret apparaît dans la barre : « Session … : fin dans N min · Reconnecter ». Un
   clic rouvre la connexion sans recharger la page ; un enregistrement en attente part aussitôt. Fermé, il ne revient

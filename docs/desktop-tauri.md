@@ -362,6 +362,20 @@ côté Rust, le chemin d'un `.voltaplan` ouvert devient la cible d'« Enregistre
 ([45627990727](https://github.com/SebastienBatteur/voltaplan/actions/runs/45627990727), 13 tests Rust).
 **À revérifier dans l'application installée** (paquet de ce run). O6 et O8 restent à faire.
 
+**Revérification dans l'application installée (2026-11-25, 17:45, paquet du run 45627990727)** :
+- **O9 ✅** : Fichier → Ouvrir… ouvre la boîte de Windows ; après une modification, Ctrl+S réécrit
+  `Nouveau projet.voltaplan` sans boîte « Enregistrer sous ».
+- **O7 ✅** : fichier verrouillé 2 min (PowerShell, partage `None`) : « Enregistrement de « Nouveau projet.voltaplan »
+  impossible : le fichier est utilisé par un autre logiciel, verrouillé ou en cours de synchronisation. Le fichier
+  d'origine est intact et votre version est gardée… » ; état « Erreur d'enregistrement ». Remarque : ce message et le
+  message bleu « appareil(s) en réserve » s'affichent côte à côte (même famille que O6).
+- **O10 ❌** : la fenêtre s'est fermée sans rien demander, avec des modifications non enregistrées.
+  L'interception côté page (`onCloseRequested` + `window.confirm`) ne suffit pas dans l'application installée.
+  **Correction** (branche `bureau-fermeture-o10`) : fermeture interceptée **côté Rust**
+  (`src-tauri/src/close_guard.rs`, `on_window_event`) ; la page transmet l'état du projet et le texte traduit
+  (`set_close_warning`) ; boîte du système « Fermer sans enregistrer » / « Annuler », une seule à la fois. Le droit
+  `core:window:allow-destroy` n'est plus donné à la page. À revérifier dans l'application installée.
+
 **Conclusion** : l'écriture atomique tient ses promesses sous Windows, y compris dans un dossier OneDrive et avec un
 fichier verrouillé ; aucune perte, aucun fichier temporaire laissé. Les écarts portent sur les messages et sur
 l'ouverture / la fermeture, pas sur l'écriture.
