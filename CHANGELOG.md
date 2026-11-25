@@ -19,6 +19,8 @@
 - **Convertisseurs** : type au choix (onduleur DC → AC, redresseur/onduleur AC ↔ DC pour une batterie, hacheur
   DC → DC), avec les symboles du tableau 2.23 du RGIE (H. Sources). Le rappel photovoltaïque ne vise plus un
   convertisseur de batterie.
+- **Borne de recharge** : symbole redessiné d'après le tableau 2.23 du RGIE (colonne avec écran, « VE | EV »,
+  socle, câble et fiche), au lieu d'un carré « VE ».
 - Analyse des outils concurrents et des améliorations possibles : `docs/strategie/CONCURRENCE-2026-11.md`.
 - Guide (FR) mis à jour.
 

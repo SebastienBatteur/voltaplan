@@ -279,6 +279,24 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
   const t = String(n.props.applianceType ?? 'other');
   const s = 20;
   const cx = x0 + s / 2;
+  if (t === 'evCharger') {
+    // Tableau 2.23 G : borne de charge = colonne avec écran, « VE | EV », socle, câble et fiche à droite
+    const b = x0 + 1;
+    return (
+      <g>
+        <rect x={b} y={-10} width={11} height={18} className="bg" />
+        <rect x={b + 2} y={-8} width={7} height={4} className="nofill" style={{ strokeWidth: 0.6 }} />
+        <line x1={b + 5.5} y1={-2.5} x2={b + 5.5} y2={7} style={{ strokeWidth: 0.5 }} />
+        <text x={b + 3} y={1} fontSize={3.2} textAnchor="middle">V</text>
+        <text x={b + 3} y={5} fontSize={3.2} textAnchor="middle">E</text>
+        <text x={b + 8} y={1} fontSize={3.2} textAnchor="middle">E</text>
+        <text x={b + 8} y={5} fontSize={3.2} textAnchor="middle">V</text>
+        <rect x={b - 1.5} y={8} width={14} height={2.2} className="bg" />
+        <path d={`M${b + 11} -2 h2.5 v8 h1.6 v-13`} className="nofill" style={{ strokeWidth: 0.6 }} />
+        <rect x={b + 14.2} y={-10} width={1.6} height={4} className="fill" />
+      </g>
+    );
+  }
   const box = <rect x={x0} y={-s / 2} width={t === 'freezer' ? w - (x0 - 0) : s} height={s} className="bg" />;
   const flake = (x: number, size = 5) => (
     <g key={x} className="thin">
@@ -376,13 +394,6 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
         </g>
       );
     }
-    case 'evCharger':
-      inner = (
-        <text x={cx} y={3} fontSize={7} textAnchor="middle">
-          VE
-        </text>
-      );
-      break;
     case 'other':
       inner = n.props.name ? (
         <text x={cx} y={3} fontSize={6} textAnchor="middle">
