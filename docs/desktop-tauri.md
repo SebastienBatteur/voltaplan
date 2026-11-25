@@ -318,6 +318,46 @@ avertissement. macOS x64 : seulement construit par `release.yml` (pas de `cargo 
 `voltaplan-macos-arm64`, `voltaplan-macos-x64`, `voltaplan-linux` ; conservés jusqu'au 24/12/2026 ; aucune
 release créée).
 
+### Essai réel sous Windows (propriétaire, 2026-11-25)
+
+Paquet : artifact `voltaplan-desktop-windows` du run `desktop-build.yml`
+[45614201351](https://github.com/SebastienBatteur/voltaplan/actions/runs/45614201351) (commit 7d4c9e6 ; 12 tests
+Rust passés). Windows 11, dossier de test **synchronisé par OneDrive** (cas difficile sous Windows). Fichiers
+vérifiés par Claude (lecture seule : tailles, heures, archives ZIP relues).
+
+| # | Essai | Résultat |
+|---|---|---|
+| 3-4 (niveaux) | Installation, démarrage | ✅ (alerte SmartScreen attendue) |
+| 1 | L'éditeur s'affiche | ✅ |
+| 2 | Enregistrer : boîte de Windows, fichier créé | ✅ |
+| 3 | Ctrl+S : même fichier, sans boîte | ✅ |
+| 11 | `.bak` = version précédente ; aucun fichier `…voltaplan-tmp-…` (fichiers cachés compris) | ✅ deux archives ZIP valides |
+| 4 | Fichier modifié ailleurs (simulé par Claude), Ctrl+S | ✅ message « modifié ailleurs » ; copie « … (conflit …).voltaplan » créée ; fichier modifié ailleurs intact |
+| 13 | Fichier verrouillé en exclusivité 2 min (simulé par Claude), Ctrl+S | ✅ données : erreur, fichier intact (ZIP valide), temporaire supprimé. ❌ message (O7) |
+| 15 | Copie v1 ; nomenclature CSV | ✅ « … (v1).voltaplan » (JSON v1, sans `.bak`) ; CSV créé |
+| 5 | Ouvrir un `.voltaplan` | ✅ ouvert ; ⚠ O9 |
+| 10 | Fermer avec des modifications, rouvrir | ✅ brouillon proposé à la réouverture ; ❌ aucun avertissement à la fermeture (O10) |
+| 6, 7, 8, 9, 12, 14 | Exports Trikker/EDS, impression, PDF, IA, clé pleine, gros projet | non faits |
+
+Écarts :
+- **O7** : fichier verrouillé : message « **ZIP corrupt** (Enregistrement de « … » impossible : Access is denied.
+  (os error 5)) ». « ZIP corrupt » est faux et inquiétant (rien n'est corrompu) ; cause système en anglais. À
+  remplacer par un message clair (« fichier utilisé par un autre logiciel ou en synchronisation ; votre version est
+  gardée ; réessayez »).
+- **O9** : après **Ouvrir** (sélecteur de la page, sans chemin), le premier Ctrl+S ouvre « Enregistrer sous » au
+  lieu de réécrire le fichier ouvert. Vaut aussi pour `main`. Correction : ouvrir par une boîte de Windows côté Rust
+  (comme `pick_save_path`), pour connaître le chemin.
+- **O10** : fermeture de la fenêtre avec des modifications non enregistrées : **aucun avertissement** (l'évènement
+  `beforeunload` de la page n'est pas affiché par la fenêtre Tauri). Rien n'est perdu (brouillon), mais
+  l'avertissement promis manque. Correction : intercepter la fermeture côté Tauri (`onCloseRequested`).
+- **O6** (vaut aussi pour `main`) : le message « Import terminé » se superpose à la boîte de conflit et en cache un
+  bouton.
+- **O8** (amélioration) : aucune confirmation après « Exporter au format v1… ».
+
+**Conclusion** : l'écriture atomique tient ses promesses sous Windows, y compris dans un dossier OneDrive et avec un
+fichier verrouillé ; aucune perte, aucun fichier temporaire laissé. Les écarts portent sur les messages et sur
+l'ouverture / la fermeture, pas sur l'écriture.
+
 **Reste à faire (propriétaire)** : installer ces paquets et dérouler la procédure de la section 11,
 lignes 2 à 6 et 11 à 15 de la liste de contrôle, sur chaque système. Tant que ce n'est pas fait, rien ne prouve
 que les commandes sont bien appelées depuis la page dans l'application installée.
