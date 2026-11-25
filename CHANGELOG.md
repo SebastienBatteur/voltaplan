@@ -13,6 +13,11 @@
   pour une copie de conflit.
 - **Dates des dossiers** : même présentation pour Google Drive, OneDrive et Dropbox (date du projet, le plus
   récent d'abord), sans une requête par dossier.
+- **iPhone, iPad : connexion à Dropbox et OneDrive.** Safari bloquait la fenêtre de connexion, ouverte après un
+  calcul de sécurité (PKCE). Elle s'ouvre maintenant tout de suite, puis reçoit l'adresse de connexion.
+- **iPhone, iPad : rouvrir un fichier `.voltaplan`.** Le fichier était grisé dans le sélecteur d'iOS, qui ne
+  connaît pas cette extension. Sur ces appareils, le sélecteur ne filtre plus ; le fichier choisi est toujours
+  reconnu par son contenu.
 
 ### Site et publication
 

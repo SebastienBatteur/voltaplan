@@ -327,6 +327,11 @@ export async function pkcePair(): Promise<{ verifier: string; challenge: string 
   return { verifier, challenge };
 }
 
+function authorizeUrl(base: string, q: URLSearchParams, responseType: 'code' | 'token'): string {
+  q.set('response_type', responseType);
+  return base + '?' + q.toString();
+}
+
 /** Attend la réponse de oauth.html (postMessage de la fenêtre de connexion). */
 function waitForRedirect(popup: Window, state: string): Promise<URLSearchParams> {
   return new Promise((resolve, reject) => {
@@ -363,16 +368,24 @@ export async function cloudConnect(id: CloudId, opts: { loginHint?: string; extr
   const redirect = redirectUri();
   const q = new URLSearchParams({ client_id: client, redirect_uri: redirect, state, scope: opts.extraScope ? `${p.scope} ${opts.extraScope}` : p.scope, ...(p.extraAuth ?? {}) });
   if (opts.loginHint) q.set('login_hint', opts.loginHint);
+  // La fenêtre s'ouvre AVANT tout calcul asynchrone : Safari (iPhone, iPad, Mac) ne relie une ouverture au clic de
+  // l'utilisateur que si elle a lieu tout de suite ; après le calcul PKCE (crypto.subtle), il la bloquait sans rien
+  // dire. Fenêtre vide d'abord, adresse de connexion ensuite.
+  const popup = window.open(p.tokenUrl ? '' : authorizeUrl(p.authUrl, q, 'token'), 'voltaplan-oauth', 'width=520,height=680');
+  if (!popup) throw new Error('popup');
   let verifier = '';
   if (p.tokenUrl) {
-    const pk = await pkcePair();
-    verifier = pk.verifier;
-    q.set('response_type', 'code');
-    q.set('code_challenge', pk.challenge);
-    q.set('code_challenge_method', 'S256');
-  } else q.set('response_type', 'token');
-  const popup = window.open(p.authUrl + '?' + q.toString(), 'voltaplan-oauth', 'width=520,height=680');
-  if (!popup) throw new Error('popup');
+    try {
+      const pk = await pkcePair();
+      verifier = pk.verifier;
+      q.set('code_challenge', pk.challenge);
+      q.set('code_challenge_method', 'S256');
+      popup.location.href = authorizeUrl(p.authUrl, q, 'code');
+    } catch (e) {
+      popup.close();
+      throw e;
+    }
+  }
   const res = await waitForRedirect(popup, state);
   let token = res.get('access_token') ?? '';
   let expiresIn = Number(res.get('expires_in') ?? 3600);

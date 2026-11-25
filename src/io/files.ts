@@ -73,11 +73,34 @@ type PickerWindow = Window & {
   showSaveFilePicker?: (opts: unknown) => Promise<FileSystemFileHandleLike>;
 };
 
+/** iPhone, iPad (iPadOS se présente comme un Mac tactile) : tous les navigateurs y sont des Safari (WebKit). */
+export function isAppleMobile(nav: Pick<Navigator, 'userAgent' | 'maxTouchPoints'> | undefined = typeof navigator === 'undefined' ? undefined : navigator): boolean {
+  const ua = nav?.userAgent || '';
+  return /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && (nav?.maxTouchPoints ?? 0) > 1);
+}
+
+/** Extensions qu'iOS relie à un type connu : un filtre fait uniquement de celles-ci (ou de types MIME) reste utilisable. */
+const IOS_KNOWN_EXTS = ['.pdf', '.json', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif', '.zip', '.txt'];
+
+/**
+ * Filtre du sélecteur de fichiers. Sur iPhone et iPad, Safari ne relie pas une extension inconnue (.voltaplan,
+ * .openrgie, .trik) à un type : le fichier était grisé, donc impossible à rouvrir. Dans ce cas, aucun filtre ; le
+ * contenu est de toute façon reconnu par sa signature à l'ouverture (projectData.ts), et refusé s'il ne convient pas.
+ */
+export function pickerAccept(accept: string, appleMobile = isAppleMobile()): string {
+  if (!appleMobile) return accept;
+  const unknown = accept
+    .split(',')
+    .map((s) => s.trim().toLowerCase())
+    .some((s) => s.startsWith('.') && !IOS_KNOWN_EXTS.includes(s));
+  return unknown ? '' : accept;
+}
+
 export function pickFile(accept: string): Promise<File | null> {
   return new Promise((resolve) => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = accept;
+    input.accept = pickerAccept(accept);
     input.onchange = () => resolve(input.files?.[0] ?? null);
     input.oncancel = () => resolve(null);
     input.click();

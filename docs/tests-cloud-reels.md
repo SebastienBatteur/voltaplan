@@ -237,12 +237,16 @@ mise en place de l'enregistreur).
 
 Écarts à corriger (aucun corrigé pendant la séance, à traiter après) :
 
-- **S1 (bloquant, iOS) : connexion Dropbox et OneDrive impossible depuis Safari.** Aucune fenêtre ne s'ouvre ;
+- **S1 (bloquant, iOS ; corrigé, à revérifier sur iPhone) : connexion Dropbox et OneDrive impossible depuis
+  Safari.** Correction : fenêtre ouverte vide dès le geste, adresse donnée après le calcul PKCE ; tests
+  `test/iosPopupPicker.test.ts` (échouent sans la correction). Aucune fenêtre ne s'ouvre ;
   message « session expirée ». Cause : `cloudConnect` (`src/io/cloud.ts`) calcule la paire PKCE (`crypto.subtle`,
   asynchrone) **avant** `window.open` ; Safari ne relie plus l'ouverture au geste et la bloque. Confirmé : Google,
   sans PKCE, s'ouvre sur le même téléphone. Piste : ouvrir la fenêtre vide dès le geste, puis y charger l'adresse
   de connexion ; ou préparer la paire PKCE à l'avance.
-- **S2 (bloquant, iOS) : un fichier `.voltaplan` ne peut pas être rouvert.** Il est grisé dans le sélecteur
+- **S2 (bloquant, iOS ; corrigé, à revérifier sur iPhone) : un fichier `.voltaplan` ne peut pas être rouvert.**
+  Correction : `pickerAccept` (`src/io/files.ts`) retire le filtre sur iPhone et iPad quand il contient une
+  extension inconnue d'iOS ; les filtres photo et PDF sont gardés. Il est grisé dans le sélecteur
   d'iOS : le filtre `accept` ne contient que des extensions (`.voltaplan,.openrgie,.json,.trik`) que Safari ne sait
   pas relier à un type connu. Piste : sur iOS, ne pas filtrer (ou ajouter des types génériques) ; le contenu est
   déjà vérifié par sa signature à l'ouverture.
