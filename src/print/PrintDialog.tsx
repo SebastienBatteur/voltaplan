@@ -4,6 +4,7 @@ import { useStore } from '../store';
 import { useDerived } from '../ui/derived';
 import { PrintDocument, type DocKind, type PaperFormat, type PrintSections } from './PrintDocument';
 import { draftLevel, isDocumentary } from '../rules';
+import { useModalDialog } from '../ui/a11y';
 
 /** Parties incluses par défaut selon le type de document (modifiables ensuite). */
 const PRESETS: Record<DocKind, (hasFindings: boolean) => PrintSections> = {
@@ -21,6 +22,7 @@ const SECTIONS: (keyof PrintSections)[] = ['unifilar', 'plan', 'board', 'circuit
  * par le navigateur (« Enregistrer en PDF » pour un fichier PDF vectoriel).
  */
 export function PrintDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const project = useStore((s) => s.project);
   const { labelFn, numbering, findings } = useDerived();
@@ -62,7 +64,7 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal print-modal" role="dialog" aria-label={t('print.title')}>
+      <div className="modal print-modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('print.title')}>
         <h2>{t('print.title')}</h2>
         <div className="print-options">
           <label className="field">

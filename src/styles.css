@@ -1486,8 +1486,28 @@ body.resizing-h * {
 }
 .tree-row:hover .tree-add,
 .tree-row.selected .tree-add,
+.tree-row:focus-visible .tree-add,
 .tree-add:focus-visible {
   opacity: 1;
+}
+.tree-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+/* Texte lu par les lecteurs d'écran, invisible à l'écran */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.modal:focus {
+  outline: none;
 }
 @media (hover: none) {
   .tree-add {

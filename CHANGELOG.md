@@ -2,6 +2,14 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Accessibilité au clavier (2026-11-25)
+
+- **Arborescence** utilisable au clavier : flèches pour parcourir et sélectionner, gauche/droite pour replier ou
+  déplier, « + » ou Inser pour ajouter un élément dedans ; rôles ARIA pour les lecteurs d'écran.
+- **Fenêtres** : le focus entre dans la fenêtre, y reste (Tab), **Échap ferme** et le focus revient d'où il venait.
+- **Menus** Fichier et Ajouter : flèches, Début, Fin, Échap. Onglets de vue et de stockage signalés aux lecteurs
+  d'écran. Constats et mesures : `docs/audit/ux-audit-visuel-2026-11-25.md`.
+
 ### Licence, provenance et identification (branche provenance-agpl, 2026-11-25)
 
 - **Licence `AGPL-3.0-only`** (auparavant `-or-later`), titulaire unique des droits ; mention « Copyright (C) 2026

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useStore } from '../store';
 import { deleteVersion, listVersions, loadVersion, parseProject, VERSIONS_PER_PROJECT, type LocalVersion } from '../io/storage';
 import { errorText } from './errors';
+import { useModalDialog } from './a11y';
 
 /**
  * Versions locales : historique gardé dans le navigateur à chaque enregistrement, conflit ou enregistrement en
@@ -9,6 +10,7 @@ import { errorText } from './errors';
  * fichier d'origine n'est jamais modifié depuis ici).
  */
 export function VersionsDialog({ onClose, onOpened }: { onClose: () => void; onOpened: (message: string) => void }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const [items, setItems] = useState<Omit<LocalVersion, 'data'>[] | null>(null);
   const [msg, setMsg] = useState('');
@@ -42,7 +44,7 @@ export function VersionsDialog({ onClose, onOpened }: { onClose: () => void; onO
 
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-label={t('versions.title')}>
+      <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('versions.title')}>
         <h2>{t('versions.title')}</h2>
         <p className="muted small">{t('versions.help', { n: VERSIONS_PER_PROJECT })}</p>
         <ul className="storage-list">

@@ -15,6 +15,8 @@ export const en: Partial<Dict> = {
   'view.board': 'Board',
   'view.project': 'Project',
   'view.check': 'RGIE check',
+  'view.navLabel': "Views",
+  'tree.keys': "Arrows: browse · Left/Right: collapse/expand · +: add inside",
   'panel.tree': 'Installation',
   'panel.props': 'Properties',
   'panel.nothingSelected': 'Select an element in the diagram or in the list.',

@@ -23,9 +23,9 @@ export function ViewTabs({ errors, warnings }: { errors: number; warnings: numbe
   }, [view]);
 
   return (
-    <nav className="tabs" ref={ref}>
+    <nav className="tabs" ref={ref} aria-label={t('view.navLabel')}>
       {VIEWS.map((v) => (
-        <button key={v} className={view === v ? 'active' : ''} onClick={() => setView(v)}>
+        <button key={v} className={view === v ? 'active' : ''} aria-current={view === v ? 'page' : undefined} onClick={() => setView(v)}>
           {t('view.' + v)}
           {v === 'check' && (errors || warnings) ? <span className={'count ' + (errors ? 'error' : 'warning')}>{errors || warnings}</span> : null}
         </button>

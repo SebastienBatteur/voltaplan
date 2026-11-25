@@ -16,6 +16,8 @@ export const de: Partial<Dict> = {
   'view.board': 'Verteiler',
   'view.project': 'Projekt',
   'view.check': 'RGIE-Prüfung',
+  'view.navLabel': "Ansichten",
+  'tree.keys': "Pfeiltasten: durchgehen · Links/Rechts: ein-/ausklappen · +: hinzufügen",
   'panel.tree': 'Anlage',
   'panel.props': 'Eigenschaften',
   'panel.nothingSelected': 'Wählen Sie ein Element im Plan oder in der Liste.',

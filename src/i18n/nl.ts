@@ -15,6 +15,8 @@ export const nl: Partial<Dict> = {
   'view.board': 'Verdeelbord',
   'view.project': 'Project',
   'view.check': 'AREI-controle',
+  'view.navLabel': "Weergaven",
+  'tree.keys': "Pijltjes: doorlopen · Links/Rechts: in-/uitklappen · +: toevoegen",
   'panel.tree': 'Installatie',
   'panel.props': 'Eigenschappen',
   'panel.nothingSelected': 'Selecteer een element in het schema of in de lijst.',

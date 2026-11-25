@@ -14,6 +14,8 @@ export const fr = {
   'view.board': 'Tableau',
   'view.project': 'Projet',
   'view.check': 'Contrôle RGIE',
+  'view.navLabel': "Vues",
+  'tree.keys': "Flèches : parcourir · Gauche/Droite : replier/déplier · + : ajouter dedans",
   'panel.tree': 'Installation',
   'panel.props': 'Propriétés',
   'panel.nothingSelected': 'Sélectionnez un élément dans le schéma ou dans la liste.',

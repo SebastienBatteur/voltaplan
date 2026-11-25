@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useStore } from '../store';
 import { loadAiSettings, saveAiSettings, getSessionKey, setSessionKey, type AiPermissions, type AiSettings } from '../ai/settings';
 import { maskKey, seal, unseal } from '../ai/secureStore';
+import { useModalDialog } from './a11y';
 
 const PERMS: (keyof AiPermissions)[] = ['planFromPhoto', 'boardFromPhoto', 'unifilarFromDocument', 'fixSuggestions'];
 
@@ -10,6 +11,7 @@ const PERMS: (keyof AiPermissions)[] = ['planFromPhoto', 'boardFromPhoto', 'unif
  * Réglages de l'IA optionnelle : fournisseur, modèle, clé d'API chiffrée localement, et ce que l'IA a le droit de générer.
  */
 export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const [s, setS] = useState<AiSettings>(loadAiSettings);
   const [newKey, setNewKey] = useState('');
@@ -66,7 +68,7 @@ export function AiSettingsDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-label={t('ai.title')}>
+      <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('ai.title')}>
         <h2>{t('ai.title')}</h2>
         <p className="muted small">{t('ai.intro')}</p>
 

@@ -7,6 +7,7 @@ import { BUILD, sourceUrl, technicalInfo } from '../buildInfo';
 import { addMessages } from '../i18n';
 import { useStore } from '../store';
 import type { EmbeddedBuild } from '../../tools/provenance/identity';
+import { useModalDialog } from './a11y';
 
 addMessages({
   fr: {
@@ -112,6 +113,7 @@ addMessages({
 });
 
 export function AboutDialog({ onClose, build = BUILD }: { onClose: () => void; build?: EmbeddedBuild }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const [copied, setCopied] = useState(false);
   const b = build;
@@ -133,7 +135,7 @@ export function AboutDialog({ onClose, build = BUILD }: { onClose: () => void; b
   };
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal about-dialog" role="dialog" aria-label={t('about.title', { name: b.name })}>
+      <div className="modal about-dialog" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('about.title', { name: b.name })}>
         <h2 className="about-title">
           <img src="./icon.svg" alt="" width={32} height={32} /> {t('about.title', { name: b.name })}
         </h2>

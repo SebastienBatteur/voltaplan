@@ -49,6 +49,7 @@ import { openProjectData } from '../io/projectData';
 import { MIMETYPE } from '../format/manifest';
 import type { ProjectFolder } from '../io/cloudFolder';
 import type { DriveIntent } from '../io/driveOpenWith';
+import { useModalDialog } from './a11y';
 
 type Tab = 'device' | 'browser' | 'github' | 'cloud';
 
@@ -69,6 +70,7 @@ export function StorageDialog({
   onOpened: (p: Project, name: string, loc: Location) => void;
   onSaved: (name: string, loc: Location) => void;
 }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const online = useOnline();
   const project = useStore((s) => s.project);
@@ -118,11 +120,11 @@ export function StorageDialog({
   const tabs: Tab[] = ['device', 'browser', 'github', 'cloud'];
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-label={t(mode === 'open' ? 'storage.openTitle' : 'storage.saveTitle')}>
+      <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t(mode === 'open' ? 'storage.openTitle' : 'storage.saveTitle')}>
         <h2>{t(mode === 'open' ? 'storage.openTitle' : 'storage.saveTitle')}</h2>
         <div className="tabs-row">
           {tabs.map((k) => (
-            <button key={k} className={tab === k ? 'active' : ''} onClick={() => setTab(k)}>
+            <button key={k} className={tab === k ? 'active' : ''} aria-pressed={tab === k} onClick={() => setTab(k)}>
               {t('storage.tab.' + k)}
             </button>
           ))}
@@ -555,6 +557,7 @@ function CloudTab({
           <button
             key={c}
             className={svc === c ? 'active' : ''}
+            aria-pressed={svc === c}
             onClick={() => {
               setSvc(c);
               setCid(clientId(c));

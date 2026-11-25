@@ -71,3 +71,23 @@ les libellés de la palette d'éléments (Prise, Interrupteur, Détecteur…) so
 
 iPad (portrait/paysage, doigt, stylet, clavier) : barre compacte tactile ; Android (Chrome et PWA installée) ;
 iPhone en paysage ; apparition du clavier virtuel dans Propriétés ; rotation pendant l'édition.
+
+## 6. Suite : accessibilité au clavier (même jour, branche `accessibilite`)
+
+Corrigé (point 1 des priorités) :
+- **Arborescence** : motif ARIA « tree » (`role="tree"`/`treeitem`, niveau, sélection, état déplié) ; un seul arrêt de
+  tabulation ; flèches haut/bas (en sélectionnant, comme un clic), droite/gauche (déplier, premier enfant / replier,
+  parent), Début, Fin ; **« + » ou Inser** ouvre le menu d'ajout ; contour de focus visible, le « ＋ » apparaît
+  sur la ligne qui a le focus ; aide lue par les lecteurs d'écran.
+- **Sept fenêtres** (enregistrement, versions, impression, IA, à propos, synchronisation, assistant) : `aria-modal`,
+  focus placé dans la fenêtre, Tab et Maj+Tab gardés dedans, **Échap ferme**, focus rendu à l'élément d'origine
+  (`src/ui/a11y.ts`).
+- **Menus Fichier et Ajouter** : focus sur la première entrée, flèches (en boucle), Début, Fin ; Échap rend le focus
+  au bouton ou à la ligne.
+- **Onglets** : vues signalées par `aria-current="page"` dans une navigation nommée ; onglets de la fenêtre
+  d'enregistrement et services en ligne avec `aria-pressed`.
+
+Vérifié : 8 tests (`test/a11y.test.tsx`) et, dans un vrai navigateur (serveur local, 1366 × 768), au clavier seul :
+arborescence aux flèches, Inser → menu → Échap, Fichier → Entrée → flèches → « Enregistrer sous… » → focus dans la
+fenêtre, Tab, Échap → focus revenu sur « Fichier ». Non vérifié : lecteur d'écran réel (NVDA, VoiceOver).
+Le dessin SVG reste non focalisable : la sélection au clavier passe par l'arborescence (synchronisée avec le dessin).

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useStore } from '../store';
+import { focusFirstItem, menuKeyDown, restoreFocus } from './a11y';
 import { ALLOWED_CHILDREN } from '../model/schema';
 import type { ElNode, NodeKind } from '../model/types';
 
@@ -21,6 +22,15 @@ export function AddMenu({ node, at, onClose }: { node: ElNode; at: { x: number; 
     return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib);
   });
 
+  // Clavier : focus sur la première entrée, flèches ; à la fermeture, le focus revient d'où il venait (ligne de
+  // l'arborescence).
+  useEffect(() => {
+    const back = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const menu = ref.current;
+    focusFirstItem(menu);
+    return () => restoreFocus(back, menu);
+  }, []);
+
   useEffect(() => {
     const close = (e: Event) => {
       if (e instanceof KeyboardEvent ? e.key === 'Escape' : !ref.current?.contains(e.target as Node)) onClose();
@@ -36,7 +46,7 @@ export function AddMenu({ node, at, onClose }: { node: ElNode; at: { x: number; 
   // Rester dans la fenêtre
   const style = { left: Math.min(at.x, window.innerWidth - 230), top: Math.min(at.y, window.innerHeight - 40 - kinds.length * 30) };
   return (
-    <div className="add-menu" ref={ref} style={style} role="menu">
+    <div className="add-menu" ref={ref} style={style} role="menu" onKeyDown={menuKeyDown}>
       <div className="add-menu-title">{t('action.addChild')}</div>
       {kinds.length === 0 && <div className="muted small">{t('add.none')}</div>}
       {kinds.map((k) => (

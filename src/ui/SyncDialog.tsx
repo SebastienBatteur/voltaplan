@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { syncProject, type SyncReport } from '../model/sync';
+import { useModalDialog } from './a11y';
 
 /**
  * Bouton « Mettre à jour » : après une nouvelle installation ou l'ajout de circuits, pose les nouveaux
@@ -8,6 +9,7 @@ import { syncProject, type SyncReport } from '../model/sync';
  * Le résultat est affiché ; « Annuler » revient en arrière en une fois.
  */
 export function SyncDialog({ onClose }: { onClose: () => void }) {
+  const dialogRef = useModalDialog(onClose);
   const t = useStore((s) => s.t);
   const [report, setReport] = useState<SyncReport | null>(null);
 
@@ -49,7 +51,7 @@ export function SyncDialog({ onClose }: { onClose: () => void }) {
   const changed = r.newNodes > 0 || r.boardPlaced > 0 || r.planByRoom + r.planToPlace > 0 || !!r.revision;
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal" role="dialog" aria-label={t('sync.title')}>
+      <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('sync.title')}>
         <h2>{t('sync.title')}</h2>
         <ul className="sync-list">
           {items.map((s, i) => (

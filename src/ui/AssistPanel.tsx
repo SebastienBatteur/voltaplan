@@ -18,6 +18,7 @@ import { boardOfTempKey } from '../assist/boardDraft';
 import type { Evidence, Proposal, Question } from '../assist/evidence';
 import type { PropValue } from '../model/types';
 import { APPLIANCE_TYPES } from '../model/schema';
+import { useModalDialog } from './a11y';
 
 /**
  * Assistant : parcours simple, en 4 étapes, pour un électricien qui n'aime pas l'informatique.
@@ -332,9 +333,10 @@ function ProposalRow({ p, ev, text }: { p: Proposal; ev: Evidence; text: string 
 }
 
 function Shell({ t, onClose, children }: { t: (k: string) => string; onClose: () => void; children: React.ReactNode }) {
+  const dialogRef = useModalDialog(onClose);
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal assist-panel" role="dialog" aria-label={t('assist.title')}>
+      <div className="modal assist-panel" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('assist.title')}>
         <h2>{t('assist.title')}</h2>
         {children}
         <div className="row end">
