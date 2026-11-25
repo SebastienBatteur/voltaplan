@@ -336,7 +336,7 @@ vérifiés par Claude (lecture seule : tailles, heures, archives ZIP relues).
 | 13 | Fichier verrouillé en exclusivité 2 min (simulé par Claude), Ctrl+S | ✅ données : erreur, fichier intact (ZIP valide), temporaire supprimé. ❌ message (O7) |
 | 15 | Copie v1 ; nomenclature CSV | ✅ « … (v1).voltaplan » (JSON v1, sans `.bak`) ; CSV créé |
 | 5 | Ouvrir un `.voltaplan` | ✅ ouvert ; ⚠ O9 |
-| 10 | Fermer avec des modifications, rouvrir | ✅ brouillon proposé à la réouverture ; ❌ aucun avertissement à la fermeture (O10) |
+| 10 | Fermer avec des modifications, rouvrir | ✅ brouillon proposé à la réouverture ; ❌ aucun avertissement à la fermeture (O10, corrigé et revérifié ✅) |
 | 6, 7, 8, 9, 12, 14 | Exports Trikker/EDS, impression, PDF, IA, clé pleine, gros projet | non faits |
 
 Écarts :
@@ -374,7 +374,10 @@ côté Rust, le chemin d'un `.voltaplan` ouvert devient la cible d'« Enregistre
   **Correction** (branche `bureau-fermeture-o10`) : fermeture interceptée **côté Rust**
   (`src-tauri/src/close_guard.rs`, `on_window_event`) ; la page transmet l'état du projet et le texte traduit
   (`set_close_warning`) ; boîte du système « Fermer sans enregistrer » / « Annuler », une seule à la fois. Le droit
-  `core:window:allow-destroy` n'est plus donné à la page. À revérifier dans l'application installée.
+  `core:window:allow-destroy` n'est plus donné à la page. **Revérifié ✅** dans l'application installée (paquet du
+  run [45658504325](https://github.com/SebastienBatteur/voltaplan/actions/runs/45658504325), 15 tests Rust) : la
+  boîte apparaît à la fermeture avec des modifications ; « Annuler » garde la fenêtre et la modification, la boîte
+  revient au clic suivant ; après Ctrl+S, la fenêtre se ferme sans question.
 
 **Conclusion** : l'écriture atomique tient ses promesses sous Windows, y compris dans un dossier OneDrive et avec un
 fichier verrouillé ; aucune perte, aucun fichier temporaire laissé. Les écarts portent sur les messages et sur

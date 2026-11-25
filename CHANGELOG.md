@@ -44,7 +44,7 @@
   OneDrive compris). « Ouvrir » passe par la boîte du système : « Enregistrer » réécrit ensuite le fichier ouvert.
   Message clair quand le fichier est utilisé par un autre logiciel (ces deux points revérifiés dans l'application
   installée) ; avertissement à la fermeture de la fenêtre s'il reste des modifications non enregistrées, géré côté
-  Rust (la version côté page ne s'affichait pas dans l'application installée).
+  Rust (la version côté page ne s'affichait pas dans l'application installée ; revérifié).
 - **Reconnexion avant l'expiration de la session (R2).** Cinq minutes avant la fin de la session du service où est
   enregistré le projet, un repère discret apparaît dans la barre : « Session … : fin dans N min · Reconnecter ». Un
   clic rouvre la connexion sans recharger la page ; un enregistrement en attente part aussitôt. Fermé, il ne revient
