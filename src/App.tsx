@@ -34,6 +34,7 @@ import { APP_NAME, FILE_EXT, LEGACY_EXTS, STORAGE_PREFIX } from './brand';
 import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
 import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
+import { ReconnectBadge } from './ui/ReconnectBadge';
 import { useStore } from './store';
 import { ToolbarMore } from './ui/ToolbarMore';
 import { ViewTabs } from './ui/ViewTabs';
@@ -460,6 +461,14 @@ export function App() {
           </span>
         )}
         <OfflineBadge />
+        {/* R2 : reconnexion au service du projet courant avant l'expiration de la session (src/io/reconnect.ts) */}
+        <ReconnectBadge
+          getProvider={() => (location.current.kind === 'cloud' || location.current.kind === 'folder' ? location.current.provider : null)}
+          onReconnected={() => {
+            // Un enregistrement attendait cette connexion : il part maintenant, sans autre clic
+            if (saveState?.kind === 'pending' && saveState.auth) void save(false);
+          }}
+        />
         <button
           onClick={() => setAiOpen(true)}
           className={'wide-only' + (aiUnlocked ? ' ai-on' : '')}

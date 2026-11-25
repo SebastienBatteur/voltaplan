@@ -94,6 +94,18 @@ est marqué **[à vérifier]** et sera mesuré pendant la séance commune.
   5. conservation intégrale des modifications non enregistrées (la fenêtre de connexion ne recharge jamais la page) ;
   6. aucune notification répétitive ou intrusive (une seule apparition par échéance de jeton ; fermé, il ne revient
      qu'à la prochaine échéance).
+- **R2 développé le 2026-11-25** (après les mesures réelles, à la demande du propriétaire) :
+  - règles : `src/io/reconnect.ts` ; repère : `src/ui/ReconnectBadge.tsx`, dans la barre, à côté de l'état de
+    l'enregistrement ;
+  - apparaît 5 minutes avant l'échéance du jeton du service **du projet courant** (« Session Google Drive : fin dans
+    4 min · Reconnecter · ✕ »), puis « Session … expirée » ; `role="status"`, jamais de focus pris ni de boîte de
+    dialogue ;
+  - « Reconnecter » ouvre la fenêtre du service dans le clic (ouverte avant tout calcul, cf. S1), la page n'est
+    jamais rechargée ; un enregistrement qui attendait la connexion part aussitôt ;
+  - « ✕ » le masque pour cette échéance ; il ne revient qu'avec un nouveau jeton ;
+  - un 401 marque le jeton comme expiré (`cloudExpire`) au lieu de l'oublier : le repère « expirée » reste visible ;
+  - tests : `test/reconnect.test.tsx` (8 tests : règles, focus, fermeture, ouverture de la fenêtre dans le clic).
+  - **À vérifier en réel** : apparition environ 55 minutes après une connexion Google, puis reconnexion en un clic.
 - **R3 : gardé dans la feuille de route.** Décision après les essais réels et l'analyse des implications de sécurité
   (exposition d'un jeton de rafraîchissement en mémoire, durée maximale, rotation, texte des autorisations et de la
   politique de confidentialité).

@@ -315,6 +315,20 @@ export function cloudForget(id: CloudId) {
   delete tokens[id];
 }
 
+/**
+ * Échéance du jeton de ce service dans cet onglet (heure, en ms, déjà avancée de 60 s), même passée ; null si aucune
+ * connexion n'a été ouverte ou après « Se déconnecter ». Sert au bandeau de reconnexion (R2, docs/oauth-jetons.md).
+ */
+export function cloudTokenExpiry(id: CloudId): number | null {
+  return tokens[id]?.expires ?? null;
+}
+
+/** Jeton refusé (401) : considéré comme expiré, sans oublier qu'une connexion existait (message, bandeau). */
+export function cloudExpire(id: CloudId) {
+  const t = tokens[id];
+  if (t) t.expires = Math.min(t.expires, Date.now() - 1);
+}
+
 function b64url(bytes: Uint8Array): string {
   let s = '';
   bytes.forEach((b) => (s += String.fromCharCode(b)));
@@ -424,7 +438,7 @@ export async function withToken<T>(id: CloudId, fn: (token: string) => Promise<T
     return await fn(first ?? (await fresh()));
   } catch (e) {
     if (!(e instanceof AuthError) || !first) throw e instanceof AuthError ? new AuthError(label, e.reason) : e;
-    cloudForget(id);
+    cloudExpire(id);
     try {
       return await fn(await fresh());
     } catch (e2) {

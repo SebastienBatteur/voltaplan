@@ -21,6 +21,10 @@
 - **Reprise automatique d'un envoi en attente**, même quand le navigateur ne signale pas le retour du réseau
   (Windows avec une autre carte réseau active) : nouvel essai à 10 s, 30 s, 1 min, 2 min, puis toutes les 5 min.
   Jamais deux envois à la fois : un second clic sur « Enregistrer » pendant un envoi est ignoré.
+- **Reconnexion avant l'expiration de la session (R2).** Cinq minutes avant la fin de la session du service où est
+  enregistré le projet, un repère discret apparaît dans la barre : « Session … : fin dans N min · Reconnecter ». Un
+  clic rouvre la connexion sans recharger la page ; un enregistrement en attente part aussitôt. Fermé, il ne revient
+  qu'à l'échéance suivante.
 - **Google Drive : une mise à jour ne fait plus perdre la demande de Drive.** Si « Recharger » est cliqué avant de
   répondre au bandeau « Ouvrir » ou « Créer », le bandeau revient après le rechargement (même onglet, 10 minutes au
   plus).
