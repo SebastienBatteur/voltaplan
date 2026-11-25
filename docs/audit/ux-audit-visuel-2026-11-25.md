@@ -146,3 +146,18 @@ les réglages se replient, mais le message bleu recouvre le dessin (même famill
 
 Vérifié : 782 tests (dont `test/uxSuite.test.tsx`), typage, lint, compilation ; mesures en émulation à 1366 × 768,
 375 × 812, 390 × 844, 360 × 780. Non vérifié sur appareils réels ni dans l'application de bureau installée (O8).
+
+### Ajouts de l'utilisateur (même jour)
+
+- **Disquette** au lieu du mot « Enregistrer » sur la barre compacte (téléphone, tablette au doigt) : icône dessinée
+  (SVG, suit le thème et le bleu « modifications à enregistrer »), mot en infobulle et lu ; bouton 44 × 44 px. Le nom
+  du projet passe d'environ 112 à 158 px à 375 px de large. « Fichier » garde son mot (menu d'actions variées).
+- Pictogrammes à la place des mots d'onglets et bandeau d'onglets coulissant : **abandonnés** par l'utilisateur
+  (onglets réglés par le compteur RGIE et le resserrement).
+
+### Vue Tableau avec photo de fond, au téléphone (375 × 812, constat)
+
+Après « Photo du tableau… », les réglages s'allongent (Caler la photo, rangées, Disposer d'après la photo, Comparer,
+Fond, Retirer) : **301 px, 45 % de la zone**, le dessin garde 322 px. Le calage démarre aussitôt et sa consigne
+s'affiche en bulle en bas du dessin. Surtout, la **photo n'occupe que 123 × 96 px** (le cadrage montre tout le
+tableau et la réserve) : trop petit pour viser au doigt le bord d'un module sans zoomer à deux doigts.

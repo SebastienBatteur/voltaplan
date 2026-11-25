@@ -70,6 +70,17 @@ setOpenModels(() => {
   return [st.project, ...st.past, ...st.future].map((p) => JSON.stringify(p));
 });
 
+/** Disquette (pictogramme d'enregistrement), dessinée pour suivre la couleur du bouton dans les deux thèmes. */
+function SaveIcon() {
+  return (
+    <svg className="save-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+      <path d="M4 3h12.5L21 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <path d="M7 3v5h9V3" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
+      <rect x="7" y="13" width="10" height="8" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
 export function App() {
   const s = useStore();
   const { t } = s;
@@ -446,8 +457,11 @@ export function App() {
           ]}
         />
         {/* Enregistrer reste visible : action fréquente, en bleu quand il y a des modifications non enregistrées */}
-        <button onClick={() => save(false)} className={s.dirty ? 'primary' : ''} title="Ctrl+S">
-          {t('menu.save')}
+        {/* Barre compacte : disquette au lieu du mot (styles.css), le mot reste lu et en infobulle ; la couleur
+            « modifications à enregistrer » est gardée */}
+        <button onClick={() => save(false)} className={'save-button' + (s.dirty ? ' primary' : '')} title={t('menu.save') + ' (Ctrl+S)'} aria-label={t('menu.save')}>
+          <SaveIcon />
+          <span className="save-label">{t('menu.save')}</span>
         </button>
         {/* Petit écran : ces actions secondaires passent dans le menu « ⋯ » (ToolbarMore, en fin de barre) */}
         <button onClick={() => setSyncOpen(true)} title={t('sync.help')} className="wide-only">
