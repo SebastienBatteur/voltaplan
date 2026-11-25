@@ -113,6 +113,9 @@ function checkRgie(project: Project): Finding[] {
   const site = meta.site ?? {};
   if (!site.street?.trim() || !site.city?.trim()) add('R-DOC-ADDRESS', nc);
   if (!meta.supply?.trim()) add('R-DOC-SUPPLY', nc);
+  // RGIE 3.1.2 : « numéro, version et date de la version » ; 3.1.2.1 : « nom, qualité » du responsable
+  if (!meta.docNumber?.trim()) add('R-DOC-NUMBER', nc);
+  if (meta.installer?.name?.trim() && !meta.installer.quality?.trim()) add('R-DOC-QUALITY', nc);
 
   // --- Terre ---
   // Installation neuve (conception) : terre non dessinée = absente du projet → non-conformité.

@@ -23,7 +23,8 @@ const createNode = (kind: NodeKind, props: ElNode['props'] = {}, children: ElNod
 /** Projet complet et conforme : documents, terre, mesures, un circuit de prises et un circuit d'éclairage. */
 function compliant(): { p: Project; board: ElNode; sockets: ElNode; lights: ElNode } {
   const p = emptyProject();
-  p.meta.installer = { name: 'Installateur', address: {} };
+  p.meta.installer = { name: 'Installateur', quality: 'Installateur électricien', address: {} };
+  p.meta.docNumber = '2026-001';
   p.meta.site = { street: 'Rue de test', number: '1', postalCode: '1000', city: 'Bruxelles', country: 'Belgique' };
   p.measurements = { earthResistanceOhm: 20, insulationMOhm: 10, bondingOk: true };
   const board = p.roots[0].children[0].children[0].children[0];
@@ -43,6 +44,15 @@ const ids = (p: Project) => checkProject(p).map((f) => f.ruleId);
 const get = (p: Project, ruleId: string) => checkProject(p).find((f) => f.ruleId === ruleId);
 
 describe('matrice RGIE — cas conformes', () => {
+  it('mentions RGIE 3.1.2 : numéro du dossier et qualité du responsable exigés', () => {
+    const { p } = compliant();
+    p.meta.docNumber = ' ';
+    p.meta.installer = { name: 'Installateur', address: {} };
+    const ids = checkProject(p).map((x) => x.ruleId);
+    expect(ids).toContain('R-DOC-NUMBER');
+    expect(ids).toContain('R-DOC-QUALITY');
+  });
+
   it('installation neuve complète : aucun constat bloquant ni non conforme', () => {
     const { p } = compliant();
     const f = checkProject(p);

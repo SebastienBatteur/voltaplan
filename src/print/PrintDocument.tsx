@@ -154,6 +154,10 @@ function Cartouche({ ctx, title, page, pages }: { ctx: Ctx; title: string; page:
         <div>
           {t('print.page')} {page}/{pages}
         </div>
+        {/* RGIE 3.1.2 : numéro, version et date de la version */}
+        <div>
+          {t('print.docNumber')} {m.docNumber?.trim() || '—'}
+        </div>
         <div>
           {t('print.version')} {rev?.version ?? '1'} — {rev?.date ?? m.date}
         </div>
@@ -162,8 +166,9 @@ function Cartouche({ ctx, title, page, pages }: { ctx: Ctx; title: string; page:
       <div className="c-col">
         <div className="c-head">{t('print.installation')}</div>
         <div>{addr(m.site) || '—'}</div>
+        {/* RGIE 3.1.2.1 : tension et nature du courant, mentionnées sur le schéma unifilaire (figure 3.1) */}
         <div>
-          {m.supply}
+          {t('print.supply')} : {m.supply || '—'}
           {m.mainCurrent ? ` — ${m.mainCurrent} A` : ''} — {t('project.earthing')} {m.earthing}
         </div>
         {m.ean && <div>EAN {m.ean}</div>}

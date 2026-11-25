@@ -96,6 +96,8 @@ export interface ProjectMeta {
    * doit être reportée sur le plan de position, qui montre toujours la situation existante).
    */
   revisions?: Revision[];
+  /** Numéro du dossier (RGIE 3.1.2 : « numéro, version et date de la version » sur les schémas et plans). */
+  docNumber?: string;
   /** Référentiel (pays et règlement), voir src/rules. Absent = « BE-RGIE ». */
   ruleset?: string;
   /** Sens de l'unifilaire : 'up' (défaut, alimentation en bas comme la figure 3.1 du RGIE) ou 'down'. */

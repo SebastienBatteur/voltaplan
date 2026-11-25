@@ -13,6 +13,13 @@
 - Barre du haut sur une seule ligne sur grand écran ; le schéma reste entièrement visible après un ajout.
 - Exports (v1, Trikker, Eendraadschema) : confirmation « Fichier … créé » (O8).
 
+### Dossier imprimé : mentions RGIE 3.1.2 (2026-11-25)
+
+- Numéro du dossier (onglet Projet) imprimé dans le cartouche de chaque page, avec la version et la date.
+- Cartouche : « Tension et nature du courant » libellé explicitement.
+- Contrôle RGIE : numéro du dossier et qualité du responsable des travaux exigés (mentions documentaires).
+- Bilan des mentions exigées : `docs/dossier-imprime-rgie.md`.
+
 ### Symboles : même rendu sur toutes les plateformes (2026-11-25)
 
 - Arborescence : vrais symboles RGIE en miniature au lieu de caractères Unicode (absents de certaines polices

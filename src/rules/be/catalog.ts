@@ -65,6 +65,9 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     r('R-DOC-INSTALLER', { kind: 'missingData', hazard: 'none', ...DOC }),
     r('R-DOC-ADDRESS', { kind: 'missingData', hazard: 'none', ...DOC }),
     r('R-DOC-SUPPLY', { kind: 'missingData', hazard: 'none', ...DOC }),
+    // RGIE 3.1.2 et 3.1.2.1 : numéro du dossier ; qualité du responsable de l'exécution des travaux
+    r('R-DOC-NUMBER', { kind: 'missingData', hazard: 'none', ...DOC }),
+    r('R-DOC-QUALITY', { kind: 'missingData', hazard: 'none', ...DOC }),
     // Équipement confirmé présent sur place mais non dessiné : schéma incomplet, pas une non-conformité physique
     r('R-DOC-NOT-DRAWN', { kind: 'missingData', hazard: 'none', ...DOC }),
     // Terre, isolement, liaisons, essais
