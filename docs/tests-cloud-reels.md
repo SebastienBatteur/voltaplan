@@ -277,7 +277,7 @@ mise en place de l'enregistreur).
   sans la correction). Dropbox (au-delà de 150 Mo) et OneDrive (au-delà de 250 Mo) : non traités, tailles
   inatteignables par un document importé (50 Mo au plus). La session d'envoi par tranches de Drive n'est pas
   gardée. Piste : la garder (en mémoire) et reprendre au dernier octet accepté.
-- **S6 (corrigé) : messages.** Correction : la connexion à refaire porte sa raison (`AuthError.reason` : première
+- **S6 (corrigé ; ✅ vu en réel le 2026-11-25 : « Autorisation donnée… » affiché en vert)** : messages. Correction : la connexion à refaire porte sa raison (`AuthError.reason` : première
   connexion ou session expirée) ; première connexion : « Connexion à … nécessaire » (enregistrement) ou « La fenêtre de
   connexion n'a pas pu s'ouvrir : cliquez à nouveau sur le bouton » (fenêtre des services) ; messages de réussite en
   vert ; « Projet ouvert : … » à l'ouverture d'un projet, « Import terminé » gardé pour Trikker. Tests :
@@ -308,12 +308,14 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
   bandeau Drive placé en haut (il ne peut plus être recouvert par un autre message). ✅ **Revérifié en réel** (d27995b) :
   bandeau « Créer le projet » affiché en haut ; « Nouveau projet.voltaplan » créé dans Mon Drive › Essai cloud
   2026-11-25 (à supprimer), le sous-dossier choisi. La cause supposée (clé vide) est donc confirmée.
-- **S10** (corrigé, à revérifier en réel à la prochaine mise à jour) : la demande de Drive est gardée pour l'onglet
+- **S10** (corrigé, à revérifier en réel : le 2026-11-25, l'onglet ouvert par Drive a démarré directement sur la
+  dernière version, sans mise à jour en attente, donc le cas n'a pas pu se produire) : la demande de Drive est gardée pour l'onglet
   (sessionStorage) jusqu'à la réponse de l'utilisateur, 10 minutes au plus, revalidée à la relecture, effacée dès
   que le bandeau est accepté ou annulé. Tests : `test/driveOpenWith.test.ts`. Constat initial : quand Drive ouvre Voltaplan alors qu'une nouvelle version est en attente, l'onglet
   démarre sur l'ancienne version (cache) et propose « Recharger » ; recharger fait perdre la demande de Drive (déjà
   retirée de l'adresse). Constaté au 1er essai de D5 après la correction.
-- **S9** (corrigé) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
+- **S9** (corrigé ; ✅ vérifié en réel le 2026-11-25 : « Enregistrer » avec le bandeau Drive sans réponse affiche
+  « Répondez d'abord au bandeau Google Drive (en haut)… », aucune boîte d'enregistrement de Windows) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
   l'appareil ; il renvoie maintenant au bandeau.
 
 - **F8** ✅ (Dropbox → Google Drive) : « Essai cloud 2026-11-25 (à supprimer) » ouvert depuis Dropbox (20 modules, image
