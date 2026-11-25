@@ -117,8 +117,9 @@ Checklist pratique des 15 scénarios F1 à F9 et D1 à D6, avec ce que fait le p
 | Scénario | OneDrive | Dropbox | Google Drive | GitHub |
 |---|---|---|---|---|
 | C1 à C10, G1 et G2 | non testé | non testé | non testé | non testé |
-| F1 à F9 | non testé | non testé | non testé | sans objet |
-| D1 à D6 | sans objet | sans objet | non testé | sans objet |
+| F1 à F9 | F1 ✅ (F2, F7 à faire) | F1, F2, F7 ✅ ; F4 iOS ❌ (connexion, voir S1) | F1, F2, F3, F4, F5, F7, F9 ✅ (avec écarts S3 à S5) | sans objet |
+| F10 | — | ✅ rapide (accès retiré) | ✅ long (expiration naturelle) | sans objet |
+| D1 à D6 | sans objet | sans objet | D1 : autorisation accordée (depuis iOS), apparition non vérifiée ; D2 à D6 non testés | sans objet |
 
 À remplir au fur et à mesure. Chaque écart observé devient une demande de correction.
 
@@ -178,8 +179,8 @@ service simulé reproduit maintenant ce comportement ; sans la correction, 7 tes
 Observations :
 
 - **O1** : environ 7 minutes après la connexion OneDrive, le jeton n'était plus en mémoire (bouton « Se déconnecter »
-  absent, nouvelle connexion demandée), alors que Google Drive et Dropbox restaient connectés. Cause inconnue : à
-  reproduire (déconnexion manuelle ? durée du jeton ?).
+  absent, nouvelle connexion demandée), alors que Google Drive et Dropbox restaient connectés. **Non reproduit**
+  à la séance du 2026-11-25 : jeton valable environ 1 h (voir plus bas).
 - **O2** (corrigé) : `README.txt` renvoyé à chaque enregistrement Dropbox. Confirme que Dropbox accepte un `add` de
   contenu identique. De plus, son texte était celui de l'archive (« renommez-le en .zip »), faux pour un dossier.
   Désormais : texte propre aux dossiers, écrit s'il manque ou si son texte a changé (titre), au plus une lecture par
@@ -208,4 +209,62 @@ Observations :
   répond 200, sans redirection, avec les paliers mensuels et ponctuels visibles. Choisir un palier mène à la
   connexion GitHub : GitHub exige un compte pour parrainer.
 - **Jetons OAuth** : analyse dans [oauth-jetons.md](oauth-jetons.md) ; aucun changement de code.
+
+**2026-11-25 (07:34 à 08:39 UTC), séance commune avec le propriétaire.** voltaplan.org (version publiée ce jour),
+navigateur intégré de Claude Desktop (Windows, Wi-Fi) en deux onglets ; iPhone, Safari (iOS). Projet « Essai cloud
+2026-11-25 (à supprimer) ». Documents de test **synthétiques** générés dans la page (images JPEG de 12 Mo, PDF de
+49 Mo), sauf la photo du tableau prise par le propriétaire sur le téléphone. Mesures par un enregistreur placé dans
+la page : heure et code de chaque requête, champs `expires_in`, `scope`, `token_type` des réponses de jeton (jamais
+le jeton), ouvertures de fenêtre de connexion. Aucun code modifié pendant la séance.
+
+| # | Service | Type | Résultat | Preuve |
+|---|---|---|---|---|
+| B1 | Google Drive | réel | ✅ 2ᵉ enregistrement après modification : **aucun faux conflit** | 7 requêtes, toutes 200 |
+| F9 | Google Drive | réel partiel (2 onglets) | ✅ deux enregistrements lancés à la même seconde : l'un écrit, l'autre détecte le changement et crée une **copie de conflit** ; dossier d'origine rouvert = version A (18 modules), copie = version B (14) | requêtes des deux onglets ; relecture des deux versions |
+| F4 | Google Drive | réel (iPhone + ordinateur) | ✅ le téléphone ajoute la photo du tableau et enregistre ; l'ordinateur, ouvert avant, ajoute une image de plan et enregistre : conflit détecté, copie créée. Dossier d'origine = photo du téléphone, copie = image de l'ordinateur. Rien de perdu. ⚠️ voir S3 | relecture des deux versions |
+| F4 | Dropbox | réel (iPhone) | ❌ connexion impossible depuis Safari (S1) ; essai fait sur Google Drive | captures du propriétaire |
+| F3, F5 | Google Drive | réel (Wi-Fi coupé 15 s pendant l'envoi d'un PDF de 49 Mo) | ✅ aucune perte : 2 requêtes en échec, état « ⏸ En attente d'envoi », modèle non envoyé. ❌ pas de reprise automatique (S4). ⚠️ après clic sur « Enregistrer », le PDF repart **depuis le début** (S5) ; l'image de 12 Mo déjà envoyée n'est pas renvoyée | 2 tranches (308) avant la coupure, 7 après, puis 200 |
+| F5 | — | — | Limite d'import d'un PDF : **50 Mo** (`IMPORT_LIMITS`) ; un PDF de 160 Mo est refusé avec un message clair. Les tailles 160 et 260 Mo prévues dans la checklist étaient impossibles | message « Fichier trop volumineux… maximum 50 Mo » |
+| F10 rapide | Dropbox | réel | ✅ modification + image non enregistrées ; accès de Voltaplan retiré sur dropbox.com ; clic « Enregistrer » : 401, fenêtre de connexion ouverte, reconnexion, **un seul** enregistrement (image + modèle) ; projet rouvert depuis Dropbox : modification et image présentes | 401 puis 2 `upload` 200 |
+| F10 long | Google Drive | réel | ✅ jeton obtenu à 07:35:51 ; à 08:35:32, enregistrement lancé par script (sans geste) : expiration vue **sans appel à Google**, fenêtre de connexion bloquée par le navigateur, état « en attente », message « Connexion à Google Drive à refaire (session expirée) » ; au clic du propriétaire : fenêtre ouverte et refermée seule (accord déjà donné), enregistrement, **vrai conflit** (modification du téléphone) → copie | journal de la page |
+| O1 | OneDrive | réel | ✅ jeton obtenu à 07:35:29, accepté par Graph à chaque vérification (toutes les 5 min) jusqu'à 08:32:41 ; vu expiré à 08:37:37. Durée normale d'**environ 1 h** : la perte après 7 minutes de la veille ne s'est pas reproduite (clic involontaire sur « Se déconnecter » ou cas isolé) | 9 listes Graph 200 |
+| iOS | Google Drive | réel | ✅ connexion depuis Safari ; autorisation `drive.install` (D1) accordée ; photo du tableau (appareil photo ou photothèque) ; mode avion : « ⏸ En attente… », badge « Hors ligne », message clair ; au retour du réseau, **envoi repris seul** (« Connexion rétablie : enregistrement envoyé ») | captures du propriétaire |
+| O4 | iOS | réel | ✅ « Enregistrer sous → Cet appareil » : téléchargement direct, fichier `….voltaplan` de 3,6 Mo dans Fichiers. ❌ réouverture impossible (S2) | captures du propriétaire |
+
+Durées de jeton mesurées (`expires_in`) : **Google 3599 s** (`drive.file`) ; **Dropbox 14 400 s** (4 h, sans jeton de
+rafraîchissement, 3 portées attendues) ; **OneDrive environ 3600 s** (déduit : réponse de jeton antérieure à la
+mise en place de l'enregistreur).
+
+Écarts à corriger (aucun corrigé pendant la séance, à traiter après) :
+
+- **S1 (bloquant, iOS) : connexion Dropbox et OneDrive impossible depuis Safari.** Aucune fenêtre ne s'ouvre ;
+  message « session expirée ». Cause : `cloudConnect` (`src/io/cloud.ts`) calcule la paire PKCE (`crypto.subtle`,
+  asynchrone) **avant** `window.open` ; Safari ne relie plus l'ouverture au geste et la bloque. Confirmé : Google,
+  sans PKCE, s'ouvre sur le même téléphone. Piste : ouvrir la fenêtre vide dès le geste, puis y charger l'adresse
+  de connexion ; ou préparer la paire PKCE à l'avance.
+- **S2 (bloquant, iOS) : un fichier `.voltaplan` ne peut pas être rouvert.** Il est grisé dans le sélecteur
+  d'iOS : le filtre `accept` ne contient que des extensions (`.voltaplan,.openrgie,.json,.trik`) que Safari ne sait
+  pas relier à un type connu. Piste : sur iOS, ne pas filtrer (ou ajouter des types génériques) ; le contenu est
+  déjà vérifié par sa signature à l'ouverture.
+- **S3 : fausse alerte « Quelqu'un a enregistré … pendant votre envoi »** après deux « Enregistrer » rapprochés du
+  même appareil (iPhone, 09:03 puis 09:04) ; aucun autre appareil n'écrivait (journal de l'ordinateur). Effet :
+  fichier inutile `project (conflit …).json`, rien de perdu. Piste : la détection pendant l'envoi
+  (`driveRevisionsBetween`, `src/io/drive.ts`) prend la révision de notre propre enregistrement précédent pour
+  celle d'un autre ; à reproduire avec le service simulé (deux enregistrements qui se chevauchent).
+- **S4 : pas de reprise automatique sous Windows.** La reprise attend l'évènement `online` (`src/App.tsx`) ; le
+  navigateur n'a signalé ni la coupure ni le retour (`navigator.onLine` resté vrai, autres cartes réseau actives).
+  L'enregistrement reste « en attente » jusqu'au clic suivant. Piste : nouvel essai périodique (délai croissant)
+  tant qu'un envoi est en attente, en plus de `online`.
+- **S5 : un document interrompu est renvoyé depuis le début.** La session d'envoi par tranches de Drive n'est pas
+  gardée. Piste : la garder (en mémoire) et reprendre au dernier octet accepté.
+- **S6 : messages.** « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
+  Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge.
+- **S7 (hors code) : Dropbox affiche « peu d'utilisateurs… »** avant de connecter l'application (statut
+  développement). Demander le statut production avant la bêta publique.
+- **S8 (navigateur intégré seulement)** : la boîte `alert()` (fichier trop volumineux) n'est pas montrée par le
+  navigateur intégré, et `createWritable` y est refusé (« Cet appareil » échoue). Sans effet dans un navigateur
+  ordinaire ; à garder en tête pour les essais futurs.
+
+Reste à faire en réel : D1 (apparition dans « Ouvrir avec »), D2 à D6, F8, F1/F2/F7 OneDrive complets, F6 (compte
+presque plein), et S1, S2 à revérifier sur iOS après correction.
 

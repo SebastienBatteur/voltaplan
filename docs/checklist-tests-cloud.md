@@ -25,8 +25,17 @@ Qui fait quoi :
    (O4) ; connexion à un service depuis Safari (fenêtre de connexion autorisée ou bloquée) ; travail hors ligne
    puis retour du réseau. Type : réel, sur ton appareil ; je vérifie le résultat côté service.
 
-Déjà fait en réel : F1 sur les trois services ; F2 et F7 sur Dropbox et Google Drive (avec photo et PDF). Une
-séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens qu'aux étapes marquées **toi**.
+Déjà fait en réel : F1 sur les trois services ; F2 et F7 sur Dropbox et Google Drive (avec photo et PDF).
+**Séance du 2026-11-25 : les quatre priorités sont faites** (B1, F9, F4, F3, F5, F10, O1, iOS) ; résultats et
+écarts S1 à S8 dans [tests-cloud-reels.md](tests-cloud-reels.md). Restent D1 à D6, F8, OneDrive F2/F7, F6, puis la
+revérification iOS après correction de S1 et S2.
+
+Leçons de la séance pour la suivante :
+- Couper le Wi-Fi de l'ordinateur coupe aussi Claude : placer d'abord un enregistreur dans la page, puis relire son
+  journal après la coupure.
+- Le navigateur intégré bloque les fenêtres de connexion ouvertes sans clic humain, n'affiche pas `alert()` et
+  refuse « Cet appareil » (`createWritable`).
+- Chaque onglet a ses propres jetons ; un rechargement les efface.
 
 1. **toi** : ouvrir `https://voltaplan.org/app/` dans le navigateur intégré, accepter « Recharger » si proposé, me
    dire « go ». **moi** : je place la mesure de la connexion OneDrive (O1) avant ta connexion.
@@ -61,8 +70,10 @@ séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens
 
 - [ ] Projet « Essai cloud (à supprimer) », **sans aucune donnée de client**, avec trois photos synthétiques
       générées (dont une de plus de 10 Mo).
-- [ ] Pour F5 seulement : un PDF synthétique de 160 Mo (Dropbox), 260 Mo (OneDrive). Il occupe cet espace dans ton
-      compte jusqu'à ce que tu le supprimes : **je te demande avant**.
+- [ ] Pour F5 seulement : un PDF synthétique de **49 Mo** (l'import d'un PDF est limité à 50 Mo ; les 160 et 260 Mo
+      prévus d'abord sont refusés). Il occupe cet espace dans ton compte jusqu'à ce que tu le supprimes : **je te
+      demande avant**. Les envois par tranches au-delà de 150 Mo (Dropbox) et 250 Mo (OneDrive) ne sont donc
+      atteignables que par une archive importée (F7), pas par un PDF seul.
 
 ## Scénarios
 

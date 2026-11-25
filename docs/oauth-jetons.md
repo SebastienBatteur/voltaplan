@@ -102,3 +102,23 @@ est marqué **[à vérifier]** et sera mesuré pendant la séance commune.
 Mesures à faire pendant la séance (sans jamais lire le jeton) :
 - `expires_in`, `scope` et `token_type` pour les trois services ;
 - l'heure réelle de la première réponse 401.
+
+## 6. Mesures réelles (séance du 2026-11-25)
+
+Détail : [tests-cloud-reels.md](tests-cloud-reels.md), séance commune.
+
+| | Google Drive | OneDrive | Dropbox |
+|---|---|---|---|
+| `expires_in` | 3599 s | environ 3600 s (déduit : accepté à 57 min, vu expiré à 62 min) | 14 400 s (4 h) |
+| `scope` | `drive.file` | — (réponse antérieure à l'enregistreur) | `files.content.read files.content.write files.metadata.read` |
+| Jeton de rafraîchissement | — | — | aucun (`has_refresh` faux) |
+| Reconnexion après expiration | au clic : fenêtre ouverte et refermée seule (accord déjà donné), aucun écran | non mesurée | après retrait de l'accès : 401, fenêtre, reconnexion ; Dropbox affiche « peu d'utilisateurs » (S7) |
+
+Conséquences pour R2 :
+- **O1 n'est pas reproduit** : OneDrive garde son jeton environ une heure, comme documenté.
+- Le comportement actuel ne perd rien (F10 rapide et long), mais l'utilisateur ne découvre l'expiration qu'au
+  moment d'enregistrer, et une reprise automatique (sans geste) ne peut pas reconnecter : c'est exactement le cas
+  que R2 traite.
+- Google se reconnecte sans aucun écran quand l'accord est déjà donné : le bandeau R2 peut donc tenir en un clic.
+- **Préalable à R2 sur iOS : corriger S1** (fenêtre Dropbox et OneDrive bloquée par Safari, ouverture après un
+  calcul asynchrone). Sinon le bouton « Reconnecter » de R2 ne marcherait pas sur iPhone et iPad.
