@@ -83,7 +83,7 @@ describe('À propos', () => {
   });
 
   it('traduit en français, néerlandais, anglais et allemand', () => {
-    const keys = ['about.menu', 'about.title', 'about.source', 'about.sourceHelp', 'about.copy', 'about.status.clean', 'about.status.modified', 'about.status.unknown', 'about.derived', 'about.notAuthenticated'];
+    const keys = ['about.menu', 'about.title', 'about.source', 'about.sourceHelp', 'about.copy', 'about.status.clean', 'about.status.modified', 'about.status.declared', 'about.status.unknown', 'about.derived', 'about.notAuthenticated'];
     for (const lang of ['fr', 'nl', 'en', 'de'] as Lang[]) {
       const seen = new Set<string>();
       for (const k of keys) {

@@ -66,8 +66,9 @@ export interface EmbeddedBuild {
   commit: string | null;
   commitDate: string | null;
   dirty: boolean | null;
-  /** clean : commit connu, aucune modification locale ; modified : modifications non commitées ; unknown : commit inconnu. */
-  status: 'clean' | 'modified' | 'unknown';
+  /** clean : commit connu, arbre vérifié sans modification ; modified : modifications non commitées ; declared : commit
+   *  déclaré sans dépôt Git (archive, OSP_COMMIT) : absence de modification invérifiable ; unknown : commit inconnu. */
+  status: 'clean' | 'modified' | 'declared' | 'unknown';
   /** Dépôt différent du dépôt d'origine (fork) ou identité de projet propre. */
   derived: boolean;
   repository: string | null;
@@ -169,7 +170,7 @@ export function embeddedBuild(id: Identity, version: string, git: GitInfo, env: 
   const declared = sanitizeSourceUrl(env.OSP_SOURCE_URL);
   const correspondingSource = declared ?? (repository && commit ? `${repository}/tree/${commit}` : null);
   const dirty = git.commit ? git.dirty : null;
-  const status: EmbeddedBuild['status'] = !commit ? 'unknown' : dirty ? 'modified' : 'clean';
+  const status: EmbeddedBuild['status'] = !commit ? 'unknown' : dirty === null ? 'declared' : dirty ? 'modified' : 'clean';
   return {
     projectId: id.projectId,
     upstreamId: id.upstreamId,

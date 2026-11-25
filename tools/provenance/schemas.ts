@@ -34,7 +34,7 @@ export const buildInfoSchema = z
         timestamp: z.string(),
         environment: z.enum(['ci', 'local']),
         ci: z.object({ provider: z.string(), workflow: z.string().nullable(), runId: z.string().nullable(), runAttempt: z.string().nullable(), runUrl: url.nullable() }).strict().nullable(),
-        status: z.enum(['clean', 'modified', 'unknown']),
+        status: z.enum(['clean', 'modified', 'declared', 'unknown']),
         derived: z.boolean(),
       })
       .strict(),

@@ -104,7 +104,7 @@ describe('métadonnées de compilation', () => {
     expect(buildInfoSchema.safeParse(info(e)).success).toBe(true);
     expect(sourceUrl(e)).toBe(id.upstreamRepository);
     const e2 = embeddedBuild(id, '0.1.0', noGit, { OSP_COMMIT: SHA, OSP_REPOSITORY_URL: 'https://codeberg.org/x/y' });
-    expect(e2).toMatchObject({ status: 'clean', commit: SHA, derived: true, correspondingSource: `https://codeberg.org/x/y/tree/${SHA}` });
+    expect(e2).toMatchObject({ status: 'declared', commit: SHA, derived: true, correspondingSource: `https://codeberg.org/x/y/tree/${SHA}` });
     expect(info(e2).source.archive).toBeNull(); // forme d'archive propre à GitHub
   });
   it('adresse du code source déclarée (OSP_SOURCE_URL) : utilisée et signalée comme déclarée', () => {

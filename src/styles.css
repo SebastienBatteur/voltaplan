@@ -2079,6 +2079,7 @@ body.resizing-h * {
   border: 1px solid var(--border);
 }
 .about-modified,
+.about-declared,
 .about-unknown {
   border-color: #c2410c;
 }
