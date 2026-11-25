@@ -83,6 +83,22 @@ est marqué **[à vérifier]** et sera mesuré pendant la séance commune.
 | R4 | Garder le jeton (ou le jeton de rafraîchissement) **sur le disque** pour survivre à un rechargement | reconnexion après fermeture | **déconseillé** : contraire à la politique de confidentialité, exposé à un XSS | non recommandé |
 | R5 | Bibliothèque Google Identity Services (script chargé depuis accounts.google.com) | aucune capacité de plus en modèle « jeton » | script tiers à chaque visite, CSP élargie | non recommandé |
 
+## 5. Décisions (2026-11-25)
+
+- **R1 appliqué** : aucun changement d'architecture avant les mesures réelles.
+- **R2 : principe validé pour la première bêta publique**, à développer **après** la séance de mesures. Exigences :
+  1. bandeau discret et non bloquant ;
+  2. affiché uniquement pour le service cloud du projet courant ;
+  3. reconnexion en un clic ;
+  4. aucune interruption du travail en cours (le bandeau ne prend pas le focus, n'ouvre aucune boîte de dialogue) ;
+  5. conservation intégrale des modifications non enregistrées (la fenêtre de connexion ne recharge jamais la page) ;
+  6. aucune notification répétitive ou intrusive (une seule apparition par échéance de jeton ; fermé, il ne revient
+     qu'à la prochaine échéance).
+- **R3 : gardé dans la feuille de route.** Décision après les essais réels et l'analyse des implications de sécurité
+  (exposition d'un jeton de rafraîchissement en mémoire, durée maximale, rotation, texte des autorisations et de la
+  politique de confidentialité).
+- R4 et R5 : écartés.
+
 Mesures à faire pendant la séance (sans jamais lire le jeton) :
 - `expires_in`, `scope` et `token_type` pour les trois services ;
 - l'heure réelle de la première réponse 401.

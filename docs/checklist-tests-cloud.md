@@ -15,6 +15,16 @@ Qui fait quoi :
 
 ## Séance commune (à jour au 2026-11-25)
 
+**Priorités de la séance**, dans cet ordre, et aucun nouveau développement avant la fin :
+
+1. **Conflits concurrents** : F9, F4, B1 en réel (Drive) ;
+2. **Coupures réseau** : F3, F5 ;
+3. **Expiration des sessions** : F10, mesure O1 (OneDrive) et `expires_in` des trois services ;
+4. **iOS** (iPhone ou iPad, Safari) : ouvrir l'application, ouvrir un dossier Dropbox, ajouter une photo, enregistrer
+   (F4) ; enregistrer **sur l'appareil** et vérifier que le fichier garde son extension `.voltaplan` et se rouvre
+   (O4) ; connexion à un service depuis Safari (fenêtre de connexion autorisée ou bloquée) ; travail hors ligne
+   puis retour du réseau. Type : réel, sur ton appareil ; je vérifie le résultat côté service.
+
 Déjà fait en réel : F1 sur les trois services ; F2 et F7 sur Dropbox et Google Drive (avec photo et PDF). Une
 séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens qu'aux étapes marquées **toi**.
 

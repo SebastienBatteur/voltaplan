@@ -136,6 +136,11 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 4. ✅ Export PDF / impression du dossier (A4, A3 : cartouche, légende, circuits, mesures, étiquettes 1:1)
 5. ⏳ Assistant de relevé : ✅ premier parcours (photo du tableau → brouillon, questions, relevé figé) ; ⏳ plusieurs photos et tableaux, documents existants, plans d'architecte, plan de position. IA facultative (votre clé, ou un modèle local)
 6. ✅ Export Trikker ; ✅ PWA hors ligne ; ✅ version de bureau Tauri et workflows de paquets — ⏳ Eendraadschema (format à étudier)
+7. ⏳ Stockage en ligne (Google Drive, OneDrive, Dropbox), avant la première bêta publique :
+   - séance de validation réelle : conflits concurrents, coupures réseau, expiration des sessions, iOS ;
+   - **R2** (principe validé, à faire après les mesures réelles) : bandeau discret proposant de se reconnecter en un clic avant l'expiration de la session ;
+   - **R3** (à décider après les essais réels et l'analyse de sécurité) : renouvellement de session sans fenêtre pour OneDrive et Dropbox, jeton gardé en mémoire seulement.
+   Détails : [docs/oauth-jetons.md](docs/oauth-jetons.md).
 
 ## Projets proches
 
