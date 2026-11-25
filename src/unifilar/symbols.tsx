@@ -163,11 +163,16 @@ function Vertical({ n }: { n: ElNode }) {
       );
     }
     case 'earthBar':
+      // Sectionneur de terre (tableau 2.23 B, figure 3.1) : ─┤├──┤├─, ici vertical sur le fil
       return (
         <g>
-          <line x1={0} y1={0} x2={0} y2={6} />
-          <rect x={-15} y={6} width={30} height={6} className="fill" />
-          <line x1={0} y1={12} x2={0} y2={h} />
+          <line x1={0} y1={0} x2={0} y2={3} />
+          <line x1={-6} y1={3} x2={6} y2={3} />
+          <line x1={-6} y1={6} x2={6} y2={6} />
+          <line x1={0} y1={6} x2={0} y2={12} />
+          <line x1={-6} y1={12} x2={6} y2={12} />
+          <line x1={-6} y1={15} x2={6} y2={15} />
+          <line x1={0} y1={15} x2={0} y2={h} />
         </g>
       );
     case 'earth':
@@ -288,7 +293,14 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
     case 'hob':
       inner = (
         <>
-          {[-4, 4].flatMap((dx) => [-4, 4].map((dy) => <circle key={dx + ',' + dy} cx={cx + dx} cy={dy} r={2.2} className="fill" />))}
+          {/* Tableau 2.23 G : trois points, deux en haut et un en bas à droite */}
+          {[
+            [-4, -4],
+            [4, -4],
+            [4, 4],
+          ].map(([dx, dy]) => (
+            <circle key={dx + ',' + dy} cx={cx + dx} cy={dy} r={2.2} className="fill" />
+          ))}
         </>
       );
       break;
@@ -626,7 +638,8 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {lead(4)}
           <rect x={4} y={-7} width={26} height={14} className="bg" />
           {rt === 'teleswitch' ? (
-            <path d="M10 2 v-4 h3 M24 2 v-4 h-3" className="nofill" />
+            // Tableau 2.23 E : ┘ └ (deux équerres ouvertes vers le haut)
+            <path d="M9 3 h4 v-5 M25 3 h-4 v-5" className="nofill" />
           ) : (
             <text x={17} y={3} fontSize={8} textAnchor="middle">
               {abbr(n)}
@@ -664,13 +677,26 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
         </g>
       );
     case 'earth':
-    case 'earthBar':
+      // Prise de terre (tableau 2.23 D) : ⏚ couché, branché par le trait de gauche
       return (
         <g>
           {lead(10)}
           <line x1={10} y1={-8} x2={10} y2={8} />
           <line x1={14} y1={-5} x2={14} y2={5} />
           <line x1={18} y1={-2} x2={18} y2={2} />
+        </g>
+      );
+    case 'earthBar':
+      // Sectionneur de terre (tableau 2.23 B) : ─┤├──┤├─ (auparavant le même dessin que la prise de terre)
+      return (
+        <g>
+          {lead(6)}
+          <line x1={6} y1={-6} x2={6} y2={6} />
+          <line x1={9} y1={-6} x2={9} y2={6} />
+          <line x1={9} y1={0} x2={15} y2={0} />
+          <line x1={15} y1={-6} x2={15} y2={6} />
+          <line x1={18} y1={-6} x2={18} y2={6} />
+          <line x1={18} y1={0} x2={24} y2={0} />
         </g>
       );
     default:

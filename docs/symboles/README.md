@@ -17,18 +17,60 @@ Page autonome (styles de l'application inclus, aucun appel réseau, toujours en 
 - Les quelques textes intégrés (kWh, M, 3~, LED, h, ×2, abréviations des appareils) utilisent la **même police qu'à
   l'impression** : Arial, ou un équivalent métrique (Helvetica, Liberation Sans, Arimo). Sur Android, sans Arial,
   le système prend sa police sans empattement : textes très légèrement plus larges, symboles inchangés.
-- L'arborescence utilise désormais les **symboles en miniature** (auparavant des caractères Unicode ⚡ ▣ ⊘ ⏚ ◖ ⊸…,
-  absents de certaines polices Android et affichés en emoji couleur sur téléphone).
+- L'arborescence utilise les **symboles en miniature** (auparavant des caractères Unicode ⚡ ▣ ⊘ ⏚ ◖ ⊸…, absents
+  de certaines polices Android et affichés en emoji couleur sur téléphone).
 - Pictogrammes d'interface (⚡ ⚙ ⚠ ⏸) forcés en version texte (`font-variant-emoji: text` et U+FE0E).
 
-## À vérifier contre le tableau 2.23 du RGIE (humain, avec le texte officiel)
+## Comparaison au RGIE (2026-11-25)
 
-L'outil ne juge pas la conformité. Points relevés sur la planche, à trancher avec le RGIE :
+Source : *Annexe — Livre 1. Installations à basse tension et à très basse tension* (édition 2026), chapitre 2.13,
+tableau 2.23 « Symboles graphiques » (pages imprimées 50 à 57) ; figure 3.1 « Exemple de schéma unifilaire » (p. 62)
+et figure 3.2 « Exemple de plan de position » (p. 63) ; sous-section 3.1.2.1.
 
-1. **Protection, nombre de pôles** (1P, 2P, 3P, 3P+N, 4P) : même symbole pour toutes les valeurs ; les pôles
-   figurent seulement dans le texte à côté (« 40 A · 2P »).
-2. **Protection sur le plan** : simple cadre avec abréviation (pas de symbole) — choix voulu (commentaire de
-   `PlanView`), à confirmer.
-3. **Prise de terre et barrette de terre sur le plan** : même dessin pour les deux.
-4. **Différentiel, type (AC, A, F, B)** : pas de marque dans le symbole ; le type est écrit dans le texte
-   (« 300 mA type A »).
+**Règle utile (3.1.2.1)** : un symbole absent du tableau 2.23 est permis s'il est « clairement identifiable et
+défini dans la légende des schémas unifilaires et des plans de position ». Le dossier imprimé contient une légende
+des symboles présents dans le projet (`src/print/PrintDocument.tsx`, section « Légende », cochée par défaut).
+
+### Conformes au tableau 2.23
+
+| Partie | Symboles |
+| --- | --- |
+| B. Appareillages | tableau de répartition, boîte de dérivation (cercle à point), coffret de branchement (origine) |
+| C. Canalisations | trait + nombre de conducteurs (« / n »), encastré, apparent, souterrain, aérien, dans un conduit |
+| D. Protections | disjoncteur (levier à carré noir), fusible (rectangle sur le fil), différentiel (tore + pointillés) ; prise de terre ⏚ |
+| E. Interrupteurs | général, à lampe témoin, bipolaire, commutateur (double allumage), va-et-vient, intermédiaire, gradateur, à tirette, à lampe de signalisation ; bouton-poussoir ; minuterie (« t ») ; détecteur de mouvement |
+| F. Socles de prise | général, multiple (arcs empilés), étanche (« h »), contact de terre, protection enfant |
+| G. Appareils | point lumineux, applique, fluorescent, projecteur, éclairage de sécurité ; sonnerie ; appareil fixe, four, micro-ondes, lave-linge, sèche-linge, lave-vaisselle, frigo, congélateur, moteur, ventilateur, chauffage, chauffe-eau, compteur kWh |
+| H. Sources | transformateur, panneau solaire, onduleur |
+
+L'orientation d'un symbole (prise tournée vers la droite au lieu du bas, par exemple) suit le sens du dessin, comme
+dans les figures 3.1 et 3.2 où les mêmes symboles sont tournés selon le circuit ou le mur.
+
+### Écarts corrigés
+
+1. **Barrette / sectionneur de terre** : barre pleine (unifilaire) et même dessin que la prise de terre (plan) →
+   symbole « sectionneur de terre » ─┤├──┤├─ (tableau 2.23 B, et figure 3.1 entre la barre et la prise de terre).
+2. **Cuisinière, taque de cuisson** : 4 points → **3 points** (deux en haut, un en bas à droite), tableau 2.23 G.
+3. **Télérupteur** : équerres ┌ ┐ → **┘ └**, tableau 2.23 E.
+
+### Points tranchés par le texte
+
+- **Nombre de pôles d'une protection** : le tableau l'inscrit en texte (« M₂ + 0 », indice = pôles protégés) et la
+  figure 3.1 ne le dessine pas ; Voltaplan l'écrit à côté du symbole (« 40 A · 2P ») : conforme à l'usage du RGIE.
+- **Type de différentiel** : le tableau l'écrit à côté du symbole (« 40/0.3A type A ») ; Voltaplan aussi
+  (« 300 mA type A ») : conforme.
+- **Protections sur le plan** : la figure 3.2 n'en montre aucune ; Voltaplan les signale par un cadre avec
+  abréviation (aide à la lecture, défini dans la légende).
+
+### Symboles hors tableau (permis avec la légende)
+
+Relais (« R »), contacteur (« K »), commande de volet (interrupteur ▲▼), pompe à chaleur (« PAC »), chaudière
+(« Chaud. »), mention « LED ». Ils figurent dans la légende imprimée quand le projet les utilise.
+
+### Variantes du tableau pas encore proposées
+
+Interrupteur tripolaire, à ouverture retardée (« t ») ; bouton-poussoir à lampe témoin, à accès protégé ; interrupteur
+horaire, thermostat, contrôleur de ronde ; socle avec interrupteur, avec transformateur (rasoir), prise data ;
+projecteur à faisceau (peu) divergent, luminaire avec interrupteur, bloc autonome ; appareil auxiliaire ; vibreur,
+trompe, sirène, horloge, gâche ; chauffage à accumulation (avec ventilateur), chauffe-eau à accumulation ; borne
+de recharge au dessin détaillé (Voltaplan : cadre « VE ») ; redresseur, hacheur ; symboles de domotique (J).

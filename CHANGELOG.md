@@ -19,6 +19,8 @@
   Android, en emoji couleur sur téléphone).
 - Textes du dessin dans la police de l'impression (Arial ou équivalent) ; pictogrammes d'interface en version texte.
 - `npm run symbols:sheet` : planche de contrôle de tous les symboles et variantes (`docs/symboles/`).
+- Comparés au tableau 2.23 du RGIE (édition 2026) : sectionneur de terre ─┤├──┤├─, cuisinière à 3 points et
+  télérupteur ┘ └ corrigés ; détail et variantes manquantes dans `docs/symboles/README.md`.
 
 ### Plan au téléphone, tablette en portrait, aide au doigt (2026-11-25)
 
