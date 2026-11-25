@@ -2,6 +2,15 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### IA : configuration transférable entre appareils ; iPhone (2026-11-25)
+
+- Réglages de l'IA → « Autres appareils » : un **QR code** (ou un lien à copier) transfère la configuration vers
+  le téléphone, un autre ordinateur ou l'application de bureau (coller le lien). La clé reste chiffrée par la
+  phrase secrète, que l'appareil qui reçoit demande ; aucun serveur (partie « # » du lien, jamais envoyée).
+  Bibliothèque ajoutée : `qrcode-generator` 2.0.4 (MIT).
+- iPhone : plus de zoom de la page au double-tap ; bas de l'écran dégagé sous la barre de Safari ; aide « Pour
+  ajouter » sous le dessin ; colonne repliée sans grand vide.
+
 ### Lisibilité, avis et barre (2026-11-25)
 
 - Texte courant en 14 px, aucun texte sous 12 px.

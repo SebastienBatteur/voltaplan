@@ -14,6 +14,7 @@ Un dossier d'installation électrique contient des données personnelles (nom et
 | Projets enregistrés « sur cet appareil » | Le fichier `.voltaplan` que vous choisissez | Fichier JSON lisible. Les photos et fonds de plan y sont intégrés (images JPEG). |
 | Réglages : langue, disposition des panneaux, dépôt GitHub choisi, identifiants d'application Drive / OneDrive / Dropbox, réglages de l'IA | `localStorage` du navigateur (clés `voltaplan.…`) | Aucune donnée de projet. |
 | **Clé d'API de l'IA** et **jeton GitHub** | `localStorage`, **chiffrés** (AES-GCM 256 bits, clé dérivée de votre phrase secrète par PBKDF2-SHA-256, 600 000 itérations) | La phrase secrète n'est jamais enregistrée. La clé ou le jeton déchiffré reste en mémoire le temps de la session. |
+| Transfert des réglages de l'IA vers un autre appareil (QR code ou lien « …/app/#ia=… », à votre demande) | Dans le lien lui-même : réglages et clé d'API **toujours chiffrée** par votre phrase secrète | Aucun serveur : la partie après « # » n'est jamais envoyée au site ; elle est retirée de la barre d'adresse à l'ouverture (elle peut rester dans l'historique du navigateur, toujours chiffrée). L'appareil qui reçoit demande la phrase secrète. Ne partagez pas le QR code publiquement. |
 | Jetons de connexion Google Drive / OneDrive / Dropbox | Mémoire uniquement | Perdus à la fermeture de l'onglet ou de l'application. |
 | Fichiers de l'application (hors ligne) | Cache du service worker (version web) | Uniquement le code et les images de l'application, jamais vos projets. |
 

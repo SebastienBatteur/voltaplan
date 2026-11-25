@@ -1,4 +1,6 @@
 import { AiSettingsDialog } from './ui/AiSettingsDialog';
+import { takeAiTransferFromLocation } from './ai/transfer';
+
 import { ElementsPanel } from './ui/ElementsPanel';
 import { useAiUnlocked } from './ai/settings';
 import { BoardView } from './ui/BoardView';
@@ -61,6 +63,9 @@ import { makeDisplayImage } from './io/background';
 import { setOpenModels } from './format/assetsIdb';
 import { LegalFooter, LegalLinks } from './ui/LegalFooter';
 import { AboutDialog } from './ui/AboutDialog';
+
+/** Lu une seule fois au chargement (puis retiré de l'adresse) : configuration IA reçue d'un autre appareil. */
+const AI_INCOMING = typeof location !== 'undefined' ? takeAiTransferFromLocation() : null;
 
 // Format v2 : images d'affichage régénérées au besoin ; le projet ouvert compte comme référence (jamais de
 // suppression d'un document qu'il utilise, même avant son enregistrement).
@@ -359,6 +364,11 @@ export function App() {
   }, [s.dirty, s.project.meta.title]);
 
   const [aiOpen, setAiOpen] = useState(false);
+  // Configuration IA reçue par un lien « …#ia=… » (QR code scanné sur un autre appareil) : fenêtre IA ouverte
+  const aiIncoming = AI_INCOMING;
+  useEffect(() => {
+    if (aiIncoming) setAiOpen(true);
+  }, [aiIncoming]);
   const aiUnlocked = useAiUnlocked();
   const [printOpen, setPrintOpen] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
@@ -541,7 +551,7 @@ export function App() {
         </ToolbarMore>
       </header>
 
-      {aiOpen && <AiSettingsDialog onClose={() => setAiOpen(false)} />}
+      {aiOpen && <AiSettingsDialog incoming={aiIncoming} onClose={() => setAiOpen(false)} />}
       {printOpen && <PrintDialog onClose={() => setPrintOpen(false)} />}
       {syncOpen && <SyncDialog onClose={() => setSyncOpen(false)} />}
       {aboutOpen && <AboutDialog onClose={() => setAboutOpen(false)} />}
