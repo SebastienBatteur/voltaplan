@@ -16,6 +16,9 @@
   l'échelle réelle quand le fichier indique son unité.
 - **Maison type** dans l'assistant (installation neuve) : circuits courants déjà en place, à adapter ;
   vérifié par un test qui exige zéro constat du contrôle RGIE (hors adresse et installateur).
+- **Convertisseurs** : type au choix (onduleur DC → AC, redresseur/onduleur AC ↔ DC pour une batterie, hacheur
+  DC → DC), avec les symboles du tableau 2.23 du RGIE (H. Sources). Le rappel photovoltaïque ne vise plus un
+  convertisseur de batterie.
 - Analyse des outils concurrents et des améliorations possibles : `docs/strategie/CONCURRENCE-2026-11.md`.
 - Guide (FR) mis à jour.
 

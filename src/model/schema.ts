@@ -147,7 +147,12 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'count', type: 'number' },
     { key: 'name', type: 'text' },
   ],
-  inverter: [{ key: 'power', type: 'number', unit: 'W' }],
+  inverter: [
+    // Symboles du tableau 2.23 du RGIE (H. Sources) : onduleur DC → AC (photovoltaïque), redresseur/onduleur
+    // AC ↔ DC (batterie domestique), hacheur DC → DC
+    { key: 'inverterType', type: 'enum', options: ['dcAc', 'acDc', 'dcDc'], default: 'dcAc' },
+    { key: 'power', type: 'number', unit: 'W' },
+  ],
   motor: [
     { key: 'power', type: 'number', unit: 'W' },
     { key: 'cosPhi', type: 'number' },
@@ -195,7 +200,7 @@ export const ALLOWED_CHILDREN: Record<NodeKind, NodeKind[]> = {
   domotic: ['light', 'cable', 'appliance', 'motor'],
   motor: ['cable'],
   solarPanel: ['cable', 'solarPanel'],
-  inverter: ['cable', 'solarPanel'],
+  inverter: ['cable', 'solarPanel', 'other'],
   bell: [],
   detector: ['light', 'cable'],
   other: ['cable', 'other'],

@@ -612,17 +612,29 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           <path d="M6 -10 L17 6 L28 -10" className="nofill" />
         </g>
       );
-    case 'inverter':
-      // Onduleur DC → AC : carré barré, « = » en haut à gauche, « ~ » en bas à droite
+    case 'inverter': {
+      // RGIE tableau 2.23 (H. Sources) : carré barré ; en haut à gauche l'entrée, en bas à droite la sortie.
+      // DC → AC (onduleur) : « ═ » puis « ~ » ; AC ↔ DC (redresseur/onduleur) : « ~ » puis « ═ » et double flèche ;
+      // DC → DC (hacheur) : « ═ » des deux côtés. « ═ » = trait plein sur trait interrompu (courant continu).
+      const type = String(n.props.inverterType ?? 'dcAc');
+      const dc = (x: number, y: number) => (
+        <>
+          <path d={`M${x} ${y} h7`} className="nofill" />
+          <path d={`M${x} ${y + 3} h7`} className="nofill" strokeDasharray="2 1" />
+        </>
+      );
+      const ac = (x: number, y: number) => <path d={`M${x} ${y} q2 -3 4 0 t4 0`} className="nofill" />;
       return (
         <g>
           {lead(6)}
           <rect x={6} y={-10} width={22} height={20} className="bg" />
           <line x1={6} y1={10} x2={28} y2={-10} />
-          <path d="M8 -6 h7 M8 -3 h7" className="nofill" strokeDasharray="2 1" />
-          <path d="M18 5 q2 -3 4 0 t4 0" className="nofill" />
+          {type === 'acDc' ? ac(8, -5) : dc(8, -7)}
+          {type === 'dcAc' ? ac(18, 5) : dc(19, 2)}
+          {type === 'acDc' && <path d="M19 8.5 h7 M20.5 7 l-1.5 1.5 l1.5 1.5 M24.5 7 l1.5 1.5 l-1.5 1.5" className="nofill" style={{ strokeWidth: 0.7 }} />}
         </g>
       );
+    }
     case 'detector':
       return (
         <g>

@@ -278,7 +278,8 @@ function checkRgie(project: Project): Finding[] {
     }
   }
 
-  const pv = infos.find((i) => i.node.kind === 'inverter' || i.node.kind === 'solarPanel');
+  // Photovoltaïque : panneaux ou onduleur DC → AC (un redresseur/onduleur AC ↔ DC seul est celui d'une batterie)
+  const pv = infos.find((i) => i.node.kind === 'solarPanel' || (i.node.kind === 'inverter' && (i.node.props.inverterType ?? 'dcAc') === 'dcAc'));
   if (pv) add('R-PV-MANUAL', 'info', pv.node.id);
 
   // Équipements confirmés présents mais non dessinés : le schéma est incomplet (exigence documentaire).
