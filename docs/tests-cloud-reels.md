@@ -318,13 +318,22 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
   de plan F10), enregistré sur Drive en dossier « Essai transfert F8 (à supprimer) » : 2 dossiers créés, 3 envois
   (image, README, modèle) ; rouvert depuis Drive : 20 modules, image 1600×1000 ; côté Dropbox, uniquement des
   lectures (aucune écriture). Remarque : l'image relue peut venir du cache local de l'onglet.
-- **S11** (bloquant OneDrive ; corrigé : domaine ajouté à la CSP du site et de l'application de bureau, à revérifier
-  en réel) : **ouvrir un dossier OneDrive échoue** (« Failed to fetch »). Le
+- **S11** (bloquant OneDrive ; corrigé (554f353) : domaine ajouté à la CSP du site et de l'application de bureau ;
+  ✅ revérifié en réel : « Nouveau projet/ » rouvert, `project.json` lu) : **ouvrir un dossier OneDrive échoue** (« Failed to fetch »). Le
   téléchargement de `project.json` est redirigé par Graph vers `https://my.microsoftpersonalcontent.com/…`
   (comptes personnels), domaine absent de la CSP (`connect-src`, `src/security/csp.ts`, où il était marqué « à
   vérifier avec de vrais comptes »). F2 et F7 OneDrive bloqués tant que ce n'est pas corrigé. Incident d'essai :
   le script de F2 a ensuite modifié (21 modules) et enregistré la copie Drive « Essai transfert F8 », projet d'essai.
 
-Reste à faire en réel : D1 (apparition dans « Ouvrir avec »), D2 à D6, F8, F1/F2/F7 OneDrive complets, F6 (compte
-presque plein). S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
+- **F2 OneDrive** ✅ : « Nouveau projet/ » rouvert, modules 13 → 15, enregistré : un seul envoi (`project.json`, PUT
+  200) ; `README.txt` lu, pas renvoyé.
+- **F7 OneDrive** ✅ : archive `.voltaplan` de 46 Ko produite par l'application (type `application/vnd.voltaplan+zip`,
+  capturée en mémoire, rien d'écrit sur l'ordinateur), importée dans « Essai import F7 OneDrive (à supprimer)/ » :
+  image `assets/<sha256>.jpg`, `README.txt`, `project.json` créés (201), puis relus ; projet identique (15 modules,
+  image 1600×1000). Enregistrement suivant (16 modules) : **image non renvoyée** ; `project.json` et `README.txt`
+  renvoyés.
+- **O5** (mineur) : le premier enregistrement après un import réécrit `README.txt` (texte différent de celui écrit à
+  l'import, probablement le titre). Une requête de plus, sans effet sur les données.
+
+Reste à faire en réel : D4 et D6 (second compte Google), F6 (compte presque plein), Android ; S10 à corriger. S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
 
