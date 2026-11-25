@@ -15,7 +15,8 @@
 
 ### Dossier imprimé : mentions RGIE 3.1.2 (2026-11-25)
 
-- Numéro du dossier (onglet Projet) imprimé dans le cartouche de chaque page, avec la version et la date.
+- Numéro du dossier (onglet Projet) imprimé dans le cartouche de chaque page, avec la version et la date ; donné
+  par l'installateur, il est proposé automatiquement (date du projet + code) et reste modifiable.
 - Cartouche : « Tension et nature du courant » libellé explicitement.
 - Contrôle RGIE : numéro du dossier et qualité du responsable des travaux exigés (mentions documentaires).
 - Bilan des mentions exigées : `docs/dossier-imprime-rgie.md`.

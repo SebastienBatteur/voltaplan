@@ -27,3 +27,27 @@ describe('repérage des circuits (RGIE 3.1.2.1)', () => {
     expect(n.get(sw.id)).toBe('B1');
   });
 });
+
+describe('numéro du dossier proposé automatiquement (RGIE 3.1.2, donné par l’installateur)', () => {
+  it('date du projet + code de 3 caractères ; présent dès la création', async () => {
+    const { autoDocNumber, emptyProject } = await import('../src/model/tree');
+    expect(autoDocNumber('2026-11-25')).toMatch(/^2026-11-25-[A-Z2-9]{3}$/);
+    expect(autoDocNumber('date illisible')).toMatch(/^\d{4}-\d{2}-\d{2}-[A-Z2-9]{3}$/);
+    expect(emptyProject().meta.docNumber).toMatch(/^\d{4}-\d{2}-\d{2}-[A-Z2-9]{3}$/);
+  });
+
+  it('projet ouvert sans numéro : numéro proposé, projet non marqué modifié ; numéro existant gardé', async () => {
+    const { useStore } = await import('../src/store');
+    const { emptyProject } = await import('../src/model/tree');
+    const p = emptyProject();
+    p.meta.date = '2025-03-04';
+    delete p.meta.docNumber;
+    useStore.getState().loadProject(p, 'ancien.voltaplan');
+    expect(useStore.getState().project.meta.docNumber).toMatch(/^2025-03-04-[A-Z2-9]{3}$/);
+    expect(useStore.getState().dirty).toBe(false);
+    const q = emptyProject();
+    q.meta.docNumber = 'D-42';
+    useStore.getState().loadProject(q, 'x.voltaplan');
+    expect(useStore.getState().project.meta.docNumber).toBe('D-42');
+  });
+});

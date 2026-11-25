@@ -689,6 +689,7 @@ export const en: Partial<Dict> = {
   'project.revisionsHelp': "The RGIE requires a number, version and date on diagrams and plans. Record every change (e.g. wall removed, window enlarged, circuits changed): the layout plan must always show the existing situation.",
   'project.docNumber': "File number",
   'project.docNumberHint': "e.g. 2026-014",
+  'project.docNumberHelp': "Suggested automatically (project date + code), editable. The installer gives it, not the inspection body.",
   'project.revVersion': "Version",
   'project.revDescription': "Change",
   'project.revAdd': "Add a version",

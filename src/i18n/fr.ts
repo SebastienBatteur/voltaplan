@@ -688,6 +688,7 @@ export const fr = {
   'project.revisionsHelp': "Le RGIE demande un numéro, une version et une date sur les schémas et plans. Notez chaque modification de l'installation (ex. mur supprimé, fenêtre agrandie, circuits modifiés) : le plan de position doit toujours montrer la situation existante.",
   'project.docNumber': "Numéro du dossier",
   'project.docNumberHint': "ex. 2026-014",
+  'project.docNumberHelp': "Proposé automatiquement (date du projet + code), modifiable. C'est l'installateur qui le donne, pas l'organisme agréé.",
   'project.revVersion': "Version",
   'project.revDescription': "Modification",
   'project.revAdd': "Ajouter une version",

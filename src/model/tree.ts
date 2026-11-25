@@ -210,6 +210,20 @@ export function emptyPage(name: string): PlanPage {
   return { id: uid(), name, walls: [], openings: [], rects: [], images: [], symbols: [], labels: [] };
 }
 
+/**
+ * Numéro de dossier proposé automatiquement (RGIE 3.1.2 : « numéro, version et date de la version ») : c'est
+ * l'installateur qui le donne, pas l'organisme agréé. Date du projet + 3 caractères au hasard (ex. 2026-11-25-K7Q),
+ * modifiable dans l'onglet Projet.
+ */
+export function autoDocNumber(date: string): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const rnd = new Uint8Array(3);
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) crypto.getRandomValues(rnd);
+  else for (let i = 0; i < rnd.length; i++) rnd[i] = Math.floor(Math.random() * 256);
+  const day = /^\d{4}-\d{2}-\d{2}/.test(date) ? date.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  return day + '-' + [...rnd].map((b) => chars[b % chars.length]).join('');
+}
+
 export function emptyProject(): Project {
   const origin = createNode('origin');
   const meter = createNode('meter');
@@ -227,6 +241,7 @@ export function emptyProject(): Project {
       site: { country: 'Belgique' },
       installer: { address: {} },
       date: new Date().toISOString().slice(0, 10),
+      docNumber: autoDocNumber(new Date().toISOString().slice(0, 10)),
       supply: '2 x 230V ~ 50Hz',
       earthing: 'TT',
       installationKind: 'new',

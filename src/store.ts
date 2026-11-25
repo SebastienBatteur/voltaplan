@@ -1,19 +1,7 @@
 import { STORAGE_PREFIX } from './brand';
 import { create } from 'zustand';
 import type { BoardLayout, ElNode, NodeKind, Project, ProjectMeta, Measurements, PlanPage, Pt, PropValue } from './model/types';
-import {
-  cloneWithNewIds,
-  createNode,
-  emptyPage,
-  emptyProject,
-  findNode,
-  findParent,
-  insertChild,
-  insertInSeries,
-  moveSibling,
-  removeNode,
-  updateNode,
-} from './model/tree';
+import { cloneWithNewIds, createNode, emptyPage, emptyProject, findNode, findParent, insertChild, insertInSeries, moveSibling, removeNode, updateNode, autoDocNumber } from './model/tree';
 import { detectLang, translate, type Lang } from './i18n';
 import { pruneReferences } from './model/integrity';
 import { orientSymbols } from './plan/geometry';
@@ -113,7 +101,10 @@ export const useStore = create<State>((set, get) => {
     setPage: (pageIndex) => set({ pageIndex }),
     select: (selectedId) => set({ selectedId }),
     loadProject: (project, fileName) =>
-      set({ project, fileName, dirty: false, selectedId: null, past: [], future: [], pageIndex: 0, placingId: null }),
+      set({
+        // Projet sans numéro de dossier (fichier ancien, import) : numéro proposé, sans marquer le projet modifié
+        project: project.meta.docNumber?.trim() ? project : { ...project, meta: { ...project.meta, docNumber: autoDocNumber(project.meta.date) } },
+        fileName, dirty: false, selectedId: null, past: [], future: [], pageIndex: 0, placingId: null }),
     markSaved: (fileName) => set((s) => ({ dirty: false, fileName: fileName ?? s.fileName })),
 
     setProps: (id, patch) =>

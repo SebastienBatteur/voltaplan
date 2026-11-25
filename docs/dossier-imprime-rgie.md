@@ -6,7 +6,7 @@ sous-sections 3.1.2.1 à 3.1.2.3, figures 3.1 et 3.2. Installations domestiques.
 
 | Exigence | Référence | Voltaplan |
 | --- | --- | --- |
-| Numéro, version et date de la version | 3.1.2 | **N° du dossier ajouté** (onglet Projet, « Versions du dossier ») ; version et date déjà présentes. Contrôle `R-DOC-NUMBER` s'il manque. |
+| Numéro, version et date de la version | 3.1.2 | **N° du dossier ajouté** (onglet Projet, « Versions du dossier »), donné par l'installateur (pas par l'organisme agréé) : **proposé automatiquement** (date du projet + code, ex. 2026-11-25-K7Q) à la création et à l'ouverture d'un projet qui n'en a pas, modifiable. Version et date déjà présentes. Contrôle `R-DOC-NUMBER` seulement s'il est effacé. |
 | Nom, qualité, n° de TVA (si d'application) du responsable des travaux | 3.1.2.1 a | Présents. **Contrôle `R-DOC-QUALITY` ajouté** (la qualité n'était pas vérifiée) ; `R-DOC-INSTALLER` pour le nom. |
 | Adresse du lieu de l'installation | 3.1.2.1 a | Présente ; contrôle `R-DOC-ADDRESS`. |
 | Signature et date du responsable et de l'organisme agréé | 3.1.2.1 a, figures 3.1 et 3.2 | Cadres « Date et signature » (installateur, organisme agréé, propriétaire). |

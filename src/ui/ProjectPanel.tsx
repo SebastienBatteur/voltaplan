@@ -237,6 +237,7 @@ export function ProjectPanel() {
           <span>{t('project.docNumber')}</span>
           <input value={meta.docNumber ?? ''} placeholder={t('project.docNumberHint')} onChange={(e) => setMeta({ docNumber: e.target.value })} />
         </label>
+        <p className="muted small">{t('project.docNumberHelp')}</p>
         {revisions.map((r, i) => (
           <div key={i} className="revision">
             <input className="rev-version" value={r.version} onChange={(e) => setRev(i, { version: e.target.value })} aria-label={t('project.revVersion')} />

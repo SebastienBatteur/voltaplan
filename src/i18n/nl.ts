@@ -689,6 +689,7 @@ export const nl: Partial<Dict> = {
   'project.revisionsHelp': "Het AREI vraagt een nummer, versie en datum op de schema’s en plannen. Noteer elke wijziging (bv. muur verwijderd, raam vergroot, kringen gewijzigd): het situatieschema toont altijd de bestaande toestand.",
   'project.docNumber': "Dossiernummer",
   'project.docNumberHint': "bv. 2026-014",
+  'project.docNumberHelp': "Automatisch voorgesteld (datum van het project + code), aanpasbaar. De installateur geeft het, niet het erkend organisme.",
   'project.revVersion': "Versie",
   'project.revDescription': "Wijziging",
   'project.revAdd': "Versie toevoegen",
