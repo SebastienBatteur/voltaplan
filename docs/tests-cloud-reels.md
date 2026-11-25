@@ -284,7 +284,10 @@ mise en place de l'enregistreur).
   `test/authMessages.test.ts`. « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
   Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge ; « Import terminé : 4 éléments… » affiché à
   l'ouverture d'un simple projet `.voltaplan` (le mot « Import » prête à confusion).
-- **S7 (hors code) : Dropbox affiche « peu d'utilisateurs… »** avant de connecter l'application (statut
+- **S7 (hors code ; demande de passage en production envoyée par le propriétaire le 2026-11-25 ; Dropbox ne
+  l'examine qu'à partir de 50 utilisateurs, et elle doit être faite au plus tard deux semaines après ce seuil ; en
+  développement, jusqu'à 500 utilisateurs ; disparition de l'avertissement après approbation **[à vérifier]**) :
+  Dropbox affiche « peu d'utilisateurs… »** avant de connecter l'application (statut
   développement). Demander le statut production avant la bêta publique.
 - **S8 (navigateur intégré seulement)** : la boîte `alert()` (fichier trop volumineux) n'est pas montrée par le
   navigateur intégré, et `createWritable` y est refusé (« Cet appareil » échoue). Sans effet dans un navigateur
