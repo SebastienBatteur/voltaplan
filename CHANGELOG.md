@@ -8,6 +8,9 @@
   de conflit : Drive change le numéro de version sans changer le contenu. Seule la révision de tête compte.
 - **README.txt des dossiers de projet** : texte propre aux dossiers (et non plus à l'archive), envoyé seulement
   s'il manque ou si son texte a changé, au lieu de repartir à chaque enregistrement.
+- **Enregistrement sur l'appareil sans sélecteur de fichiers** : l'archive téléchargée porte son type propre
+  (`application/vnd.voltaplan+zip`, au lieu de `application/zip`) et son nom finit toujours par `.voltaplan`, même
+  pour une copie de conflit.
 - **Dates des dossiers** : même présentation pour Google Drive, OneDrive et Dropbox (date du projet, le plus
   récent d'abord), sans une requête par dossier.
 

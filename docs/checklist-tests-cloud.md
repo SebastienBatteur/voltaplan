@@ -1,4 +1,4 @@
-# Checklist : les 15 scénarios cloud réels (F1 à F9, D1 à D6)
+# Checklist : les 16 scénarios cloud réels (F1 à F10, D1 à D6)
 
 Date : 2026-11-24. Détail de chaque scénario : [tests-cloud-reels.md](tests-cloud-reels.md). Les résultats vont dans
 son tableau « 4. Résultats ».
@@ -24,14 +24,18 @@ séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens
    - revérifier F2 sur Google Drive (faux conflit corrigé, B1) et le README / les dates sur les trois services ;
    - F1, F2, F7 sur OneDrive ; F8 (transfert Dropbox → Drive) ;
    - surveiller la connexion OneDrive toutes les 5 minutes (O1).
-3. **toi**, à mon signal, **couper le Wi-Fi** 10 secondes puis le rétablir, deux fois : F3 (coupure pendant les
+3. **toi**, à mon signal, **retirer l'accès de Voltaplan** dans la page de sécurité d'un service (lien dans la
+   politique de confidentialité) pendant que le projet a des modifications non enregistrées, puis cliquer
+   « Enregistrer » et te reconnecter (F10, partie rapide). La partie longue (expiration naturelle, environ 1 h)
+   court pendant toute la séance. Analyse des jetons : [oauth-jetons.md](oauth-jetons.md).
+4. **toi**, à mon signal, **couper le Wi-Fi** 10 secondes puis le rétablir, deux fois : F3 (coupure pendant les
    photos) et F5 (gros PDF ; je te demande avant d'envoyer 160 à 260 Mo dans tes comptes).
-4. **toi**, sur ton **téléphone** : ouvrir le dossier d'essai Dropbox, ajouter une photo, enregistrer (F4, F9).
-5. **toi**, dans **drive.google.com** : clic droit sur un `.voltaplan` → « Ouvrir avec » → Voltaplan (D1, D2), puis
+5. **toi**, sur ton **téléphone** : ouvrir le dossier d'essai Dropbox, ajouter une photo, enregistrer (F4, F9).
+6. **toi**, dans **drive.google.com** : clic droit sur un `.voltaplan` → « Ouvrir avec » → Voltaplan (D1, D2), puis
    « Nouveau » → Voltaplan dans un sous-dossier (D5). **moi** : D3 et la vérification.
-6. **toi**, avec un **second compte Google** : partager un fichier en lecture seule (D4) et ouvrir depuis ce compte
+7. **toi**, avec un **second compte Google** : partager un fichier en lecture seule (D4) et ouvrir depuis ce compte
    (D6).
-7. Plus tard, séparément : F6 (compte d'essai presque plein, jamais ton compte principal).
+8. Plus tard, séparément : F6 (compte d'essai presque plein, jamais ton compte principal).
 
 ## Avant de commencer (toi)
 
@@ -63,6 +67,7 @@ séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens
 | F7 | Import d'une archive `.voltaplan` | — | importer l'archive d'essai, comparer avec l'original | réel |
 | F8 | Transfert Dropbox → Drive | accepter les 2 connexions | ouvrir le dossier Dropbox, l'enregistrer sur Drive, comparer, vérifier Dropbox intact | réel |
 | F9 | Drive : version concurrente | (facultatif) enregistrer en même temps sur ton 2ᵉ appareil | provoquer la course avec 2 onglets, vérifier le conflit ou la copie | réel partiel |
+| F10 | Travail prolongé : session expirée, modifications non enregistrées, reconnexion | rapide : **retirer l'accès** de Voltaplan dans la page de sécurité du service, puis cliquer « Enregistrer » et accepter la reconnexion ; long : laisser l'onglet ouvert au-delà de la durée du jeton (Google environ 1 h, OneDrive 60 à 90 min, Dropbox [à vérifier]) | modifier le schéma et ajouter une photo **sans enregistrer** ; relever `expires_in` (jamais le jeton) ; à l'expiration ou au retrait : vérifier « en attente de connexion », aucune perte (schéma, photo, historique local), aucun envoi partiel du modèle ; après reconnexion : un seul enregistrement, documents déjà présents non renvoyés, pas de faux conflit ; recharger la page et vérifier que rien d'enregistré ne manque | réel (rapide) ; réel (long, si la séance dure assez) |
 | D1 | Apparition dans « Ouvrir avec » | cliquer « Ajouter à « Ouvrir avec » de Drive » et accepter `drive.install` | vérifier sur drive.google.com (clic droit sur le `.voltaplan`) ; noter si une fiche Marketplace est exigée | réel |
 | D2 | Ouvrir depuis Drive | cliquer « Ouvrir avec → Voltaplan » puis le bandeau (fenêtre de connexion) | vérifier le projet ouvert, l'adresse sans `state`, qu'un rechargement ne rouvre rien | réel |
 | D3 | Enregistrer après ouverture | — | modifier, enregistrer, vérifier une version de plus, pas de doublon | réel |
@@ -77,5 +82,5 @@ séance d'environ 45 minutes couvre le reste ; je prépare tout, tu n'interviens
       supprimons rien à distance.**
 - [ ] Toi : retirer les accès d'essai si tu veux repartir de zéro (liens dans la politique de confidentialité).
 
-Ordre conseillé, pour regrouper tes interventions : F1 → F2 → F7 → F3 → F5 → F4 → F9 → F8 sur Dropbox et Drive
+Ordre conseillé, pour regrouper tes interventions : F1 → F2 → F7 → F10 → F3 → F5 → F4 → F9 → F8 sur Dropbox et Drive
 (OneDrive : F1 à F7), puis D1 → D2 → D3 → D5 → D4 → D6, puis F6 avec le compte d'essai plein.

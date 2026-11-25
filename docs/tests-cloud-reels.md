@@ -188,6 +188,24 @@ Observations :
   dossiers, Drive ne change pas la date d'un dossier quand son contenu change ; OneDrive : date du dossier, qui
   suit son contenu, constaté sur `Apps`). Coût : Dropbox, une liste récursive au lieu d'une liste simple ; Drive,
   une requête de plus pour tous les dossiers. Même tri partout : le plus récent d'abord.
-- **O4** : l'archive téléchargée par « Cet appareil » (sans sélecteur de fichiers du système) est typée
-  `application/zip` au lieu de `application/vnd.voltaplan+zip`. Sans effet sur l'ouverture ; à harmoniser.
+- **O4** (corrigé) : l'archive téléchargée par « Cet appareil » (sans sélecteur de fichiers du système) était typée
+  `application/zip`. Elle porte maintenant `application/vnd.voltaplan+zip`, comme son entrée `mimetype` et comme
+  sur Google Drive. Le nom finit **toujours** par `.voltaplan`, y compris pour une copie de conflit
+  (`deviceFileName`, `src/io/files.ts`). Testé automatiquement (`test/localDownload.test.ts`). Que chaque navigateur
+  garde bien l'extension avec ce type est **[à vérifier]**, surtout Safari et iOS (séance commune, F4 sur téléphone).
+
+**2026-11-25, vérifications sans le propriétaire**
+
+- **B1 ne masque pas de vrai conflit** (automatique, service simulé qui reproduit les changements de `version`) :
+  toute écriture de contenu par un autre appareil crée une nouvelle révision de tête, donc un conflit. C'est vrai
+  même avec un contenu identique, même suivie d'un changement de `version` seul, et avec une version mémorisée
+  ancienne sans révision. Une écriture pendant notre envoi est recopiée à part. Seul un changement de `version`
+  sans nouvelle révision passe sans conflit. 6 tests dans `test/driveVersion.test.ts`. Limite : la détection
+  **pendant** l'envoi lit la liste des révisions ; Drive peut supprimer d'anciennes révisions non conservées, mais
+  la dernière écrite par l'autre appareil reste la révision de tête, donc elle est toujours vue **[à vérifier en réel,
+  F9]**.
+- **Lien GitHub Sponsors sans connexion** (réel, requête sans cookie) : `https://github.com/sponsors/SebastienBatteur`
+  répond 200, sans redirection, avec les paliers mensuels et ponctuels visibles. Choisir un palier mène à la
+  connexion GitHub : GitHub exige un compte pour parrainer.
+- **Jetons OAuth** : analyse dans [oauth-jetons.md](oauth-jetons.md) ; aucun changement de code.
 
