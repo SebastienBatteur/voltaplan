@@ -262,30 +262,31 @@ export function AiSettingsDialog({ onClose, incoming }: { onClose: () => void; i
         <fieldset>
           <legend>{t('ai.transfer')}</legend>
           <p className="muted small">{t('ai.transferHelp')}</p>
+          {/* Deux façons d'envoyer : QR code (appareil photo du téléphone) ou lien copié (sans caméra : vers
+              l'application de bureau du même ordinateur, ou par message / courriel à soi-même) */}
           <div className="row">
             <button onClick={() => setShowSend((v) => !v)} aria-expanded={showSend}>
               {t(showSend ? 'ai.transferHide' : 'ai.transferSend')}
             </button>
+            <button
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(aiTransferLink(s));
+                  setCopied(true);
+                } catch {
+                  setCopied(false);
+                }
+              }}
+            >
+              {t('ai.transferCopy')}
+            </button>
+            {copied && <span className="small ok-text">{t('ai.transferCopied')}</span>}
           </div>
+          <p className="muted small">{t('ai.transferNoCamera')}</p>
           {showSend && (
             <div className="transfer-send">
               <QrCode text={aiTransferLink(s)} label={t('ai.transferSend')} />
               <p className="muted small">{t('ai.transferScan')}</p>
-              <div className="row">
-                <button
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(aiTransferLink(s));
-                      setCopied(true);
-                    } catch {
-                      setCopied(false);
-                    }
-                  }}
-                >
-                  {t('ai.transferCopy')}
-                </button>
-                {copied && <span className="small ok-text">{t('ai.transferCopied')}</span>}
-              </div>
             </div>
           )}
           <label className="field">
