@@ -157,7 +157,11 @@ export class FakeDrive {
   full = false;
   token = 'tok';
   private n = 0;
-  private sessions = new Map<string, { meta: Partial<DFile>; target?: string; data: Uint8Array; size: number }>();
+  private sessions = new Map<string, { meta: Partial<DFile>; target?: string; data: Uint8Array; size: number; doneId?: string }>();
+  /** Sessions d'envoi expirées (Drive les garde environ une semaine) : 404. */
+  expireSessions() {
+    this.sessions.clear();
+  }
   /**
    * Comme le vrai service (constaté le 2026-11-24) : `version` augmente aussi sans changement de contenu, juste après
    * une création et à chaque marquage d'une révision. Désactivable pour les tests qui comptent les versions.
@@ -260,7 +264,10 @@ export class FakeDrive {
     const keep = u.searchParams.get('keepRevisionForever') === 'true';
     // Session d'envoi « resumable »
     if (u.searchParams.get('upload_id')) {
-      const s = this.sessions.get(u.searchParams.get('upload_id')!)!;
+      const s = this.sessions.get(u.searchParams.get('upload_id')!);
+      if (!s) return json({ error: { code: 404, message: 'session expirée' } }, 404);
+      // Session terminée : comme le vrai service, le fichier déjà créé (jamais un second)
+      if (s.doneId) return json(this.view(this.files.get(s.doneId)!));
       const range = headers['content-range'];
       const add = await bodyBytes(init.body);
       if (range.startsWith('bytes */')) {
@@ -274,7 +281,9 @@ export class FakeDrive {
         s.data = next;
         if (s.data.length < s.size) return new Response(null, { status: 308, headers: { Range: `bytes=0-${s.data.length - 1}` } });
       }
-      return s.target ? this.upload(this.files.get(s.target)!, s.data, keep) : this.create(s.meta, s.data, true);
+      const res = s.target ? this.upload(this.files.get(s.target)!, s.data, keep) : this.create(s.meta, s.data, true);
+      s.doneId = s.target ?? [...this.files.values()].pop()!.id;
+      return res;
     }
     if (p === '/upload/drive/v3/files' && u.searchParams.get('uploadType') === 'multipart') {
       const bytes = await bodyBytes(init.body);

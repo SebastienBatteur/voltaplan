@@ -265,7 +265,12 @@ mise en place de l'enregistreur).
   navigateur n'a signalé ni la coupure ni le retour (`navigator.onLine` resté vrai, autres cartes réseau actives).
   L'enregistrement reste « en attente » jusqu'au clic suivant. Piste : nouvel essai périodique (délai croissant)
   tant qu'un envoi est en attente, en plus de `online`.
-- **S5 : un document interrompu est renvoyé depuis le début.** La session d'envoi par tranches de Drive n'est pas
+- **S5 (corrigé pour Google Drive, à revérifier en réel) : un document interrompu est renvoyé depuis le début.**
+  Correction : la session d'envoi est gardée en mémoire pour un document désigné par son empreinte
+  (`assets/<sha256>.<ext>`) ; à l'essai suivant, Drive dit où reprendre ; session expirée : nouvelle session ;
+  réponse perdue après la dernière tranche : pas de doublon. Tests : `test/driveResume.test.ts` (la reprise échoue
+  sans la correction). Dropbox (au-delà de 150 Mo) et OneDrive (au-delà de 250 Mo) : non traités, tailles
+  inatteignables par un document importé (50 Mo au plus). La session d'envoi par tranches de Drive n'est pas
   gardée. Piste : la garder (en mémoire) et reprendre au dernier octet accepté.
 - **S6 : messages.** « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
   Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge ; « Import terminé : 4 éléments… » affiché à

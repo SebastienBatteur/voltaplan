@@ -136,16 +136,61 @@ export function nextOffset(range: string | null): number {
  * session est sur www.googleapis.com (CSP inchangée) [à vérifier : en-têtes Location et Range lisibles depuis le
  * navigateur (CORS)].
  */
-async function driveResumable(c: DriveCtx, url: string, method: 'POST' | 'PATCH', meta: object, blob: Blob, type: string): Promise<DriveItem> {
-  const s = await call(c, url, {
-    method,
-    headers: { 'Content-Type': 'application/json; charset=UTF-8', 'X-Upload-Content-Type': type, 'X-Upload-Content-Length': String(blob.size) },
-    body: JSON.stringify(meta),
-  });
-  const session = s.headers.get('Location');
-  if (!session) throw new Error('Google Drive : adresse de session d’envoi absente');
+/**
+ * Sessions d'envoi « resumable » interrompues (coupure du réseau), gardées EN MÉMOIRE pour l'essai suivant : le
+ * document reprend au dernier octet accepté par Drive au lieu de repartir de zéro (écart S5 de la séance réelle du
+ * 2026-11-25). Seulement pour un contenu désigné par son empreinte (documents `assets/<sha256>.<ext>`) : une même
+ * clé désigne alors forcément les mêmes octets. Une session expirée ou refusée est oubliée (nouvelle session).
+ */
+const openSessions = new Map<string, string>();
+
+/** Clé de reprise d'une création : seulement pour un nom fait de l'empreinte SHA-256 du contenu. */
+export function driveResumeKey(name: string, parents: readonly string[] | undefined, size: number): string | undefined {
+  return /^[0-9a-f]{64}(\.[a-z0-9]+)?$/i.test(name) ? `create|${(parents ?? []).join(',')}|${name}|${size}` : undefined;
+}
+
+/** Pour les tests. */
+export function resetDriveSessions() {
+  openSessions.clear();
+}
+
+async function driveResumable(c: DriveCtx, url: string, method: 'POST' | 'PATCH', meta: object, blob: Blob, type: string, resumeKey?: string): Promise<DriveItem> {
   const size = blob.size;
   let start = 0;
+  let session = resumeKey ? openSessions.get(resumeKey) : undefined;
+  if (session) {
+    // Où en est la session interrompue ? Une coupure ici laisse la session gardée pour l'essai suivant.
+    const st = await driveFetch(c, session, { method: 'PUT', headers: { 'Content-Range': `bytes */${size}` } });
+    if (st.status === 308) start = nextOffset(st.headers.get('Range'));
+    else if (st.ok) {
+      openSessions.delete(resumeKey!);
+      return (await st.json()) as DriveItem;
+    } else session = undefined; // expirée (404, 410) ou refusée : on repart d'une nouvelle session
+  }
+  if (!session) {
+    const s = await call(c, url, {
+      method,
+      headers: { 'Content-Type': 'application/json; charset=UTF-8', 'X-Upload-Content-Type': type, 'X-Upload-Content-Length': String(size) },
+      body: JSON.stringify(meta),
+    });
+    session = s.headers.get('Location') ?? undefined;
+    if (!session) throw new Error('Google Drive : adresse de session d’envoi absente');
+  }
+  if (resumeKey) openSessions.set(resumeKey, session);
+  try {
+    const item = await driveChunks(c, session, blob, start);
+    if (resumeKey) openSessions.delete(resumeKey);
+    return item;
+  } catch (e) {
+    // Coupure du réseau : session gardée ; toute autre erreur (refus, espace plein) : session oubliée
+    if (resumeKey && !(e instanceof TypeError)) openSessions.delete(resumeKey);
+    throw e;
+  }
+}
+
+async function driveChunks(c: DriveCtx, session: string, blob: Blob, from: number): Promise<DriveItem> {
+  const size = blob.size;
+  let start = from;
   let retries = 0;
   // Garde-fou : jamais de boucle sans fin si le service ne progresse pas
   for (let guard = Math.ceil(size / DRIVE_CHUNK) + 8; guard > 0; guard--) {
@@ -187,7 +232,8 @@ export async function driveCreate(c: DriveCtx, name: string, data: Blob | string
   const body = typeof data === 'string' ? new Blob([data], { type }) : data;
   const meta = { name, mimeType: type, ...(opts.parents ? { parents: opts.parents } : {}), ...(opts.appProperties ? { appProperties: opts.appProperties } : {}) };
   const q = `keepRevisionForever=true&supportsAllDrives=true&fields=${FILE_FIELDS}`;
-  if (body.size > DRIVE_MULTIPART_MAX) return driveFile(await driveResumable(c, `${DRIVE_UPLOAD}/files?uploadType=resumable&${q}`, 'POST', meta, body, type));
+  if (body.size > DRIVE_MULTIPART_MAX)
+    return driveFile(await driveResumable(c, `${DRIVE_UPLOAD}/files?uploadType=resumable&${q}`, 'POST', meta, body, type, driveResumeKey(name, opts.parents, body.size)));
   const boundary = 'voltaplan' + Math.random().toString(36).slice(2);
   const multipart = new Blob([
     `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n`,
