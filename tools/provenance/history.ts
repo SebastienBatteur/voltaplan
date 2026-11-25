@@ -12,7 +12,7 @@ import { fingerprintsDoc, type FileEntry } from './fingerprints';
 import type { FingerprintsDoc } from './schemas';
 import { background, type Background } from './similarity';
 
-const git = (root: string, ...args: string[]) => execFileSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 });
+const git = (root: string, ...args: string[]) => execFileSync('git', args, { cwd: root, encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] });
 
 /** Fichiers JavaScript des dépendances de production (au plus `capPerPackage` octets par paquet). */
 export function dependencyBackground(root: string, capPerPackage = 4 * 1024 * 1024): { bg: Background; files: number } {

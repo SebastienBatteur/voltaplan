@@ -2,6 +2,21 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Licence, provenance et identification (branche provenance-agpl, 2026-11-25)
+
+- **Licence `AGPL-3.0-only`** (auparavant `-or-later`), titulaire unique des droits ; mention « Copyright (C) 2026
+  Sébastien Batteur and VoltaPlan contributors » ; `REUSE.toml`. Les versions déjà publiées restent sous
+  `-or-later` pour qui les a obtenues.
+- **Identifiant permanent du projet** `urn:uuid:55b25e7a-c2a4-4787-bebc-42ecee353f9e` (`codemeta.json`).
+- **À chaque compilation** : `build-info.json`, `fingerprints.json`, `THIRD-PARTY-LICENSES.txt`, balises
+  d'identification, bandeau légal dans les fichiers JavaScript ; schémas génériques « oss-provenance 1.0 ».
+- **« À propos de Voltaplan »** : version, commit, licence, code source correspondant (celui de la version
+  utilisée, fork compris), licences tierces, copie des informations techniques.
+- **Releases** : arbre propre exigé, compilation reproductible vérifiée, SBOM web et bureau, `SHA256SUMS`,
+  attestations de provenance.
+- Aucune télémétrie, aucun appel réseau ajouté. Documentation : `docs/architecture/`, `docs/legal/`,
+  `docs/security/artifact-integrity.md`, ADR-0008.
+
 ### Stockage en ligne : corrections issues des essais réels (2026-11-25)
 
 - **Google Drive : faux conflit corrigé.** Le 2ᵉ enregistrement d'un projet créé dans la session créait une copie

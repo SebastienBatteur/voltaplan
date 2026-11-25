@@ -66,7 +66,7 @@ séparé de la branche `provenance-agpl`, que l'on peut retirer seul si la relec
 | Situation | Obligation (texte de la licence) | Comment Voltaplan aide |
 |---|---|---|
 | Version **non modifiée**, redistribuée | §4 et §6 : garder les mentions de licence et de copyright, fournir le code source correspondant ou une offre écrite | bandeau des fichiers JS, `build-info.json`, écran « À propos » |
-| Version **modifiée**, redistribuée | §5 : indiquer que le code a été modifié, avec une date ; licence AGPL pour l'ensemble ; code source correspondant (§6) | indicateurs `modified` et `dirty` ; variables `VOLTAPLAN_*` pour déclarer son dépôt et son code source (voir [fork-compliance.md](fork-compliance.md)) |
+| Version **modifiée**, redistribuée | §5 : indiquer que le code a été modifié, avec une date ; licence AGPL pour l'ensemble ; code source correspondant (§6) | état `modified`, `declared` ou `derived` ; variables `OSP_*` pour déclarer son dépôt et son code source (voir [fork-compliance.md](fork-compliance.md)) |
 | Version **modifiée**, utilisée **à distance** (site web) | §13 : proposer « en évidence » le code source correspondant à tous ses utilisateurs | lien « Code source » de l'application, qui pointe vers le dépôt **de la version compilée**, pas vers le dépôt officiel |
 | Usage privé, même modifié | aucune obligation de publier | — |
 
