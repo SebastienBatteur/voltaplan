@@ -91,3 +91,28 @@ Vérifié : 8 tests (`test/a11y.test.tsx`) et, dans un vrai navigateur (serveur 
 arborescence aux flèches, Inser → menu → Échap, Fichier → Entrée → flèches → « Enregistrer sous… » → focus dans la
 fenêtre, Tab, Échap → focus revenu sur « Fichier ». Non vérifié : lecteur d'écran réel (NVDA, VoiceOver).
 Le dessin SVG reste non focalisable : la sélection au clavier passe par l'arborescence (synchronisée avec le dessin).
+
+## 7. Suite : propriétés au téléphone (même jour, branche `panneau-telephone`)
+
+Corrigé (point 3 des priorités) : colonne masquée (≤ 800 px), toucher un élément ouvre un **panneau sous le
+dessin** (`src/ui/PropsSheet.tsx`), avec une contrainte de l'utilisateur : le dessin doit rester grand, pas saturé
+par les menus.
+- Le panneau est **dans le flux** (le dessin se réduit, rien n'est recouvert ; le schéma garde son cadre, l'élément
+  sélectionné reste visible).
+- **Replié par défaut** : une ligne (nom de l'élément, « Propriétés ▴ », ✕). Déplié à la demande, choix retenu.
+- Déplié : plafonné à 35 % de l'écran et le dessin garde au moins 60 % de la zone sous la barre ; le panneau défile.
+- ✕ désélectionne (le panneau disparaît). Sur grand écran, rien ne change.
+
+Mesures (émulation, après correction) :
+
+| Taille | Panneau replié | Panneau déplié |
+| --- | --- | --- |
+| 375 × 812 | ligne de 45 px ; dessin 622 px (77 %) | — |
+| 390 × 844 | — | panneau 253 px (3 champs visibles sur 6, défilement) ; dessin 446 px (53 %) ; aucune page qui déborde |
+
+Avant : colonne ouverte, dessin 391 px (48 %) avec une seule ligne d'arborescence et des propriétés quasi
+invisibles ; colonne fermée, aucune propriété.
+
+Reste : vue **Tableau** au téléphone encore chargée (réglages du tableau + message bleu « en réserve » + panneau) —
+les réglages se replient, mais le message bleu recouvre le dessin (même famille que O6) ; « Contrôle RGIE » hors
+écran dans les onglets ; téléphone en paysage (> 800 px de large) non traité. Non vérifié sur téléphone réel.

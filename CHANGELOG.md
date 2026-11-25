@@ -2,6 +2,12 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Téléphone : propriétés sous le dessin (2026-11-25)
+
+- Colonne masquée, toucher un élément affiche ses propriétés dans un panneau sous le dessin : replié (une ligne)
+  par défaut, déplié à la demande (choix retenu), plafonné pour que le dessin garde plus de la moitié de l'écran ;
+  ✕ désélectionne. Auparavant, la sélection n'affichait rien.
+
 ### Accessibilité au clavier (2026-11-25)
 
 - **Arborescence** utilisable au clavier : flèches pour parcourir et sélectionner, gauche/droite pour replier ou

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useStore } from '../store';
 import { STORAGE_PREFIX } from '../brand';
+import { PropsSheet, useNarrow } from './PropsSheet';
 
 const KEY = STORAGE_PREFIX + 'sidePanels';
 
@@ -15,6 +16,8 @@ interface Layout {
   width: number;
   /** Colonne masquée (une fine bande permet de la rouvrir). */
   hidden?: boolean;
+  /** Téléphone, colonne masquée : panneau des propriétés sous le dessin déplié (sinon une seule ligne). */
+  sheetOpen?: boolean;
 }
 
 function load(): Layout {
@@ -38,6 +41,7 @@ export function SidePanels({ tree, props, palette }: { tree: ReactNode; props: R
   const t = useStore((s) => s.t);
   const [l, setL] = useState<Layout>(load);
   const ref = useRef<HTMLElement>(null);
+  const narrow = useNarrow();
   const drag = useRef<'split' | 'width' | null>(null);
 
   useEffect(() => {
@@ -85,9 +89,16 @@ export function SidePanels({ tree, props, palette }: { tree: ReactNode; props: R
 
   if (l.hidden)
     return (
-      <button className="side-show" title={t('panel.show')} aria-label={t('panel.show')} onClick={() => setL((x) => ({ ...x, hidden: false }))}>
-        ›<span className="side-show-label">{t('panel.show')}</span>
-      </button>
+      <>
+        <button className="side-show" title={t('panel.show')} aria-label={t('panel.show')} onClick={() => setL((x) => ({ ...x, hidden: false }))}>
+          ›<span className="side-show-label">{t('panel.show')}</span>
+        </button>
+        {narrow && (
+          <PropsSheet open={!!l.sheetOpen} onToggle={() => setL((x) => ({ ...x, sheetOpen: !x.sheetOpen }))}>
+            {props}
+          </PropsSheet>
+        )}
+      </>
     );
 
   return (
