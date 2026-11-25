@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useStore } from '../store';
 import { STORAGE_PREFIX } from '../brand';
-import { PropsSheet, useNarrow } from './PropsSheet';
+import { matchesNow, NARROW_QUERY, PropsSheet, useNarrow } from './PropsSheet';
 
 const KEY = STORAGE_PREFIX + 'sidePanels';
 
@@ -23,7 +23,8 @@ interface Layout {
 function load(): Layout {
   // Petit écran (téléphone) : colonne masquée par défaut pour laisser la place au schéma, au plan ou au tableau ; la
   // fine bande la rouvre, et le choix de l'utilisateur est ensuite retenu
-  const narrow = typeof window !== 'undefined' && window.innerWidth < 700;
+  // (téléphone vertical ou horizontal)
+  const narrow = (typeof window !== 'undefined' && window.innerWidth < 700) || matchesNow(NARROW_QUERY);
   const def: Layout = { treeOpen: true, propsOpen: true, paletteOpen: true, split: 0.5, width: 340, hidden: narrow };
   try {
     return { ...def, ...(JSON.parse(localStorage.getItem(KEY) ?? '{}') as Partial<Layout>) };

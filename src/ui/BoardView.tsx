@@ -48,6 +48,7 @@ import {
   type ExtraDevice,
   type Proposal,
 } from '../ai/boardPhoto';
+import { matchesNow, SHORT_LANDSCAPE_QUERY } from './PropsSheet';
 
 /** Différence de la comparaison qu'une proposition règle. */
 const ISSUE_OF: Record<Proposal['prop'], string> = {
@@ -148,7 +149,8 @@ export function BoardView() {
   const encs = useMemo(() => enclosures(project.roots), [project.roots]);
   const [idx, setIdx] = useState(0);
   /** Petit écran : réglages empilés au-dessus du dessin, repliables (le bouton n'apparaît que là). */
-  const [toolsOpen, setToolsOpen] = useState(true);
+  // Téléphone à l'horizontale : réglages repliés au départ (la hauteur manque)
+  const [toolsOpen, setToolsOpen] = useState(() => !matchesNow(SHORT_LANDSCAPE_QUERY));
   const [drag, setDrag] = useState<Drag | null>(null);
   const [corners, setCorners] = useState<Pt[] | null>(null);
   const [detect, setDetect] = useState<Map<string, 'ok' | 'width' | 'unsure'> | null>(null);

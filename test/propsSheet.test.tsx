@@ -75,6 +75,21 @@ describe('panneau des propriétés au téléphone', () => {
     expect(h.querySelector('.props-sheet')).toBeNull();
   });
 
+  it('téléphone à l’horizontale (peu de hauteur) : panneau aussi, la colonne est masquée par défaut', () => {
+    vi.stubGlobal('matchMedia', (q: string) => ({
+      matches: q.includes('max-height: 500px'),
+      media: q,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    }));
+    localStorage.removeItem(STORAGE_PREFIX + 'sidePanels');
+    const h = mount();
+    expect(h.querySelector('.side-show')).toBeTruthy();
+    act(() => useStore.getState().select(firstId()));
+    expect(h.querySelector('.props-sheet')).toBeTruthy();
+    expect(h.querySelector('.props-sheet-hint')?.textContent).toContain('◂');
+  });
+
   it('grand écran, colonne masquée : pas de panneau', () => {
     phone(false);
     const h = mount();

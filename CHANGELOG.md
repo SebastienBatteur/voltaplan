@@ -13,6 +13,14 @@
 - Barre du haut sur une seule ligne sur grand écran ; le schéma reste entièrement visible après un ajout.
 - Exports (v1, Trikker, Eendraadschema) : confirmation « Fichier … créé » (O8).
 
+### Téléphone à l'horizontale (2026-11-25)
+
+- Disposition propre au téléphone tenu à l'horizontale : barre du haut sur une ligne, colonne repliée, propriétés
+  dans un panneau à droite (bande verticale quand il est replié), réglages repliés au départ. Le dessin passe
+  d'environ 472 × 272 à 790 × 332 px (812 × 375).
+- Tableau au téléphone : calage cadré sur la photo, réglages repliés pendant le calage, menu « Photo ▾ ».
+- Barre compacte : disquette à la place du mot « Enregistrer ».
+
 ### Téléphone : propriétés sous le dessin (2026-11-25)
 
 - Colonne masquée, toucher un élément affiche ses propriétés dans un panneau sous le dessin : replié (une ligne)

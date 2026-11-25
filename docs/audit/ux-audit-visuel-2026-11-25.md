@@ -172,3 +172,26 @@ Corrigé (même jour, branche `ux-suite`), mesuré à 375 × 812 :
   réglages flottante ; elle est maintenant au coin bas gauche du dessin.
 Vérifié avec une photo de test générée et les 4 clics de calage ; non vérifié sur téléphone réel ni avec une vraie
 photo de tableau.
+
+## 9. Téléphone à l'horizontale (même jour, branche `ux-suite`)
+
+Décision : ne pas bloquer en vertical (impossible de façon fiable pour une page web : l'orientation du manifeste ne
+vaut que pour l'application installée sur Android ; iOS l'ignore) et l'horizontale sert pour un tableau ou un plan,
+plus larges que hauts. Disposition propre aux écrans **de moins de 500 px de haut et 1100 px de large**
+(`SHORT_LANDSCAPE_QUERY`, `src/ui/PropsSheet.tsx`) ; tablettes et ordinateurs inchangés.
+
+- Barre du haut sur **une ligne** : Fichier, disquette, nom du projet (se raccourcit), onglets, ⋯ ; pied de page dans ⋯.
+- Colonne repliée par défaut ; propriétés dans un panneau **à droite** : replié, bande verticale de 48 px (nom écrit
+  verticalement, ✕) ; déplié, 38 % de la largeur (≤ 420 px).
+- Réglages du plan et du tableau repliés au départ ; bande d'avis limitée à 60 px.
+
+Mesures (émulation à la souris : barre compacte forcée par la hauteur) :
+
+| | Avant | Après |
+| --- | --- | --- |
+| 812 × 375, Unifilaire | barre 2 lignes (80 px), colonne 340 px, dessin 472 × 272 | barre 43 px, dessin **790 × 332** |
+| 844 × 390, Unifilaire | dessin 504 × 287 | dessin **822 × 332** |
+| 812 × 375, élément sélectionné | propriétés dans la colonne (≈ 1 ligne visible) | bande 48 px, dessin 742 × 332 ; déplié : panneau 309 px, **6 champs sur 6** visibles, dessin 481 × 332 |
+| 812 × 375, Tableau | réglages ouverts | réglages repliés, dessin 790 × 283 |
+
+Vertical (375 × 812) vérifié inchangé. Non vérifié sur un vrai téléphone (barre d'adresse et encoche réelles).

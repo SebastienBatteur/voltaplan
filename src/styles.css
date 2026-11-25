@@ -1976,14 +1976,14 @@ body.resizing-h * {
     border-top: 1px solid var(--border);
   }
 }
-/* Hors téléphone, le panneau n'est jamais affiché (la colonne montre les propriétés) */
-@media (min-width: 801px) {
+/* Hors téléphone (vertical ou horizontal), le panneau n'est jamais affiché (la colonne montre les propriétés) */
+@media (min-width: 801px) and (min-height: 501px), (min-width: 1101px) {
   .props-sheet {
     display: none;
   }
 }
 /* Barre compacte : petit écran, ou tablette au doigt (boutons de 44 px : la barre complète prendrait 3 lignes) */
-@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
   .toolbar {
     gap: 4px;
     padding: 4px 8px;
@@ -2061,7 +2061,7 @@ body.resizing-h * {
   }
 
 }
-@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
   /* Plan et tableau : réglages empilés au-dessus du dessin (plus de chevauchement), repliables */
   .canvas-wrap.stacked {
     display: flex;
@@ -2315,7 +2315,7 @@ body.resizing-h * {
     min-height: 44px;
   }
 }
-@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px) {
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
   .legal-footer {
     display: none;
   }
@@ -2375,5 +2375,110 @@ body.resizing-h * {
   }
   .about-list dt {
     margin-top: 4px;
+  }
+}
+
+/* (En fin de feuille : l'emporte sur la barre compacte.) Téléphone à l'horizontale (peu de hauteur) : la hauteur manque, pas la largeur.
+   - barre du haut sur une seule ligne (onglets à côté des actions, ils défilent si besoin) ;
+   - propriétés dans un panneau à DROITE du dessin (src/ui/PropsSheet.tsx), replié en une bande verticale ;
+   - avis sur une ligne. La colonne est repliée par défaut (SidePanels), les réglages du plan et du tableau aussi. */
+@media (max-height: 500px) and (max-width: 1100px) {
+  .toolbar {
+    flex-wrap: nowrap;
+  }
+  .toolbar > * {
+    flex-shrink: 0;
+  }
+  /* Fichier, disquette, nom du projet (se raccourcit), onglets, ⋯ */
+  .toolbar .file-name {
+    order: 1;
+    flex: 1 1 0;
+    min-width: 48px;
+    max-width: none;
+  }
+  .toolbar .save-state {
+    order: 1;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .toolbar .tabs {
+    order: 2;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .toolbar .toolbar-more {
+    order: 3;
+  }
+  .notices {
+    max-height: 60px;
+  }
+  .props-sheet {
+    order: 1;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: 38%;
+    max-width: 420px;
+    min-height: 0;
+    border-left: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  }
+  .props-sheet-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    flex: 0 0 auto;
+  }
+  .props-sheet-toggle {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0 8px;
+  }
+  .props-sheet-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .props-sheet-hint {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .props-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+  }
+  /* Replié : bande verticale de 48 px (✕ en haut, nom de l'élément écrit verticalement) */
+  .props-sheet:not(.open) {
+    width: 48px;
+  }
+  .props-sheet:not(.open) .props-sheet-head {
+    flex: 1 1 auto;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding: 4px 2px;
+  }
+  .props-sheet:not(.open) .props-sheet-toggle {
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 8px 0;
+    writing-mode: vertical-rl;
+  }
+  .props-sheet:not(.open) .props-sheet-name {
+    flex: 0 1 auto;
   }
 }

@@ -32,6 +32,7 @@ import { importErrorText } from '../io/limits';
 import { parseSize } from '../plan/trace';
 import { rectifyBackground, tracePlan } from '../plan/traceImage';
 import { AssetImage } from '../format/AssetImage';
+import { matchesNow, SHORT_LANDSCAPE_QUERY } from './PropsSheet';
 
 /** Échelle des symboles sur le plan (unités symbole → mm). */
 export const S = 12;
@@ -249,7 +250,8 @@ export function PlanView() {
   const pz = usePanZoom(bounds, fileName + '|' + page.id, { holdMenu: true });
   const coarse = useCoarsePointer();
   /** Petit écran : outils empilés au-dessus du dessin, repliables (le bouton n'apparaît que là). */
-  const [toolsOpen, setToolsOpen] = useState(true);
+  // Téléphone à l'horizontale : réglages repliés au départ (la hauteur manque)
+  const [toolsOpen, setToolsOpen] = useState(() => !matchesNow(SHORT_LANDSCAPE_QUERY));
   const [dragging, setDragging] = useState<{ id: string; pos: Pt; start: Pt; moved: boolean } | null>(null);
   const draggingRef = useRef(dragging);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
