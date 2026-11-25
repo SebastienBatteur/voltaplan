@@ -1021,6 +1021,8 @@ export const fr = {
   'driveOpen.others': '{n} autre(s) fichier(s) sélectionné(s) dans Drive : ouvrez-les ensuite un par un.',
   'driveOpen.opened': '« {name} » ouvert depuis Google Drive : « Enregistrer » le met à jour au même endroit (conflit → copie, rien n’est écrasé).',
   'driveOpen.created': 'Nouveau projet : le premier « Enregistrer » crée le fichier dans le dossier Google Drive choisi.',
+  'driveOpen.unrecognized': "Google Drive a ouvert Voltaplan avec une demande non reconnue : rien n’a été ouvert ni créé. Réessayez depuis Drive ; si cela se répète, utilisez Fichier → Ouvrir… → Google Drive.",
+  'driveOpen.answerFirst': "Répondez d’abord au bandeau Google Drive (en haut) : il indique où ce projet sera enregistré.",
   'driveOpen.readOnly': 'Ce fichier est en lecture seule pour vous : « Enregistrer » créera un nouveau fichier dans votre Drive, l’original n’est pas modifié.',
   'driveOpen.converted': 'Fichier converti au nouveau format : « Enregistrer » créera un nouveau fichier à côté, l’original n’est pas modifié.',
   'driveOpen.error.folder': 'Google Drive a envoyé un dossier : choisissez un fichier .voltaplan (ou le fichier project.json d’un dossier de projet).',

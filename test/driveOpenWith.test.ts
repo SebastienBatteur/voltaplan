@@ -31,6 +31,17 @@ describe('paramètre state de Drive', () => {
     expect(parseDriveState(q({ action: 'create' }))).toEqual({ action: 'create', folderId: undefined, folderResourceKey: undefined, userId: undefined });
   });
 
+  it('créer : champs VIDES envoyés par Drive (dossier de « Mon Drive » sans clé) traités comme absents (D5, séance du 2026-11-25)', () => {
+    expect(parseDriveState(q({ folderId: ID, folderResourceKey: '', action: 'create', userId: '1234567890' }))).toEqual({ action: 'create', folderId: ID, folderResourceKey: undefined, userId: '1234567890' });
+    expect(parseDriveState(q({ action: 'create', folderId: ID, folderResourceKey: null, userId: '' }))).toEqual({ action: 'create', folderId: ID, folderResourceKey: undefined, userId: undefined });
+    // Un champ non vide mais douteux reste refusé
+    expect(parseDriveState(q({ action: 'create', folderId: ID, folderResourceKey: 'a/b' }))).toBeNull();
+  });
+
+  it('ouvrir : compte vide traité comme absent', () => {
+    expect(parseDriveState(q({ action: 'open', ids: [ID], userId: '' }))).toMatchObject({ action: 'open', ids: [ID], userId: undefined });
+  });
+
   it.each([
     ['absent', ''],
     ['JSON invalide', q('{"ids":')],

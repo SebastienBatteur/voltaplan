@@ -1015,6 +1015,8 @@ export const nl: Partial<Dict> = {
   'driveOpen.others': '{n} ander(e) bestand(en) geselecteerd in Drive: open ze daarna een voor een.',
   'driveOpen.opened': '„{name}” geopend vanuit Google Drive: „Opslaan” werkt het op dezelfde plaats bij (conflict → kopie, niets wordt overschreven).',
   'driveOpen.created': 'Nieuw project: de eerste „Opslaan” maakt het bestand in de gekozen Google Drive-map.',
+  'driveOpen.unrecognized': "Google Drive opende Voltaplan met een onbekend verzoek: er werd niets geopend of aangemaakt. Probeer opnieuw vanuit Drive; gebeurt het opnieuw, gebruik dan Bestand → Openen… → Google Drive.",
+  'driveOpen.answerFirst': "Beantwoord eerst de Google Drive-melding (bovenaan): die bepaalt waar dit project wordt opgeslagen.",
   'driveOpen.readOnly': 'Dit bestand is voor u alleen-lezen: „Opslaan” maakt een nieuw bestand in uw Drive, het origineel blijft ongewijzigd.',
   'driveOpen.converted': 'Bestand omgezet naar het nieuwe formaat: „Opslaan” maakt een nieuw bestand ernaast, het origineel blijft ongewijzigd.',
   'driveOpen.error.folder': 'Google Drive stuurde een map: kies een .voltaplan-bestand (of het project.json-bestand van een projectmap).',

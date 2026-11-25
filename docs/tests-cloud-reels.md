@@ -293,6 +293,22 @@ mise en place de l'enregistreur).
   navigateur intégré, et `createWritable` y est refusé (« Cet appareil » échoue). Sans effet dans un navigateur
   ordinaire ; à garder en tête pour les essais futurs.
 
+**Suite de la séance, D1 à D5 (2026-11-25, après-midi)** : fichier d'essai « Essai Ouvrir avec 2026-11-25 (à
+supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
+
+- **D1** ✅ : clic droit → « Ouvrir avec » propose Voltaplan, sans fiche Marketplace.
+- **D2** ✅ : ouverture depuis Drive, bandeau, connexion, projet ouvert (photo, 3 rangées) ; adresse ensuite sans
+  `state`.
+- **D3** : enregistré au même endroit (« Enregistré (Google Drive, 11:13) ») ; un seul fichier visible dans Drive ;
+  le nombre de versions reste à vérifier.
+- **D5** ❌ puis corrigé : « Nouveau → Voltaplan » ouvrait l'application **sans** bandeau « Créer le projet », et
+  « Enregistrer » proposait l'appareil. Cause probable : Drive envoie `"folderResourceKey":""` (vide) pour un dossier
+  de « Mon Drive » ; le contrôle exigeait au moins un caractère et rejetait toute la demande sans rien dire.
+  Correction : champ vide traité comme absent ; message « demande non reconnue » si la demande est rejetée ;
+  bandeau Drive placé en haut (il ne peut plus être recouvert par un autre message). **À revérifier en réel.**
+- **S9** (corrigé) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
+  l'appareil ; il renvoie maintenant au bandeau.
+
 Reste à faire en réel : D1 (apparition dans « Ouvrir avec »), D2 à D6, F8, F1/F2/F7 OneDrive complets, F6 (compte
 presque plein). S1 et S2 : corrigés (16ca66a) et revérifiés sur iPhone.
 

@@ -108,6 +108,8 @@ export function App() {
   >(null);
   /** Un envoi est en cours (clic ou reprise automatique) : jamais deux à la fois. */
   const sending = useRef(false);
+  /** « Ouvrir avec Voltaplan » / « Nouveau » depuis Google Drive (paramètre `state` de l'adresse). */
+  const [driveIntent, setDriveIntent] = useState<DriveIntent | null>(null);
   /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
   const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
@@ -210,6 +212,12 @@ export function App() {
     // Un envoi déjà en cours (reprise automatique, ou double clic) : pas de second envoi en parallèle, qui
     // prendrait le premier pour la modification d'un autre appareil.
     if (sending.current) return;
+    // Demande de Google Drive (« Ouvrir avec », « Nouveau ») pas encore acceptée : l'emplacement n'est pas encore
+    // le fichier ou le dossier Drive ; enregistrer maintenant proposerait l'appareil (écart S9). On renvoie au bandeau.
+    if (driveIntent) {
+      setToast({ text: t('driveOpen.answerFirst') });
+      return;
+    }
     sending.current = true;
     try {
       const st = useStore.getState();
@@ -325,16 +333,18 @@ export function App() {
   const [syncOpen, setSyncOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ id: string; name: string; updated: string; data: string; others: number } | null>(null);
-  /** « Ouvrir avec Voltaplan » / « Nouveau » depuis Google Drive (paramètre `state` de l'adresse). */
-  const [driveIntent, setDriveIntent] = useState<DriveIntent | null>(null);
 
   // Google Drive → Voltaplan : demande lue une fois au démarrage, retirée de l'adresse, traitée après un clic
   useEffect(() => {
     if (!/[?&]state=/.test(window.location.search)) return;
     void import('./io/driveOpenWith').then((m) => {
       const intent = m.takeDriveIntent();
+      // Demande présente mais non reconnue : on le dit, au lieu d'ouvrir l'application comme si de rien n'était
       if (intent) setDriveIntent(intent);
+      else setToast({ text: t('driveOpen.unrecognized') });
     });
+    // Une seule fois, au démarrage (la demande est retirée de l'adresse dès sa lecture)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Brouillon automatique dans le navigateur, un par onglet (toutes les 20 s s'il y a des modifications, et quand

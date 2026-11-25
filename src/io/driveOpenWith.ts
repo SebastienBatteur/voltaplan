@@ -31,14 +31,16 @@ const USER = z.string().regex(/^[A-Za-z0-9_.@+-]{1,200}$/);
 const OpenState = z.object({
   action: z.literal('open'),
   ids: z.array(ID).min(1).max(100),
-  userId: USER.optional(),
+  userId: z.preprocess((v) => (v === '' || v === null ? undefined : v), USER.optional()),
   resourceKeys: z.record(z.string(), z.unknown()).optional(),
 });
+/** Champ facultatif que Drive peut envoyer VIDE (ex. `"folderResourceKey":""` pour un dossier de « Mon Drive ») : absent. */
+const emptyAsAbsent = <T extends z.ZodTypeAny>(s: T) => z.preprocess((v) => (v === '' || v === null ? undefined : v), s.optional());
 const CreateState = z.object({
   action: z.literal('create'),
-  folderId: ID.optional(),
-  folderResourceKey: KEY.optional(),
-  userId: USER.optional(),
+  folderId: emptyAsAbsent(ID),
+  folderResourceKey: emptyAsAbsent(KEY),
+  userId: emptyAsAbsent(USER),
 });
 
 export type DriveIntent =

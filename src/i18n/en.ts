@@ -1015,6 +1015,8 @@ export const en: Partial<Dict> = {
   'driveOpen.others': '{n} other file(s) selected in Drive: open them one by one afterwards.',
   'driveOpen.opened': '"{name}" opened from Google Drive: "Save" updates it in place (conflict → copy, nothing is overwritten).',
   'driveOpen.created': 'New project: the first "Save" creates the file in the chosen Google Drive folder.',
+  'driveOpen.unrecognized': "Google Drive opened Voltaplan with an unrecognized request: nothing was opened or created. Try again from Drive; if it happens again, use File → Open… → Google Drive.",
+  'driveOpen.answerFirst': "Answer the Google Drive banner first (at the top): it sets where this project will be saved.",
   'driveOpen.readOnly': 'This file is read-only for you: "Save" will create a new file in your Drive; the original is not changed.',
   'driveOpen.converted': 'File converted to the new format: "Save" will create a new file next to it; the original is not changed.',
   'driveOpen.error.folder': 'Google Drive sent a folder: choose a .voltaplan file (or the project.json file of a project folder).',

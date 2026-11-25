@@ -2011,6 +2011,12 @@ body.resizing-h * {
 .drive-open button {
   margin-top: 6px;
 }
+/* Bandeau Google Drive en haut : jamais recouvert par les autres messages (en bas à droite) */
+.toast.drive-open {
+  top: 64px;
+  bottom: auto;
+  z-index: 40;
+}
 
 /* Liens légaux : dans le menu « ⋯ » quand la barre est compacte (téléphone, tablette au doigt), pour laisser
  * toute la hauteur au dessin ; pied de page inchangé sur ordinateur. */
