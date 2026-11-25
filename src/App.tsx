@@ -57,6 +57,7 @@ import { assetSession } from './io/projectData';
 import { makeDisplayImage } from './io/background';
 import { setOpenModels } from './format/assetsIdb';
 import { LegalFooter, LegalLinks } from './ui/LegalFooter';
+import { AboutDialog } from './ui/AboutDialog';
 
 // Format v2 : images d'affichage régénérées au besoin ; le projet ouvert compte comme référence (jamais de
 // suppression d'un document qu'il utilise, même avant son enregistrement).
@@ -332,6 +333,7 @@ export function App() {
   const aiUnlocked = useAiUnlocked();
   const [printOpen, setPrintOpen] = useState(false);
   const [syncOpen, setSyncOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const [storage, setStorage] = useState<'open' | 'save' | null>(null);
   const [recover, setRecover] = useState<{ id: string; name: string; updated: string; data: string; others: number } | null>(null);
 
@@ -502,13 +504,14 @@ export function App() {
             </select>
           </label>
           <div className="menu-sep" />
-          <LegalLinks menu />
+          <LegalLinks menu onAbout={() => setAboutOpen(true)} />
         </ToolbarMore>
       </header>
 
       {aiOpen && <AiSettingsDialog onClose={() => setAiOpen(false)} />}
       {printOpen && <PrintDialog onClose={() => setPrintOpen(false)} />}
       {syncOpen && <SyncDialog onClose={() => setSyncOpen(false)} />}
+      {aboutOpen && <AboutDialog onClose={() => setAboutOpen(false)} />}
       {storage && (
         <StorageDialog
           mode={storage}
@@ -664,7 +667,7 @@ export function App() {
           {s.view === 'check' && <CheckPanel />}
         </section>
       </main>
-      <LegalFooter />
+      <LegalFooter onAbout={() => setAboutOpen(true)} />
 
       {toast && (
         <div className="toast" onClick={() => setToast(null)}>

@@ -2065,3 +2065,54 @@ body.resizing-h * {
 .sponsor-link span {
   color: #db61a2;
 }
+
+/* « À propos » (src/ui/AboutDialog.tsx) */
+.about-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about-status {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.about-modified,
+.about-unknown {
+  border-color: #c2410c;
+}
+.about-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 8px 0;
+}
+.about-list dt {
+  font-weight: 600;
+}
+.about-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.about-source {
+  display: inline-block;
+  margin-bottom: 2px;
+}
+.legal-about {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+@media (max-width: 520px) {
+  .about-list {
+    grid-template-columns: 1fr;
+  }
+  .about-list dt {
+    margin-top: 4px;
+  }
+}
