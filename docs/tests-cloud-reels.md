@@ -244,7 +244,7 @@ mise en place de l'enregistreur).
   asynchrone) **avant** `window.open` ; Safari ne relie plus l'ouverture au geste et la bloque. Confirmé : Google,
   sans PKCE, s'ouvre sur le même téléphone. Piste : ouvrir la fenêtre vide dès le geste, puis y charger l'adresse
   de connexion ; ou préparer la paire PKCE à l'avance.
-- **S2 (bloquant, iOS ; corrigé, ✅ revérifié sur iPhone le 2026-11-25 : fichier sélectionnable, projet rouvert) : un fichier `.voltaplan` ne peut pas être rouvert.**
+- **S2 (bloquant, iOS ; corrigé, ✅ revérifié sur iPhone le 2026-11-25 : fichier sélectionnable, projet rouvert avec la photo du tableau, 3 rangées et 18 modules) : un fichier `.voltaplan` ne peut pas être rouvert.**
   Correction : `pickerAccept` (`src/io/files.ts`) retire le filtre sur iPhone et iPad quand il contient une
   extension inconnue d'iOS ; les filtres photo et PDF sont gardés. Il est grisé dans le sélecteur
   d'iOS : le filtre `accept` ne contient que des extensions (`.voltaplan,.openrgie,.json,.trik`) que Safari ne sait
@@ -255,14 +255,19 @@ mise en place de l'enregistreur).
   fichier inutile `project (conflit …).json`, rien de perdu. Piste : la détection pendant l'envoi
   (`driveRevisionsBetween`, `src/io/drive.ts`) prend la révision de notre propre enregistrement précédent pour
   celle d'un autre ; à reproduire avec le service simulé (deux enregistrements qui se chevauchent).
-- **S4 : pas de reprise automatique sous Windows.** La reprise attend l'évènement `online` (`src/App.tsx`) ; le
+- **S4 (corrigé, à revérifier en réel) : pas de reprise automatique sous Windows.** Correction : nouvel essai
+  à 10 s, 30 s, 1 min, 2 min puis toutes les 5 min, en plus de `online` (`src/io/retry.ts`) ; jamais deux envois à
+  la fois (un clic pendant un envoi en cours est ignoré, ce qui évite aussi le cas de S3) ; pas de reprise
+  automatique quand la connexion au service est à refaire ; un nouvel échec ne répète pas le message. Tests :
+  `test/pendingRetry.test.ts`. La reprise attend l'évènement `online` (`src/App.tsx`) ; le
   navigateur n'a signalé ni la coupure ni le retour (`navigator.onLine` resté vrai, autres cartes réseau actives).
   L'enregistrement reste « en attente » jusqu'au clic suivant. Piste : nouvel essai périodique (délai croissant)
   tant qu'un envoi est en attente, en plus de `online`.
 - **S5 : un document interrompu est renvoyé depuis le début.** La session d'envoi par tranches de Drive n'est pas
   gardée. Piste : la garder (en mémoire) et reprendre au dernier octet accepté.
 - **S6 : messages.** « Session expirée » affiché à une première connexion bloquée, avec « cliquez sur
-  Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge.
+  Enregistrer » alors qu'on est dans « Ouvrir » ; message de succès « Autorisation donnée » affiché en rouge ; « Import terminé : 4 éléments… » affiché à
+  l'ouverture d'un simple projet `.voltaplan` (le mot « Import » prête à confusion).
 - **S7 (hors code) : Dropbox affiche « peu d'utilisateurs… »** avant de connecter l'application (statut
   développement). Demander le statut production avant la bêta publique.
 - **S8 (navigateur intégré seulement)** : la boîte `alert()` (fichier trop volumineux) n'est pas montrée par le

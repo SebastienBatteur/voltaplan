@@ -18,6 +18,9 @@
 - **iPhone, iPad : rouvrir un fichier `.voltaplan`.** Le fichier était grisé dans le sélecteur d'iOS, qui ne
   connaît pas cette extension. Sur ces appareils, le sélecteur ne filtre plus ; le fichier choisi est toujours
   reconnu par son contenu.
+- **Reprise automatique d'un envoi en attente**, même quand le navigateur ne signale pas le retour du réseau
+  (Windows avec une autre carte réseau active) : nouvel essai à 10 s, 30 s, 1 min, 2 min, puis toutes les 5 min.
+  Jamais deux envois à la fois : un second clic sur « Enregistrer » pendant un envoi est ignoré.
 
 ### Site et publication
 

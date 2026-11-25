@@ -24,6 +24,7 @@ import {
   type PendingSave,
 } from './io/storage';
 import { locationKey, saveAt, type SaveDeps, type SaveOutcome } from './io/saveFlow';
+import { startRetries } from './io/retry';
 import { conflictName } from './io/conflict';
 import { VersionsDialog } from './ui/VersionsDialog';
 import { AssistPanel } from './ui/AssistPanel';
@@ -99,10 +100,13 @@ export function App() {
     | { kind: 'saving' }
     | { kind: 'saved'; where: string; at: Date }
     | { kind: 'conflict'; copy: string }
-    | { kind: 'pending'; where: string }
+    /** `auth` : connexion à refaire (seul un clic peut ouvrir la fenêtre) ; sinon, pas de réseau (reprise auto). */
+    | { kind: 'pending'; where: string; auth?: boolean }
     | { kind: 'error'; message: string }
     | null
   >(null);
+  /** Un envoi est en cours (clic ou reprise automatique) : jamais deux à la fois. */
+  const sending = useRef(false);
   /** Fichier de l'appareil modifié ailleurs : choix de l'utilisateur (copie ou remplacement). */
   const [deviceConflict, setDeviceConflict] = useState<string | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
@@ -156,7 +160,8 @@ export function App() {
   /** Brouillon de cet onglet supprimé dès que le projet est enregistré quelque part. */
   const dropDraft = () => void browserDelete(draftId()).catch(() => undefined);
 
-  const applyOutcome = (r: SaveOutcome, projectAtSave: unknown) => {
+  /** `quiet` : reprise automatique ; un nouvel échec réseau ne répète pas le message. */
+  const applyOutcome = (r: SaveOutcome, projectAtSave: unknown, quiet = false) => {
     // Le projet a pu changer pendant l'envoi : il ne devient « enregistré » que s'il est resté identique
     const unchanged = useStore.getState().project === projectAtSave;
     switch (r.status) {
@@ -180,12 +185,12 @@ export function App() {
         break;
       case 'pending':
         setSaveState({ kind: 'pending', where: whereLabel(r.loc) });
-        setToast({ text: t('save.pending', { where: whereLabel(r.loc) }) });
+        if (!quiet) setToast({ text: t('save.pending', { where: whereLabel(r.loc) }) });
         break;
       case 'needsAuth':
         // Version gardée et envoi mémorisé : GitHub verrouillé → fenêtre de déverrouillage ; service en ligne →
         // le prochain clic sur « Enregistrer » ouvre la connexion (le navigateur l'exige après un clic).
-        setSaveState({ kind: 'pending', where: whereLabel(r.loc) });
+        setSaveState({ kind: 'pending', where: whereLabel(r.loc), auth: true });
         if (r.loc.kind === 'github' && !getGithubToken()) setStorage('save');
         else setToast({ text: t('save.needsAuth', { where: whereLabel(r.loc) }) });
         break;
@@ -201,16 +206,24 @@ export function App() {
       setStorage('save');
       return;
     }
-    const st = useStore.getState();
-    setSaveState({ kind: 'saving' });
-    // Brouillon écrit d'abord : un enregistrement interrompu (fermeture, plantage, coupure) laisse toujours une copie
-    // récupérable au prochain lancement, même si le fichier de destination est resté incomplet.
-    await browserSave(draftId(), st.fileName || st.project.meta.title, st.project, 'any').catch(() => undefined);
+    // Un envoi déjà en cours (reprise automatique, ou double clic) : pas de second envoi en parallèle, qui
+    // prendrait le premier pour la modification d'un autre appareil.
+    if (sending.current) return;
+    sending.current = true;
     try {
-      applyOutcome(await saveAt(location.current, st.project, st.fileName, saveDeps()), st.project);
-    } catch (e) {
-      setSaveState({ kind: 'error', message: errorText(e, t) });
-      setToast({ text: errorText(e, t) });
+      const st = useStore.getState();
+      setSaveState({ kind: 'saving' });
+      // Brouillon écrit d'abord : un enregistrement interrompu (fermeture, plantage, coupure) laisse toujours une
+      // copie récupérable au prochain lancement, même si le fichier de destination est resté incomplet.
+      await browserSave(draftId(), st.fileName || st.project.meta.title, st.project, 'any').catch(() => undefined);
+      try {
+        applyOutcome(await saveAt(location.current, st.project, st.fileName, saveDeps()), st.project);
+      } catch (e) {
+        setSaveState({ kind: 'error', message: errorText(e, t) });
+        setToast({ text: errorText(e, t) });
+      }
+    } finally {
+      sending.current = false;
     }
   };
 
@@ -236,26 +249,31 @@ export function App() {
     }
   };
 
-  // Enregistrement en attente (pas de réseau) : repris automatiquement au retour de la connexion, toujours
-  // de façon conditionnelle (un conflit donne une copie, jamais un écrasement).
+  // Enregistrement en attente (pas de réseau) : repris automatiquement, au retour de la connexion et à intervalles
+  // croissants (src/io/retry.ts), toujours de façon conditionnelle (un conflit donne une copie, jamais un
+  // écrasement). Pas de reprise automatique quand la connexion au service est à refaire : seul un clic peut ouvrir
+  // la fenêtre de connexion.
+  const pendingAuth = saveState?.kind === 'pending' && !!saveState.auth;
   useEffect(() => {
-    if (saveState?.kind !== 'pending') return;
-    const retry = () => {
-      void (async () => {
-        const st = useStore.getState();
-        try {
-          const r = await saveAt(location.current, st.project, st.fileName, saveDeps());
-          applyOutcome(r, st.project);
-          if (r.status === 'saved') setToast({ text: t('save.retried', { where: whereLabel(r.loc) }) });
-        } catch (e) {
-          setSaveState({ kind: 'error', message: errorText(e, t) });
-        }
-      })();
-    };
-    window.addEventListener('online', retry);
-    return () => window.removeEventListener('online', retry);
+    if (saveState?.kind !== 'pending' || pendingAuth) return;
+    return startRetries(async () => {
+      if (sending.current) return true; // un envoi lancé par un clic est en cours : on réessaiera plus tard
+      sending.current = true;
+      const st = useStore.getState();
+      try {
+        const r = await saveAt(location.current, st.project, st.fileName, saveDeps());
+        applyOutcome(r, st.project, true);
+        if (r.status === 'saved') setToast({ text: t('save.retried', { where: whereLabel(r.loc) }) });
+        return r.status === 'pending';
+      } catch (e) {
+        setSaveState({ kind: 'error', message: errorText(e, t) });
+        return false;
+      } finally {
+        sending.current = false;
+      }
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saveState?.kind]);
+  }, [saveState?.kind, pendingAuth]);
 
   // Raccourcis clavier
   useEffect(() => {
