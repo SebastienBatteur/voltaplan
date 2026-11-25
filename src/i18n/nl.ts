@@ -559,6 +559,7 @@ export const nl: Partial<Dict> = {
   'plan.item.angle': "Hoek (°)",
   'plan.item.replaceBy': "Vervangen door een pictogram",
   'plan.background': "Achtergrondplan (foto / PDF)…",
+  'plan.bgMenu': "Achtergrond",
   'plan.thickness': "Dikte (mm)",
   'plan.scalePrompt': "Echte afstand tussen de twee punten (bv. 4,5 m of 450 cm):",
   'plan.labelPrompt': "Naam van de ruimte:",

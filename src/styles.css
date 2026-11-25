@@ -234,7 +234,7 @@ input:not([type]) {
 .save-state.error {
   color: var(--error);
 }
-@media (max-width: 800px) {
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
   .save-state {
     max-width: 120px;
   }
@@ -730,6 +730,30 @@ main {
   z-index: 10;
   cursor: pointer;
 }
+/* Explication au doigt (appui long, src/ui/TouchHelp.tsx) */
+.touch-tip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  z-index: 100;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13px;
+  line-height: 1.35;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+.touch-tip.below {
+  transform: translate(-50%, 0);
+}
+/* Appui long sur un bouton : pas de menu « copier / partager » du système (iOS) */
+@media (pointer: coarse) {
+  button,
+  [title] {
+    -webkit-touch-callout: none;
+  }
+}
 /* Bande des avis (src/ui/Notice.tsx) : dans le flux, sous le dessin ; le dessin se réduit au lieu d'être caché, et
    les avis ne se recouvrent plus entre eux ni ne cachent une fenêtre (écart O6). */
 .notices {
@@ -781,7 +805,7 @@ main {
   font-size: 12px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
   main.with-side {
     flex-direction: column;
   }
@@ -1897,7 +1921,7 @@ body.resizing-h * {
 .side-show-label {
   display: none;
 }
-@media (max-width: 800px) {
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
   /* Colonne empilée au-dessus du dessin : la bande « afficher » devient une barre lisible */
   .side-show {
     width: auto;
@@ -1976,8 +2000,8 @@ body.resizing-h * {
     border-top: 1px solid var(--border);
   }
 }
-/* Hors téléphone (vertical ou horizontal), le panneau n'est jamais affiché (la colonne montre les propriétés) */
-@media (min-width: 801px) and (min-height: 501px), (min-width: 1101px) {
+/* Hors téléphone et tablette en portrait, le panneau n'est jamais affiché (la colonne montre les propriétés) */
+@media (min-width: 801px) and (min-height: 501px) and (orientation: landscape), (min-width: 1101px) {
   .props-sheet {
     display: none;
   }
@@ -2084,11 +2108,20 @@ body.resizing-h * {
     padding: 4px 10px;
   }
   .canvas-wrap.stacked > .plan-toolbar {
-    position: static;
+    /* relative (et non static) : le catalogue du mobilier s'ouvre sous la barre, pas sous le bas de l'écran */
+    position: relative;
+    z-index: 5; /* au-dessus des aides posées sur le dessin (plan vide, consignes) */
+    inset: auto; /* pas de décalage hérité de la barre flottante (top / left / right) */
     flex: 0 0 auto;
     padding: 6px 8px;
     background: var(--panel);
     border-bottom: 1px solid var(--border);
+  }
+  .canvas-wrap.stacked .catalog {
+    left: 4px;
+    right: 4px;
+    width: auto;
+    max-height: 55vh;
   }
   .canvas-wrap.stacked > .plan-toolbar.folded {
     display: none;

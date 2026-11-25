@@ -559,6 +559,7 @@ export const en: Partial<Dict> = {
   'plan.item.angle': "Angle (°)",
   'plan.item.replaceBy': "Replace with a pictogram",
   'plan.background': "Background plan (photo / PDF)…",
+  'plan.bgMenu': "Background",
   'plan.thickness': "Thickness (mm)",
   'plan.scalePrompt': "Real distance between the two points (e.g. 4.5 m or 450 cm):",
   'plan.labelPrompt': "Room name:",

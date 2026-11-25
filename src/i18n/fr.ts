@@ -558,6 +558,7 @@ export const fr = {
   'plan.item.angle': "Angle (°)",
   'plan.item.replaceBy': "Remplacer par un pictogramme",
   'plan.background': "Fond de plan (photo / PDF)…",
+  'plan.bgMenu': "Fond",
   'plan.thickness': "Épaisseur (mm)",
   'plan.scalePrompt': "Distance réelle entre les deux points (ex. 4,5 m ou 450 cm) :",
   'plan.labelPrompt': "Nom de la pièce :",

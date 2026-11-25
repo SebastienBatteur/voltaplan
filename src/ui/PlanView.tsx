@@ -269,6 +269,21 @@ export function PlanView() {
   const [busy, setBusy] = useState(false);
   const [itemDrag, setItemDrag] = useState<ItemDrag | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(false);
+  const [bgOpen, setBgOpen] = useState(false);
+  // Catalogue du mobilier : au doigt, il n'y a pas de « souris qui quitte » ; toucher ailleurs ou Échap le ferme
+  const catalogRef = useRef<HTMLSpanElement>(null);
+  useEffect(() => {
+    if (!catalogOpen) return;
+    const close = (e: Event) => {
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !catalogRef.current?.contains(e.target as Node)) setCatalogOpen(false);
+    };
+    window.addEventListener('pointerdown', close, true);
+    window.addEventListener('keydown', close);
+    return () => {
+      window.removeEventListener('pointerdown', close, true);
+      window.removeEventListener('keydown', close);
+    };
+  }, [catalogOpen]);
   const [preview, setPreview] = useState<PlanPage | null>(null);
   /** Ajout d'un élément de l'unifilaire à cet endroit du plan (clic droit, ou outil « Élément »). */
   const [adding, setAdding] = useState<{ at: { x: number; y: number }; pos: Pt } | null>(null);
@@ -505,12 +520,12 @@ export function PlanView() {
             {t('plan.tool.' + tl)}
           </button>
         ))}
-        <span className="catalog-wrap">
+        <span className="catalog-wrap" ref={catalogRef}>
           <button className={tool === 'furniture' || catalogOpen ? 'active' : ''} onClick={() => setCatalogOpen((v) => !v)}>
             {t('plan.tool.furniture')} ▾
           </button>
           {catalogOpen && (
-            <div className="catalog" onMouseLeave={() => setCatalogOpen(false)}>
+            <div className="catalog" onPointerLeave={(e) => e.pointerType === 'mouse' && setCatalogOpen(false)}>
               {FURNITURE_GROUPS.map((g) => (
                 <div key={g}>
                   <div className="catalog-group">{t('furniture.group.' + g)}</div>
@@ -550,6 +565,11 @@ export function PlanView() {
           </label>
         )}
         <span className="sep" />
+        {/* Barre compacte : fond de plan, échelle et outils liés dans un menu « Fond ▾ » (outils de dessin sur une ligne) */}
+        <button className="photo-toggle" aria-expanded={bgOpen} onClick={() => setBgOpen((v) => !v)}>
+          {t('plan.bgMenu')} {bgOpen ? '▴' : '▾'}
+        </button>
+        <span className={'photo-actions' + (bgOpen ? ' open' : '')}>
         <button onClick={importBackground} disabled={busy}>
           {busy ? '…' : t('plan.background')}
         </button>
@@ -615,6 +635,7 @@ export function PlanView() {
             {t('plan.faceWalls')}
           </button>
         )}
+        </span>
         {selSymbol && (
           <>
             {isWallNode(selSymbol.nodeId) && !selSymbol.autoRotate && (

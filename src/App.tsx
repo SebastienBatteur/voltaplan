@@ -37,6 +37,7 @@ import { isReloadingForUpdate } from './appUpdate';
 import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
 import { ReconnectBadge } from './ui/ReconnectBadge';
 import { Notice, NoticeHost } from './ui/Notice';
+import { TouchHelp } from './ui/TouchHelp';
 import { useStore } from './store';
 import { ToolbarMore } from './ui/ToolbarMore';
 import { ViewTabs } from './ui/ViewTabs';
@@ -700,6 +701,7 @@ export function App() {
         </section>
       </main>
       <div className="notices" ref={setNoticeEl} aria-live="polite" />
+      <TouchHelp />
       <LegalFooter onAbout={() => setAboutOpen(true)} />
 
       {toast && (

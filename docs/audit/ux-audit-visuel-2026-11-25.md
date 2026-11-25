@@ -195,3 +195,21 @@ Mesures (émulation à la souris : barre compacte forcée par la hauteur) :
 | 812 × 375, Tableau | réglages ouverts | réglages repliés, dessin 790 × 283 |
 
 Vertical (375 × 812) vérifié inchangé. Non vérifié sur un vrai téléphone (barre d'adresse et encoche réelles).
+
+## 10. Plan au téléphone, tablette en portrait, aide au doigt (même jour, branche `ux-suite`)
+
+- **Plan, barre compacte** : fond de plan, échelle, redressement, décalque, alignement, opacité et orientation des
+  symboles rangés dans un menu « Fond ▾ ». Outils du plan : 2 lignes (105 px) au lieu de 3 à 375 px.
+- **Catalogue du mobilier** : au téléphone il s'ouvrait **sous le bas de l'écran** (invisible ; barre d'outils non
+  positionnée en mise en page empilée) — corrigé : il s'ouvre sous la barre, dans la largeur, au-dessus de l'aide
+  « plan vide ». Fermé à la souris en la quittant, au doigt en touchant ailleurs, au clavier par Échap.
+- **Tablette en portrait** (jusqu'à 1100 px de large) : même disposition que le téléphone vertical (colonne repliée
+  au départ, propriétés en panneau sous le dessin). Dessin : 768 × 1024 → 768 × 854 (au lieu de 768 × 509 colonne
+  ouverte) ; 820 × 1180 → **820 × 1046** (au lieu de 480 × 1077 à côté de la colonne) ; 1024 × 1366 → 1024 × 1232.
+  Ordinateur (1366 × 768) inchangé.
+- **Aide au doigt** (`src/ui/TouchHelp.tsx`) : un appui long (0,5 s) sur un bouton ou un champ qui a une infobulle
+  affiche son explication dans une bulle ; le relâchement ne déclenche pas l'action ; rien à la souris ni sur le
+  dessin (l'appui long y garde son rôle).
+
+Vérifié : 786 tests (dont `test/touchHelp.test.tsx`), typage, lint, compilation ; mesures en émulation. Non vérifié
+sur appareils réels (iPhone, iPad, Android) — à faire en une seule séance avec l'ensemble des changements.

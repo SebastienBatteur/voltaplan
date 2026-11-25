@@ -16,6 +16,7 @@ export const de: Partial<Dict> = {
   'view.board': 'Verteiler',
   'view.project': 'Projekt',
   'view.check': 'RGIE-Prüfung',
+  'plan.bgMenu': "Hintergrund",
   'board.photoMenu': "Foto",
   'board.calibCancel': "Abbrechen",
   'view.checkShort': "RGIE",

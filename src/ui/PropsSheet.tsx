@@ -7,10 +7,12 @@ import { findNode } from '../model/tree';
 /** Téléphone à l'horizontale : peu de hauteur (même seuil que styles.css). */
 export const SHORT_LANDSCAPE_QUERY = '(max-height: 500px) and (max-width: 1100px)';
 /**
- * Téléphone, vertical (colonne empilée au-dessus du dessin) ou horizontal (peu de hauteur) : colonne repliée par
- * défaut et propriétés dans un panneau (même seuils que styles.css).
+ * Téléphone vertical ou tablette en portrait (colonne empilée au-dessus du dessin), téléphone horizontal (peu de
+ * hauteur) : colonne repliée par défaut et propriétés dans un panneau (même seuils que styles.css).
  */
-export const NARROW_QUERY = '(max-width: 800px), ' + SHORT_LANDSCAPE_QUERY;
+/** Tablette en portrait (jusqu'à 1100 px de large) : même disposition que le téléphone vertical. */
+export const PORTRAIT_TABLET_QUERY = '(orientation: portrait) and (max-width: 1100px)';
+export const NARROW_QUERY = '(max-width: 800px), ' + PORTRAIT_TABLET_QUERY + ', ' + SHORT_LANDSCAPE_QUERY;
 
 /** La requête média correspond-elle maintenant ? (faux hors navigateur) */
 export function matchesNow(query: string): boolean {

@@ -13,6 +13,14 @@
 - Barre du haut sur une seule ligne sur grand écran ; le schéma reste entièrement visible après un ajout.
 - Exports (v1, Trikker, Eendraadschema) : confirmation « Fichier … créé » (O8).
 
+### Plan au téléphone, tablette en portrait, aide au doigt (2026-11-25)
+
+- Plan : outils rares dans un menu « Fond ▾ » ; le catalogue du mobilier s'affiche enfin au téléphone (il s'ouvrait
+  hors de l'écran) et se ferme en touchant ailleurs.
+- Tablette en portrait : colonne repliée et propriétés sous le dessin, comme au téléphone (dessin sur toute la
+  largeur).
+- Au doigt, un appui long sur un bouton montre son explication sans le déclencher.
+
 ### Téléphone à l'horizontale (2026-11-25)
 
 - Disposition propre au téléphone tenu à l'horizontale : barre du haut sur une ligne, colonne repliée, propriétés
