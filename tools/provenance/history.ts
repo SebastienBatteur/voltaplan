@@ -5,7 +5,7 @@
  * Corpus de fond : fichiers JavaScript des dépendances de production installées (node_modules actuel).
  */
 import { execFileSync } from 'node:child_process';
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { COMPONENTS } from './components';
 import { fingerprintsDoc, type FileEntry } from './fingerprints';
@@ -28,10 +28,12 @@ export function dependencyBackground(root: string, capPerPackage = 4 * 1024 * 10
         if (e.isDirectory()) {
           if (!/^(node_modules|test|tests|legacy|types|web|image_decoders)$/.test(e.name)) walk(p);
         } else if (/\.(c|m)?js$/.test(e.name) && !e.name.endsWith('.d.ts')) {
-          const size = statSync(p).size;
+          // Lu une seule fois puis mesuré (pas de stat puis lecture : le fichier pourrait changer entre les deux)
+          const code = readFileSync(p, 'utf8');
+          const size = Buffer.byteLength(code);
           if (used + size > capPerPackage) continue;
           used += size;
-          codes.push(readFileSync(p, 'utf8'));
+          codes.push(code);
         }
       }
     };
