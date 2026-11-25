@@ -2,6 +2,20 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Accueil, couleurs de circuits, matériel par pièce, étiquettes QR, DXF (2026-11-26)
+
+- **Mes projets** : écran d'accueil avec les actions principales et les derniers projets (navigateur, appareil,
+  nuage) ; un clic les rouvre. **Assistant de nouveau projet** en 4 étapes, chacune facultative ; l'installateur
+  peut être retenu sur l'appareil. **Statut du dossier** : en cours, prêt pour le contrôle, contrôlé.
+- **Couleurs des circuits** sur le plan et l'unifilaire, avec légende (affichage seulement ; l'impression reste
+  en noir). Palette sans bleu, orange ni rouge, réservés à la sélection et aux constats.
+- **Matériel par pièce** (bouton « Par pièce », colonne « Pièce » dans le CSV).
+- **Étiquettes QR du coffret** (dossier imprimé) : lien vers le dossier partagé par l'installateur, ou texte
+  lisible sans connexion. Aucun hébergement par Voltaplan.
+- **Fond de plan DXF** : lecteur DXF texte intégré (lignes, polylignes, arcs, cercles, blocs) ; posé à
+  l'échelle réelle quand le fichier indique son unité.
+- Guide (FR) mis à jour.
+
 ### IA : configuration transférable entre appareils ; iPhone (2026-11-25)
 
 - Réglages de l'IA → « Autres appareils » : un **QR code** (ou un lien à copier) transfère la configuration vers
