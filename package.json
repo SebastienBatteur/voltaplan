@@ -18,7 +18,8 @@
     "perf:v2:migration": "vite-node --options.node.execArgv=--expose-gc tools/perf-v2/migration.ts",
     "tauri": "tauri",
     "desktop": "tauri dev",
-    "desktop:build": "tauri build"
+    "desktop:build": "tauri build",
+    "provenance": "vite-node tools/provenance/cli.ts --"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",

@@ -4,6 +4,8 @@ import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { cspString, webCsp } from './src/security/csp';
 import { SW_FILE, buildPrecacheManifest, renderServiceWorker } from './src/sw/precache';
+import { provenance } from './tools/provenance/plugin';
+import pkg from './package.json';
 
 /**
  * CSP de la version web, ajoutée à index.html à la construction seulement : en développement,
@@ -46,7 +48,7 @@ function serviceWorker(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), cspMeta(), serviceWorker()],
+  plugins: [react(), cspMeta(), serviceWorker(), provenance({ root: __dirname, version: pkg.version })],
   base: './',
   test: { globals: true, environment: 'jsdom', setupFiles: ['test/setup.ts'], exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**', 'src-tauri/**'] },
 });

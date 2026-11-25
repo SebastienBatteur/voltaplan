@@ -29,6 +29,8 @@ export const SW_FILE = 'sw.js';
 export function isPrecached(path: string): boolean {
   const p = path.replace(/\\/g, '/');
   if (p === SW_FILE) return false;
+  // Métadonnées de provenance : écrites après le service worker, lues par les scanners en ligne (jamais hors ligne)
+  if (p === 'build-info.json' || p === 'fingerprints.json') return false;
   if (p.endsWith('.map')) return false;
   const base = p.split('/').pop() ?? p;
   if (base.startsWith('.') || base === 'Thumbs.db') return false;
