@@ -9,13 +9,16 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .manage(atomic_save::Granted::default())
         .manage(atomic_save::Uploads::default())
+        .manage(atomic_save::Readable::default())
         .invoke_handler(tauri::generate_handler![
             atomic_save::pick_save_path,
             atomic_save::save_begin,
             atomic_save::save_chunk,
             atomic_save::save_commit,
             atomic_save::save_abort,
-            atomic_save::file_state
+            atomic_save::file_state,
+            atomic_save::pick_open_path,
+            atomic_save::read_file
         ])
         .run(tauri::generate_context!())
         .expect("erreur au démarrage de Voltaplan");

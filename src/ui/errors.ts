@@ -6,6 +6,7 @@ import { AssetStoreError } from '../format/assets';
 import { AssetUnavailableError } from '../format/session';
 import { MissingAssetsError } from '../io/projectData';
 import { RemoteAssetMismatchError } from '../format/folder';
+import { DesktopSaveError } from '../io/desktopSave';
 
 type T = (k: string, p?: Record<string, string | number>) => string;
 
@@ -16,6 +17,9 @@ export function errorText(e: unknown, t: T): string {
   if (e instanceof StorageFullError) return e.where === 'device' ? t('storage.full.device') : t('storage.full.cloud', { where: e.where });
   if (e instanceof FileTooLargeError) return t('storage.tooLarge', { where: e.where, size: Math.ceil(e.size / 1048576), limit: Math.floor(e.limit / 1048576) });
   if (isQuotaError(e)) return t('storage.quota');
+  // Bureau : fichier utilisé ailleurs, ou autre échec d'écriture ; le fichier d'origine est toujours intact (O7)
+  if (e instanceof DesktopSaveError)
+    return e.kind === 'busy' ? t('desktop.saveBusy', { name: e.fileName }) : t('desktop.saveFailed', { name: e.fileName, detail: e.detail.replace(/^.*impossible\s*:\s*/, '') });
   if (isAuthError(e)) return t(e.reason === 'login' ? 'save.needsLogin' : 'save.needsAuth', { where: e.where });
   // Format v2 (src/format)
   if (e instanceof ArchiveError) return t('format.error.' + e.code);

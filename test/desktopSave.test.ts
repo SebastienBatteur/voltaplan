@@ -207,3 +207,89 @@ describe('bureau : enregistrement atomique', () => {
     expect(calls('save_commit')).toHaveLength(0);
   });
 });
+
+describe('bureau : écarts de l’essai réel sous Windows (2026-11-25)', () => {
+  it('O7 : fichier verrouillé : erreur propre au bureau (pas « ZIP corrupt »), message clair, fichier d’origine intact', async () => {
+    backend({ begin: 'Enregistrement de « C:\\Projets\\Maison.voltaplan » impossible : Access is denied. (os error 5)' });
+    const err = await files.saveProject(emptyProject(), 'Maison.voltaplan').catch((e) => e);
+    expect(err).toBeInstanceOf(desktop.DesktopSaveError);
+    expect(err.kind).toBe('busy');
+    expect(err.fileName).toBe('Maison.voltaplan');
+    expect(String(err.message)).not.toMatch(/ZIP/);
+    const { errorText } = await import('../src/ui/errors');
+    const { fr } = await import('../src/i18n/fr');
+    const t = (k: string, p?: Record<string, string | number>) => (fr as Record<string, string>)[k].replace(/\{(\w+)\}/g, (_, x) => String(p?.[x] ?? ''));
+    expect(errorText(err, t)).toMatch(/^Enregistrement de « Maison\.voltaplan » impossible : le fichier est utilisé par un autre logiciel/);
+  });
+
+  it('O7 : erreur pendant l’envoi d’un morceau (zip.js écrit dans le flux) : le type est gardé, pas réemballé', async () => {
+    backend({ chunk: 'Enregistrement de « C:\\Projets\\Maison.voltaplan » impossible : The process cannot access the file because it is being used by another process. (os error 32)' });
+    // Projet assez gros pour remplir au moins un morceau : sinon l'envoi n'a lieu qu'au commit
+    const p = emptyProject();
+    p.meta.title = 'x'.repeat(desktop.CHUNK_SIZE + 10);
+    const err = await files.saveProject(p, 'Maison.voltaplan').catch((e) => e);
+    expect(err?.name).toBe('DesktopSaveError');
+    expect(err.kind).toBe('busy');
+  });
+
+  it('O7 : disque plein : même erreur que dans le navigateur (StorageFullError, message « disque plein »)', async () => {
+    backend({ commit: 'Enregistrement de « C:\\Projets\\Maison.voltaplan » impossible : There is not enough space on the disk. (os error 112)' });
+    const { StorageFullError } = await import('../src/io/conflict');
+    await expect(files.saveProject(emptyProject(), 'Maison.voltaplan')).rejects.toBeInstanceOf(StorageFullError);
+  });
+
+  it('classement des causes système', () => {
+    expect(desktop.desktopErrorKind('… (os error 32)')).toBe('busy');
+    expect(desktop.desktopErrorKind('… (os error 33)')).toBe('busy');
+    expect(desktop.desktopErrorKind('… (os error 5)')).toBe('busy');
+    expect(desktop.desktopErrorKind('… (os error 28)')).toBe('full');
+    expect(desktop.desktopErrorKind('… (os error 112)')).toBe('full');
+    expect(desktop.desktopErrorKind('vérification : longueur différente')).toBe('other');
+  });
+
+  it('O9 : Ouvrir par la boîte du système garde le chemin : Ctrl+S réécrit ce fichier sans redemander l’emplacement', async () => {
+    const archive = (await import('../src/io/projectData')).serializeProject;
+    const data = new Uint8Array(await (await archive(emptyProject()))!.arrayBuffer());
+    const sim = backend({ state: [5000, data.length] });
+    const base = invoke.getMockImplementation()!;
+    invoke.mockImplementation(async (cmd: string, args?: unknown, o?: unknown) => {
+      if (cmd === 'pick_open_path') return 'C:\\Projets\\Existant.voltaplan';
+      if (cmd === 'read_file') return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+      return base(cmd, args, o);
+    });
+    const r = await files.openDesktopProject();
+    expect(r?.name).toBe('Existant.voltaplan');
+    expect(files.hasDeviceTarget()).toBe(true);
+    // Fichier inchangé sur le disque : Ctrl+S réécrit le même chemin, sans boîte « Enregistrer »
+    await files.saveProject(r!.project, r!.fileName);
+    expect(calls('pick_save_path')).toHaveLength(0);
+    expect(calls('save_begin')[0][1]).toMatchObject({ path: 'C:\\Projets\\Existant.voltaplan', backup: true });
+    expect(sim.written.size).toBe(1);
+  });
+
+  it('O9 : fichier ouvert puis modifié ailleurs : conflit détecté au Ctrl+S', async () => {
+    const archive = (await import('../src/io/projectData')).serializeProject;
+    const data = new Uint8Array(await (await archive(emptyProject()))!.arrayBuffer());
+    let state: [number, number] = [5000, data.length];
+    backend();
+    const base = invoke.getMockImplementation()!;
+    invoke.mockImplementation(async (cmd: string, args?: unknown, o?: unknown) => {
+      if (cmd === 'pick_open_path') return 'C:\\Projets\\Existant.voltaplan';
+      if (cmd === 'read_file') return data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
+      if (cmd === 'file_state') return state;
+      return base(cmd, args, o);
+    });
+    const r = await files.openDesktopProject();
+    state = [9000, data.length + 3]; // un autre logiciel a réécrit le fichier
+    await expect(files.saveProject(r!.project, r!.fileName)).rejects.toBeInstanceOf(ConflictError);
+    expect(calls('save_begin')).toHaveLength(0);
+  });
+
+  it('O9 : Ouvrir annulé : rien ne change', async () => {
+    backend();
+    const base = invoke.getMockImplementation()!;
+    invoke.mockImplementation(async (cmd: string, args?: unknown, o?: unknown) => (cmd === 'pick_open_path' ? null : base(cmd, args, o)));
+    expect(await files.openDesktopProject()).toBeNull();
+    expect(calls('read_file')).toHaveLength(0);
+  });
+});

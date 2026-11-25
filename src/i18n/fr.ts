@@ -697,6 +697,9 @@ export const fr = {
   'import.done': 'Import terminé : {nodes} éléments, {symbols} symboles sur le plan.',
   'import.tooLarge': "Fichier trop volumineux : « {name} » fait {size} Mo, le maximum est {max} Mo.",
   'file.unsaved': 'Des modifications ne sont pas enregistrées. Continuer ?',
+  'desktop.saveBusy': "Enregistrement de « {name} » impossible : le fichier est utilisé par un autre logiciel, verrouillé ou en cours de synchronisation. Le fichier d’origine est intact et votre version est gardée : réessayez dans un instant, ou « Enregistrer sous » un autre nom.",
+  'desktop.saveFailed': "Enregistrement de « {name} » impossible ({detail}). Le fichier d’origine est intact et votre version est gardée.",
+  'app.closeUnsaved': "Des modifications ne sont pas enregistrées. Fermer quand même ? (Un brouillon sera proposé au prochain lancement.)",
   'yes': 'Oui',
   'no': 'Non',
 

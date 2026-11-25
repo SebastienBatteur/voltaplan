@@ -477,6 +477,89 @@ pub async fn file_state(granted: tauri::State<'_, Granted>, path: String) -> Res
     state_of(&target).map(|o| o.map(|s| (s.mtime_ms, s.size))).map_err(|e| e.to_string())
 }
 
+/// Fichiers que la page peut OUVRIR (lecture) : projets (`.voltaplan`, ancien `.openrgie`, JSON v1) et Trikker.
+pub const READ_EXTS: &[&str] = &["voltaplan", "openrgie", "json", "trik"];
+/// Taille maximale lue d'un coup (les archives v2 sont plafonnées plus bas par la page).
+pub const READ_MAX: u64 = 1 << 30;
+
+/// Extension de lecture autorisée du chemin, en minuscules.
+pub fn readable_ext(path: &Path) -> Option<String> {
+    let e = path.extension()?.to_str()?.to_ascii_lowercase();
+    if READ_EXTS.contains(&e.as_str()) {
+        Some(e)
+    } else {
+        None
+    }
+}
+
+/// Fichiers choisis dans la boîte « Ouvrir » pendant cette session (lecture seulement).
+#[derive(Default)]
+pub struct Readable(Mutex<HashSet<PathBuf>>);
+
+impl Readable {
+    pub fn grant(&self, path: PathBuf) {
+        self.0.lock().unwrap_or_else(|e| e.into_inner()).insert(path);
+    }
+    pub fn contains(&self, path: &Path) -> bool {
+        self.0.lock().unwrap_or_else(|e| e.into_inner()).contains(path)
+    }
+}
+
+/// Boîte « Ouvrir » du système (écart O9 de l'essai réel du 2026-11-25 : la page ne connaissait pas le chemin du
+/// fichier ouvert, et « Enregistrer » redemandait l'emplacement). Le chemin choisi devient lisible (`read_file`) ;
+/// un projet `.voltaplan` devient aussi une cible d'enregistrement (mêmes droits que « Enregistrer sous »).
+#[tauri::command]
+pub async fn pick_open_path(
+    window: tauri::Window,
+    granted: tauri::State<'_, Granted>,
+    readable: tauri::State<'_, Readable>,
+    description: String,
+    exts: Vec<String>,
+) -> Result<Option<String>, String> {
+    let exts: Vec<String> = exts
+        .iter()
+        .map(|e| e.trim_start_matches('.').to_ascii_lowercase())
+        .filter(|e| READ_EXTS.contains(&e.as_str()))
+        .collect();
+    if exts.is_empty() {
+        return Err("Extension de fichier non autorisée.".into());
+    }
+    let filter: Vec<&str> = exts.iter().map(|e| e.as_str()).collect();
+    let builder = window.dialog().file().add_filter(description, &filter);
+    #[cfg(any(windows, target_os = "macos"))]
+    let builder = builder.set_parent(&window);
+    let Some(picked) = builder.blocking_pick_file() else {
+        return Ok(None);
+    };
+    let path = picked.into_path().map_err(|e| e.to_string())?;
+    if readable_ext(&path).is_none() {
+        return Err("Extension de fichier non autorisée.".into());
+    }
+    readable.grant(path.clone());
+    if allowed_ext(&path).as_deref() == Some(BACKUP_EXT) {
+        granted.grant(path.clone());
+    }
+    path.into_os_string()
+        .into_string()
+        .map(Some)
+        .map_err(|_| "Chemin de fichier non représentable en UTF-8.".to_string())
+}
+
+/// Contenu d'un fichier choisi dans la boîte « Ouvrir » (octets bruts, sans copie JSON).
+#[tauri::command]
+pub async fn read_file(readable: tauri::State<'_, Readable>, path: String) -> Result<tauri::ipc::Response, String> {
+    let p = PathBuf::from(&path);
+    if !readable.contains(&p) || readable_ext(&p).is_none() {
+        return Err("Chemin non autorisé : choisissez le fichier avec « Ouvrir ».".into());
+    }
+    let size = fs::metadata(&p).map_err(|e| format!("Lecture de « {} » impossible : {}", p.display(), e))?.len();
+    if size > READ_MAX {
+        return Err(format!("Fichier trop volumineux : « {} ».", p.display()));
+    }
+    let data = fs::read(&p).map_err(|e| format!("Lecture de « {} » impossible : {}", p.display(), e))?;
+    Ok(tauri::ipc::Response::new(data))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -511,6 +594,21 @@ mod tests {
         assert_eq!(with_ext(PathBuf::from("/a/m.CSV"), "csv"), PathBuf::from("/a/m.CSV"));
         assert_eq!(with_ext(PathBuf::from("/a/m"), "csv"), PathBuf::from("/a/m.csv"));
         assert_eq!(with_ext(PathBuf::from("/a/m.txt"), "csv"), PathBuf::from("/a/m.txt.csv"));
+    }
+
+    #[test]
+    fn readable_extensions_and_grants() {
+        assert_eq!(readable_ext(Path::new("/a/m.VOLTAPLAN")).as_deref(), Some("voltaplan"));
+        assert_eq!(readable_ext(Path::new("/a/m.openrgie")).as_deref(), Some("openrgie"));
+        assert_eq!(readable_ext(Path::new("/a/m.trik")).as_deref(), Some("trik"));
+        assert_eq!(readable_ext(Path::new("/a/m.json")).as_deref(), Some("json"));
+        assert_eq!(readable_ext(Path::new("/a/m.exe")), None);
+        assert_eq!(readable_ext(Path::new("/a/m")), None);
+        // Seuls les chemins choisis dans la boîte « Ouvrir » sont lisibles
+        let r = Readable::default();
+        r.grant(PathBuf::from("/a/m.voltaplan"));
+        assert!(r.contains(Path::new("/a/m.voltaplan")));
+        assert!(!r.contains(Path::new("/a/autre.voltaplan")));
     }
 
     #[test]

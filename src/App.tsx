@@ -51,7 +51,7 @@ import { ProjectPanel } from './ui/ProjectPanel';
 import { CheckPanel } from './ui/CheckPanel';
 import { useDerived } from './ui/derived';
 import { errorText } from './ui/errors';
-import { pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
+import { isDesktop, openDesktopProject, pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
 import { emptyProject, walk } from './model/tree';
 import { assetSession } from './io/projectData';
 import { makeDisplayImage } from './io/background';
@@ -82,17 +82,20 @@ export function App() {
 
   const open = async (accept: string) => {
     if (!confirmDiscard()) return;
-    const file = await pickFile(accept);
-    if (!file) return;
     try {
-      const r = await readProjectFile(file);
+      // Bureau : boîte « Ouvrir » du système, qui donne le chemin (Enregistrer réécrit ce fichier, écart O9)
+      const opened = isDesktop ? await openDesktopProject() : null;
+      const file = isDesktop ? null : await pickFile(accept);
+      if (!opened && !file) return;
+      const r = opened ?? (await readProjectFile(file!));
+      const shownName = opened ? opened.name : file!.name;
       s.loadProject(r.project, r.fileName);
       location.current = { kind: 'device' };
       setSaveState(null);
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       // Fichier Trikker : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.trik$/i.test(file.name) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      setToast({ text: t(/\.trik$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -322,7 +325,24 @@ export function App() {
       if (useStore.getState().dirty && !isReloadingForUpdate()) e.preventDefault();
     };
     window.addEventListener('beforeunload', onBefore);
-    return () => window.removeEventListener('beforeunload', onBefore);
+    // Bureau : la fenêtre Tauri n'affiche pas l'avertissement de beforeunload (écart O10) : on intercepte la
+    // fermeture de la fenêtre. Le brouillon reste de toute façon gardé (récupération au prochain lancement).
+    let unlisten: (() => void) | undefined;
+    let stopped = false;
+    if (isDesktop)
+      void import('@tauri-apps/api/window')
+        .then(({ getCurrentWindow }) =>
+          getCurrentWindow().onCloseRequested((ev) => {
+            if (useStore.getState().dirty && !window.confirm(useStore.getState().t('app.closeUnsaved'))) ev.preventDefault();
+          }),
+        )
+        .then((fn) => (stopped ? fn() : (unlisten = fn)))
+        .catch(() => undefined);
+    return () => {
+      window.removeEventListener('beforeunload', onBefore);
+      stopped = true;
+      unlisten?.();
+    };
   }, []);
 
   useEffect(() => {

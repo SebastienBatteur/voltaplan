@@ -19,14 +19,64 @@ export interface DesktopFileState {
 /** Taille des morceaux envoyés à Rust (corps brut d'une requête IPC). */
 export const CHUNK_SIZE = 4 * 1024 * 1024;
 
+/**
+ * Échec d'écriture sur le bureau (commandes save_*). Type propre : la bibliothèque ZIP le laisse passer tel quel
+ * (sinon « ZIP corrupt (…) », écart O7 de l'essai réel du 2026-11-25), et le message affiché dépend de `kind` :
+ *  - `busy` : fichier utilisé par un autre logiciel, verrouillé ou en cours de synchronisation (Windows : erreurs
+ *    système 5, 32, 33 ; Unix : EACCES, EBUSY, ETXTBSY) ;
+ *  - `full` : disque ou clé plein (Windows 39, 112 ; Unix ENOSPC 28) ;
+ *  - `other` : autre cause, détail technique gardé.
+ */
+export class DesktopSaveError extends Error {
+  readonly kind: 'busy' | 'full' | 'other';
+  readonly fileName: string;
+  constructor(readonly detail: string) {
+    super(detail);
+    this.name = 'DesktopSaveError';
+    this.kind = desktopErrorKind(detail);
+    // Message de Rust : « Enregistrement de « <chemin complet> » impossible : <cause> »
+    const m = /«\s*([^»]+?)\s*»/.exec(detail);
+    this.fileName = m ? (m[1].split(/[\\/]/).pop() ?? m[1]) : '';
+  }
+}
+
+export function desktopErrorKind(detail: string): DesktopSaveError['kind'] {
+  const code = /os error (\d+)/i.exec(detail)?.[1];
+  if (code && ['39', '112', '28'].includes(code)) return 'full';
+  if (/no space left|disk (is )?full|espace insuffisant/i.test(detail)) return 'full';
+  if (code && ['5', '32', '33', '13', '16', '26'].includes(code)) return 'busy';
+  if (/access is denied|being used by another process|permission denied|resource busy|locked/i.test(detail)) return 'busy';
+  return 'other';
+}
+
+const WRITE_COMMANDS = new Set(['save_begin', 'save_chunk', 'save_commit']);
+
 async function call<T>(cmd: string, args?: Record<string, unknown> | Uint8Array, headers?: Record<string, string>): Promise<T> {
   const { invoke } = await import('@tauri-apps/api/core');
   try {
     return await invoke<T>(cmd, args, headers ? { headers } : undefined);
   } catch (e) {
     // Les commandes Rust rejettent avec un texte : en faire une Error pour l'affichage habituel.
-    throw e instanceof Error ? e : new Error(typeof e === 'string' ? e : String(e));
+    if (e instanceof Error) throw e;
+    const text = typeof e === 'string' ? e : String(e);
+    throw WRITE_COMMANDS.has(cmd) ? new DesktopSaveError(text) : new Error(text);
   }
+}
+
+/** Fichiers que le bureau sait ouvrir (même liste que READ_EXTS de atomic_save.rs). */
+export const DESKTOP_OPEN_EXTS = ['voltaplan', 'openrgie', 'json', 'trik'];
+
+/**
+ * Boîte « Ouvrir » du système (ouverte par Rust, `pick_open_path`) puis lecture du fichier choisi (`read_file`).
+ * Le chemin est connu : « Enregistrer » pourra réécrire ce fichier sans redemander l'emplacement (écart O9).
+ * `null` si l'utilisateur annule.
+ */
+export async function desktopOpenFile(description: string, exts: string[] = DESKTOP_OPEN_EXTS): Promise<{ path: string; file: File } | null> {
+  const path = await call<string | null>('pick_open_path', { description, exts });
+  if (!path) return null;
+  const bytes = await call<ArrayBuffer>('read_file', { path });
+  const name = path.split(/[\\/]/).pop() ?? 'projet';
+  return { path, file: new File([bytes], name) };
 }
 
 /** Boîte « Enregistrer » du système (ouverte par Rust) ; `null` si l'utilisateur annule. */

@@ -14,7 +14,7 @@ import type { ArchiveReport } from '../format/archive';
 import type { Project } from '../model/types';
 import type { MigrationWarning } from '../model/migrate';
 import { ConflictError, isQuotaError, StorageFullError } from './conflict';
-import { desktopFileState, desktopPickPath, desktopWritable, desktopWriteBlob } from './desktopSave';
+import { DesktopSaveError, desktopFileState, desktopOpenFile, desktopPickPath, desktopWritable, desktopWriteBlob } from './desktopSave';
 import { openProjectData, projectToV1, serializeProject } from './projectData';
 
 export { decodeText } from './projectData';
@@ -116,6 +116,23 @@ export interface OpenResult {
  * Ouvre un fichier de projet : archive v2, JSON v1 (.voltaplan, .openrgie) ou Trikker, reconnu par sa signature
  * (src/io/projectData.ts). Taille vérifiée avant toute lecture complète.
  */
+/**
+ * Bureau : boîte « Ouvrir » du système (côté Rust), puis lecture comme readProjectFile. Le chemin du fichier est
+ * gardé : « Enregistrer » réécrit ce fichier, avec la détection d'une modification faite ailleurs (écart O9 de
+ * l'essai réel du 2026-11-25). Fichier converti (v1, Trikker) : jamais réécrit sans « Enregistrer sous ».
+ * `null` si l'utilisateur annule.
+ */
+export async function openDesktopProject(): Promise<(OpenResult & { name: string }) | null> {
+  const picked = await desktopOpenFile('Projet ' + APP_NAME);
+  if (!picked) return null;
+  const r = await readProjectFile(picked.file);
+  if (!r.needsNewFile && picked.path.toLowerCase().endsWith(EXT)) {
+    currentPath = picked.path;
+    lastWritten = await pathState(picked.path);
+  }
+  return { ...r, name: picked.file.name };
+}
+
 export async function readProjectFile(file: File): Promise<OpenResult> {
   currentHandle = null;
   currentPath = null;
@@ -151,11 +168,12 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
     const { stream, done, cancel } = desktopWritable(path, { backup: true });
     try {
       await serializeProject(project, stream);
+      lastWritten = await done;
     } catch (e) {
       await cancel(e);
-      throw e;
+      // Disque ou clé plein : même message que dans le navigateur ; les autres échecs gardent leur type (O7)
+      throw e instanceof DesktopSaveError && e.kind === 'full' ? new StorageFullError('device', e.detail) : e;
     }
-    lastWritten = await done;
     currentPath = path;
     return path.split(/[\\/]/).pop() ?? name;
   }
