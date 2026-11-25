@@ -299,13 +299,18 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
 - **D1** ✅ : clic droit → « Ouvrir avec » propose Voltaplan, sans fiche Marketplace.
 - **D2** ✅ : ouverture depuis Drive, bandeau, connexion, projet ouvert (photo, 3 rangées) ; adresse ensuite sans
   `state`.
-- **D3** : enregistré au même endroit (« Enregistré (Google Drive, 11:13) ») ; un seul fichier visible dans Drive ;
-  le nombre de versions reste à vérifier.
+- **D3** ✅ : enregistré au même endroit (« Enregistré (Google Drive, 11:13) ») ; un seul fichier dans Drive ; « Gérer
+  les versions » : 2 versions (11:08 création, 11:13 mise à jour).
 - **D5** ❌ puis corrigé : « Nouveau → Voltaplan » ouvrait l'application **sans** bandeau « Créer le projet », et
   « Enregistrer » proposait l'appareil. Cause probable : Drive envoie `"folderResourceKey":""` (vide) pour un dossier
   de « Mon Drive » ; le contrôle exigeait au moins un caractère et rejetait toute la demande sans rien dire.
   Correction : champ vide traité comme absent ; message « demande non reconnue » si la demande est rejetée ;
-  bandeau Drive placé en haut (il ne peut plus être recouvert par un autre message). **À revérifier en réel.**
+  bandeau Drive placé en haut (il ne peut plus être recouvert par un autre message). ✅ **Revérifié en réel** (d27995b) :
+  bandeau « Créer le projet » affiché en haut ; « Nouveau projet.voltaplan » créé dans Mon Drive › Essai cloud
+  2026-11-25 (à supprimer), le sous-dossier choisi. La cause supposée (clé vide) est donc confirmée.
+- **S10** (à corriger) : quand Drive ouvre Voltaplan alors qu'une nouvelle version est en attente, l'onglet
+  démarre sur l'ancienne version (cache) et propose « Recharger » ; recharger fait perdre la demande de Drive (déjà
+  retirée de l'adresse). Constaté au 1er essai de D5 après la correction.
 - **S9** (corrigé) : « Enregistrer » avant d'avoir répondu au bandeau Drive proposait d'enregistrer sur
   l'appareil ; il renvoie maintenant au bandeau.
 
