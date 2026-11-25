@@ -49,6 +49,9 @@ body,
 }
 body {
   font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Après « font », qui le remettrait à zéro : pictogrammes (⚡ ⚙ ⚠ ✓ ✕…) en version texte, pas en emoji couleur
+     (navigateurs récents ; U+FE0E dans le texte sinon) */
+  font-variant-emoji: text;
   background: var(--bg);
   color: var(--text);
 }
@@ -309,6 +312,16 @@ main {
   color: var(--muted);
   flex: none;
 }
+.tree-row .icon {
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.palette-icon.tree-icon {
+  width: 24px;
+  height: 16px;
+}
 .icon {
   width: 16px;
   text-align: center;
@@ -491,10 +504,13 @@ main {
 .canvas .nofill {
   fill: none;
 }
-.canvas text {
+/* Textes du dessin (kWh, M, 3~, repères…) : même police qu'à l'impression (Arial ou équivalent métrique),
+   pour un rendu identique d'un système à l'autre et à l'écran comme sur papier */
+.canvas text,
+.palette-icon text {
   fill: var(--ink);
   stroke: none;
-  font-family: system-ui, sans-serif;
+  font-family: Arial, Helvetica, 'Liberation Sans', Arimo, sans-serif;
 }
 .canvas text.bold {
   font-weight: 700;

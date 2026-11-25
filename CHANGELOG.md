@@ -13,6 +13,13 @@
 - Barre du haut sur une seule ligne sur grand écran ; le schéma reste entièrement visible après un ajout.
 - Exports (v1, Trikker, Eendraadschema) : confirmation « Fichier … créé » (O8).
 
+### Symboles : même rendu sur toutes les plateformes (2026-11-25)
+
+- Arborescence : vrais symboles RGIE en miniature au lieu de caractères Unicode (absents de certaines polices
+  Android, en emoji couleur sur téléphone).
+- Textes du dessin dans la police de l'impression (Arial ou équivalent) ; pictogrammes d'interface en version texte.
+- `npm run symbols:sheet` : planche de contrôle de tous les symboles et variantes (`docs/symboles/`).
+
 ### Plan au téléphone, tablette en portrait, aide au doigt (2026-11-25)
 
 - Plan : outils rares dans un menu « Fond ▾ » ; le catalogue du mobilier s'affiche enfin au téléphone (il s'ouvrait

@@ -4,23 +4,34 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { shortLabel } from './labels';
+import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
 import { ancestors, findNode } from '../model/tree';
 import type { ElNode } from '../model/types';
 
-const ICON: Record<string, string> = {
-  origin: '⚡',
-  meter: '▣',
-  protection: '⊘',
-  board: '▭',
-  cable: '╱',
-  socket: '◖',
-  switch: '⊸',
-  pushButton: '◉',
-  light: '⊗',
-  appliance: '▢',
-  earthBar: '▬',
-  earth: '⏚',
-};
+/**
+ * Pictogramme d'un élément : son symbole RGIE (tableau 2.23) en miniature, le même que dans le schéma, la palette
+ * et l'impression. Auparavant des caractères Unicode (⚡ ▣ ⊘ ⏚ ◖ ⊸…) : absents de certaines polices (Android),
+ * affichés en emoji couleur sur téléphone, et différents des symboles du schéma.
+ */
+function TreeIcon({ node }: { node: ElNode }) {
+  // La protection n'a qu'un symbole vertical (sur le fil) : couché pour tenir sur la ligne
+  if (node.kind === 'protection') {
+    const s = symbolSize(node, 'v');
+    return (
+      <svg viewBox={`-4 ${-s.w / 2 - 4} ${s.h + 8} ${s.w + 8}`} className="palette-icon tree-icon" aria-hidden="true" focusable="false">
+        <g transform="rotate(-90)">
+          <Symbol node={node} orient="v" />
+        </g>
+      </svg>
+    );
+  }
+  const s = symbolSize(node, 'h');
+  return (
+    <svg viewBox={`-4 -16 ${s.w + 8} 32`} className="palette-icon tree-icon" aria-hidden="true" focusable="false">
+      <Symbol node={node} orient="h" bare={!isWallMounted(node)} />
+    </svg>
+  );
+}
 
 export function TreePanel() {
   const project = useStore((s) => s.project);
@@ -152,7 +163,7 @@ export function TreePanel() {
             {n.children.length ? (open ? '▾' : '▸') : ''}
           </span>
           <span className="icon" aria-hidden="true">
-            {ICON[n.kind] ?? '·'}
+            <TreeIcon node={n} />
           </span>
           <span className="label">{shortLabel(n, project, numbering, lang, t)}</span>
           {sev && <span className={'dot ' + sev} />}

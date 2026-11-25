@@ -1,0 +1,2557 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voltaplan — planche des symboles</title>
+<style>
+:root {
+  --bg: #f5f6f8;
+  --panel: #ffffff;
+  --border: #d9dde3;
+  --text: #1d2330;
+  --muted: #6b7280;
+  --accent: #1f6feb;
+  --accent-bg: #e7f0ff;
+  --chain: #e8590c;
+  --chain-bg: #fff1e6;
+  --canvas: #ffffff;
+  --ink: #1d2330;
+  --wall: #5b6270;
+  --error: #d1242f;
+  --warning: #c27c00;
+  --info: #57606a;
+  --ok: #1a7f37;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181e;
+    --panel: #1c2028;
+    --border: #2f3542;
+    --text: #e6e8ec;
+    --muted: #9aa3b2;
+    --accent: #4c8dff;
+    --accent-bg: #1e2a40;
+    --chain: #ff922b;
+    --chain-bg: #3a2a1c;
+    --canvas: #11141a;
+    --ink: #dfe3ea;
+    --wall: #8a93a3;
+    --error: #ff6b6b;
+    --warning: #e3a33a;
+    --info: #9aa3b2;
+    --ok: #3fb950;
+    color-scheme: dark;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+}
+body {
+  font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  /* Après « font », qui le remettrait à zéro : pictogrammes (⚡ ⚙ ⚠ ✓ ✕…) en version texte, pas en emoji couleur
+     (navigateurs récents ; U+FE0E dans le texte sinon) */
+  font-variant-emoji: text;
+  background: var(--bg);
+  color: var(--text);
+}
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+button {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+/* Bouton ⚙ IA : clé déverrouillée, l'IA est prête */
+/* Hors ligne : repère près du bouton IA (src/ui/UpdateBanner.tsx) */
+/* R2 : repère de reconnexion (discret, dans la barre ; jamais de focus ni de boîte de dialogue) */
+.reconnect-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.reconnect-badge.expired {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+.reconnect-badge button.link {
+  font-size: 12px;
+  padding: 0 4px;
+}
+.offline-badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  cursor: help;
+  white-space: nowrap;
+}
+button.ai-on {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+button.danger {
+  color: var(--error);
+}
+button.active {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+select,
+input[type='text'],
+input[type='number'],
+input[type='date'],
+input:not([type]) {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 6px;
+  min-width: 0;
+}
+.muted {
+  color: var(--muted);
+}
+.small {
+  font-size: 12px;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.brand {
+  font-weight: 700;
+  margin-right: 8px;
+}
+.logo {
+  color: #e3a33a;
+}
+.sep {
+  width: 1px;
+  height: 22px;
+  background: var(--border);
+  margin: 0 4px;
+}
+.grow {
+  flex: 1;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+}
+.tab-short {
+  display: none;
+}
+/* Bouton Enregistrer : mot sur grand écran, disquette sur la barre compacte */
+.save-icon {
+  display: none;
+  vertical-align: middle;
+}
+.count {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 6px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 12px;
+}
+.count.error {
+  background: var(--error);
+}
+.count.warning {
+  background: var(--warning);
+}
+/* Grand écran : barre sur une seule ligne ; le nom du projet et l'état de l'enregistrement se raccourcissent
+   (points de suspension, texte complet en infobulle) au lieu de faire passer la barre sur deux lignes. */
+@media (min-width: 1200px) {
+  .toolbar {
+    flex-wrap: nowrap;
+  }
+  .toolbar > * {
+    flex-shrink: 0;
+  }
+  .toolbar > .file-name,
+  .toolbar > .save-state {
+    flex-shrink: 1;
+    min-width: 4em;
+  }
+}
+.file-name {
+  color: var(--muted);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* État de l'enregistrement (src/io/saveFlow.ts) */
+.save-state {
+  font-size: 12px;
+  color: var(--muted);
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.save-state.saved {
+  color: var(--ok);
+}
+.save-state.conflict,
+.save-state.pending {
+  color: var(--warning);
+}
+.save-state.error {
+  color: var(--error);
+}
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
+  .save-state {
+    max-width: 120px;
+  }
+}
+
+main {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.side {
+  position: relative;
+  width: 340px;
+  min-width: 160px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+}
+.side h3 {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.side-tree {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.side-props {
+  flex: 1 1 50%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-top: 1px solid var(--border);
+}
+.content {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  overflow: auto;
+}
+
+.tree {
+  overflow: auto;
+  flex: 1;
+  padding: 4px 0;
+}
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tree-row:hover {
+  background: var(--bg);
+}
+.tree-row.selected {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.twisty {
+  width: 12px;
+  color: var(--muted);
+  flex: none;
+}
+.tree-row .icon {
+  width: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.palette-icon.tree-icon {
+  width: 24px;
+  height: 16px;
+}
+.icon {
+  width: 16px;
+  text-align: center;
+  color: var(--muted);
+  flex: none;
+}
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.dot.error {
+  background: var(--error);
+}
+.dot.warning {
+  background: var(--warning);
+}
+.tree-sep {
+  margin: 8px 10px 2px;
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.props {
+  overflow: auto;
+  padding: 8px 10px;
+  flex: 1;
+}
+.props.empty {
+  color: var(--muted);
+}
+.props-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.props-head .ref {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-radius: 4px;
+  padding: 0 6px;
+  font-weight: 700;
+}
+.props-head .title {
+  color: var(--muted);
+}
+.field {
+  display: grid;
+  grid-template-columns: 44% 1fr;
+  align-items: center;
+  gap: 6px;
+  margin: 3px 0;
+}
+.field > span {
+  color: var(--muted);
+  font-size: 12px;
+}
+.field.bool input {
+  justify-self: start;
+}
+.props-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.props-actions .row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.props-findings {
+  margin-bottom: 8px;
+}
+
+.canvas-wrap {
+  position: absolute;
+  inset: 0;
+}
+.canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  touch-action: none;
+}
+.canvas-bg {
+  fill: var(--canvas);
+}
+.canvas-tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 2;
+}
+.hint,
+.empty-hint {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  z-index: 2;
+}
+.empty-hint {
+  top: 40%;
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  max-width: 420px;
+  text-align: center;
+}
+.link-button {
+  background: none;
+  border-color: transparent;
+  color: var(--accent);
+}
+.link-button:hover {
+  text-decoration: underline;
+}
+/* Aide permanente d'une vue (réserve du tableau) : coin bas gauche du dessin sur grand écran (la barre de réglages
+   flotte en haut) ; ligne au-dessus du dessin quand les réglages sont empilés (voir plus bas) */
+.view-note {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 12px;
+}
+.hint button {
+  background: transparent;
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.5);
+  padding: 0 6px;
+}
+.canvas.placing {
+  cursor: crosshair;
+}
+
+/* Dessin */
+.canvas line,
+.canvas path,
+.canvas circle,
+.canvas rect,
+.canvas ellipse {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  fill: none;
+}
+.canvas .wire {
+  stroke-width: 1.2;
+}
+.canvas .bus {
+  stroke-width: 3.5;
+}
+.canvas .fill {
+  fill: var(--ink);
+}
+.canvas .bg {
+  fill: var(--canvas);
+}
+.canvas .nofill {
+  fill: none;
+}
+/* Textes du dessin (kWh, M, 3~, repères…) : même police qu'à l'impression (Arial ou équivalent métrique),
+   pour un rendu identique d'un système à l'autre et à l'écran comme sur papier */
+.canvas text,
+.palette-icon text {
+  fill: var(--ink);
+  stroke: none;
+  font-family: Arial, Helvetica, 'Liberation Sans', Arimo, sans-serif;
+}
+.canvas text.bold {
+  font-weight: 700;
+}
+.canvas text.muted {
+  fill: var(--muted);
+}
+.canvas text.sel-text {
+  fill: var(--accent);
+}
+.canvas .hitbox {
+  fill: transparent;
+  stroke: none;
+}
+.canvas .hit {
+  cursor: pointer;
+}
+.canvas .hit:hover .hitbox {
+  fill: var(--accent-bg);
+  opacity: 0.6;
+}
+.canvas .selected .hitbox {
+  fill: var(--accent-bg);
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 1;
+}
+.canvas .selected line,
+.canvas .selected path,
+.canvas .selected circle:not(.mark),
+.canvas .selected rect:not(.hitbox),
+.canvas .selected ellipse {
+  stroke: var(--accent);
+}
+.canvas .selected text {
+  fill: var(--accent);
+}
+.canvas .mark {
+  stroke: none;
+}
+.canvas .mark.error {
+  fill: var(--error);
+}
+.canvas .mark.warning {
+  fill: var(--warning);
+}
+
+/* Plan : les traits des symboles restent fins malgré l'échelle */
+.canvas.plan .sym line,
+.canvas.plan .sym path,
+.canvas.plan .sym circle,
+.canvas.plan .sym rect,
+.canvas.plan .sym ellipse {
+  stroke-width: 1.4;
+}
+.canvas.plan .wall {
+  stroke: var(--wall);
+  stroke-linecap: square;
+}
+.canvas.plan .plan-thin line,
+.canvas.plan .plan-thin path,
+.canvas.plan .plan-thin rect,
+.canvas.plan line.plan-thin {
+  stroke: var(--wall);
+  stroke-width: 15;
+}
+.canvas.plan .plan-rect {
+  stroke: var(--wall);
+  stroke-width: 15;
+}
+.canvas.plan .opening-gap {
+  fill: var(--canvas);
+  stroke: none;
+}
+.canvas.plan .room-label {
+  fill: var(--muted);
+  font-weight: 600;
+}
+.canvas.plan .plan-ref {
+  font-weight: 700;
+}
+
+/* Pages formulaires */
+.page-panel {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 16px 20px 40px;
+}
+.form fieldset {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin: 12px 0;
+  padding: 8px 12px 12px;
+  background: var(--panel);
+}
+.form legend {
+  font-weight: 600;
+  padding: 0 4px;
+}
+.form legend.sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+.form .field {
+  grid-template-columns: 220px 1fr;
+}
+.grid-addr {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16px;
+}
+.radio {
+  display: block;
+  margin: 3px 0;
+}
+.spacer {
+  height: 8px;
+}
+
+.banner {
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+.banner.error {
+  background: color-mix(in srgb, var(--error) 14%, transparent);
+  color: var(--error);
+}
+.banner.ok {
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+  color: var(--ok);
+}
+.finding {
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--info);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 6px 0;
+  background: var(--panel);
+}
+.finding.error {
+  border-left-color: var(--error);
+}
+.finding.warning {
+  border-left-color: var(--warning);
+}
+.finding.clickable {
+  cursor: pointer;
+}
+.finding.clickable:hover {
+  border-color: var(--accent);
+}
+.finding-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+.finding-node {
+  font-weight: 600;
+}
+.rule-id {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+}
+.badge {
+  font-size: 12px;
+  padding: 0 6px;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--info);
+}
+.badge.error {
+  background: var(--error);
+}
+.badge.warning {
+  background: var(--warning);
+}
+.hazard {
+  font-size: 12px;
+  padding: 0 6px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+}
+.hazard.high {
+  color: var(--error);
+}
+.hazard.medium {
+  color: var(--warning);
+}
+.hazard.low {
+  color: var(--muted);
+}
+.finding-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+.finding-actions button {
+  font-size: 12px;
+  padding: 1px 6px;
+}
+.derogation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+.derogation-list {
+  padding-left: 18px;
+  font-size: 12px;
+}
+.advice {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.toast {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  max-width: 460px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+  padding: 10px 14px;
+  z-index: 10;
+  cursor: pointer;
+}
+/* Explication au doigt (appui long, src/ui/TouchHelp.tsx) */
+.touch-tip {
+  position: fixed;
+  transform: translate(-50%, -100%);
+  z-index: 100;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13px;
+  line-height: 1.35;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+.touch-tip.below {
+  transform: translate(-50%, 0);
+}
+/* Appui long sur un bouton : pas de menu « copier / partager » du système (iOS) */
+@media (pointer: coarse) {
+  button,
+  [title] {
+    -webkit-touch-callout: none;
+  }
+}
+/* Bande des avis (src/ui/Notice.tsx) : dans le flux, sous le dessin ; le dessin se réduit au lieu d'être caché, et
+   les avis ne se recouvrent plus entre eux ni ne cachent une fenêtre (écart O6). */
+.notices {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 8px;
+  max-height: 40vh;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.notices:empty {
+  display: none;
+}
+.notices .toast {
+  position: static;
+  max-width: none;
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+/* Avis sur une ligne : texte puis boutons-pictogrammes */
+.toast.notice-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.notice-line .notice-text {
+  flex: 1;
+  min-width: 0;
+}
+.icon-button {
+  min-width: 36px;
+  padding-left: 6px;
+  padding-right: 6px;
+  font-size: 16px;
+  line-height: 1;
+}
+@media (pointer: coarse) {
+  .icon-button {
+    min-width: 44px;
+  }
+}
+.toast ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
+  main.with-side {
+    flex-direction: column;
+  }
+  .side {
+    width: auto;
+    height: 45%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .content {
+    min-height: 55%;
+  }
+  .form .field {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Traits fins à l'intérieur des symboles (flocons, marques de pose…) */
+.canvas .sym .thin line,
+.canvas .sym .thin path,
+.canvas .sym .thin circle {
+  stroke-width: 0.8;
+}
+
+/* Outils du plan */
+.plan-toolbar {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 220px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  z-index: 2;
+}
+/* Actions sur la photo du tableau : dans la barre sur grand écran ; menu « Photo ▾ » sur la barre compacte */
+.photo-toggle {
+  display: none;
+}
+.photo-actions {
+  display: contents;
+}
+.plan-toolbar .sep {
+  margin: 0 6px;
+}
+.plan-toolbar label.inline {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.plan-toolbar label.inline input {
+  width: 64px;
+}
+.plan-toolbar ~ .hint {
+  top: auto;
+  bottom: 12px;
+}
+.canvas.plan .wall.sel {
+  stroke: var(--accent);
+}
+.canvas.plan .sel line,
+.canvas.plan .sel path,
+.canvas.plan .sel rect:not(.opening-gap) {
+  stroke: var(--accent);
+}
+.canvas.plan .sel-image {
+  outline: 2px solid var(--accent);
+}
+.canvas.plan .draft-wall {
+  opacity: 0.45;
+}
+.canvas.plan .draft-text {
+  fill: var(--accent);
+  font-weight: 700;
+}
+.canvas.plan .snap {
+  fill: var(--accent);
+  stroke: none;
+}
+.canvas.plan .measure {
+  stroke: var(--accent);
+  stroke-dasharray: 4 3;
+}
+@media (max-width: 700px) {
+  .plan-toolbar {
+    right: 8px;
+    top: 44px;
+  }
+}
+
+/* Versions du dossier */
+.revision {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.revision .rev-version {
+  width: 48px;
+}
+.revision .rev-desc {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Fenêtre modale (réglages) */
+.modal-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 16px;
+}
+.modal {
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  width: min(560px, 100%);
+  max-height: 90vh;
+  overflow: auto;
+}
+.modal h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+.modal fieldset {
+  margin: 10px 0;
+}
+.modal .row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+.modal .row.end {
+  justify-content: flex-end;
+}
+.ok-text {
+  color: var(--ok, #2e9d58);
+}
+.assist-panel {
+  max-width: 760px;
+  max-height: 85vh;
+  overflow: auto;
+}
+.assist-panel h3 {
+  margin: 14px 0 6px;
+  font-size: 15px;
+}
+.assist-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.assist-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border, #8883);
+}
+.assist-list .row {
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.assist-critical {
+  color: var(--warning);
+}
+.assist-high > div:first-child {
+  font-weight: 600;
+}
+.warning-text {
+  color: var(--warning);
+}
+.error-text {
+  color: var(--error);
+}
+
+/* Panneau des propriétés d'un élément du plan */
+.plan-item-panel {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 3;
+  width: 240px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+.canvas.plan .handle {
+  fill: var(--canvas);
+  stroke: var(--accent);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+  cursor: move;
+}
+
+/* Mobilier : traits fins gris, comme sur les plans d'architecte */
+.canvas.plan .furniture rect,
+.canvas.plan .furniture line,
+.canvas.plan .furniture path,
+.canvas.plan .furniture circle,
+.canvas.plan .furniture ellipse {
+  stroke: var(--muted);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+}
+.canvas.plan .furniture text {
+  fill: var(--muted);
+}
+.canvas.plan .furniture .sel rect,
+.canvas.plan .furniture .sel line,
+.canvas.plan .furniture .sel path,
+.canvas.plan .furniture .sel circle,
+.canvas.plan .furniture .sel ellipse {
+  stroke: var(--accent);
+  stroke-width: 2px;
+}
+.canvas.plan .furniture.draft {
+  opacity: 0.6;
+}
+/* Catalogue du mobilier */
+.catalog-wrap {
+  position: static; /* le catalogue s'ouvre sous la barre d'outils, aligné à gauche */
+}
+.catalog {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  width: min(440px, 100%);
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+.catalog-group {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 6px 0 4px;
+}
+.catalog-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  gap: 4px;
+}
+.catalog-items button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+.catalog-icon {
+  width: 48px;
+  height: 48px;
+}
+.catalog-icon rect,
+.catalog-icon line,
+.catalog-icon path,
+.catalog-icon circle,
+.catalog-icon ellipse {
+  stroke: var(--ink);
+  stroke-width: 1.2px;
+  vector-effect: non-scaling-stroke;
+  fill: none;
+}
+.catalog-icon text {
+  fill: var(--ink);
+}
+
+/* Tableau électrique */
+.canvas.board .board-frame {
+  fill: none;
+  stroke: var(--wall);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .rail {
+  fill: var(--border);
+  stroke: none;
+  opacity: 0.6;
+}
+.canvas.board .label-strip {
+  fill: #fff;
+  stroke: var(--muted);
+  stroke-width: 0.5px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .label-text {
+  fill: #111;
+  font-weight: 600;
+}
+.canvas.board .tick {
+  stroke: var(--muted);
+  stroke-width: 0.5px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .device-body {
+  fill: #f4f4f2;
+  stroke: #555;
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .device.rcd .device-body {
+  fill: #e6eefb;
+}
+.canvas.board .device.selected .device-body {
+  stroke: var(--accent);
+  stroke-width: 2.5px;
+}
+.canvas.board .device-lever {
+  fill: #333;
+  stroke: none;
+}
+.canvas.board .device-test {
+  fill: #f2c94c;
+  stroke: #555;
+  stroke-width: 0.5px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .device text {
+  fill: #222;
+}
+.canvas.board .device-ref {
+  font-weight: 700;
+}
+.canvas.board .check circle {
+  stroke: none;
+}
+.canvas.board .check.ok circle {
+  fill: #2e9d58;
+}
+.canvas.board .check.ko circle,
+.canvas.board .check.width circle {
+  fill: var(--error);
+}
+.canvas.board .check.unsure circle {
+  fill: #999;
+}
+.canvas.board .check text {
+  fill: #fff;
+  font-weight: 700;
+}
+.canvas.board .check-hit {
+  fill: transparent;
+  stroke: none;
+  cursor: pointer;
+}
+.canvas.board .drop-target {
+  fill: var(--accent-bg);
+  stroke: var(--accent);
+  stroke-dasharray: 4 3;
+  stroke-width: 1.5px;
+  vector-effect: non-scaling-stroke;
+}
+.canvas.board .snap {
+  fill: var(--accent);
+  stroke: none;
+}
+.canvas.board text.muted {
+  fill: var(--muted);
+}
+
+.ai-results {
+  width: 360px;
+  max-height: 50vh;
+  overflow: auto;
+}
+.ai-results ul {
+  margin: 0;
+  padding-left: 18px;
+}
+button.link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---------- Impression du dossier ---------- */
+.print-modal {
+  width: min(1100px, 100%);
+}
+.print-options {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.print-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 2px 12px;
+  flex: 1;
+}
+.print-preview {
+  height: 55vh;
+  overflow: auto;
+  background: #888;
+  padding: 10px;
+  border-radius: 6px;
+}
+.print-preview-inner {
+  zoom: 0.5;
+}
+.print-doc {
+  --ink: #000;
+  --canvas: #fff;
+  --muted: #444;
+  --wall: #666;
+  --accent: #000;
+  --accent-bg: transparent;
+  --border: #999;
+  --error: #c00;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.print-page {
+  box-sizing: border-box;
+  background: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto 10px;
+  overflow: hidden;
+  break-after: page;
+  page-break-after: always;
+}
+.print-body {
+  flex: 1;
+  min-height: 0;
+  border: 0.4mm solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2mm;
+  overflow: hidden;
+}
+.print-body > svg.canvas {
+  width: 100%;
+  height: 100%;
+}
+.print-doc .canvas text.muted {
+  fill: #444;
+}
+.watermark {
+  position: absolute;
+  top: 40%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 15mm;
+  white-space: nowrap;
+  font-weight: 800;
+  color: rgba(200, 0, 0, 0.18);
+  transform: rotate(-18deg);
+  pointer-events: none;
+}
+.watermark.light {
+  color: rgba(0, 0, 0, 0.08);
+}
+.c-kind {
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.print-note {
+  font-size: 2.6mm;
+  margin: 0 0 2mm;
+  font-style: italic;
+}
+.cartouche {
+  display: grid;
+  grid-template-columns: 1.1fr 1.6fr 1.3fr 1.1fr 1.3fr;
+  border: 0.4mm solid #000;
+  border-top: none;
+  font-size: 2.4mm;
+  line-height: 1.25;
+}
+.cartouche .c-col {
+  border-left: 0.25mm solid #000;
+  padding: 1mm 1.5mm;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.cartouche .c-col:first-child {
+  border-left: none;
+}
+.cartouche .c-head {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 2.1mm;
+  margin-bottom: 0.5mm;
+}
+.cartouche .c-title {
+  font-weight: 800;
+  font-size: 3.2mm;
+}
+.cartouche .c-brand {
+  margin-top: auto;
+  color: #666;
+  font-size: 2mm;
+}
+.cartouche .sign-box {
+  margin-top: auto;
+  border: 0.2mm dashed #666;
+  height: 11mm;
+  font-size: 1.8mm;
+  color: #666;
+  padding: 0.5mm;
+}
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 3mm;
+  align-self: flex-start;
+}
+.print-table th,
+.print-table td {
+  border: 0.2mm solid #000;
+  padding: 0.8mm 1.5mm;
+  text-align: left;
+  vertical-align: top;
+}
+.print-table th {
+  background: #eee;
+}
+.print-table td.b {
+  font-weight: 700;
+}
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5mm 4mm;
+  align-self: flex-start;
+  width: 100%;
+  font-size: 2.8mm;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+}
+.legend-note {
+  grid-column: 1 / -1;
+  font-size: 2.4mm;
+  color: #444;
+}
+.labels-sheet .lbl-row {
+  fill: none;
+  stroke: #999;
+  stroke-width: 0.2;
+}
+.labels-sheet .lbl-cell {
+  fill: #fff;
+  stroke: #000;
+  stroke-width: 0.25;
+}
+.labels-sheet text {
+  fill: #000;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#print-root {
+  display: none;
+}
+@media print {
+  body > *:not(#print-root) {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  #print-root .print-page {
+    margin: 0;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+}
+
+/* Ouvrir / enregistrer */
+.tabs-row {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.storage-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0;
+  max-height: 40vh;
+  overflow: auto;
+}
+.storage-list li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+  border-bottom: 1px solid var(--border);
+}
+.storage-list li .muted {
+  margin-left: auto;
+}
+.small-btn {
+  padding: 0 6px;
+}
+
+.rcd-tests {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 6px;
+}
+.rcd-tests th,
+.rcd-tests td {
+  border-bottom: 1px solid var(--border);
+  padding: 2px 4px;
+  text-align: left;
+}
+.rcd-tests input {
+  width: 70px;
+}
+
+/* Chaîne de l'élément sélectionné : amont jusqu'à l'origine et tout l'aval */
+.tree-row.chain {
+  background: var(--chain-bg);
+}
+.canvas .wire.chain,
+.canvas .chain .bus {
+  stroke: var(--chain);
+  stroke-width: 2.2;
+}
+.canvas .chain line,
+.canvas .chain path,
+.canvas .chain circle:not(.mark),
+.canvas .chain rect:not(.hitbox),
+.canvas .chain ellipse {
+  stroke: var(--chain);
+}
+.canvas text.chain,
+.canvas .chain text {
+  fill: var(--chain);
+}
+.canvas.unifilar.has-sel .wire:not(.chain),
+.canvas.unifilar.has-sel .sym:not(.chain):not(.selected),
+.canvas.unifilar.has-sel .hit:not(.chain):not(.selected) .bus,
+.canvas.unifilar.has-sel text:not(.chain):not(.sel-text) {
+  opacity: 0.35;
+}
+.canvas.board .device.chain .device-body {
+  stroke: var(--chain);
+  stroke-width: 1.2;
+}
+
+/* Liste du matériel */
+.bom-table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.bom-table th,
+.bom-table td {
+  border-bottom: 1px solid var(--border);
+  padding: 5px 8px;
+  text-align: left;
+  vertical-align: top;
+}
+.bom-table th {
+  color: var(--muted);
+  font-weight: 600;
+}
+.bom-table .num,
+.print-table .num {
+  text-align: right;
+  white-space: nowrap;
+}
+.bom-table .refs {
+  color: var(--muted);
+  font-size: 12px;
+}
+.bom-table .bom-cat td,
+.print-table .bom-cat td {
+  font-weight: 700;
+  background: var(--bg);
+  padding-top: 10px;
+}
+
+.sync-list {
+  margin: 8px 0 12px;
+  padding-left: 18px;
+  line-height: 1.6;
+}
+
+.warn-text {
+  color: var(--warning);
+  font-weight: 700;
+}
+tr.clickable {
+  cursor: pointer;
+}
+tr.clickable:hover td {
+  background: var(--accent-bg);
+}
+
+/* Déplacement de la vue (glisser sur une zone vide ou appui long) */
+.canvas.panning,
+.canvas.panning * {
+  cursor: grabbing !important;
+}
+
+/* Colonne de gauche : parties repliables et redimensionnables */
+.side h3 {
+  padding: 0;
+}
+.side-toggle {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.side-toggle:hover {
+  color: var(--text);
+}
+.side-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+.side .folded {
+  flex: 0 0 auto !important;
+}
+.side-splitter {
+  flex: 0 0 6px;
+  cursor: row-resize;
+  background: var(--border);
+  opacity: 0.5;
+}
+.side-splitter:hover {
+  background: var(--accent);
+  opacity: 1;
+}
+.side-resizer {
+  position: absolute;
+  top: 0;
+  right: -3px;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 5;
+}
+.side-resizer:hover {
+  background: var(--accent);
+  opacity: 0.5;
+}
+body.resizing {
+  user-select: none;
+}
+body.resizing-v * {
+  cursor: row-resize !important;
+}
+body.resizing-h * {
+  cursor: col-resize !important;
+}
+
+/* Ajouter un élément */
+.tree-add {
+  margin-left: auto;
+  padding: 0 6px;
+  min-height: 0;
+  line-height: 18px;
+  font-size: 13px;
+  opacity: 0;
+}
+.tree-row:hover .tree-add,
+.tree-row.selected .tree-add,
+.tree-row:focus-visible .tree-add,
+.tree-add:focus-visible {
+  opacity: 1;
+}
+.tree-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+/* Texte lu par les lecteurs d'écran, invisible à l'écran */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.modal:focus {
+  outline: none;
+}
+@media (hover: none) {
+  .tree-add {
+    opacity: 1;
+  }
+}
+.add-btn {
+  margin-right: 6px;
+}
+.add-menu {
+  position: fixed;
+  z-index: 50;
+  min-width: 200px;
+  max-height: 70vh;
+  overflow: auto;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+}
+.add-menu-title {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 4px 8px;
+}
+.add-menu button {
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 6px 10px;
+  border-radius: 5px;
+}
+.add-menu button:hover,
+.add-menu button:focus-visible {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+.canvas-hint {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 12px;
+  color: var(--muted);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Calage de la photo du tableau : photo devant, dessin estompé derrière */
+.canvas.board.calibrating .device,
+.canvas.board.calibrating .label-text,
+.canvas.board.calibrating .label-strip {
+  opacity: 0.12;
+}
+
+/* Masquer / afficher la colonne de gauche */
+.side-hide {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  z-index: 6;
+  padding: 0 8px;
+  min-height: 0;
+  line-height: 22px;
+  font-size: 16px;
+}
+.side-show {
+  flex: 0 0 auto;
+  width: 22px;
+  padding: 0;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: var(--panel);
+  font-size: 16px;
+  color: var(--muted);
+}
+.side-show:hover {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+/* Menu Fichier */
+.file-menu {
+  position: relative;
+}
+.file-menu-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 260px;
+}
+.file-menu-list button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.file-menu-list kbd {
+  font-size: 12px;
+  color: var(--muted);
+  background: none;
+  font-family: inherit;
+}
+.menu-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 6px;
+}
+
+/* Palette « Éléments » (colonne de gauche) */
+.side-palette {
+  flex: 0 1 auto;
+  max-height: 45%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-top: 1px solid var(--border);
+}
+.palette {
+  overflow: auto;
+  padding: 4px 10px 10px;
+}
+.palette-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 8px 0 4px;
+}
+.palette-group summary {
+  cursor: pointer;
+  font-size: 12px;
+  padding: 3px 0;
+}
+.palette-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 2px 0 6px;
+}
+.palette-items.icons button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 70px;
+  gap: 2px;
+  padding: 4px 2px;
+  font-size: 12px;
+  line-height: 1.1;
+  text-align: center;
+}
+.palette-items button.dim {
+  opacity: 0.45;
+}
+.palette-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 6px;
+}
+.palette-list button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-align: left;
+  padding: 2px 6px;
+  font-size: 12px;
+}
+.palette-list .palette-icon {
+  width: 36px;
+  height: 22px;
+  flex: 0 0 auto;
+}
+.palette-icon {
+  width: 48px;
+  height: 30px;
+}
+.palette-icon line,
+.palette-icon path,
+.palette-icon circle,
+.palette-icon rect,
+.palette-icon ellipse {
+  stroke: var(--ink);
+  stroke-width: 1.2;
+  fill: none;
+}
+.palette-icon .fill {
+  fill: var(--ink);
+}
+.palette-icon .bg {
+  fill: var(--panel);
+}
+.palette-icon .nofill {
+  fill: none;
+}
+.palette-icon text {
+  fill: var(--ink);
+  stroke: none;
+}
+/* Ajout d'un élément depuis le plan */
+.plan-add {
+  min-width: 320px;
+  max-width: 420px;
+  padding: 8px 10px;
+  gap: 6px;
+}
+.plan-add select {
+  width: 100%;
+}
+.plan-add .row button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  text-align: center;
+  padding: 5px 12px;
+}
+.plan-add .row button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+/* --- pages légales (pied de page) --- */
+.legal-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px 14px;
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--muted);
+  background: var(--panel);
+  border-top: 1px solid var(--border);
+}
+.legal-footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.legal-footer a:hover,
+.legal-footer a:focus-visible {
+  color: var(--accent);
+  text-decoration: underline;
+}
+@media print {
+  .legal-footer {
+    display: none;
+  }
+}
+
+/* ---------- Ergonomie mobile (téléphone, tablette) ----------
+ * Grand écran à la souris : rien ne change (règles limitées à `pointer: coarse` ou aux petites largeurs).
+ * Voir docs/validation-plateformes.md, section « Ergonomie tactile ». */
+
+/* Barre d'outils : version compacte sous 700 px (menu « ⋯ », onglets défilants) */
+.narrow-only {
+  display: none;
+}
+.toolbar-more {
+  position: relative;
+}
+.toolbar-more-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 230px;
+}
+.toolbar-more-list button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+.toolbar-more-list kbd {
+  font-size: 12px;
+  color: var(--muted);
+  background: none;
+  font-family: inherit;
+}
+.toolbar-more-lang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px;
+}
+.side-show-label {
+  display: none;
+}
+@media (max-width: 800px), (orientation: portrait) and (max-width: 1100px) {
+  /* Colonne empilée au-dessus du dessin : la bande « afficher » devient une barre lisible */
+  .side-show {
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .side-show-label {
+    display: inline;
+    font-size: 13px;
+  }
+  /* Largeur de colonne sans objet quand elle est empilée (la largeur retenue est en style en ligne) */
+  main.with-side .side-resizer {
+    display: none;
+  }
+  main.with-side .side {
+    width: auto !important;
+  }
+  /* Téléphone, colonne masquée : propriétés sous le dessin (src/ui/PropsSheet.tsx). Dans le flux (le dessin se
+     réduit, rien n'est caché) et plafonné à 35 % : le dessin garde plus de la moitié de l'écran. */
+  /* Panneau présent : le dessin garde au moins 60 % de la zone sous la barre, le panneau se réduit (défilement) */
+  main.with-side:has(.props-sheet) .content {
+    min-height: 60%;
+  }
+  .props-sheet {
+    order: 1;
+    flex: 0 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: 35vh;
+    max-height: 35dvh;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.15);
+  }
+  .props-sheet-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    flex: 0 0 auto;
+  }
+  .props-sheet-toggle {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0 8px;
+  }
+  .props-sheet-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .props-sheet-hint {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .props-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+  }
+}
+/* Hors téléphone et tablette en portrait, le panneau n'est jamais affiché (la colonne montre les propriétés) */
+@media (min-width: 801px) and (min-height: 501px) and (orientation: landscape), (min-width: 1101px) {
+  .props-sheet {
+    display: none;
+  }
+}
+/* Barre compacte : petit écran, ou tablette au doigt (boutons de 44 px : la barre complète prendrait 3 lignes) */
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
+  .toolbar {
+    gap: 4px;
+    padding: 4px 8px;
+  }
+  .toolbar .wide-only,
+  .toolbar .grow,
+  .brand-name {
+    display: none;
+  }
+  .toolbar .narrow-only {
+    display: block;
+  }
+  .brand {
+    margin-right: 0;
+  }
+  .toolbar .file-name {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+  }
+  .toolbar .save-state {
+    max-width: 90px;
+  }
+  /* Onglets : une seule ligne sous les actions, qui défile horizontalement */
+  .toolbar .tabs {
+    order: 10;
+    flex: 1 0 100%;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .toolbar .tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .toolbar .save-button .save-label {
+    display: none;
+  }
+  .toolbar .save-button .save-icon {
+    display: inline-block;
+  }
+  .toolbar .save-button {
+    min-width: 44px;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .toolbar .tabs {
+    gap: 2px;
+  }
+  .toolbar .tabs button {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  /* « Contrôle RGIE » réduit : seulement le compteur d'alertes (idée de l'utilisateur), « RGIE » s'il n'y en a pas */
+  .toolbar .tabs .tab-check .tab-label {
+    display: none;
+  }
+  .toolbar .tabs .tab-check:not(.has-count) .tab-short {
+    display: inline;
+  }
+  .toolbar .tabs .tab-check .count {
+    margin-left: 0;
+    padding: 2px 10px;
+    font-size: 14px;
+  }
+  /* « Contrôle RGIE » et son compteur d'alertes restent visibles au bord droit quand les onglets défilent */
+  .toolbar .tabs .tab-check {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    background: var(--panel);
+    box-shadow: -8px 0 8px -4px var(--panel);
+  }
+
+}
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
+  /* Plan et tableau : réglages empilés au-dessus du dessin (plus de chevauchement), repliables */
+  .canvas-wrap.stacked {
+    display: flex;
+    flex-direction: column;
+  }
+  .canvas-wrap.stacked > .narrow-only {
+    display: flex;
+  }
+  .canvas-wrap.stacked > .stack-toggle {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--panel);
+    color: var(--muted);
+    text-align: left;
+    padding: 4px 10px;
+  }
+  .canvas-wrap.stacked > .plan-toolbar {
+    /* relative (et non static) : le catalogue du mobilier s'ouvre sous la barre, pas sous le bas de l'écran */
+    position: relative;
+    z-index: 5; /* au-dessus des aides posées sur le dessin (plan vide, consignes) */
+    inset: auto; /* pas de décalage hérité de la barre flottante (top / left / right) */
+    flex: 0 0 auto;
+    padding: 6px 8px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .canvas-wrap.stacked .catalog {
+    left: 4px;
+    right: 4px;
+    width: auto;
+    max-height: 55vh;
+  }
+  .canvas-wrap.stacked > .plan-toolbar.folded {
+    display: none;
+  }
+  .canvas-wrap.stacked > .canvas {
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+  }
+  .canvas-wrap.stacked > .canvas-tools {
+    top: auto;
+    bottom: 8px;
+  }
+  .canvas-wrap.stacked > .hint {
+    top: auto;
+    bottom: 8px;
+    left: 8px;
+    right: 72px;
+    transform: none;
+  }
+  /* Menu « Photo ▾ » : actions sur la photo repliées */
+  .plan-toolbar > .photo-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+  .photo-actions {
+    display: none;
+  }
+  .photo-actions.open {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+  /* Calage en cours : une ligne (étape + Annuler) ; des réglages, seul le choix des rangées reste ; pas de bulle */
+  .canvas-wrap.stacked > .calib-bar {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--accent-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .calib-step {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+  }
+  .canvas-wrap.stacked > .view-note {
+    position: static;
+    background: none;
+  }
+  .canvas-wrap.stacked.calibrating > .stack-toggle,
+  .canvas-wrap.stacked.calibrating > .hint,
+  .canvas-wrap.stacked.calibrating > .view-note {
+    display: none;
+  }
+  .canvas-wrap.stacked.calibrating > .plan-toolbar > :not(.photo-actions),
+  .canvas-wrap.stacked.calibrating .photo-actions > :not(.calib-keep) {
+    display: none;
+  }
+  .canvas-wrap.stacked.calibrating .photo-actions {
+    display: flex;
+  }
+  .canvas-wrap.stacked.calibrating > .plan-toolbar:not(:has(.calib-keep)) {
+    display: none;
+  }
+}
+
+/* Cibles au doigt : au moins 44 × 44 px (recommandation WCAG 2.5.5, Apple et Android) */
+@media (pointer: coarse) {
+  button,
+  select {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* 16 px : iOS ne zoome plus la page à l'entrée dans un champ */
+  select,
+  textarea,
+  input[type='text'],
+  input[type='number'],
+  input[type='date'],
+  input[type='password'],
+  input[type='search'],
+  input[type='email'],
+  input[type='url'],
+  input:not([type]) {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  input[type='range'] {
+    min-height: 44px;
+  }
+  input[type='checkbox'],
+  input[type='radio'] {
+    width: 20px;
+    height: 20px;
+  }
+  label:has(> input[type='checkbox']),
+  label:has(> input[type='radio']) {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  button.link {
+    display: inline-flex;
+    align-items: center;
+  }
+  .finding-actions button {
+    padding: 4px 10px;
+  }
+  .add-menu button {
+    padding: 8px 12px;
+  }
+  /* Arborescence : lignes, dépliage et « ＋ » au doigt */
+  .tree-row {
+    min-height: 44px;
+  }
+  .tree-row .twisty {
+    width: 44px;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tree-add {
+    min-height: 44px;
+    line-height: normal;
+  }
+  /* Colonne de gauche : titres, masquer / afficher, séparation à glisser */
+  .side .side-toggle {
+    min-height: 44px;
+  }
+  .side-hide {
+    top: 0;
+    right: 0;
+    min-height: 44px;
+    line-height: normal;
+  }
+  .side-show {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  .side-splitter {
+    flex: 0 0 44px;
+    margin: -19px 0;
+    position: relative;
+    z-index: 4;
+    opacity: 1;
+    background: linear-gradient(var(--border), var(--border)) center / 100% 6px no-repeat;
+  }
+  .side-splitter:hover {
+    background: linear-gradient(var(--accent), var(--accent)) center / 100% 6px no-repeat;
+  }
+  .side-resizer:hover {
+    background: none;
+  }
+  .side-resizer {
+    width: 44px;
+    right: -22px;
+  }
+  .palette-group summary {
+    min-height: 44px;
+    padding: 12px 0;
+  }
+  /* Liens du pied de page : même hauteur de cible (le pied passe de 22 à 44 px de haut) */
+  .legal-footer {
+    padding-block: 0;
+  }
+  .legal-footer a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  /* Pas de bulle « copier / enregistrer l'image » d'iOS pendant un appui long sur le dessin */
+  .canvas {
+    -webkit-touch-callout: none;
+  }
+}
+
+/* --- cloud dossiers / Drive --- */
+.cloud-form {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 8px 0;
+  display: grid;
+  gap: 6px;
+}
+.cloud-form legend {
+  font-size: 0.85em;
+  padding: 0 4px;
+}
+.drive-open button {
+  margin-top: 6px;
+}
+/* Bandeau Google Drive en haut : jamais recouvert par les autres messages (en bas à droite) */
+.toast.drive-open {
+  top: 64px;
+  bottom: auto;
+  z-index: 40;
+}
+
+/* Liens légaux : dans le menu « ⋯ » quand la barre est compacte (téléphone, tablette au doigt), pour laisser
+ * toute la hauteur au dessin ; pied de page inchangé sur ordinateur. */
+.toolbar-more-list a {
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 5px;
+  color: var(--text);
+  text-decoration: none;
+}
+.toolbar-more-list a:hover,
+.toolbar-more-list a:focus-visible {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+@media (pointer: coarse) {
+  .toolbar-more-list a {
+    min-height: 44px;
+  }
+}
+@media (max-width: 700px), (pointer: coarse) and (max-width: 1100px), (max-height: 500px) and (max-width: 1100px) {
+  .legal-footer {
+    display: none;
+  }
+}
+
+/* Lien GitHub Sponsors (pied de page et menu « ⋯ ») */
+.sponsor-link span {
+  color: #db61a2;
+}
+
+/* « À propos » (src/ui/AboutDialog.tsx) */
+.about-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.about-status {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.about-modified,
+.about-declared,
+.about-unknown {
+  border-color: #c2410c;
+}
+.about-list {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 6px 12px;
+  margin: 8px 0;
+}
+.about-list dt {
+  font-weight: 600;
+}
+.about-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.about-source {
+  display: inline-block;
+  margin-bottom: 2px;
+}
+.legal-about {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+@media (max-width: 520px) {
+  .about-list {
+    grid-template-columns: 1fr;
+  }
+  .about-list dt {
+    margin-top: 4px;
+  }
+}
+
+/* (En fin de feuille : l'emporte sur la barre compacte.) Téléphone à l'horizontale (peu de hauteur) : la hauteur manque, pas la largeur.
+   - barre du haut sur une seule ligne (onglets à côté des actions, ils défilent si besoin) ;
+   - propriétés dans un panneau à DROITE du dessin (src/ui/PropsSheet.tsx), replié en une bande verticale ;
+   - avis sur une ligne. La colonne est repliée par défaut (SidePanels), les réglages du plan et du tableau aussi. */
+@media (max-height: 500px) and (max-width: 1100px) {
+  .toolbar {
+    flex-wrap: nowrap;
+  }
+  .toolbar > * {
+    flex-shrink: 0;
+  }
+  /* Fichier, disquette, nom du projet (se raccourcit), onglets, ⋯ */
+  .toolbar .file-name {
+    order: 1;
+    flex: 1 1 0;
+    min-width: 48px;
+    max-width: none;
+  }
+  .toolbar .save-state {
+    order: 1;
+    flex-shrink: 1;
+    min-width: 0;
+  }
+  .toolbar .tabs {
+    order: 2;
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+  .toolbar .toolbar-more {
+    order: 3;
+  }
+  .notices {
+    max-height: 60px;
+  }
+  .props-sheet {
+    order: 1;
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: 38%;
+    max-width: 420px;
+    min-height: 0;
+    border-left: 1px solid var(--border);
+    background: var(--panel);
+    box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  }
+  .props-sheet-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    flex: 0 0 auto;
+  }
+  .props-sheet-toggle {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 0 8px;
+  }
+  .props-sheet-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .props-sheet-hint {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .props-sheet-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+  }
+  /* Replié : bande verticale de 48 px (✕ en haut, nom de l'élément écrit verticalement) */
+  .props-sheet:not(.open) {
+    width: 48px;
+  }
+  .props-sheet:not(.open) .props-sheet-head {
+    flex: 1 1 auto;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    padding: 4px 2px;
+  }
+  .props-sheet:not(.open) .props-sheet-toggle {
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 8px 0;
+    writing-mode: vertical-rl;
+  }
+  .props-sheet:not(.open) .props-sheet-name {
+    flex: 0 1 auto;
+  }
+}
+
+/* Planche : toujours en clair, comme à l'impression */
+:root { color-scheme: light; --ink: #000; --panel: #fff; --bg: #fff; --text: #000; --muted: #555; --border: #ccc; }
+html, body { height: auto; background: #fff; color: #000; }
+.sheet { display: block; padding: 12px; max-width: 1200px; margin: 0 auto; }
+.sheet h1 { font-size: 20px; } .sheet h2 { font-size: 15px; margin: 16px 0 6px; }
+.grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.cell { margin: 0; border: 1px solid #ccc; border-radius: 4px; padding: 4px; width: 200px; }
+.pair { display: flex; align-items: center; justify-content: space-around; height: 104px; }
+.cell svg.canvas { background: transparent; }
+figcaption { text-align: center; font-size: 12px; word-break: break-word; }
+</style>
+</head>
+<body>
+<div class="sheet"><h1>Voltaplan — planche des symboles</h1><p>Pour chaque élément : forme <strong>unifilaire</strong> (à gauche) et <strong>plan de position</strong> (à droite), puis une variante par propriété qui change le dessin. À comparer au tableau 2.23 du RGIE ; à ouvrir sur chaque appareil pour vérifier que le rendu est identique.</p><section><h2>origin</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-38 -6 76 42" width="84" height="100" role="img" aria-label="origin unifilaire"><g><line x1="0" y1="0" x2="0" y2="30"></line><rect x="-5" y="6" width="10" height="18" class="nofill"></rect><circle cx="0" cy="15" r="2" class="fill"></circle></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="origin plan"><g><line x1="0" y1="0" x2="30" y2="0"></line><rect x="6" y="-5" width="18" height="10" class="nofill"></rect><circle cx="15" cy="0" r="2" class="fill"></circle></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>meter</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 58" width="84" height="100" role="img" aria-label="meter unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><rect x="-15" y="8" width="30" height="30" class="bg"></rect><line x1="-15" y1="15" x2="15" y2="15"></line><text x="0" y="30" text-anchor="middle" font-size="9">kWh</text><line x1="0" y1="38" x2="0" y2="46"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="meter plan"><g><rect x="4" y="-9" width="28" height="18" class="bg"></rect><line x1="4" y1="-4" x2="32" y2="-4"></line><text x="18" y="6" font-size="7" text-anchor="middle">kWh</text></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 58" width="84" height="100" role="img" aria-label="meter unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><rect x="-15" y="8" width="30" height="30" class="bg"></rect><line x1="-15" y1="15" x2="15" y2="15"></line><text x="0" y="30" text-anchor="middle" font-size="9">kWh</text><line x1="0" y1="38" x2="0" y2="46"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="meter plan"><g><rect x="4" y="-9" width="28" height="18" class="bg"></rect><line x1="4" y1="-4" x2="32" y2="-4"></line><text x="18" y="6" font-size="7" text-anchor="middle">kWh</text></g></svg></div><figcaption>inBoard = false</figcaption></figure></div></section><section><h2>protection</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="0" y1="40" x2="0" y2="56"></line><ellipse cx="0" cy="47" rx="8" ry="3.5" class="nofill"></ellipse><path d="M-8 47 H-14 V30 H-6" class="nofill" stroke-dasharray="2 2"></path></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>device = rcd</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line><ellipse cx="0" cy="47" rx="8" ry="3.5" class="nofill"></ellipse><path d="M-8 47 H-14 V30 H-6" class="nofill" stroke-dasharray="2 2"></path></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>device = rcbo</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-38 -6 76 60" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="48"></line><rect x="-5" y="12" width="10" height="24" class="bg"></rect><line x1="0" y1="12" x2="0" y2="36"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>device = fuse</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>device = switch</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>poles = 1P</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>poles = 2P</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>poles = 3P</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>poles = 3P+N</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>poles = 4P</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>rcdType = AC</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>rcdType = A</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>rcdType = F</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>rcdType = B</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>oldPart = true</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 68" width="84" height="100" role="img" aria-label="protection unifilaire"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="protection plan"><g><rect x="4" y="-12" width="28" height="24" class="bg" rx="0"></rect><text x="18" y="3" text-anchor="middle" font-size="8">pro</text></g></svg></div><figcaption>series = true</figcaption></figure></div></section><section><h2>board</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="board unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-6" width="36" height="12" class="bg"></rect></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 52 40" width="100" height="48" role="img" aria-label="board plan"><g><rect x="4" y="-6" width="36" height="12" class="bg"></rect></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>cable</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>inConduit = false</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path><line x1="-4" y1="-3" x2="4" y2="-3"></line><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>method = onWall</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><line x1="-4" y1="-3" x2="4" y2="-3"></line><line x1="-3" y1="-1" x2="3" y2="-1"></line><line x1="-2" y1="1" x2="2" y2="1"></line><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>method = underground</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><circle cx="0" cy="0" r="2.5" class="nofill"></circle><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>method = air</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-37 -6 74 46" width="84" height="100" role="img" aria-label="cable unifilaire"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="cable plan"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></svg></div><figcaption>method = parallel</figcaption></figure></div></section><section><h2>earthBar</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 30" width="84" height="100" role="img" aria-label="earthBar unifilaire"><g><line x1="0" y1="0" x2="0" y2="6"></line><rect x="-15" y="6" width="30" height="6" class="fill"></rect><line x1="0" y1="12" x2="0" y2="18"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="earthBar plan"><g><line x1="10" y1="-8" x2="10" y2="8"></line><line x1="14" y1="-5" x2="14" y2="5"></line><line x1="18" y1="-2" x2="18" y2="2"></line></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>earth</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-42 -6 84 42" width="84" height="100" role="img" aria-label="earth unifilaire"><g><line x1="0" y1="0" x2="0" y2="14"></line><line x1="-12" y1="14" x2="12" y2="14"></line><line x1="-8" y1="19" x2="8" y2="19"></line><line x1="-4" y1="24" x2="4" y2="24"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="earth plan"><g><line x1="10" y1="-8" x2="10" y2="8"></line><line x1="14" y1="-5" x2="14" y2="5"></line><line x1="18" y1="-2" x2="18" y2="2"></line></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>socket</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 36 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="10" y1="0" x2="17" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><path d="M25 -8 A8 8 0 0 0 25 8" class="nofill"></path><path d="M25 -8 v-3 M25 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 43 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><line x1="10" y1="0" x2="17" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><path d="M25 -8 A8 8 0 0 0 25 8" class="nofill"></path><path d="M25 -8 v-3 M25 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></svg></div><figcaption>count = 2</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="10" y1="0" x2="24" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><path d="M25 -8 A8 8 0 0 0 25 8" class="nofill"></path><path d="M25 -8 v-3 M25 8 v3" class="nofill"></path><path d="M32 -8 A8 8 0 0 0 32 8" class="nofill"></path><path d="M32 -8 v-3 M32 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 50 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><line x1="10" y1="0" x2="24" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><path d="M25 -8 A8 8 0 0 0 25 8" class="nofill"></path><path d="M25 -8 v-3 M25 8 v3" class="nofill"></path><path d="M32 -8 A8 8 0 0 0 32 8" class="nofill"></path><path d="M32 -8 v-3 M32 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></svg></div><figcaption>count = 3</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 36 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path></g></svg></div><figcaption>earth = false</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 36 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line></g></svg></div><figcaption>childSafety = false</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line><text x="19" y="12" font-size="8" font-weight="bold">h</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line><text x="19" y="12" font-size="8" font-weight="bold">h</text></g></svg></div><figcaption>splashProof = true</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="socket unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line><text x="9" y="3" font-size="7">3~</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 36 40" width="100" height="48" role="img" aria-label="socket plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><path d="M18 -8 A8 8 0 0 0 18 8" class="nofill"></path><path d="M18 -8 v-3 M18 8 v3" class="nofill"></path><line x1="10" y1="-10" x2="10" y2="10"></line><text x="9" y="3" font-size="7">3~</text></g></svg></div><figcaption>threePhase = true</figcaption></figure></div></section><section><h2>switch</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="12" y1="-3.48" x2="7" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="7" y1="-16" x2="2" y2="-16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="12" y1="-3.48" x2="7" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="7" y1="-16" x2="2" y2="-16"></line></g></g></svg></div><figcaption>switchType = double</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line></g></g></svg></div><figcaption>switchType = twoWay</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line><line x1="12" y1="-3.48" x2="7" y2="-16"></line><line x1="7" y1="-16" x2="2" y2="-16"></line><line x1="16" y1="3.48" x2="21" y2="16"></line><line x1="21" y1="16" x2="26" y2="16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line><line x1="12" y1="-3.48" x2="7" y2="-16"></line><line x1="7" y1="-16" x2="2" y2="-16"></line><line x1="16" y1="3.48" x2="21" y2="16"></line><line x1="21" y1="16" x2="26" y2="16"></line></g></g></svg></div><figcaption>switchType = intermediate</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><path d="M21 -16 l6 -2 v5 z" class="nofill"></path></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><path d="M21 -16 l6 -2 v5 z" class="nofill"></path></g></g></svg></div><figcaption>switchType = dimmer</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="19.4" y1="-12.4" x2="24.4" y2="-12.4"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="19.4" y1="-12.4" x2="24.4" y2="-12.4"></line></g></g></svg></div><figcaption>switchType = bipolar</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><path d="M24 -2 l3 -4 l3 4 z M24 2 l3 4 l3 -4 z" class="nofill"></path></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><path d="M24 -2 l3 -4 l3 4 z M24 2 l3 4 l3 -4 z" class="nofill"></path></g></g></svg></div><figcaption>switchType = shutter</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><path d="M18 -9 v7 m-2 -3 l2 3 l2 -3" class="nofill"></path></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><path d="M18 -9 v7 m-2 -3 l2 3 l2 -3" class="nofill"></path></g></g></svg></div><figcaption>switchType = pullCord</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="11.2" y1="-2.8" x2="16.8" y2="2.8"></line><line x1="16.8" y1="-2.8" x2="11.2" y2="2.8"></line><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="11.2" y1="-2.8" x2="16.8" y2="2.8"></line><line x1="16.8" y1="-2.8" x2="11.2" y2="2.8"></line><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g></g></svg></div><figcaption>pilotLight = true</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="9" cy="0" r="5" class="bg"></circle><line x1="5.5" y1="-3.5" x2="12.5" y2="3.5"></line><line x1="12.5" y1="-3.5" x2="5.5" y2="3.5"></line><line x1="14" y1="0" x2="20" y2="0"></line><g><circle cx="24" cy="0" r="4" class="bg"></circle><line x1="26" y1="-3.48" x2="31" y2="-16"></line><line x1="31" y1="-16" x2="36" y2="-16"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="4" y2="0"></line><circle cx="9" cy="0" r="5" class="bg"></circle><line x1="5.5" y1="-3.5" x2="12.5" y2="3.5"></line><line x1="12.5" y1="-3.5" x2="5.5" y2="3.5"></line><line x1="14" y1="0" x2="20" y2="0"></line><g><circle cx="24" cy="0" r="4" class="bg"></circle><line x1="26" y1="-3.48" x2="31" y2="-16"></line><line x1="31" y1="-16" x2="36" y2="-16"></line></g></g></svg></div><figcaption>signalLamp = true</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="switch unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g><text x="22" y="12" font-size="8" font-weight="bold">h</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="switch plan"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line></g><text x="22" y="12" font-size="8" font-weight="bold">h</text></g></svg></div><figcaption>splashProof = true</figcaption></figure></div></section><section><h2>pushButton</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="pushButton unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="13" cy="0" r="7" class="bg"></circle><circle cx="13" cy="0" r="3" class="nofill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 34 40" width="100" height="48" role="img" aria-label="pushButton plan"><g><line x1="0" y1="0" x2="6" y2="0"></line><circle cx="13" cy="0" r="7" class="bg"></circle><circle cx="13" cy="0" r="3" class="nofill"></circle></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>light</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">LED</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">LED</text></g></svg></div><figcaption>lightType = led</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="6" y1="0" x2="28" y2="0"></line><line x1="6" y1="-6" x2="6" y2="6"></line><line x1="28" y1="-6" x2="28" y2="6"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="6" y1="0" x2="28" y2="0"></line><line x1="6" y1="-6" x2="6" y2="6"></line><line x1="28" y1="-6" x2="28" y2="6"></line></g></svg></div><figcaption>lightType = fluo</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M14 -10 A11 11 0 0 0 14 10" class="nofill"></path><circle cx="20" cy="0" r="7" class="bg"></circle><line x1="15" y1="-5" x2="25" y2="5"></line><line x1="25" y1="-5" x2="15" y2="5"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><path d="M14 -10 A11 11 0 0 0 14 10" class="nofill"></path><circle cx="20" cy="0" r="7" class="bg"></circle><line x1="15" y1="-5" x2="25" y2="5"></line><line x1="25" y1="-5" x2="15" y2="5"></line></g></svg></div><figcaption>lightType = spot</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><line x1="28" y1="-10" x2="28" y2="10" style="stroke-width:2"></line></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="0" y1="0" x2="17" y2="0"></line><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><line x1="28" y1="-10" x2="28" y2="10" style="stroke-width:2"></line></g></svg></div><figcaption>lightType = wall</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><circle cx="17" cy="0" r="3" class="fill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><circle cx="17" cy="0" r="3" class="fill"></circle></g></svg></div><figcaption>lightType = emergency</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">×2</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">×2</text></g></svg></div><figcaption>count = 2</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">×3</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="-6" font-size="7">×3</text></g></svg></div><figcaption>count = 3</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="light unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="12" font-size="8" font-weight="bold">h</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="light plan"><g><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line><text x="26" y="12" font-size="8" font-weight="bold">h</text></g></svg></div><figcaption>splashProof = true</figcaption></figure></div></section><section><h2>appliance</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect></g></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="8" y1="-5" x2="28" y2="-5"></line><circle cx="18" cy="2" r="2.2" class="fill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="8" y1="-5" x2="28" y2="-5"></line><circle cx="18" cy="2" r="2.2" class="fill"></circle></g></g></svg></div><figcaption>applianceType = oven</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14" cy="-4" r="2.2" class="fill"></circle><circle cx="14" cy="4" r="2.2" class="fill"></circle><circle cx="22" cy="-4" r="2.2" class="fill"></circle><circle cx="22" cy="4" r="2.2" class="fill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14" cy="-4" r="2.2" class="fill"></circle><circle cx="14" cy="4" r="2.2" class="fill"></circle><circle cx="22" cy="-4" r="2.2" class="fill"></circle><circle cx="22" cy="4" r="2.2" class="fill"></circle></g></g></svg></div><figcaption>applianceType = cooker</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14" cy="-4" r="2.2" class="fill"></circle><circle cx="14" cy="4" r="2.2" class="fill"></circle><circle cx="22" cy="-4" r="2.2" class="fill"></circle><circle cx="22" cy="4" r="2.2" class="fill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14" cy="-4" r="2.2" class="fill"></circle><circle cx="14" cy="4" r="2.2" class="fill"></circle><circle cx="22" cy="-4" r="2.2" class="fill"></circle><circle cx="22" cy="4" r="2.2" class="fill"></circle></g></g></svg></div><figcaption>applianceType = hob</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><path d="M12 -4 q3 -3 6 0 t6 0 M12 0 q3 -3 6 0 t6 0 M12 4 q3 -3 6 0 t6 0" class="nofill"></path></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><path d="M12 -4 q3 -3 6 0 t6 0 M12 0 q3 -3 6 0 t6 0 M12 4 q3 -3 6 0 t6 0" class="nofill"></path></g></g></svg></div><figcaption>applianceType = microwave</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><g class="thin"><line x1="13" y1="0" x2="23" y2="0"></line><line x1="15.5" y1="-4.35" x2="20.5" y2="4.35"></line><line x1="20.5" y1="-4.35" x2="15.5" y2="4.35"></line></g></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><g class="thin"><line x1="13" y1="0" x2="23" y2="0"></line><line x1="15.5" y1="-4.35" x2="20.5" y2="4.35"></line><line x1="20.5" y1="-4.35" x2="15.5" y2="4.35"></line></g></g></g></svg></div><figcaption>applianceType = fridge</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="36" height="20" class="bg"></rect><g class="thin"><line x1="10" y1="0" x2="18" y2="0"></line><line x1="12" y1="-3.48" x2="16" y2="3.48"></line><line x1="16" y1="-3.48" x2="12" y2="3.48"></line></g><g class="thin"><line x1="22" y1="0" x2="30" y2="0"></line><line x1="24" y1="-3.48" x2="28" y2="3.48"></line><line x1="28" y1="-3.48" x2="24" y2="3.48"></line></g><g class="thin"><line x1="34" y1="0" x2="42" y2="0"></line><line x1="36" y1="-3.48" x2="40" y2="3.48"></line><line x1="40" y1="-3.48" x2="36" y2="3.48"></line></g></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 56 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="36" height="20" class="bg"></rect><g class="thin"><line x1="10" y1="0" x2="18" y2="0"></line><line x1="12" y1="-3.48" x2="16" y2="3.48"></line><line x1="16" y1="-3.48" x2="12" y2="3.48"></line></g><g class="thin"><line x1="22" y1="0" x2="30" y2="0"></line><line x1="24" y1="-3.48" x2="28" y2="3.48"></line><line x1="28" y1="-3.48" x2="24" y2="3.48"></line></g><g class="thin"><line x1="34" y1="0" x2="42" y2="0"></line><line x1="36" y1="-3.48" x2="40" y2="3.48"></line><line x1="40" y1="-3.48" x2="36" y2="3.48"></line></g></g></g></svg></div><figcaption>applianceType = freezer</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="8" y1="-10" x2="28" y2="10"></line><line x1="28" y1="-10" x2="8" y2="10"></line><circle cx="18" cy="0" r="3" class="bg"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="8" y1="-10" x2="28" y2="10"></line><line x1="28" y1="-10" x2="8" y2="10"></line><circle cx="18" cy="0" r="3" class="bg"></circle></g></g></svg></div><figcaption>applianceType = dishwasher</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="18" cy="0" r="6" class="nofill"></circle><circle cx="18" cy="0" r="2" class="fill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="18" cy="0" r="6" class="nofill"></circle><circle cx="18" cy="0" r="2" class="fill"></circle></g></g></svg></div><figcaption>applianceType = washingMachine</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="15" cy="-3" r="2.6" class="nofill"></circle><circle cx="21" cy="-3" r="2.6" class="nofill"></circle><circle cx="18" cy="4.5" r="2" class="fill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="15" cy="-3" r="2.6" class="nofill"></circle><circle cx="21" cy="-3" r="2.6" class="nofill"></circle><circle cx="18" cy="4.5" r="2" class="fill"></circle></g></g></svg></div><figcaption>applianceType = dryer</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><circle cx="18" cy="0" r="10" class="bg"></circle><circle cx="18" cy="0" r="7" class="nofill"></circle><line x1="14" y1="-5.744562646538029" x2="14" y2="5.744562646538029" style="stroke-width:0.8"></line><line x1="16" y1="-6.708203932499369" x2="16" y2="6.708203932499369" style="stroke-width:0.8"></line><line x1="18" y1="-7" x2="18" y2="7" style="stroke-width:0.8"></line><line x1="20" y1="-6.708203932499369" x2="20" y2="6.708203932499369" style="stroke-width:0.8"></line><line x1="22" y1="-5.744562646538029" x2="22" y2="5.744562646538029" style="stroke-width:0.8"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><circle cx="18" cy="0" r="10" class="bg"></circle><circle cx="18" cy="0" r="7" class="nofill"></circle><line x1="14" y1="-5.744562646538029" x2="14" y2="5.744562646538029" style="stroke-width:0.8"></line><line x1="16" y1="-6.708203932499369" x2="16" y2="6.708203932499369" style="stroke-width:0.8"></line><line x1="18" y1="-7" x2="18" y2="7" style="stroke-width:0.8"></line><line x1="20" y1="-6.708203932499369" x2="20" y2="6.708203932499369" style="stroke-width:0.8"></line><line x1="22" y1="-5.744562646538029" x2="22" y2="5.744562646538029" style="stroke-width:0.8"></line></g></g></svg></div><figcaption>applianceType = waterHeater</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="6" text-anchor="middle">PAC</text></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="6" text-anchor="middle">PAC</text></g></g></svg></div><figcaption>applianceType = heatPump</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="6" text-anchor="middle">Chaud.</text></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="6" text-anchor="middle">Chaud.</text></g></g></svg></div><figcaption>applianceType = boiler</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="7" text-anchor="middle">VE</text></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><text x="18" y="3" font-size="7" text-anchor="middle">VE</text></g></g></svg></div><figcaption>applianceType = evCharger</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14.8" cy="0" r="3" class="nofill"></circle><circle cx="21.2" cy="0" r="3" class="nofill"></circle></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><circle cx="14.8" cy="0" r="3" class="nofill"></circle><circle cx="21.2" cy="0" r="3" class="nofill"></circle></g></g></svg></div><figcaption>applianceType = fan</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="appliance unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="13" y1="-7" x2="13" y2="7" style="stroke-width:0.8"></line><line x1="15.5" y1="-7" x2="15.5" y2="7" style="stroke-width:0.8"></line><line x1="18" y1="-7" x2="18" y2="7" style="stroke-width:0.8"></line><line x1="20.5" y1="-7" x2="20.5" y2="7" style="stroke-width:0.8"></line><line x1="23" y1="-7" x2="23" y2="7" style="stroke-width:0.8"></line></g></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 42 40" width="100" height="48" role="img" aria-label="appliance plan"><g><g><rect x="8" y="-10" width="20" height="20" class="bg"></rect><line x1="13" y1="-7" x2="13" y2="7" style="stroke-width:0.8"></line><line x1="15.5" y1="-7" x2="15.5" y2="7" style="stroke-width:0.8"></line><line x1="18" y1="-7" x2="18" y2="7" style="stroke-width:0.8"></line><line x1="20.5" y1="-7" x2="20.5" y2="7" style="stroke-width:0.8"></line><line x1="23" y1="-7" x2="23" y2="7" style="stroke-width:0.8"></line></g></g></svg></div><figcaption>applianceType = heater</figcaption></figure></div></section><section><h2>junctionBox</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="junctionBox unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="13" cy="0" r="9" class="bg"></circle><circle cx="13" cy="0" r="3" class="fill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 36 40" width="100" height="48" role="img" aria-label="junctionBox plan"><g><circle cx="13" cy="0" r="9" class="bg"></circle><circle cx="13" cy="0" r="3" class="fill"></circle></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>bell</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="bell unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><path d="M8 -8 A8 8 0 0 1 8 8 Z" class="bg"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 34 40" width="100" height="48" role="img" aria-label="bell plan"><g><line x1="0" y1="0" x2="8" y2="0"></line><path d="M8 -8 A8 8 0 0 1 8 8 Z" class="bg"></path></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>motor</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="motor unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="17" cy="0" r="10" class="bg"></circle><text x="17" y="4" font-size="11" text-anchor="middle" font-weight="bold">M</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 40 40" width="100" height="48" role="img" aria-label="motor plan"><g><circle cx="17" cy="0" r="10" class="bg"></circle><text x="17" y="4" font-size="11" text-anchor="middle" font-weight="bold">M</text></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>transformer</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="transformer unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="transformer plan"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="transformer unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="transformer plan"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></svg></div><figcaption>safety = false</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="transformer unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="transformer plan"><g><circle cx="12" cy="0" r="7" class="nofill"></circle><circle cx="21" cy="0" r="7" class="nofill"></circle></g></svg></div><figcaption>inBoard = true</figcaption></figure></div></section><section><h2>solarPanel</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="solarPanel unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="solarPanel plan"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="solarPanel unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="solarPanel plan"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></svg></div><figcaption>count = 2</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="solarPanel unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="solarPanel plan"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><path d="M6 -10 L17 6 L28 -10" class="nofill"></path></g></svg></div><figcaption>count = 3</figcaption></figure></div></section><section><h2>inverter</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="inverter unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><line x1="6" y1="10" x2="28" y2="-10"></line><path d="M8 -6 h7 M8 -3 h7" class="nofill" stroke-dasharray="2 1"></path><path d="M18 5 q2 -3 4 0 t4 0" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="inverter plan"><g><rect x="6" y="-10" width="22" height="20" class="bg"></rect><line x1="6" y1="10" x2="28" y2="-10"></line><path d="M8 -6 h7 M8 -3 h7" class="nofill" stroke-dasharray="2 1"></path><path d="M18 5 q2 -3 4 0 t4 0" class="nofill"></path></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>detector</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="detector unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="6" y="-10" width="20" height="20" class="bg"></rect><path d="M12 -5 q3 5 0 10 M16 -6 q4 6 0 12" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="detector plan"><g><rect x="6" y="-10" width="20" height="20" class="bg"></rect><path d="M12 -5 q3 5 0 10 M16 -6 q4 6 0 12" class="nofill"></path></g></svg></div><figcaption>par défaut</figcaption></figure></div></section><section><h2>relay</h2><div class="grid"><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="relay unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">R</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="relay plan"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">R</text></g></svg></div><figcaption>par défaut</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="relay unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><path d="M10 2 v-4 h3 M24 2 v-4 h-3" class="nofill"></path></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="relay plan"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><path d="M10 2 v-4 h3 M24 2 v-4 h-3" class="nofill"></path></g></svg></div><figcaption>relayType = teleswitch</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="relay unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">K</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="relay plan"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">K</text></g></svg></div><figcaption>relayType = contactor</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="relay unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">t</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="relay plan"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">t</text></g></svg></div><figcaption>relayType = timer</figcaption></figure><figure class="cell"><div class="pair"><svg class="canvas" viewBox="-45 -6 90 52" width="84" height="100" role="img" aria-label="relay unifilaire"><g><line x1="0" y1="0" x2="0" y2="8"></line><g transform="translate(-15,20)"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">R</text></g></g><line x1="0" y1="32" x2="0" y2="40"></line></g></svg><svg class="canvas" viewBox="-6 -20 44 40" width="100" height="48" role="img" aria-label="relay plan"><g><rect x="4" y="-7" width="26" height="14" class="bg"></rect><text x="17" y="3" font-size="8" text-anchor="middle">R</text></g></svg></div><figcaption>inBoard = false</figcaption></figure></div></section></div>
+</body>
+</html>

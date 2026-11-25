@@ -230,7 +230,7 @@ function ProposalRow({ p, ev, text }: { p: Proposal; ev: Evidence; text: string 
   return (
     <li>
       <span className={p.critical ? 'assist-critical' : undefined}>
-        {p.critical ? '⚠ ' : ''}
+        {p.critical ? '⚠\uFE0E ' : ''}
         {text}
       </span>
       <span className="muted small">

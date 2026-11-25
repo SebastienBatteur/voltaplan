@@ -422,7 +422,7 @@ export function App() {
     <div className="app">
       <header className="toolbar">
         <div className="brand">
-          <span className="logo">⚡</span> <span className="brand-name">{APP_NAME}</span>
+          <span className="logo">{'⚡\uFE0E'}</span> <span className="brand-name">{APP_NAME}</span>
         </div>
         <FileMenu
           actions={[
@@ -490,8 +490,8 @@ export function App() {
           >
             {saveState.kind === 'saving' && t('save.state.saving')}
             {saveState.kind === 'saved' && '✓ ' + t('save.state.saved', { where: saveState.where, time: saveState.at.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) })}
-            {saveState.kind === 'conflict' && '⚠ ' + t('save.state.conflict')}
-            {saveState.kind === 'pending' && '⏸ ' + t('save.state.pending', { where: saveState.where })}
+            {saveState.kind === 'conflict' && '⚠\uFE0E ' + t('save.state.conflict')}
+            {saveState.kind === 'pending' && '⏸\uFE0E ' + t('save.state.pending', { where: saveState.where })}
             {saveState.kind === 'error' && '✕ ' + t('save.state.error')}
           </span>
         )}
@@ -509,7 +509,7 @@ export function App() {
           className={'wide-only' + (aiUnlocked ? ' ai-on' : '')}
           title={aiUnlocked ? `${t('ai.title')} — ${t('ai.on')}` : t('ai.title')}
         >
-          ⚙ {t('ai.button')}
+          {'⚙\uFE0E'} {t('ai.button')}
         </button>
         <select className="wide-only" value={s.lang} onChange={(e) => s.setLang(e.target.value as Lang)} aria-label="Langue">
           {LANGS.map((l) => (
@@ -523,7 +523,7 @@ export function App() {
             { label: t('menu.undo'), shortcut: 'Ctrl+Z', run: s.undo, disabled: !s.past.length },
             { label: t('menu.redo'), shortcut: 'Ctrl+Y', run: s.redo, disabled: !s.future.length },
             { label: '⟳ ' + t('sync.button'), run: () => setSyncOpen(true) },
-            { label: '⚙ ' + t('ai.button') + (aiUnlocked ? ` — ${t('ai.on')}` : ''), run: () => setAiOpen(true) },
+            { label: '⚙\uFE0E ' + t('ai.button') + (aiUnlocked ? ` — ${t('ai.on')}` : ''), run: () => setAiOpen(true) },
           ]}
         >
           <label className="toolbar-more-lang">
