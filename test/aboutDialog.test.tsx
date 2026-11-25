@@ -49,7 +49,7 @@ describe('À propos', () => {
     expect(h.textContent).toContain('0.1.0');
     expect(h.textContent).toContain(SHA.slice(0, 12));
     expect(h.textContent).toContain('AGPL-3.0-only');
-    expect(h.textContent).toContain('Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors');
+    expect(h.textContent).toContain('Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors');
     expect(h.querySelector<HTMLAnchorElement>('a.about-source')!.href).toBe(base.correspondingSource);
     expect(h.querySelector('a[href="./THIRD-PARTY-LICENSES.txt"]')).not.toBeNull();
     expect(h.querySelector('[data-testid="about-status"]')!.textContent).toMatch(/commit publié/);

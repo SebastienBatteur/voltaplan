@@ -37,7 +37,7 @@ describe('identité permanente du projet', () => {
     expect(id.aliases).toEqual(['org.voltaplan']);
     expect(id.upstreamId).not.toMatch(/voltaplan|github/i);
     expect(id.spdx).toBe('AGPL-3.0-only');
-    expect(id.copyright).toBe('Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors');
+    expect(id.copyright).toBe('Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors');
   });
   it('licence identique partout (package.json, Cargo.toml, tauri.conf.json, REUSE.toml, codemeta.json)', () => {
     const pkg = JSON.parse(readFileSync('package.json', 'utf8'));

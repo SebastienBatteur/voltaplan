@@ -23,7 +23,7 @@ const FALLBACK: EmbeddedBuild = {
   sourceDeclared: false,
   spdx: 'AGPL-3.0-only',
   licenseUrl: 'https://www.gnu.org/licenses/agpl-3.0.html',
-  copyright: 'Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors',
+  copyright: 'Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors',
   homepage: 'https://voltaplan.org/',
   environment: 'local',
 };

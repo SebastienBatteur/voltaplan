@@ -7,7 +7,7 @@
   "license": "https://spdx.org/licenses/AGPL-3.0-only",
   "copyrightHolder": { "@type": "Person", "name": "Sébastien Batteur" },
   "copyrightYear": 2026,
-  "copyrightNotice": "Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors",
+  "copyrightNotice": "Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors",
   "author": [{ "@type": "Person", "name": "Sébastien Batteur" }],
   "codeRepository": "https://github.com/SebastienBatteur/voltaplan",
   "url": "https://voltaplan.org/",

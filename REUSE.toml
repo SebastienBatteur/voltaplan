@@ -6,5 +6,5 @@ version = 1
 [[annotations]]
 path = "**"
 precedence = "aggregate"
-SPDX-FileCopyrightText = "2026 Sébastien Batteur and VoltaPlan contributors"
+SPDX-FileCopyrightText = "2026 Sébastien Batteur and Voltaplan contributors"
 SPDX-License-Identifier = "AGPL-3.0-only"

@@ -164,10 +164,10 @@ Voltaplan est et restera **entièrement gratuit**, sans fonction réservée. Un 
 
 ## Licence
 
-Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors.
+Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors.
 
 [GNU AGPL, version 3 uniquement](LICENSE) (`AGPL-3.0-only`), la licence open source la plus stricte. Les versions
-publiées du 2026-11-23 au 2026-11-25 sous `AGPL-3.0-or-later` le restent pour qui les a obtenues : voir
+publiées avant ce changement, sous `AGPL-3.0-or-later`, le restent pour qui les a obtenues : voir
 [docs/legal/license-compliance.md](docs/legal/license-compliance.md).
 
 - toute version modifiée qui est distribuée doit rester sous AGPL, avec son code source ;

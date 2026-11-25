@@ -22,7 +22,7 @@ Les contraintes sont fixées par le projet :
 1. **Licence `AGPL-3.0-only`.** Le dépôt n'a qu'un titulaire des droits (audit dans
    [license-compliance.md](../legal/license-compliance.md)). Le changement est fait dans un commit séparé, que l'on
    peut retirer seul.
-2. **Mention générale** « Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors ». Elle est déclarée dans
+2. **Mention générale** « Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors ». Elle est déclarée dans
    `REUSE.toml` en mode `aggregate`, sans en-tête ajouté à chaque fichier.
 3. **Trois identités distinctes**, détaillées dans [project-identification.md](../architecture/project-identification.md) :
    - le projet, identifié de façon permanente par `urn:uuid:55b25e7a-c2a4-4787-bebc-42ecee353f9e` dans
