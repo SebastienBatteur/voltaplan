@@ -47,6 +47,19 @@ body,
   margin: 0;
   height: 100%;
 }
+/* Hauteur réellement visible (barres du navigateur mobile comprises ou non selon leur état) */
+@supports (height: 100dvh) {
+  html,
+  body,
+  #root {
+    height: 100dvh;
+  }
+}
+html {
+  /* Pas de zoom de la page au double-tap (iPhone : la page restait zoomée et sortait de l'écran) ; le
+     pincement à deux doigts reste possible */
+  touch-action: manipulation;
+}
 body {
   font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   /* Après « font », qui le remettrait à zéro : pictogrammes (⚡ ⚙ ⚠ ✓ ✕…) en version texte, pas en emoji couleur
@@ -144,6 +157,9 @@ input:not([type]) {
   display: flex;
   flex-direction: column;
   height: 100%;
+  /* iPhone (viewport-fit=cover) : rien sous l'encoche, les coins arrondis ni la barre du bas */
+  padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+  box-sizing: border-box;
 }
 .toolbar {
   display: flex;
@@ -827,7 +843,9 @@ main {
   }
   .side {
     width: auto;
-    height: 45%;
+    /* À la taille de son contenu (panneaux repliés : seulement leurs titres), 45 % de la hauteur au plus */
+    height: auto;
+    max-height: 45%;
     border-right: none;
     border-bottom: 1px solid var(--border);
   }
@@ -1684,14 +1702,23 @@ body.resizing-h * {
   background: var(--accent-bg);
   color: var(--accent);
 }
+/* Aide « Pour ajouter » : ligne sous le dessin (auparavant posée sur le dessin, qu'elle chevauchait au téléphone) */
+.canvas-wrap:has(> .canvas-hint) {
+  display: flex;
+  flex-direction: column;
+}
+.canvas-wrap:has(> .canvas-hint) > .canvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+}
 .canvas-hint {
-  position: absolute;
-  left: 10px;
-  bottom: 8px;
+  order: 2;
+  flex: 0 0 auto;
+  padding: 2px 10px 4px;
   font-size: 12px;
   color: var(--muted);
   pointer-events: none;
-  z-index: 2;
 }
 
 /* Calage de la photo du tableau : photo devant, dessin estompé derrière */
