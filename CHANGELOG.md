@@ -5,8 +5,10 @@
 ### Licence, provenance et identification (branche provenance-agpl, 2026-11-25)
 
 - **Licence `AGPL-3.0-only`** (auparavant `-or-later`), titulaire unique des droits ; mention « Copyright (C) 2026
-  Sébastien Batteur and VoltaPlan contributors » ; `REUSE.toml`. Les versions déjà publiées restent sous
+  Sébastien Batteur and Voltaplan contributors » ; `REUSE.toml`. Les versions déjà publiées restent sous
   `-or-later` pour qui les a obtenues.
+- **Accord de contribution (CLA)** exigé avant toute contribution externe, pour garder une double licence
+  possible ; modèle à choisir (`docs/legal/cla.md`), aucune contribution externe fusionnée d'ici là.
 - **Identifiant permanent du projet** `urn:uuid:55b25e7a-c2a4-4787-bebc-42ecee353f9e` (`codemeta.json`).
 - **À chaque compilation** : `build-info.json`, `fingerprints.json`, `THIRD-PARTY-LICENSES.txt`, balises
   d'identification, bandeau légal dans les fichiers JavaScript ; schémas génériques « oss-provenance 1.0 ».

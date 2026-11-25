@@ -8,7 +8,7 @@
 - **Identifiant SPDX** : `AGPL-3.0-only`, la GNU Affero General Public License, version 3 uniquement.
 - **Texte de la licence** : [`LICENSE`](../../LICENSE), recopié sans modification dans
   [`LICENSES/AGPL-3.0-only.txt`](../../LICENSES/AGPL-3.0-only.txt) pour REUSE.
-- **Mention générale** : `Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors`.
+- **Mention générale** : `Copyright (C) 2026 Sébastien Batteur and Voltaplan contributors`.
 - **Où la licence est déclarée** : `package.json`, `src-tauri/Cargo.toml` et `src-tauri/tauri.conf.json`, plus
   `REUSE.toml` pour tous les fichiers du dépôt.
 - **Où elle est publiée** :
@@ -21,13 +21,15 @@
 
 ### Faits relevés dans le dépôt
 
-L'historique de `main` va du 2026-11-23 au 2026-11-25, soit 128 commits.
+Relevé le 2026-11-25 sur l'historique de `main` depuis le premier commit (2026-11-23). Le nombre de commits change à
+chaque envoi sur `main` : il est à recompter juste avant la fusion (`git shortlog -sne main`), mais la répartition par
+auteur, elle, n'a pas changé depuis l'audit.
 
 | Auteur | Commits | Nature |
 |---|---|---|
-| Sébastien Batteur | 124 | tout le code, la documentation et les ressources (deux orthographes du nom, même compte GitHub `2057112`) |
-| dependabot[bot] | 4 | numéros de version dans `package.json` et `package-lock.json` (PR 9, 15, 18, 20), sans code |
-| Claude, assistant IA (co-auteur indiqué) | 116 lignes `Co-Authored-By` | code écrit avec l'assistant, à la demande et sous la direction de l'auteur |
+| Sébastien Batteur | tous les commits sauf ceux de Dependabot | tout le code, la documentation et les ressources (deux orthographes du nom, même compte GitHub `2057112`) |
+| dependabot[bot] | 4 (au 2026-11-25) | numéros de version dans `package.json` et `package-lock.json` (PR 9, 15, 18, 20), sans code |
+| Claude, assistant IA (co-auteur indiqué) | ligne `Co-Authored-By` dans la plupart des commits | code écrit avec l'assistant, à la demande et sous la direction de l'auteur |
 
 - **Aucune contribution externe** : les 20 PR du dépôt viennent toutes de Dependabot, et aucune PR humaine n'a été
   fusionnée.
@@ -55,11 +57,15 @@ séparé de la branche `provenance-agpl`, que l'on peut retirer seul si la relec
 ### Conséquences pour les versions déjà publiées
 
 - Les versions publiées sous `AGPL-3.0-or-later` **restent sous cette licence** pour toute personne qui en a obtenu
-  une copie : les commits de `main` jusqu'à `496bb50` et le site déployé avant la fusion. Une licence accordée ne se
+  une copie : tous les commits de `main` jusqu'au commit qui précède la fusion de `provenance-agpl`, et le site
+  déployé avant cette fusion. Une licence accordée ne se
   retire pas. Quelqu'un peut donc continuer un fork de ces versions sous une future AGPL v4.
 - Le changement vaut **à partir du premier commit qui porte `AGPL-3.0-only`**. Aucune release officielle (tag) n'a
   été publiée avant, ce qui limite l'ambiguïté.
-- Les contributions futures sont acceptées sous `AGPL-3.0-only`, par le DCO (`git commit -s`). Il n'y a pas de CLA.
+- Les contributions futures sont acceptées sous `AGPL-3.0-only`. Décision du porteur du projet (2026-11-25) :
+  **un accord de contribution (CLA) signé est exigé avant d'accepter toute contribution externe**, pour garder la
+  possibilité d'une double licence. Le modèle reste à choisir : voir [cla.md](cla.md). En attendant ce choix,
+  aucune contribution externe n'est fusionnée.
 
 ## 3. Obligations AGPL et simples recommandations
 

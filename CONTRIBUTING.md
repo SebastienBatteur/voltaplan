@@ -56,8 +56,20 @@ vérifiées. Une contribution réglementaire doit citer sa **source**. **Ne reco
 
 3. **Signez vos commits** selon le [Developer Certificate of Origin](https://developercertificate.org/) (DCO) :
    `git commit -s` ajoute la ligne `Signed-off-by: Nom <adresse>`. Vous certifiez ainsi avoir le droit de
-   proposer ce code sous la licence du projet. Aucun transfert de droits n'est demandé.
-4. Ouvrez une demande de fusion. Le modèle rappelle les points à vérifier.
+   proposer ce code sous la licence du projet.
+4. **Signez l'accord de contribution (CLA)** avant votre première contribution (voir ci-dessous).
+5. Ouvrez une demande de fusion. Le modèle rappelle les points à vérifier.
+
+### Accord de contribution (CLA)
+
+**Aucune contribution externe n'est acceptée sans CLA signé.** L'accord permet au porteur du projet de garder une
+**double licence** possible (l'AGPL pour tous, et éventuellement une autre licence accordée à part) ou de
+relicencier le projet. Avec le DCO seul, chaque contributeur garde ses droits et n'accorde que l'AGPL : sans CLA,
+ces deux possibilités demanderaient l'accord de chaque contributeur.
+
+Le modèle d'accord n'est **pas encore choisi** : en attendant, aucune contribution externe n'est fusionnée.
+Signalez quand même vos idées et bogues par ticket. Pourquoi ce choix, et quels modèles sont étudiés :
+[docs/legal/cla.md](docs/legal/cla.md).
 
 ### Principes du projet (à respecter dans chaque contribution)
 
