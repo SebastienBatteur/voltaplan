@@ -112,14 +112,22 @@ export async function readProjectFile(file: File): Promise<OpenResult> {
 }
 
 /**
+ * Nom du fichier enregistré sur l'appareil : caractères interdits remplacés, extension .voltaplan TOUJOURS présente
+ * (une extension .voltaplan ou ancienne est remplacée, toute autre est gardée devant). Vaut aussi pour la copie de
+ * conflit et pour le téléchargement sans sélecteur de fichiers.
+ */
+export function deviceFileName(raw: string | undefined): string {
+  const clean = (raw?.trim() || 'projet').replace(/[\\/:*?"<>|]/g, '_');
+  return clean.replace(/\.[^.]*$/, (e) => (e.toLowerCase() === EXT || LEGACY_EXTS.includes(e.toLowerCase()) ? '' : e)) + EXT;
+}
+
+/**
  * Enregistre sur l'appareil. « Enregistrer » réécrit le fichier courant, sauf s'il a été modifié ailleurs depuis
  * notre dernière écriture : ConflictError (l'appelant propose alors une copie). `force` : remplacement confirmé.
  * `suggestedName` : nom proposé dans la boîte « Enregistrer sous » (copie de conflit).
  */
 export async function saveProject(project: Project, fileName: string, saveAs = false, opts: { force?: boolean; suggestedName?: string } = {}): Promise<string | null> {
-  const name =
-    opts.suggestedName ??
-    (fileName || project.meta.title || 'projet').replace(/[\\/:*?"<>|]/g, '_').replace(/\.[^.]*$/, (e) => (e.toLowerCase() === EXT || LEGACY_EXTS.includes(e.toLowerCase()) ? '' : e)) + EXT;
+  const name = deviceFileName(opts.suggestedName ?? (fileName || project.meta.title));
   if (isDesktop) {
     if (currentPath && !saveAs && !opts.force && changedSince(lastWritten, await pathState(currentPath))) throw new ConflictError(currentPath.split(/[\\/]/).pop() ?? name);
     const path = !currentPath || saveAs ? await desktopSavePath(name, EXT, 'Projet ' + APP_NAME) : currentPath;

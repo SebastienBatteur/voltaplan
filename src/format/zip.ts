@@ -205,9 +205,15 @@ export interface ZipInput {
  * `signal` : interruption (AbortError) ; l'archive n'est alors jamais terminée (pas de répertoire central) et la
  * destination n'est pas fermée : à l'appelant de l'abandonner (`abort()` d'un `createWritable()`).
  */
-export async function writeZip(inputs: Iterable<ZipInput> | AsyncIterable<ZipInput>, sink?: WritableStream<Uint8Array>, signal?: AbortSignal): Promise<Blob | null> {
+export async function writeZip(
+  inputs: Iterable<ZipInput> | AsyncIterable<ZipInput>,
+  sink?: WritableStream<Uint8Array>,
+  signal?: AbortSignal,
+  /** Type du Blob renvoyé (archive Voltaplan : application/vnd.voltaplan+zip). */
+  type = 'application/zip',
+): Promise<Blob | null> {
   const lib = await loadZipLib();
-  const blobWriter = sink ? null : new lib.BlobWriter('application/zip');
+  const blobWriter = sink ? null : new lib.BlobWriter(type);
   const writer = new lib.ZipWriter(sink ?? blobWriter!, { extendedTimestamp: false, useWebWorkers: false, keepOrder: true });
   try {
     for await (const input of inputs) {

@@ -613,6 +613,7 @@ export async function writeArchive(input: ArchiveWriteInput, sink?: WritableStre
       };
     }
   }
-  const blob = await writeZip(entries(), sink, signal);
+  // Type propre à Voltaplan (comme l'entrée « mimetype ») : téléchargement, Drive « Ouvrir avec »
+  const blob = await writeZip(entries(), sink, signal, MIMETYPE);
   return { blob, manifest };
 }
