@@ -1,7 +1,7 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { useDerived } from './derived';
-import { billOfMaterials, bomCsv, BOM_CATEGORIES, type BomLine } from '../bom/bom';
+import { billOfMaterials, billOfMaterialsByRoom, bomCsv, BOM_CATEGORIES, type BomLine } from '../bom/bom';
 import { getRulePack } from '../rules';
 import { download } from '../io/files';
 import { safeName } from '../io/storage';
@@ -65,31 +65,70 @@ export function BomTable({ lines, compact }: { lines: BomLine[]; compact?: boole
   );
 }
 
-/** Onglet « Matériel » : liste du matériel, export CSV (tableur, devis, commande). */
+/** Onglet « Matériel » : liste du matériel, par article ou par pièce, export CSV (tableur, devis, commande). */
 export function BomPanel() {
   const t = useStore((s) => s.t);
+  const lang = useStore((s) => s.lang);
   const project = useStore((s) => s.project);
   const fileName = useStore((s) => s.fileName);
+  const { numbering } = useDerived();
   const lines = useBom();
   const pack = getRulePack(project.meta.ruleset);
+  const [byRoom, setByRoom] = useState(false);
+  const rooms = useMemo(
+    () => (byRoom ? billOfMaterialsByRoom(project, numbering, lang, t, pack.equivalents) : null),
+    [byRoom, project, numbering, lang, t, pack.equivalents],
+  );
+  const roomName = (r: { room: string | null; floorOnly?: boolean }) =>
+    r.room === null ? t('bom.noRoom') : r.floorOnly ? t('bom.floorOnly', { floor: r.room }) : r.room;
+  const exportCsv = () => {
+    let csv: string;
+    if (rooms) {
+      const all = [...rooms.rooms.flatMap((r) => r.lines.map((l) => ({ l, room: roomName(r) }))), ...rooms.shared.map((l) => ({ l, room: t('bom.shared') }))];
+      const where = new Map(all.map((x) => [x.l, x.room]));
+      csv = bomCsv(all.map((x) => x.l), t, (l) => where.get(l) ?? '');
+    } else csv = bomCsv(lines, t);
+    void download(
+      new Blob([csv], { type: 'text/csv;charset=utf-8' }),
+      safeName((fileName || project.meta.title || 'projet').replace(/\.[^.]*$/, '')) + '-' + t('bom.file') + (rooms ? '-' + t('bom.byRoomFile') : '') + '.csv',
+    );
+  };
   return (
     <div className="page-panel">
       <div className="row">
-        <button
-          className="primary"
-          disabled={!lines.length}
-          onClick={() =>
-            void download(
-              new Blob([bomCsv(lines, t)], { type: 'text/csv;charset=utf-8' }),
-              safeName((fileName || project.meta.title || 'projet').replace(/\.[^.]*$/, '')) + '-' + t('bom.file') + '.csv',
-            )
-          }
-        >
+        <div className="tabs-row" role="group" aria-label={t('bom.view')}>
+          <button aria-pressed={!byRoom} className={!byRoom ? 'active' : ''} onClick={() => setByRoom(false)}>
+            {t('bom.byItem')}
+          </button>
+          <button aria-pressed={byRoom} className={byRoom ? 'active' : ''} onClick={() => setByRoom(true)}>
+            {t('bom.byRoom')}
+          </button>
+        </div>
+        <button className="primary" disabled={!lines.length} onClick={exportCsv}>
           {t('bom.exportCsv')}
         </button>
       </div>
-      <p className="muted small">{t('bom.help', { country: pack.country })}</p>
-      {lines.length ? <BomTable lines={lines} /> : <p className="muted">{t('bom.empty')}</p>}
+      <p className="muted small">{t(byRoom ? 'bom.byRoomHelp' : 'bom.help', { country: pack.country })}</p>
+      {!lines.length && <p className="muted">{t('bom.empty')}</p>}
+      {!!lines.length && !rooms && <BomTable lines={lines} />}
+      {rooms && (
+        <>
+          {rooms.rooms.map((r) => (
+            <section key={(r.floorOnly ? 'f:' : '') + (r.room ?? '')} className="bom-room">
+              <h3>
+                {roomName(r)} <span className="muted small">({r.lines.reduce((a, l) => a + l.qty, 0)})</span>
+              </h3>
+              <BomTable lines={r.lines} />
+            </section>
+          ))}
+          {rooms.shared.length > 0 && (
+            <section className="bom-room">
+              <h3>{t('bom.shared')}</h3>
+              <BomTable lines={rooms.shared} />
+            </section>
+          )}
+        </>
+      )}
     </div>
   );
 }

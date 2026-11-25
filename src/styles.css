@@ -2825,3 +2825,9 @@ body.resizing-h * {
     max-width: 55%;
   }
 }
+
+/* Matériel par pièce */
+.bom-room h3 {
+  margin: 16px 0 6px;
+  font-size: 15px;
+}

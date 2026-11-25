@@ -139,13 +139,22 @@ function describe(n: ElNode, lang: Lang, t: T, eq: Record<string, string>): { de
  * Liste du matériel groupée par catégorie puis par désignation identique.
  * `equivalents` : équivalents harmonisés fournis par le référentiel du projet (clé « cableType.VOB »).
  */
-export function billOfMaterials(project: Project, numbering: Map<string, string>, lang: Lang, t: T, equivalents: Record<string, string> = {}): BomLine[] {
+export function billOfMaterials(
+  project: Project,
+  numbering: Map<string, string>,
+  lang: Lang,
+  t: T,
+  equivalents: Record<string, string> = {},
+  /** Ne compter que ces éléments (liste par pièce). */
+  only?: (node: ElNode) => boolean,
+): BomLine[] {
   const map = new Map<string, BomLine>();
   // Un tableau qui ne fait que grouper des circuits sous un différentiel est dans la même enveloppe : on ne compte que les enveloppes
   const physical = new Set(enclosures(project.roots).map((e) => e.board.id));
   for (const { node } of walk(project.roots)) {
     const cat = KIND_CAT[node.kind];
     if (!cat) continue;
+    if (only && !only(node)) continue;
     if (node.kind === 'board' && !physical.has(node.id)) continue;
     const d = describe(node, lang, t, equivalents);
     if (!d) continue;
@@ -174,13 +183,63 @@ export function billOfMaterials(project: Project, numbering: Map<string, string>
   return [...map.values()].sort((a, b) => order(a.cat) - order(b.cat) || a.desc.localeCompare(b.desc, lang));
 }
 
+/** Catégories regroupées par pièce (points de l'installation) ; les autres (tableaux, protections, câbles, terre) à part. */
+export const ROOM_CATEGORIES = new Set<BomCategory>(['socket', 'switch', 'light', 'control', 'energy', 'other']);
+
+/**
+ * Pièce d'un élément : sa « localisation / pièce », sinon celle d'un parent (ex. une boîte, un câble), sinon
+ * l'étage du plan où il est placé (« Rez-de-chaussée — pièce non indiquée »), sinon `null`.
+ */
+export function roomOf(project: Project, node: ElNode): { key: string; floorOnly?: boolean } | null {
+  const own = node.location?.trim();
+  if (own) return { key: own };
+  const up = [...ancestors(project.roots, node.id)].reverse().map((a) => a.location?.trim()).find(Boolean);
+  if (up) return { key: up };
+  const page = project.plan.pages.find((p) => p.symbols.some((s) => s.nodeId === node.id));
+  return page ? { key: page.name, floorOnly: true } : null;
+}
+
+export interface RoomBom {
+  /** Nom de la pièce ; `null` : pièce non indiquée (élément non placé). */
+  room: string | null;
+  /** Seulement l'étage est connu (pièce non indiquée). */
+  floorOnly?: boolean;
+  lines: BomLine[];
+}
+
+/** Liste du matériel par pièce (points de l'installation), puis le reste (tableau, protections, câbles, terre). */
+export function billOfMaterialsByRoom(
+  project: Project,
+  numbering: Map<string, string>,
+  lang: Lang,
+  t: T,
+  equivalents: Record<string, string> = {},
+): { rooms: RoomBom[]; shared: BomLine[] } {
+  const rooms = new Map<string, { room: string | null; floorOnly?: boolean; ids: Set<string> }>();
+  for (const { node } of walk(project.roots)) {
+    const cat = KIND_CAT[node.kind];
+    if (!cat || !ROOM_CATEGORIES.has(cat)) continue;
+    const r = roomOf(project, node);
+    const key = r ? (r.floorOnly ? 'f:' : 'r:') + r.key : 'n:';
+    if (!rooms.has(key)) rooms.set(key, { room: r?.key ?? null, floorOnly: r?.floorOnly, ids: new Set() });
+    rooms.get(key)!.ids.add(node.id);
+  }
+  const rank = (v: { room: string | null; floorOnly?: boolean }) => (v.room === null ? 2 : v.floorOnly ? 1 : 0);
+  const list = [...rooms.values()]
+    // Pièces nommées d'abord (ordre alphabétique, « Chambre 2 » avant « Chambre 10 »), puis étages sans pièce, puis non placés
+    .sort((a, b) => rank(a) - rank(b) || (a.room ?? '').localeCompare(b.room ?? '', lang, { numeric: true }))
+    .map((v) => ({ room: v.room, floorOnly: v.floorOnly, lines: billOfMaterials(project, numbering, lang, t, equivalents, (n) => v.ids.has(n.id)) }));
+  const shared = billOfMaterials(project, numbering, lang, t, equivalents, (n) => !ROOM_CATEGORIES.has(KIND_CAT[n.kind]!));
+  return { rooms: list, shared };
+}
+
 /** Liste du matériel en CSV (séparateur « ; », lisible directement par Excel en FR/NL/BE). */
-export function bomCsv(lines: BomLine[], t: T): string {
+export function bomCsv(lines: BomLine[], t: T, room?: (l: BomLine) => string): string {
   const esc = (v: string | number) => {
     const s = String(v);
     return /[;"\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
   };
-  const head = [t('bom.col.category'), t('bom.col.qty'), t('bom.col.length'), t('bom.col.desc'), t('bom.col.std'), t('bom.col.reference'), t('bom.col.refs')];
-  const rows = lines.map((l) => [t('bom.cat.' + l.cat), l.qty, l.length ? l.length : '', l.desc, l.std, l.reference, l.refs.join(' ')]);
+  const head = [...(room ? [t('bom.col.room')] : []), t('bom.col.category'), t('bom.col.qty'), t('bom.col.length'), t('bom.col.desc'), t('bom.col.std'), t('bom.col.reference'), t('bom.col.refs')];
+  const rows = lines.map((l) => [...(room ? [room(l)] : []), t('bom.cat.' + l.cat), l.qty, l.length ? l.length : '', l.desc, l.std, l.reference, l.refs.join(' ')]);
   return '﻿' + [head, ...rows].map((r) => r.map(esc).join(';')).join('\r\n') + '\r\n';
 }

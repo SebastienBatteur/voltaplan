@@ -7,7 +7,7 @@ const VIEWS: View[] = ['unifilar', 'plan', 'board', 'bom', 'project', 'check'];
  * Onglets des vues. Sur petit écran, ils tiennent sur une ligne qui défile horizontalement (styles.css) :
  * l'onglet actif est ramené dans le champ à chaque changement de vue.
  */
-export function ViewTabs({ errors, warnings }: { errors: number; warnings: number }) {
+export function ViewTabs({ errors, warnings, onPick }: { errors: number; warnings: number; /** Onglet choisi (même l'onglet déjà actif). */ onPick?: () => void }) {
   const view = useStore((s) => s.view);
   const setView = useStore((s) => s.setView);
   const t = useStore((s) => s.t);
@@ -34,7 +34,10 @@ export function ViewTabs({ errors, warnings }: { errors: number; warnings: numbe
             // Barre compacte : « Contrôle RGIE » réduit à son compteur (styles.css) ; le nom complet reste lu
             aria-label={n ? t('view.checkCount', { name: t('view.' + v), n }) : undefined}
             title={v === 'check' ? t('view.' + v) : undefined}
-            onClick={() => setView(v)}
+            onClick={() => {
+              setView(v);
+              onPick?.();
+            }}
           >
             <span className="tab-label">{t('view.' + v)}</span>
             {v === 'check' && <span className="tab-short">{t('view.checkShort')}</span>}

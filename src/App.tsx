@@ -535,7 +535,7 @@ export function App() {
           ↷
         </button>
         <span className="sep wide-only" />
-        <ViewTabs errors={errors} warnings={warnings} />
+        <ViewTabs errors={errors} warnings={warnings} onPick={() => setHomeOpen(false)} />
         <span className="grow" />
         <span className="file-name" title={s.fileName}>
           {s.fileName || s.project.meta.title}
