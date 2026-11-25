@@ -7,6 +7,8 @@ import { layoutUnifilar } from '../unifilar/layout';
 import { Symbol, symbolSize } from '../unifilar/symbols';
 import { usePanZoom } from './usePanZoom';
 import { useCoarsePointer } from './touch';
+import { circuitColorMap, useCircuitColorsOn } from './circuitColors';
+import { CircuitColorsToggle, CircuitLegend } from './CircuitLegend';
 
 export function UnifilarView() {
   const project = useStore((s) => s.project);
@@ -30,6 +32,13 @@ export function UnifilarView() {
   // Au doigt, l'appui long sur un élément ouvre le menu « Ajouter » (comme le clic droit)
   const pz = usePanZoom({ w: layout.w, h: layout.h }, fileName + '|' + project.roots[0]?.id + '|' + up, { holdMenu: true });
   const coarse = useCoarsePointer();
+  const colorsOn = useCircuitColorsOn();
+  const cmap = useMemo(() => (colorsOn ? circuitColorMap(project.roots) : null), [colorsOn, project.roots]);
+  /** Couleur du circuit d'un élément (option « Couleurs des circuits »). */
+  const cc = (id?: string): { className: string; style?: React.CSSProperties } => {
+    const c = id ? cmap?.get(id) : undefined;
+    return c ? { className: ' cc', style: { '--cc': c.color } as React.CSSProperties } : { className: '' };
+  };
 
   // Lien plan ↔ unifilaire : centrer sur l'élément sélectionné
   useEffect(() => {
@@ -48,7 +57,9 @@ export function UnifilarView() {
         <button onClick={() => setMeta({ unifilarDirection: up ? 'down' : 'up' })} title={t(up ? 'unifilar.dirDown' : 'unifilar.dirUp')}>
           {t(up ? 'unifilar.dirUp' : 'unifilar.dirDown')}
         </button>
+        <CircuitColorsToggle />
       </div>
+      {cmap && <CircuitLegend map={cmap} />}
       <svg
         ref={pz.svgRef}
         className={'canvas unifilar' + (selectedId ? ' has-sel' : '') + (pz.panning ? ' panning' : '')}
@@ -65,7 +76,17 @@ export function UnifilarView() {
         {layout.prims.map((p, i) => {
           switch (p.t) {
             case 'line':
-              return <line key={i} x1={p.x1} y1={p.y1} x2={p.x2} y2={p.y2} className={'wire' + (p.n && chain.has(p.n) ? ' chain' : '')} style={p.w ? { strokeWidth: p.w } : undefined} />;
+              return (
+                <line
+                  key={i}
+                  x1={p.x1}
+                  y1={p.y1}
+                  x2={p.x2}
+                  y2={p.y2}
+                  className={'wire' + (p.n && chain.has(p.n) ? ' chain' : '') + cc(p.n).className}
+                  style={{ ...(p.w ? { strokeWidth: p.w } : {}), ...cc(p.n).style }}
+                />
+              );
             case 'bus':
               return (
                 <g key={i} className={'hit' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id)} onClick={() => select(p.node.id)} onContextMenu={(e) => openAdd(e, p.node)}>
@@ -81,9 +102,9 @@ export function UnifilarView() {
                   y={p.y}
                   fontSize={p.size ?? 10}
                   textAnchor={p.anchor ?? 'start'}
-                  className={(p.bold ? 'bold ' : '') + (p.muted ? 'muted ' : '') + (p.nodeId === selectedId ? 'sel-text' : '') + inChain(p.nodeId)}
+                  className={(p.bold ? 'bold ' : '') + (p.muted ? 'muted ' : '') + (p.nodeId === selectedId ? 'sel-text' : '') + inChain(p.nodeId) + (p.bold ? cc(p.nodeId).className : '')}
                   onClick={p.nodeId ? () => select(p.nodeId!) : undefined}
-                  style={p.nodeId ? { cursor: 'pointer' } : undefined}
+                  style={p.nodeId ? { cursor: 'pointer', ...(p.bold ? cc(p.nodeId).style : {}) } : undefined}
                 >
                   {p.text}
                 </text>
@@ -97,7 +118,8 @@ export function UnifilarView() {
                 <g
                   key={i}
                   transform={`translate(${p.x},${p.y})`}
-                  className={'hit sym' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id)}
+                  className={'hit sym' + (p.node.id === selectedId ? ' selected' : '') + inChain(p.node.id) + cc(p.node.id).className}
+                  style={cc(p.node.id).style}
                   onClick={() => select(p.node.id)}
                   onContextMenu={(e) => openAdd(e, p.node)}
                 >

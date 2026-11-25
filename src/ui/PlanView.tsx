@@ -1,5 +1,5 @@
 import { NumberField } from './NumberField';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { useStore } from '../store';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
@@ -33,6 +33,8 @@ import { parseSize } from '../plan/trace';
 import { rectifyBackground, tracePlan } from '../plan/traceImage';
 import { AssetImage } from '../format/AssetImage';
 import { matchesNow, SHORT_LANDSCAPE_QUERY } from './PropsSheet';
+import { circuitColorMap, useCircuitColorsOn } from './circuitColors';
+import { CircuitColorsToggle, CircuitLegend } from './CircuitLegend';
 
 /** Échelle des symboles sur le plan (unités symbole → mm). */
 export const S = 12;
@@ -243,6 +245,8 @@ export function PlanView() {
   const fileName = useStore((s) => s.fileName);
   const t = useStore((s) => s.t);
   const { find, numbering, byNode, labelFn } = useDerived();
+  const colorsOn = useCircuitColorsOn();
+  const cmap = useMemo(() => (colorsOn ? circuitColorMap(project_.roots) : null), [colorsOn, project_.roots]);
 
   const page = project_.plan.pages[Math.min(pageIndex, project_.plan.pages.length - 1)];
   const bounds = planBounds(page, project_.plan);
@@ -666,7 +670,9 @@ export function PlanView() {
           ＋
         </button>
         <button onClick={pz.fit}>{t('action.zoomFit')}</button>
+        <CircuitColorsToggle />
       </div>
+      {cmap && <CircuitLegend map={cmap} />}
       {placingNode ? (
         <div className="hint">
           {t('plan.placeHint', { name: [numbering.get(placingNode.id), labelFn.title(placingNode)].filter(Boolean).join(' ') })}{' '}
@@ -833,11 +839,22 @@ export function PlanView() {
               }}
               style={{ cursor: tool === 'select' ? 'move' : undefined }}
             >
-              <g transform={`scale(${S}) rotate(${s.rotation})`}>
+              <g
+                transform={`scale(${S}) rotate(${s.rotation})`}
+                className={cmap?.get(node.id) ? 'cc' : undefined}
+                style={cmap?.get(node.id) ? ({ '--cc': cmap.get(node.id)!.color } as React.CSSProperties) : undefined}
+              >
                 <PlanSymbol node={node} selected={node.id === selectedId} sev={sev} chain={selChain.has(node.id)} />
               </g>
               {ref && (
-                <text x={0} y={-S * 16} fontSize={S * 9} textAnchor="middle" className={'plan-ref' + (node.id === selectedId ? ' sel-text' : selChain.has(node.id) ? ' chain' : '')}>
+                <text
+                  x={0}
+                  y={-S * 16}
+                  fontSize={S * 9}
+                  textAnchor="middle"
+                  className={'plan-ref' + (node.id === selectedId ? ' sel-text' : selChain.has(node.id) ? ' chain' : '') + (cmap?.get(node.id) ? ' cc' : '')}
+                  style={cmap?.get(node.id) ? ({ '--cc': cmap.get(node.id)!.color } as React.CSSProperties) : undefined}
+                >
                   {ref}
                 </text>
               )}
