@@ -138,7 +138,7 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 6. ✅ Export Trikker ; ✅ PWA hors ligne ; ✅ version de bureau Tauri et workflows de paquets — ⏳ Eendraadschema (format à étudier)
 7. ⏳ Stockage en ligne (Google Drive, OneDrive, Dropbox), avant la première bêta publique :
    - séance de validation réelle : conflits concurrents, coupures réseau, expiration des sessions, iOS ;
-   - **R2** (développé le 2026-11-25, vérification réelle en cours) : repère discret proposant de se reconnecter en un clic avant l'expiration de la session ;
+   - **R2** (développé et vérifié en réel le 2026-11-25) : repère discret proposant de se reconnecter en un clic avant l'expiration de la session ;
    - **R3** (à décider après les essais réels et l'analyse de sécurité) : renouvellement de session sans fenêtre pour OneDrive et Dropbox, jeton gardé en mémoire seulement.
    Détails : [docs/oauth-jetons.md](docs/oauth-jetons.md).
 

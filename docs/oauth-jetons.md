@@ -105,7 +105,14 @@ est marqué **[à vérifier]** et sera mesuré pendant la séance commune.
   - « ✕ » le masque pour cette échéance ; il ne revient qu'avec un nouveau jeton ;
   - un 401 marque le jeton comme expiré (`cloudExpire`) au lieu de l'oublier : le repère « expirée » reste visible ;
   - tests : `test/reconnect.test.tsx` (8 tests : règles, focus, fermeture, ouverture de la fenêtre dans le clic).
-  - **À vérifier en réel** : apparition environ 55 minutes après une connexion Google, puis reconnexion en un clic.
+  - ✅ **Vérifié en réel le 2026-11-25** (navigateur intégré de Claude Desktop, Google Drive) : connexion à
+    11:16:13 UTC ; repère apparu à 12:10:27 (attendu 12:10:12, vérification toutes les 15 s), sans boîte de dialogue
+    ni focus pris ; décompte 5 → 1 min chaque minute ; clic « Reconnecter » à 12:15:22 : fenêtre Google ouverte et
+    refermée seule, repère disparu à 12:15:24 ; **même chargement de page** (aucun rechargement) ; modification non
+    enregistrée (25 modules) intacte. L'état « expirée » n'a pas été vu en réel (clic 10 s après l'échéance, avant
+    la vérification suivante) : couvert par les tests.
+  - Remarque (navigateur intégré seulement) : à la fermeture de la fenêtre de connexion, le navigateur intégré
+    affiche l'onglet voisin (ici Drive) au lieu de revenir à Voltaplan ; sans effet dans un navigateur ordinaire.
 - **R3 : gardé dans la feuille de route.** Décision après les essais réels et l'analyse des implications de sécurité
   (exposition d'un jeton de rafraîchissement en mémoire, durée maximale, rotation, texte des autorisations et de la
   politique de confidentialité).
