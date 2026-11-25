@@ -250,7 +250,9 @@ mise en place de l'enregistreur).
   d'iOS : le filtre `accept` ne contient que des extensions (`.voltaplan,.openrgie,.json,.trik`) que Safari ne sait
   pas relier à un type connu. Piste : sur iOS, ne pas filtrer (ou ajouter des types génériques) ; le contenu est
   déjà vérifié par sa signature à l'ouverture.
-- **S3 : fausse alerte « Quelqu'un a enregistré … pendant votre envoi »** après deux « Enregistrer » rapprochés du
+- **S3 (✅ ne se reproduit plus, vérifié sur iPhone le 2026-11-25 : double toucher sur « Enregistrer », un seul
+  envoi, aucun message ; un second clic pendant un envoi est ignoré depuis la correction de S4) : fausse alerte
+  « Quelqu'un a enregistré … pendant votre envoi »** après deux « Enregistrer » rapprochés du
   même appareil (iPhone, 09:03 puis 09:04) ; aucun autre appareil n'écrivait (journal de l'ordinateur). Effet :
   fichier inutile `project (conflit …).json`, rien de perdu. Piste : la détection pendant l'envoi
   (`driveRevisionsBetween`, `src/io/drive.ts`) prend la révision de notre propre enregistrement précédent pour
