@@ -20,7 +20,7 @@ describe('taille maximale des fichiers importés', () => {
   });
 
   it('limites raisonnables par genre', () => {
-    expect(IMPORT_LIMITS).toEqual({ project: 50 * MB, trik: 20 * MB, image: 25 * MB, pdf: 50 * MB });
+    expect(IMPORT_LIMITS).toEqual({ project: 50 * MB, trik: 20 * MB, image: 25 * MB, pdf: 50 * MB, dxf: 30 * MB });
     expect(() => checkFileSize({ name: 'a.jpg', size: 25 * MB })).not.toThrow();
     expect(() => checkFileSize({ name: 'a.jpg', size: 25 * MB + 1 })).toThrow(FileTooLargeError);
     expect(() => checkFileSize({ name: 'a.trik', size: 21 * MB })).toThrow(FileTooLargeError);

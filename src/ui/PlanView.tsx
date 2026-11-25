@@ -26,6 +26,7 @@ import { PlanItemPanel } from './PlanItemPanel';
 import { usePlanUi, type PlanTool } from './planUi';
 import { PlanAddDialog } from './PlanAddDialog';
 import { FURNITURE, FURNITURE_GROUPS, FurnitureShape, type FurnitureKind } from '../plan/furniture';
+import { DxfError } from '../io/dxf';
 import { readBackground } from '../io/background';
 import { pickFile } from '../io/files';
 import { importErrorText } from '../io/limits';
@@ -364,19 +365,20 @@ export function PlanView() {
   });
 
   const importBackground = async () => {
-    const file = await pickFile('image/*,.pdf,application/pdf');
+    const file = await pickFile('image/*,.pdf,application/pdf,.dxf');
     if (!file) return;
     setBusy(true);
     try {
       const img = await readBackground(file);
-      const w = BG_DEFAULT_W;
+      // Plan DXF avec unité : posé directement à sa taille réelle
+      const w = img.widthMm ?? BG_DEFAULT_W;
       const h = (img.h / img.w) * w;
       editPage((pg) => ({ ...pg, images: [{ center: { x: w / 2, y: h / 2 }, w, h, angle: 0, href: img.href, background: true }, ...pg.images.filter((i) => !i.background)] }));
       pz.reveal(w / 2, h / 2);
       // Plan déjà dessiné (ex. import Trikker) : on cale la photo dessus ; sinon on la met à l'échelle.
-      chooseTool(page.walls.length ? 'align' : 'scale');
+      chooseTool(page.walls.length ? 'align' : img.widthMm ? 'select' : 'scale');
     } catch (err) {
-      alert(importErrorText(err, t));
+      alert(err instanceof DxfError ? t(`dxf.${err.code}`) : importErrorText(err, t));
     } finally {
       setBusy(false);
     }

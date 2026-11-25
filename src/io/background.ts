@@ -1,5 +1,5 @@
 /**
- * Import d'un fond de plan ou d'une photo de tableau : photo (JPG, PNG…) ou PDF (première page).
+ * Import d'un fond de plan ou d'une photo de tableau : photo (JPG, PNG…), PDF (première page) ou plan DXF.
  *
  * Format v2 : le document ORIGINAL est gardé tel quel (stockage de travail, puis archive ou dossier du projet),
  * sous son empreinte SHA-256. Une image d'affichage (2 400 px maximum, JPEG) en est dérivée ; elle est
@@ -8,6 +8,7 @@
  * réduite est intégrée au projet comme avant (data URL) : rien n'est perdu pour l'utilisateur.
  */
 import { assetHref } from '../format/manifest';
+import { isDxf, readDxf, renderDxf } from './dxf';
 import { checkFileSize, checkImagePixels } from './limits';
 
 const MAX_PX = 2400;
@@ -17,6 +18,8 @@ export interface RasterImage {
   /** Taille en pixels. */
   w: number;
   h: number;
+  /** Largeur réelle de l'image en mm, quand le document la donne (DXF avec unité) : pas besoin de mise à l'échelle. */
+  widthMm?: number | null;
 }
 
 function canvasToBlob(c: HTMLCanvasElement): Promise<Blob> {
@@ -64,6 +67,10 @@ async function photo(data: Blob, name: string): Promise<HTMLCanvasElement> {
   }
 }
 
+async function dxfCanvas(data: Blob) {
+  return renderDxf(readDxf(await data.text()), MAX_PX);
+}
+
 const isPdf = (b: { name?: string; type?: string }) => (b.name ? /\.pdf$/i.test(b.name) : false) || b.type === 'application/pdf';
 
 /** Image d'affichage (JPEG réduit) d'un original : régénération à la demande (src/format/session.ts). */
@@ -73,17 +80,23 @@ export async function makeDisplayImage(original: Blob): Promise<Blob> {
 
 export async function readBackground(file: File): Promise<RasterImage> {
   const pdf = isPdf(file);
+  const dxf = isDxf(file);
   // Taille vérifiée avant toute lecture
-  checkFileSize(file, pdf ? 'pdf' : 'image');
-  const c = pdf ? await pdfFirstPage(file) : await photo(file, file.name);
+  checkFileSize(file, dxf ? 'dxf' : pdf ? 'pdf' : 'image');
+  let widthMm: number | null = null;
+  let c: HTMLCanvasElement;
+  if (dxf) ({ canvas: c, widthMm } = await dxfCanvas(file));
+  else c = pdf ? await pdfFirstPage(file) : await photo(file, file.name);
   const display = await canvasToBlob(c);
   try {
     const { assetSession } = await import('./projectData');
-    const meta = await assetSession.store.add(file, { name: file.name });
+    // DXF : le format de projet ne garde que des images et des PDF ; l'original gardé est le dessin rendu (PNG net)
+    const original = dxf ? await new Promise<Blob>((ok, ko) => c.toBlob((b) => (b ? ok(b) : ko(new Error('image'))), 'image/png')) : file;
+    const meta = await assetSession.store.add(original, { name: dxf ? file.name + '.png' : file.name });
     await assetSession.store.putDerived(meta.sha256, 'display', display).catch(() => undefined);
-    return { href: assetHref(meta.sha256), w: c.width, h: c.height };
+    return { href: assetHref(meta.sha256), w: c.width, h: c.height, widthMm };
   } catch {
     // Original impossible à garder : image réduite intégrée au projet (comportement du format v1)
-    return { href: c.toDataURL('image/jpeg', 0.85), w: c.width, h: c.height };
+    return { href: c.toDataURL('image/jpeg', 0.85), w: c.width, h: c.height, widthMm };
   }
 }
