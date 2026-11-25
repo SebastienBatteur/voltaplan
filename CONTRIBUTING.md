@@ -67,8 +67,14 @@ vérifiées. Une contribution réglementaire doit citer sa **source**. **Ne reco
 relicencier le projet. Avec le DCO seul, chaque contributeur garde ses droits et n'accorde que l'AGPL : sans CLA,
 ces deux possibilités demanderaient l'accord de chaque contributeur.
 
-Le modèle d'accord n'est **pas encore choisi** : en attendant, aucune contribution externe n'est fusionnée.
-Signalez quand même vos idées et bogues par ticket. Pourquoi ce choix, et quels modèles sont étudiés :
+Modèle retenu : **Harmony CLA** (version « Individual », ou « Entity » pour une contribution faite pour un
+employeur), sous forme de **licence** (vous gardez vos droits), avec l'option de sortie « any license » qui garantit
+que votre contribution reste **aussi** disponible sous la licence d'origine du projet (AGPL-3.0-only). Signature
+**manuelle** : demandez le texte par un ticket, il vous sera envoyé, et le registre des signatures reste privé
+(jamais dans le dépôt). Le DCO (`git commit -s`) reste demandé pour chaque commit.
+
+Le texte final est **en cours de relecture juridique** : tant qu'il n'est pas publié dans `docs/legal/`, aucune
+contribution externe n'est fusionnée. Signalez quand même vos idées et bogues par ticket. Détails et raisons :
 [docs/legal/cla.md](docs/legal/cla.md).
 
 ### Principes du projet (à respecter dans chaque contribution)

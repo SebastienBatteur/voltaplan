@@ -12,6 +12,22 @@
 - Règle : **un CLA signé est exigé avant d'accepter toute contribution externe.** Tant que le modèle n'est pas
   choisi, aucune contribution externe n'est fusionnée.
 
+## Choix du porteur du projet (2026-11-25)
+
+- **Modèle : Harmony CLA**, version 1.0 : « Individual » pour une personne, « Entity » pour une contribution faite
+  pour un employeur ou une organisation. Texte généré avec l'outil officiel du site Harmony, puis **relu par un
+  juriste** avant toute signature.
+- **Forme : licence**, et non cession : le contributeur garde ses droits d'auteur [à confirmer par le juriste :
+  Harmony propose les deux].
+- **Licence de sortie : option 5, « any license »**, avec l'engagement du modèle que la contribution reste aussi
+  disponible sous la licence d'origine du projet (`AGPL-3.0-only`). C'est ce qui permet la double licence.
+- **Signature manuelle** : le texte est envoyé au contributeur sur demande (ticket), signé et renvoyé ; registre
+  **privé**, jamais dans le dépôt. Avant la première signature, ajouter à `PRIVACY.md` les données gardées (nom,
+  adresse électronique, compte GitHub, date) et leur durée de conservation.
+- **DCO gardé** en plus du CLA : le CLA accorde les droits une fois, le DCO certifie l'origine de chaque commit.
+- Reste à faire avant la première contribution externe : générer le texte Harmony avec ces options, le faire relire
+  (bénéficiaire, contributeurs employés, code écrit avec un assistant IA), le publier dans `docs/legal/`.
+
 ## Pourquoi un CLA
 
 - Seul le **titulaire des droits** peut accorder une licence autre que l'AGPL sur un code. Aujourd'hui, c'est le
