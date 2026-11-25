@@ -73,6 +73,7 @@ export const en: Partial<Dict> = {
   'plan.traceDone': "{n} walls, {d} doors and {w} windows detected. Check them as an overlay (« Background » slider): click an element to fix its type, width or swing; drag to move it.",
   'app.updateReady': "A new version of Voltaplan is available.",
   'app.reload': "Reload",
+  'app.updateLater': "Later",
   'app.updateKeepsDraft': "Your unsaved changes will be kept as a draft, to recover after reloading.",
   'app.updateDraftFailed': "The draft could not be kept: save your project, then reload.",
   'app.offline': "Offline",

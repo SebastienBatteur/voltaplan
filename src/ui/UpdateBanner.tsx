@@ -30,10 +30,15 @@ export function UpdateBanner() {
   useEffect(() => onUpdate(() => setReady(true)), []);
   if (!ready) return null;
   return (
-    <Notice role="status">
-      {t('app.updateReady')} {failed ? <span className="error-text">{t('app.updateDraftFailed')}</span> : dirty ? t('app.updateKeepsDraft') : null}{' '}
+    // Une seule ligne : pictogrammes au lieu des mots (idée de l'utilisateur) ; le mot reste en infobulle et lu
+    <Notice role="status" line>
+      <span className="notice-text">
+        {t('app.updateReady')} {failed ? <span className="error-text">{t('app.updateDraftFailed')}</span> : dirty ? t('app.updateKeepsDraft') : null}
+      </span>
       <button
-        className="primary"
+        className="primary icon-button"
+        title={t('app.reload')}
+        aria-label={t('app.reload')}
         disabled={busy}
         onClick={async () => {
           setBusy(true);
@@ -45,9 +50,9 @@ export function UpdateBanner() {
           }
         }}
       >
-        {t('app.reload')}
-      </button>{' '}
-      <button onClick={() => setReady(false)} aria-label="✕">
+        ⟳
+      </button>
+      <button className="icon-button" onClick={() => setReady(false)} title={t('app.updateLater')} aria-label={t('app.updateLater')}>
         ✕
       </button>
     </Notice>

@@ -73,6 +73,7 @@ export const nl: Partial<Dict> = {
   'plan.traceDone': "{n} muren, {d} deuren en {w} ramen herkend. Controleer ze in overlay (schuifregelaar « Achtergrond »): klik op een element om type, breedte of draairichting te verbeteren; sleep om te verplaatsen.",
   'app.updateReady': "Nieuwe versie van Voltaplan beschikbaar.",
   'app.reload': "Herladen",
+  'app.updateLater': "Later",
   'app.updateKeepsDraft': "Uw niet-bewaarde wijzigingen worden als concept bewaard en kunnen na het herladen worden hersteld.",
   'app.updateDraftFailed': "Het concept kon niet worden bewaard: bewaar uw project en herlaad daarna.",
   'app.offline': "Offline",

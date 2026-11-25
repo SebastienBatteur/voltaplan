@@ -72,6 +72,7 @@ export const fr = {
   'plan.traceDone': "{n} murs, {d} portes et {w} fenêtres détectés. Vérifiez-les en superposition (curseur « Fond ») : cliquez un élément pour corriger son type, sa largeur ou son sens d'ouverture ; glissez pour le déplacer.",
   'app.updateReady': "Nouvelle version de Voltaplan disponible.",
   'app.reload': "Recharger",
+  'app.updateLater': "Plus tard",
   'app.updateKeepsDraft': "Vos modifications non enregistrées seront gardées comme brouillon, à récupérer après le rechargement.",
   'app.updateDraftFailed': "Le brouillon n'a pas pu être gardé : enregistrez votre projet, puis rechargez.",
   'app.offline': "Hors ligne",

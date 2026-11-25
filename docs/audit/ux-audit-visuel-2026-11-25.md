@@ -125,7 +125,9 @@ les réglages se replient, mais le message bleu recouvre le dessin (même famill
    seule bande sous le dessin (au-dessus du pied de page). Ils ne se recouvrent plus entre eux, ne cachent plus le
    dessin (il se réduit : 701 → 658 px avec un avis à 1366 × 768) ni une fenêtre (écart **O6**). Vue Tableau : l'aide
    permanente « appareil(s) en réserve » devient une ligne discrète au-dessus du dessin. Message système brut du
-   navigateur (« Failed to execute 'showSaveFilePicker'… ») remplacé par une consigne traduite.
+   navigateur (« Failed to execute 'showSaveFilePicker'… ») remplacé par une consigne traduite. « Nouvelle version
+   disponible » sur une seule rangée, avec des pictogrammes ⟳ (recharger) et ✕ (plus tard) au lieu des mots (idée de
+   l'utilisateur ; mot en infobulle et lu par les lecteurs d'écran) : 58 px de haut à 375 px, boutons de 44 px.
 3. **Enregistrement** : « Cet appareil » présélectionné ; « Drive, OneDrive, Dropbox » à côté ; « Navigateur » et
    « GitHub » sous « Autres emplacements ▸ ».
 4. **Contrôle RGIE au téléphone** (avec l'idée de l'utilisateur) : sur la barre compacte, l'onglet n'affiche que la

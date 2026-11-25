@@ -9,10 +9,10 @@ import { createPortal } from 'react-dom';
  */
 export const NoticeHost = createContext<HTMLElement | null>(null);
 
-export function Notice({ children, role, onClick }: { children: ReactNode; role?: AriaRole; onClick?: () => void }) {
+export function Notice({ children, role, onClick, line }: { children: ReactNode; role?: AriaRole; onClick?: () => void; line?: boolean }) {
   const host = useContext(NoticeHost);
   const el = (
-    <div className="toast" role={role} onClick={onClick}>
+    <div className={'toast' + (line ? ' notice-line' : '')} role={role} onClick={onClick}>
       {children}
     </div>
   );
