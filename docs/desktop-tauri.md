@@ -354,6 +354,14 @@ vérifiés par Claude (lecture seule : tailles, heures, archives ZIP relues).
   bouton.
 - **O8** (amélioration) : aucune confirmation après « Exporter au format v1… ».
 
+**Suite (même jour)** : branche rebasée sur `main` puis fusionnée (befba5e) avec les corrections de **O7**
+(`DesktopSaveError` : message « fichier utilisé, verrouillé ou en cours de synchronisation ; original intact »,
+disque plein traité comme dans le navigateur), **O9** (commandes `pick_open_path` et `read_file` : boîte « Ouvrir »
+côté Rust, le chemin d'un `.voltaplan` ouvert devient la cible d'« Enregistrer », avec détection de conflit) et
+**O10** (`onCloseRequested`, droit `core:window:allow-destroy`). Compilé et testé sur les 3 systèmes
+([45627990727](https://github.com/SebastienBatteur/voltaplan/actions/runs/45627990727), 13 tests Rust).
+**À revérifier dans l'application installée** (paquet de ce run). O6 et O8 restent à faire.
+
 **Conclusion** : l'écriture atomique tient ses promesses sous Windows, y compris dans un dossier OneDrive et avec un
 fichier verrouillé ; aucune perte, aucun fichier temporaire laissé. Les écarts portent sur les messages et sur
 l'ouverture / la fermeture, pas sur l'écriture.

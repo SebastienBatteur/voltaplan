@@ -38,6 +38,12 @@
 - **Reprise automatique d'un envoi en attente**, même quand le navigateur ne signale pas le retour du réseau
   (Windows avec une autre carte réseau active) : nouvel essai à 10 s, 30 s, 1 min, 2 min, puis toutes les 5 min.
   Jamais deux envois à la fois : un second clic sur « Enregistrer » pendant un envoi est ignoré.
+- **Application de bureau : enregistrement atomique.** Le projet est écrit dans un fichier temporaire du même
+  dossier, vérifié, puis il remplace l'ancien ; la version précédente est gardée en `.bak`. Une coupure, un disque
+  plein ou un fichier verrouillé ne laissent jamais un projet vide ou tronqué (essai réel sous Windows, dossier
+  OneDrive compris). « Ouvrir » passe par la boîte du système : « Enregistrer » réécrit ensuite le fichier ouvert.
+  Message clair quand le fichier est utilisé par un autre logiciel ; avertissement à la fermeture de la fenêtre
+  s'il reste des modifications non enregistrées.
 - **Reconnexion avant l'expiration de la session (R2).** Cinq minutes avant la fin de la session du service où est
   enregistré le projet, un repère discret apparaît dans la barre : « Session … : fin dans N min · Reconnecter ». Un
   clic rouvre la connexion sans recharger la page ; un enregistrement en attente part aussitôt. Fermé, il ne revient
