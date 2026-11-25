@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useStore } from '../store';
 import { emptyProject } from '../model/tree';
+import { typicalHouseProject } from '../model/templates';
 import { newExistingProject } from '../assist/project';
 import { loadInstallerProfile, saveInstallerProfile } from '../io/recent';
 import type { Project } from '../model/types';
@@ -28,13 +29,14 @@ export function NewProjectWizard({ initialKind, onClose, onCreate }: { initialKi
   const [supply, setSupply] = useState(SUPPLIES[0]);
   const [earthing, setEarthing] = useState<'TT' | 'TN' | 'IT'>('TT');
   const [mainCurrent, setMainCurrent] = useState('40');
+  const [start, setStart] = useState<'empty' | 'house'>('empty');
 
   const STEPS = ['kind', 'site', 'installer', 'supply'] as const;
   const last = step === STEPS.length - 1;
 
   const create = () => {
     const name = title.trim() || [client.trim(), site.city.trim()].filter(Boolean).join(' — ') || t(kind === 'existing' ? 'assist.newSurveyTitle' : 'wizard.defaultTitle');
-    const base = kind === 'existing' ? newExistingProject(name) : emptyProject();
+    const base = kind === 'existing' ? newExistingProject(name) : start === 'house' ? typicalHouseProject(t, supply) : emptyProject();
     const amps = Number(mainCurrent);
     const p: Project = {
       ...base,
@@ -83,6 +85,20 @@ export function NewProjectWizard({ initialKind, onClose, onCreate }: { initialKi
                 </button>
               ))}
             </div>
+            {kind === 'new' && (
+              <fieldset className="wizard-start">
+                <legend>{t('wizard.start')}</legend>
+                {(['empty', 'house'] as const).map((k) => (
+                  <label key={k} className="wizard-start-option">
+                    <input type="radio" name="wizard-start" checked={start === k} onChange={() => setStart(k)} />
+                    <span>
+                      <strong>{t('wizard.start.' + k)}</strong>
+                      <span className="muted small"> — {t('wizard.start.' + k + 'Help')}</span>
+                    </span>
+                  </label>
+                ))}
+              </fieldset>
+            )}
             {field(t('wizard.projectTitle'), title, setTitle, { placeholder: t('wizard.projectTitleHint') })}
           </div>
         )}

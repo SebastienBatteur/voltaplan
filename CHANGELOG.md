@@ -14,6 +14,9 @@
   lisible sans connexion. Aucun hébergement par Voltaplan.
 - **Fond de plan DXF** : lecteur DXF texte intégré (lignes, polylignes, arcs, cercles, blocs) ; posé à
   l'échelle réelle quand le fichier indique son unité.
+- **Maison type** dans l'assistant (installation neuve) : circuits courants déjà en place, à adapter ;
+  vérifié par un test qui exige zéro constat du contrôle RGIE (hors adresse et installateur).
+- Analyse des outils concurrents et des améliorations possibles : `docs/strategie/CONCURRENCE-2026-11.md`.
 - Guide (FR) mis à jour.
 
 ### IA : configuration transférable entre appareils ; iPhone (2026-11-25)

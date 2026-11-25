@@ -2765,6 +2765,26 @@ body.resizing-h * {
     grid-template-columns: 1fr;
   }
 }
+.wizard-start {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px 8px;
+  margin: 0 0 8px;
+}
+.wizard-start legend {
+  padding: 0 4px;
+  font-weight: 600;
+}
+.wizard-start-option {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 4px 0;
+  cursor: pointer;
+}
+.wizard-start-option input {
+  margin-top: 3px;
+}
 .wizard-nav {
   margin-top: 12px;
   align-items: center;
