@@ -1,0 +1,18 @@
+{
+  "@context": "https://w3id.org/codemeta/3.0",
+  "@type": "SoftwareSourceCode",
+  "identifier": ["urn:uuid:55b25e7a-c2a4-4787-bebc-42ecee353f9e", "org.voltaplan"],
+  "name": "Voltaplan",
+  "description": "Schémas unifilaires, plans de position et tableaux électriques, avec contrôle des règles nationales (RGIE en Belgique). Local-first, sans serveur.",
+  "license": "https://spdx.org/licenses/AGPL-3.0-only",
+  "copyrightHolder": { "@type": "Person", "name": "Sébastien Batteur" },
+  "copyrightYear": 2026,
+  "copyrightNotice": "Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors",
+  "author": [{ "@type": "Person", "name": "Sébastien Batteur" }],
+  "codeRepository": "https://github.com/SebastienBatteur/voltaplan",
+  "url": "https://voltaplan.org/",
+  "issueTracker": "https://github.com/SebastienBatteur/voltaplan/issues",
+  "programmingLanguage": ["TypeScript", "Rust"],
+  "runtimePlatform": ["Web browser", "Windows", "macOS", "Linux"],
+  "developmentStatus": "active"
+}

@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^urn:uuid:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "description": "Permanent project identifier (urn:uuid), independent of name, repository and domain"
+          },
+          "name": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9.+-]+( (AND|OR|WITH) [A-Za-z0-9.+-]+)*$",
+            "description": "SPDX license expression"
+          },
+          "upstreamRepository": {
+            "type": "string",
+            "format": "uri"
+          },
+          "metadata": {
+            "type": "string",
+            "format": "uri",
+            "description": "CodeMeta file of the project"
+          },
+          "instances": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "Instance URL, relative to the site root"
+                },
+                "buildInfo": {
+                  "type": "string"
+                },
+                "buildInfoSha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              },
+              "required": [
+                "url",
+                "buildInfo",
+                "buildInfoSha256"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "license",
+          "upstreamRepository",
+          "metadata",
+          "instances"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "$schema",
+    "schemaVersion",
+    "projects"
+  ],
+  "additionalProperties": false,
+  "$id": "https://voltaplan.org/schemas/oss-provenance/well-known-1.0.schema.json",
+  "title": "oss-provenance well-known-1.0"
+}
