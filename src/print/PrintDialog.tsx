@@ -8,14 +8,14 @@ import { useModalDialog } from '../ui/a11y';
 
 /** Parties incluses par défaut selon le type de document (modifiables ensuite). */
 const PRESETS: Record<DocKind, (hasFindings: boolean) => PrintSections> = {
-  working: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f }),
-  reception: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f }),
-  anomalies: () => ({ unifilar: false, plan: false, board: false, circuits: true, legend: false, labels: false, measures: true, bom: false, checks: true }),
-  complete: () => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: true, measures: true, bom: true, checks: true }),
+  working: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f, qrLabel: false }),
+  reception: (f) => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: false, measures: true, bom: false, checks: f, qrLabel: false }),
+  anomalies: () => ({ unifilar: false, plan: false, board: false, circuits: true, legend: false, labels: false, measures: true, bom: false, checks: true, qrLabel: false }),
+  complete: () => ({ unifilar: true, plan: true, board: true, circuits: true, legend: true, labels: true, measures: true, bom: true, checks: true, qrLabel: true }),
 };
 const DOC_KINDS: DocKind[] = ['working', 'reception', 'anomalies', 'complete'];
 
-const SECTIONS: (keyof PrintSections)[] = ['unifilar', 'plan', 'board', 'circuits', 'legend', 'measures', 'bom', 'labels', 'checks'];
+const SECTIONS: (keyof PrintSections)[] = ['unifilar', 'plan', 'board', 'circuits', 'legend', 'measures', 'bom', 'labels', 'qrLabel', 'checks'];
 
 /**
  * Impression du dossier : choix du format (A4 / A3 paysage) et des parties, aperçu, puis impression
@@ -94,7 +94,7 @@ export function PrintDialog({ onClose }: { onClose: () => void }) {
           <div className="print-sections">
             {SECTIONS.map((k) => (
               <label key={k} className="radio">
-                <input type="checkbox" checked={sections[k]} onChange={(e) => setSections({ ...sections, [k]: e.target.checked })} /> {t('print.sec.' + k)}
+                <input type="checkbox" checked={!!sections[k]} onChange={(e) => setSections({ ...sections, [k]: e.target.checked })} /> {t('print.sec.' + k)}
               </label>
             ))}
           </div>

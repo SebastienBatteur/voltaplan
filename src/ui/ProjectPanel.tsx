@@ -114,6 +114,10 @@ export function ProjectPanel() {
           <span>{t('project.installerVat')}</span>
           <input value={meta.installer.vat ?? ''} placeholder="BE0123.456.789" onChange={(e) => setMeta({ installer: { ...meta.installer, vat: e.target.value } })} />
         </label>
+        <label className="field">
+          <span>{t('project.installerPhone')}</span>
+          <input type="tel" value={meta.installer.phone ?? ''} onChange={(e) => setMeta({ installer: { ...meta.installer, phone: e.target.value } })} />
+        </label>
         <AddressFields value={meta.installer.address} onChange={(a) => setMeta({ installer: { ...meta.installer, address: a } })} />
         <label className="field">
           <span>{t('project.drawnBy')}</span>
@@ -249,6 +253,11 @@ export function ProjectPanel() {
           </select>
         </label>
         <p className="muted small">{t('project.statusHelp')}</p>
+        <label className="field">
+          <span>{t('project.dossierUrl')}</span>
+          <input type="url" value={meta.dossierUrl ?? ''} placeholder="https://…" onChange={(e) => setMeta({ dossierUrl: e.target.value.trim() || undefined })} />
+        </label>
+        <p className="muted small">{t('project.dossierUrlHelp')}</p>
         {revisions.map((r, i) => (
           <div key={i} className="revision">
             <input className="rev-version" value={r.version} onChange={(e) => setRev(i, { version: e.target.value })} aria-label={t('project.revVersion')} />

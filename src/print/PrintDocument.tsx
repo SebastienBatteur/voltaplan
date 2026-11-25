@@ -23,6 +23,8 @@ import type { Lang } from '../i18n';
 import { billOfMaterials } from '../bom/bom';
 import { getRulePack } from '../rules';
 import { BomTable } from '../ui/BomPanel';
+import { QrCode } from '../ui/QrCode';
+import { isHttpsUrl, qrLabelPayload } from './qrLabel';
 
 export type PaperFormat = 'A4' | 'A3';
 export interface PrintSections {
@@ -35,6 +37,8 @@ export interface PrintSections {
   checks: boolean;
   measures: boolean;
   bom: boolean;
+  /** Étiquettes QR à coller sur le coffret (lien vers le dossier, ou informations en texte). */
+  qrLabel?: boolean;
 }
 
 export const PAPER: Record<PaperFormat, { w: number; h: number }> = { A4: { w: 297, h: 210 }, A3: { w: 420, h: 297 } };
@@ -59,6 +63,8 @@ export type DocKind = 'working' | 'reception' | 'anomalies' | 'complete';
 interface PageDef {
   kind: string;
   body: ReactNode;
+  /** Page à découper et coller (étiquettes QR) : pas de filigrane. */
+  noWatermark?: boolean;
 }
 
 function addr(a?: { street?: string; number?: string; box?: string; postalCode?: string; city?: string }): string {
@@ -409,6 +415,41 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
       });
     }
 
+  if (sec.qrLabel) {
+    const m = project.meta;
+    const payload = qrLabelPayload(m, t);
+    const linked = isHttpsUrl(m.dossierUrl);
+    const site = [[m.site?.street, m.site?.number].filter(Boolean).join(' '), [m.site?.postalCode, m.site?.city].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+    // 4 étiquettes de 90 × 55 mm (format carte de visite, à découper et coller dans la porte du coffret)
+    pages.push({
+      kind: t('print.qrLabel'),
+      noWatermark: true,
+      body: (
+        <div className="qr-labels">
+          <p className="legend-note">{t(linked ? 'print.qrLabelHelpLink' : 'print.qrLabelHelpText')}</p>
+          <div className="qr-grid">
+            {[0, 1, 2, 3].map((i) => (
+              <div key={i} className="qr-label">
+                <div className="qr-label-code">
+                  <QrCode text={payload} size="100%" label={t('print.qrLabel')} />
+                </div>
+                <div className="qr-label-text">
+                  <strong>{t('print.qrLabelTitle')}</strong>
+                  <div>{site || '—'}</div>
+                  <div>
+                    {t('print.docNumber')} {m.docNumber?.trim() || '—'}
+                  </div>
+                  <div>{[m.installer?.name, m.installer?.phone].filter(Boolean).join(' — ') || '—'}</div>
+                  <div className="qr-label-scan">{t(linked ? 'print.qrLabelScanLink' : 'print.qrLabelScanText')}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    });
+  }
+
   if (sec.measures) {
     const m = project.measurements;
     const okKo = (ok: boolean | undefined) => (ok === undefined ? '—' : ok ? t('meas.ok') : t('meas.ko'));
@@ -594,7 +635,7 @@ export function PrintDocument({ ctx, format, sections }: { ctx: Ctx; format: Pap
       {pages.map((pg, i) => (
         <section key={i} className="print-page" style={pageStyle}>
           <div className="print-body">{pg.body}</div>
-          {ctx.draft !== 'none' ? (
+          {pg.noWatermark ? null : ctx.draft !== 'none' ? (
             <div className={'watermark' + (ctx.draft === 'nonCompliant' ? '' : ' light')}>{ctx.t(DRAFT_KEYS[ctx.draft])}</div>
           ) : (
             ctx.docKind === 'working' && <div className="watermark light">{ctx.t('print.workingDoc')}</div>

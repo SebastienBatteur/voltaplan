@@ -102,6 +102,11 @@ export interface ProjectMeta {
   docNumber?: string;
   /** Avancement du dossier : en cours, prêt pour le contrôle, contrôlé. Absent = en cours. */
   status?: ProjectStatus;
+  /**
+   * Lien vers le dossier PDF partagé par l'installateur depuis son propre cloud (Drive, OneDrive, Dropbox…) : repris
+   * dans le QR code collé sur le coffret. Absent : le QR code contient les informations en texte (hors ligne).
+   */
+  dossierUrl?: string;
   /** Référentiel (pays et règlement), voir src/rules. Absent = « BE-RGIE ». */
   ruleset?: string;
   /** Sens de l'unifilaire : 'up' (défaut, alimentation en bas comme la figure 3.1 du RGIE) ou 'down'. */

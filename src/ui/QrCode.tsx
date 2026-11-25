@@ -5,10 +5,13 @@ import qrcode from 'qrcode-generator';
  * QR code dessiné en SVG (bibliothèque qrcode-generator, MIT), sans HTML injecté. Toujours noir sur blanc, avec la
  * marge de 4 modules exigée par la norme, pour être lu par l'appareil photo d'un téléphone dans les deux thèmes.
  */
-export function QrCode({ text, size = 240, label }: { text: string; size?: number; label: string }) {
+export function QrCode({ text, size = 240, label }: { text: string; size?: number | string; label: string }) {
   const { n, d } = useMemo(() => {
     const q = qrcode(0, 'L');
-    q.addData(text, 'Byte');
+    // Octets UTF-8 (accents, tirets) : la bibliothèque prend un caractère = un octet ; les lecteurs attendent l'UTF-8
+    let bin = '';
+    for (const b of new TextEncoder().encode(text)) bin += String.fromCharCode(b);
+    q.addData(bin, 'Byte');
     q.make();
     const count = q.getModuleCount();
     let path = '';
