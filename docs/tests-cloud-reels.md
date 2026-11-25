@@ -255,7 +255,9 @@ mise en place de l'enregistreur).
   fichier inutile `project (conflit …).json`, rien de perdu. Piste : la détection pendant l'envoi
   (`driveRevisionsBetween`, `src/io/drive.ts`) prend la révision de notre propre enregistrement précédent pour
   celle d'un autre ; à reproduire avec le service simulé (deux enregistrements qui se chevauchent).
-- **S4 (corrigé, à revérifier en réel) : pas de reprise automatique sous Windows.** Correction : nouvel essai
+- **S4 (corrigé, ✅ revérifié en réel le 2026-11-25 : envoi en échec à 09:13:52 UTC, 1er essai à +10 s encore
+  hors ligne, 2ᵉ à +30 s réussi, « Enregistré » à 09:14:38, sans aucun évènement `online` ni clic) : pas de reprise
+  automatique sous Windows.** Correction : nouvel essai
   à 10 s, 30 s, 1 min, 2 min puis toutes les 5 min, en plus de `online` (`src/io/retry.ts`) ; jamais deux envois à
   la fois (un clic pendant un envoi en cours est ignoré, ce qui évite aussi le cas de S3) ; pas de reprise
   automatique quand la connexion au service est à refaire ; un nouvel échec ne répète pas le message. Tests :
