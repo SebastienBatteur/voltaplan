@@ -31,8 +31,11 @@ export const CONNECT_HOSTS = [
   // OneDrive : les téléchargements de /content sont redirigés vers un lien pré-authentifié, et les gros envois passent
   // par une session d'envoi sur un autre domaine — *.1drv.com et api.onedrive.com (comptes personnels),
   // *.sharepoint.com (comptes professionnels) [à vérifier avec de vrais comptes].
+  // Constaté sur un vrai compte personnel le 2026-11-25 (écart S11) : le contenu d'un fichier est servi par
+  // my.microsoftpersonalcontent.com ; sans ce domaine, aucun projet OneDrive ne pouvait être rouvert.
   'https://*.1drv.com',
   'https://api.onedrive.com',
+  'https://my.microsoftpersonalcontent.com',
   'https://*.sharepoint.com',
   'https://www.googleapis.com',
 ] as const;

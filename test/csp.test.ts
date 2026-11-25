@@ -19,6 +19,11 @@ describe('politique de sécurité du contenu (CSP)', () => {
     expect(cspString(d)).not.toMatch(/(^|\s)(\*|https:|http:)(\s|;|$)/);
   });
 
+  it('OneDrive (comptes personnels) : domaine des téléchargements autorisé, nommément (S11, séance du 2026-11-25)', () => {
+    expect(webCsp()['connect-src'].split(' ')).toContain('https://my.microsoftpersonalcontent.com');
+    expect(desktopCsp()['connect-src'].split(' ')).toContain('https://my.microsoftpersonalcontent.com');
+  });
+
   it('connect-src : uniquement les services utilisés', () => {
     const hosts = webCsp()['connect-src'].split(' ');
     expect(hosts).toEqual(["'self'", ...CONNECT_HOSTS]);

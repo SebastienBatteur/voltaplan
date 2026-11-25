@@ -318,7 +318,8 @@ supprimer).voltaplan » (55 Mo) créé sur Drive par Voltaplan.
   de plan F10), enregistré sur Drive en dossier « Essai transfert F8 (à supprimer) » : 2 dossiers créés, 3 envois
   (image, README, modèle) ; rouvert depuis Drive : 20 modules, image 1600×1000 ; côté Dropbox, uniquement des
   lectures (aucune écriture). Remarque : l'image relue peut venir du cache local de l'onglet.
-- **S11** (bloquant OneDrive, à corriger) : **ouvrir un dossier OneDrive échoue** (« Failed to fetch »). Le
+- **S11** (bloquant OneDrive ; corrigé : domaine ajouté à la CSP du site et de l'application de bureau, à revérifier
+  en réel) : **ouvrir un dossier OneDrive échoue** (« Failed to fetch »). Le
   téléchargement de `project.json` est redirigé par Graph vers `https://my.microsoftpersonalcontent.com/…`
   (comptes personnels), domaine absent de la CSP (`connect-src`, `src/security/csp.ts`, où il était marqué « à
   vérifier avec de vrais comptes »). F2 et F7 OneDrive bloqués tant que ce n'est pas corrigé. Incident d'essai :
