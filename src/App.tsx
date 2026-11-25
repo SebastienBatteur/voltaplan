@@ -25,6 +25,7 @@ import {
 } from './io/storage';
 import { locationKey, saveAt, type SaveDeps, type SaveOutcome } from './io/saveFlow';
 import { startRetries } from './io/retry';
+import { closeWarningArgs, syncCloseWarning } from './io/closeGuard';
 import { conflictName } from './io/conflict';
 import { VersionsDialog } from './ui/VersionsDialog';
 import { AssistPanel } from './ui/AssistPanel';
@@ -325,25 +326,18 @@ export function App() {
       if (useStore.getState().dirty && !isReloadingForUpdate()) e.preventDefault();
     };
     window.addEventListener('beforeunload', onBefore);
-    // Bureau : la fenêtre Tauri n'affiche pas l'avertissement de beforeunload (écart O10) : on intercepte la
-    // fermeture de la fenêtre. Le brouillon reste de toute façon gardé (récupération au prochain lancement).
-    let unlisten: (() => void) | undefined;
-    let stopped = false;
-    if (isDesktop)
-      void import('@tauri-apps/api/window')
-        .then(({ getCurrentWindow }) =>
-          getCurrentWindow().onCloseRequested((ev) => {
-            if (useStore.getState().dirty && !window.confirm(useStore.getState().t('app.closeUnsaved'))) ev.preventDefault();
-          }),
-        )
-        .then((fn) => (stopped ? fn() : (unlisten = fn)))
-        .catch(() => undefined);
-    return () => {
-      window.removeEventListener('beforeunload', onBefore);
-      stopped = true;
-      unlisten?.();
-    };
+    return () => window.removeEventListener('beforeunload', onBefore);
   }, []);
+
+  // Bureau : la fenêtre Tauri n'affiche pas l'avertissement de beforeunload (écart O10) ; la fermeture est
+  // interceptée côté Rust, qui doit connaître l'état du projet et le texte dans la langue choisie. Le brouillon
+  // reste de toute façon gardé (récupération au prochain lancement).
+  const dirtyNow = useStore((s) => s.dirty);
+  const langNow = useStore((s) => s.lang);
+  useEffect(() => {
+    if (!isDesktop) return;
+    syncCloseWarning(closeWarningArgs(dirtyNow, useStore.getState().t)).catch(() => undefined);
+  }, [dirtyNow, langNow]);
 
   useEffect(() => {
     document.title = `${s.dirty ? '• ' : ''}${s.project.meta.title || APP_NAME} — ${APP_NAME}`;

@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Droits de la fenêtre principale : impression (sur macOS, window.print() passe par la commande webview « print »). L'enregistrement passe par les commandes de l'application (pick_save_path, save_begin, save_chunk, save_commit, save_abort, file_state ; src/atomic_save.rs), qui n'écrivent qu'aux chemins choisis dans la boîte « Enregistrer » ouverte côté Rust : aucun droit dialog ni fs n'est donné à la page. L'ouverture passe par pick_open_path et read_file (fichiers choisis dans la boîte « Ouvrir »). core:window:allow-destroy : fermeture de la fenêtre après l'avertissement des modifications non enregistrées (onCloseRequested). Sans manifeste d'application dans build.rs, Tauri 2 autorise les commandes de l'application pour les pages locales.",
+  "description": "Droits de la fenêtre principale : impression (sur macOS, window.print() passe par la commande webview « print »). L'enregistrement passe par les commandes de l'application (pick_save_path, save_begin, save_chunk, save_commit, save_abort, file_state ; src/atomic_save.rs), qui n'écrivent qu'aux chemins choisis dans la boîte « Enregistrer » ouverte côté Rust : aucun droit dialog ni fs n'est donné à la page. L'ouverture passe par pick_open_path et read_file (fichiers choisis dans la boîte « Ouvrir »). L'avertissement à la fermeture (modifications non enregistrées) est géré côté Rust (src/close_guard.rs, commande set_close_warning) : aucun droit de fenêtre n'est donné à la page. Sans manifeste d'application dans build.rs, Tauri 2 autorise les commandes de l'application pour les pages locales.",
   "windows": ["main"],
-  "permissions": ["core:default", "core:webview:allow-print", "core:window:allow-destroy"]
+  "permissions": ["core:default", "core:webview:allow-print"]
 }

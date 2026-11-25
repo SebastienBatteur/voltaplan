@@ -701,6 +701,8 @@ export const nl: Partial<Dict> = {
   'desktop.saveBusy': "Opslaan van « {name} » mislukt: het bestand wordt door een ander programma gebruikt, is vergrendeld of wordt gesynchroniseerd. Het oorspronkelijke bestand is intact en uw versie blijft bewaard: probeer het straks opnieuw, of « Opslaan als » onder een andere naam.",
   'desktop.saveFailed': "Opslaan van « {name} » mislukt ({detail}). Het oorspronkelijke bestand is intact en uw versie blijft bewaard.",
   'app.closeUnsaved': "Er zijn niet-opgeslagen wijzigingen. Toch sluiten? (Bij de volgende start wordt een concept aangeboden.)",
+  'app.closeAnyway': "Sluiten zonder opslaan",
+  'app.closeCancel': "Annuleren",
   yes: 'Ja',
   no: 'Nee',
   'kind.origin': 'Oorsprong (net)',
