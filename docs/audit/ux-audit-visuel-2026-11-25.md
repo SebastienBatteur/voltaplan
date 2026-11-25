@@ -116,3 +116,31 @@ invisibles ; colonne fermée, aucune propriété.
 Reste : vue **Tableau** au téléphone encore chargée (réglages du tableau + message bleu « en réserve » + panneau) —
 les réglages se replient, mais le message bleu recouvre le dessin (même famille que O6) ; « Contrôle RGIE » hors
 écran dans les onglets ; téléphone en paysage (> 800 px de large) non traité. Non vérifié sur téléphone réel.
+
+## 8. Suite : points 1 à 7 (même jour, branche `ux-suite`)
+
+1. **Lisibilité** : texte courant 13 → 14 px ; plus aucun texte sous 12 px (palette, badges, raccourcis, pied de
+   page). Mesuré à 1366 × 768 : tailles visibles 12, 13, 14 et 16 px seulement.
+2. **Avis** (`src/ui/Notice.tsx`) : brouillon retrouvé, nouvelle version, reprise, conflit, fin d'import… dans une
+   seule bande sous le dessin (au-dessus du pied de page). Ils ne se recouvrent plus entre eux, ne cachent plus le
+   dessin (il se réduit : 701 → 658 px avec un avis à 1366 × 768) ni une fenêtre (écart **O6**). Vue Tableau : l'aide
+   permanente « appareil(s) en réserve » devient une ligne discrète au-dessus du dessin. Message système brut du
+   navigateur (« Failed to execute 'showSaveFilePicker'… ») remplacé par une consigne traduite.
+3. **Enregistrement** : « Cet appareil » présélectionné ; « Drive, OneDrive, Dropbox » à côté ; « Navigateur » et
+   « GitHub » sous « Autres emplacements ▸ ».
+4. **Contrôle RGIE au téléphone** (avec l'idée de l'utilisateur) : sur la barre compacte, l'onglet n'affiche que la
+   pastille du nombre d'alertes (« RGIE » s'il n'y en a pas ; nom complet lu par les lecteurs d'écran) et reste collé
+   au bord droit si les onglets défilent. Onglets resserrés : les six tiennent sur une ligne à 375 et 390 px (cibles
+   de 44 px) ; à 360 px ils défilent, le compteur reste visible.
+5. **Barre du haut** : sur une ligne dès 1200 px ; nom du projet et état d'enregistrement raccourcis (…) au lieu de
+   passer à la ligne. Mesuré : 44 px à 1366 × 768 avec « Erreur d'enregistrement ».
+6. **Recadrage** : en vue d'ensemble (après « Ajuster », sans zoom ni déplacement depuis), le dessin le reste quand il
+   grandit (ajout) ou que sa zone change de taille (panneau, rotation, colonne). Vérifié : après l'ajout d'une
+   protection à 1366 × 768, tout le schéma reste visible (l'alimentation sortait du champ). Une vue zoomée n'est
+   jamais touchée. Au téléphone, le schéma remplit la largeur : sa petite taille vient de la place réservée aux
+   libellés, pas du cadrage.
+7. **O8** : après un export (v1, Trikker, Eendraadschema), la fenêtre confirme « Fichier « … » créé. » ; rien si
+   l'enregistrement est annulé (bureau).
+
+Vérifié : 782 tests (dont `test/uxSuite.test.tsx`), typage, lint, compilation ; mesures en émulation à 1366 × 768,
+375 × 812, 390 × 844, 360 × 780. Non vérifié sur appareils réels ni dans l'application de bureau installée (O8).

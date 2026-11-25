@@ -776,7 +776,8 @@ export function BoardView() {
       <div className="canvas-tools">
         <button onClick={pz.fit}>{t('action.zoomFit')}</button>
       </div>
-      {(msg || unplaced.length > 0) && <div className="hint">{msg ?? t('board.reserveHint', { n: unplaced.length })}</div>}
+      {/* Résultat d'une action : bulle ; aide permanente de la réserve : ligne discrète, pas sur le dessin */}
+      {msg ? <div className="hint">{msg}</div> : unplaced.length > 0 && <div className="view-note">{t('board.reserveHint', { n: unplaced.length })}</div>}
       {aiDiffs && (
         <div className="plan-item-panel ai-results">
           <strong>{t('ai.resultsTitle')}</strong>

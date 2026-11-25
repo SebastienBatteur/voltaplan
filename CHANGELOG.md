@@ -2,6 +2,17 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Lisibilité, avis et barre (2026-11-25)
+
+- Texte courant en 14 px, aucun texte sous 12 px.
+- Les avis (brouillon retrouvé, nouvelle version, conflit, fin d'import…) s'affichent dans une seule bande sous le
+  dessin : ils ne se recouvrent plus et ne cachent plus le dessin ni une fenêtre (O6).
+- Enregistrer : « Cet appareil » proposé d'abord ; navigateur et GitHub sous « Autres emplacements ».
+- Téléphone : l'onglet « Contrôle RGIE » se réduit à son compteur d'alertes, toujours visible ; les six onglets
+  tiennent sur une ligne.
+- Barre du haut sur une seule ligne sur grand écran ; le schéma reste entièrement visible après un ajout.
+- Exports (v1, Trikker, Eendraadschema) : confirmation « Fichier … créé » (O8).
+
 ### Téléphone : propriétés sous le dessin (2026-11-25)
 
 - Colonne masquée, toucher un élément affiche ses propriétés dans un panneau sous le dessin : replié (une ligne)

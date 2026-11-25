@@ -48,7 +48,7 @@ body,
   height: 100%;
 }
 body {
-  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font: 14px/1.4 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   background: var(--bg);
   color: var(--text);
 }
@@ -171,19 +171,37 @@ input:not([type]) {
   display: flex;
   gap: 4px;
 }
+.tab-short {
+  display: none;
+}
 .count {
   display: inline-block;
   margin-left: 6px;
   padding: 0 6px;
   border-radius: 10px;
   color: #fff;
-  font-size: 11px;
+  font-size: 12px;
 }
 .count.error {
   background: var(--error);
 }
 .count.warning {
   background: var(--warning);
+}
+/* Grand écran : barre sur une seule ligne ; le nom du projet et l'état de l'enregistrement se raccourcissent
+   (points de suspension, texte complet en infobulle) au lieu de faire passer la barre sur deux lignes. */
+@media (min-width: 1200px) {
+  .toolbar {
+    flex-wrap: nowrap;
+  }
+  .toolbar > * {
+    flex-shrink: 0;
+  }
+  .toolbar > .file-name,
+  .toolbar > .save-state {
+    flex-shrink: 1;
+    min-width: 4em;
+  }
 }
 .file-name {
   color: var(--muted);
@@ -310,7 +328,7 @@ main {
 }
 .tree-sep {
   margin: 8px 10px 2px;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   text-transform: uppercase;
 }
@@ -411,6 +429,19 @@ main {
   border: 1px solid var(--border);
   max-width: 420px;
   text-align: center;
+}
+.link-button {
+  background: none;
+  border-color: transparent;
+  color: var(--accent);
+}
+.link-button:hover {
+  text-decoration: underline;
+}
+.view-note {
+  padding: 2px 10px;
+  color: var(--muted);
+  font-size: 12px;
 }
 .hint button {
   background: transparent;
@@ -616,11 +647,11 @@ main {
 .rule-id {
   margin-left: auto;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   font-family: ui-monospace, monospace;
 }
 .badge {
-  font-size: 11px;
+  font-size: 12px;
   padding: 0 6px;
   border-radius: 4px;
   color: #fff;
@@ -633,7 +664,7 @@ main {
   background: var(--warning);
 }
 .hazard {
-  font-size: 11px;
+  font-size: 12px;
   padding: 0 6px;
   border-radius: 4px;
   border: 1px solid currentColor;
@@ -654,7 +685,7 @@ main {
   flex-wrap: wrap;
 }
 .finding-actions button {
-  font-size: 11px;
+  font-size: 12px;
   padding: 1px 6px;
 }
 .derogation-form {
@@ -685,6 +716,29 @@ main {
   padding: 10px 14px;
   z-index: 10;
   cursor: pointer;
+}
+/* Bande des avis (src/ui/Notice.tsx) : dans le flux, sous le dessin ; le dessin se réduit au lieu d'être caché, et
+   les avis ne se recouvrent plus entre eux ni ne cachent une fenêtre (écart O6). */
+.notices {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 8px;
+  max-height: 40vh;
+  overflow: auto;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.notices:empty {
+  display: none;
+}
+.notices .toast {
+  position: static;
+  max-width: none;
+  box-shadow: none;
+  border-radius: 6px;
+  padding: 6px 10px;
 }
 .toast ul {
   margin: 4px 0 0;
@@ -952,7 +1006,7 @@ main {
   align-items: center;
   gap: 2px;
   padding: 4px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.1;
 }
 .catalog-icon {
@@ -1610,7 +1664,7 @@ body.resizing-h * {
   width: 100%;
 }
 .file-menu-list kbd {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   background: none;
   font-family: inherit;
@@ -1635,7 +1689,7 @@ body.resizing-h * {
   padding: 4px 10px 10px;
 }
 .palette-title {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--muted);
@@ -1659,7 +1713,7 @@ body.resizing-h * {
   width: 70px;
   gap: 2px;
   padding: 4px 2px;
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.1;
   text-align: center;
 }
@@ -1740,7 +1794,7 @@ body.resizing-h * {
   justify-content: flex-end;
   gap: 4px 14px;
   padding: 2px 10px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 18px;
   color: var(--muted);
   background: var(--panel);
@@ -1786,7 +1840,7 @@ body.resizing-h * {
   width: 100%;
 }
 .toolbar-more-list kbd {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   background: none;
   font-family: inherit;
@@ -1923,9 +1977,34 @@ body.resizing-h * {
   .toolbar .tabs::-webkit-scrollbar {
     display: none;
   }
+  .toolbar .tabs {
+    gap: 2px;
+  }
   .toolbar .tabs button {
     flex: 0 0 auto;
     white-space: nowrap;
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+  /* « Contrôle RGIE » réduit : seulement le compteur d'alertes (idée de l'utilisateur), « RGIE » s'il n'y en a pas */
+  .toolbar .tabs .tab-check .tab-label {
+    display: none;
+  }
+  .toolbar .tabs .tab-check:not(.has-count) .tab-short {
+    display: inline;
+  }
+  .toolbar .tabs .tab-check .count {
+    margin-left: 0;
+    padding: 2px 10px;
+    font-size: 14px;
+  }
+  /* « Contrôle RGIE » et son compteur d'alertes restent visibles au bord droit quand les onglets défilent */
+  .toolbar .tabs .tab-check {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    background: var(--panel);
+    box-shadow: -8px 0 8px -4px var(--panel);
   }
 
 }

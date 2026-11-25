@@ -20,6 +20,9 @@ export function errorText(e: unknown, t: T): string {
   // Bureau : fichier utilisé ailleurs, ou autre échec d'écriture ; le fichier d'origine est toujours intact (O7)
   if (e instanceof DesktopSaveError)
     return e.kind === 'busy' ? t('desktop.saveBusy', { name: e.fileName }) : t('desktop.saveFailed', { name: e.fileName, detail: e.detail.replace(/^.*impossible\s*:\s*/, '') });
+  // Boîte de fichiers refusée par le navigateur (geste de l'utilisateur expiré, p. ex. après une attente) : message
+  // système en anglais remplacé par une consigne
+  if (e instanceof DOMException && (e.name === 'SecurityError' || e.name === 'NotAllowedError') && /picker|gesture/i.test(e.message)) return t('storage.pickerBlocked');
   if (isAuthError(e)) return t(e.reason === 'login' ? 'save.needsLogin' : 'save.needsAuth', { where: e.where });
   // Format v2 (src/format)
   if (e instanceof ArchiveError) return t('format.error.' + e.code);

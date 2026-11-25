@@ -36,6 +36,7 @@ import { useEffect, useRef, useState } from 'react';
 import { isReloadingForUpdate } from './appUpdate';
 import { OfflineBadge, UpdateBanner } from './ui/UpdateBanner';
 import { ReconnectBadge } from './ui/ReconnectBadge';
+import { Notice, NoticeHost } from './ui/Notice';
 import { useStore } from './store';
 import { ToolbarMore } from './ui/ToolbarMore';
 import { ViewTabs } from './ui/ViewTabs';
@@ -74,6 +75,8 @@ export function App() {
   const { t } = s;
   const { findings } = useDerived();
   const [toast, setToast] = useState<{ text: string; warnings?: string[] } | null>(null);
+  // Bande des avis (src/ui/Notice.tsx) : les avis s'y affichent par un portail
+  const [noticeEl, setNoticeEl] = useState<HTMLElement | null>(null);
   const errors = findings.filter((f) => f.severity === 'error').length;
   const warnings = findings.filter((f) => f.severity === 'warning').length;
 
@@ -403,6 +406,7 @@ export function App() {
   const showSide = s.view === 'unifilar' || s.view === 'plan' || s.view === 'board';
 
   return (
+    <NoticeHost.Provider value={noticeEl}>
     <div className="app">
       <header className="toolbar">
         <div className="brand">
@@ -573,7 +577,7 @@ export function App() {
         />
       )}
       {deviceConflict !== null && (
-        <div className="toast" role="alertdialog">
+        <Notice role="alertdialog">
           {t('save.deviceConflict', { name: deviceConflict })}{' '}
           <button className="primary" onClick={() => void resolveDeviceConflict('copy')}>
             {t('save.saveCopy')}
@@ -589,17 +593,17 @@ export function App() {
           >
             {t('save.cancel')}
           </button>
-        </div>
+        </Notice>
       )}
       <UpdateBanner />
       {resume && (
-        <div className="toast">
+        <Notice>
           {t('save.resumePending', { name: resume.name, where: whereLabel(resume.loc), date: new Date(resume.at).toLocaleString() })}{' '}
           <button className="primary" onClick={() => void resumePending(resume)}>
             {t('save.resume')}
           </button>{' '}
           <button onClick={() => setResume(null)}>{t('save.later')}</button>
-        </div>
+        </Notice>
       )}
       {driveIntent && (
         <DriveOpenPrompt
@@ -627,7 +631,7 @@ export function App() {
         />
       )}
       {recover && (
-        <div className="toast">
+        <Notice>
           {t('storage.recover', { name: recover.name, date: new Date(recover.updated).toLocaleString() })}
           {recover.others > 0 && <> {t('storage.recoverMore', { n: recover.others })}</>}{' '}
           <button
@@ -666,7 +670,7 @@ export function App() {
           >
             {t('storage.recoverNo')}
           </button>
-        </div>
+        </Notice>
       )}
       <main className={showSide ? 'with-side' : ''}>
         {showSide && (
@@ -681,10 +685,11 @@ export function App() {
           {s.view === 'check' && <CheckPanel />}
         </section>
       </main>
+      <div className="notices" ref={setNoticeEl} aria-live="polite" />
       <LegalFooter onAbout={() => setAboutOpen(true)} />
 
       {toast && (
-        <div className="toast" onClick={() => setToast(null)}>
+        <Notice onClick={() => setToast(null)}>
           <div>{toast.text}</div>
           {toast.warnings && toast.warnings.length > 0 && (
             <details>
@@ -696,8 +701,9 @@ export function App() {
               </ul>
             </details>
           )}
-        </div>
+        </Notice>
       )}
     </div>
+    </NoticeHost.Provider>
   );
 }

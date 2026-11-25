@@ -3,6 +3,7 @@ import { applyUpdate, onUpdate } from '../appUpdate';
 import { browserSave, draftId } from '../io/storage';
 import { requestPersistence } from '../io/persist';
 import { useStore } from '../store';
+import { Notice } from './Notice';
 
 /**
  * Projet non enregistré : le garder comme brouillon (le même que l'enregistrement automatique de App.tsx),
@@ -29,7 +30,7 @@ export function UpdateBanner() {
   useEffect(() => onUpdate(() => setReady(true)), []);
   if (!ready) return null;
   return (
-    <div className="toast" role="status">
+    <Notice role="status">
       {t('app.updateReady')} {failed ? <span className="error-text">{t('app.updateDraftFailed')}</span> : dirty ? t('app.updateKeepsDraft') : null}{' '}
       <button
         className="primary"
@@ -49,7 +50,7 @@ export function UpdateBanner() {
       <button onClick={() => setReady(false)} aria-label="✕">
         ✕
       </button>
-    </div>
+    </Notice>
   );
 }
 

@@ -97,11 +97,36 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
     let h = content.h + 40;
     if (w / h > ratio) h = w / ratio;
     else w = h * ratio;
-    setVb({ x: cx - 20 - (w - content.w - 40) / 2, y: cy - 20 - (h - content.h - 40) / 2, w, h });
+    const next = { x: cx - 20 - (w - content.w - 40) / 2, y: cy - 20 - (h - content.h - 40) / 2, w, h };
+    lastFit.current = next;
+    setVb(next);
   }, [cx, cy, content.w, content.h]);
 
   const fitRef = useRef<(() => void) | null>(null);
   fitRef.current = fit;
+
+  // Vue « tout le dessin » (dernier ajustement, pas de zoom ni de déplacement depuis) : elle le reste quand le dessin
+  // grandit (ajout d'un élément) ou que la zone change de taille (panneau ouvert, rotation, colonne masquée) ; audit
+  // visuel du 2026-11-25. Une vue zoomée ou déplacée par l'utilisateur n'est jamais touchée.
+  const lastFit = useRef<ViewBox | null>(null);
+  const showsFit = () => {
+    const a = lastFit.current;
+    const b = vbRef.current;
+    return !!a && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
+  };
+  useEffect(() => {
+    if (showsFit()) fit();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cx, cy, content.w, content.h]);
+  useEffect(() => {
+    const el = svgRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      if (showsFit()) fitRef.current?.();
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Ajuster à chaque nouveau projet / nouvelle page
   useEffect(() => {

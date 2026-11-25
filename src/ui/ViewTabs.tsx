@@ -24,12 +24,24 @@ export function ViewTabs({ errors, warnings }: { errors: number; warnings: numbe
 
   return (
     <nav className="tabs" ref={ref} aria-label={t('view.navLabel')}>
-      {VIEWS.map((v) => (
-        <button key={v} className={view === v ? 'active' : ''} aria-current={view === v ? 'page' : undefined} onClick={() => setView(v)}>
-          {t('view.' + v)}
-          {v === 'check' && (errors || warnings) ? <span className={'count ' + (errors ? 'error' : 'warning')}>{errors || warnings}</span> : null}
-        </button>
-      ))}
+      {VIEWS.map((v) => {
+        const n = v === 'check' ? errors || warnings : 0;
+        return (
+          <button
+            key={v}
+            className={(view === v ? 'active' : '') + (v === 'check' ? ' tab-check' + (n ? ' has-count' : '') : '')}
+            aria-current={view === v ? 'page' : undefined}
+            // Barre compacte : « Contrôle RGIE » réduit à son compteur (styles.css) ; le nom complet reste lu
+            aria-label={n ? t('view.checkCount', { name: t('view.' + v), n }) : undefined}
+            title={v === 'check' ? t('view.' + v) : undefined}
+            onClick={() => setView(v)}
+          >
+            <span className="tab-label">{t('view.' + v)}</span>
+            {v === 'check' && <span className="tab-short">{t('view.checkShort')}</span>}
+            {n ? <span className={'count ' + (errors ? 'error' : 'warning')}>{n}</span> : null}
+          </button>
+        );
+      })}
     </nav>
   );
 }

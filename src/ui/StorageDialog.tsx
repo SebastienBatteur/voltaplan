@@ -76,7 +76,10 @@ export function StorageDialog({
   const project = useStore((s) => s.project);
   const fileName = useStore((s) => s.fileName);
   const lang = useStore((s) => s.lang);
-  const [tab, setTab] = useState<Tab>('browser');
+  // « Cet appareil » d'abord (audit visuel du 2026-11-25) : le stockage du navigateur peut être effacé avec les
+  // données du site ; il reste proposé, avec GitHub, sous « Autres emplacements ».
+  const [tab, setTab] = useState<Tab>('device');
+  const [moreTabs, setMoreTabs] = useState(false);
   const [name, setName] = useState(safeName((fileName || project.meta.title || 'projet').replace(/\.[^.]*$/, '')));
   const [items, setItems] = useState<Omit<BrowserEntry, 'data'>[]>([]);
   const [gh, setGh] = useState<GithubSettings>(loadGithubSettings);
@@ -117,7 +120,8 @@ export function StorageDialog({
 
   const ghPath = (n: string) => [gh.folder.replace(/^\/|\/$/g, ''), safeName(n) + FILE_EXT].filter(Boolean).join('/');
 
-  const tabs: Tab[] = ['device', 'browser', 'github', 'cloud'];
+  const showMore = moreTabs || tab === 'browser' || tab === 'github';
+  const tabs: Tab[] = showMore ? ['device', 'cloud', 'browser', 'github'] : ['device', 'cloud'];
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t(mode === 'open' ? 'storage.openTitle' : 'storage.saveTitle')}>
@@ -128,6 +132,11 @@ export function StorageDialog({
               {t('storage.tab.' + k)}
             </button>
           ))}
+          {!showMore && (
+            <button className="link-button" aria-expanded={false} onClick={() => setMoreTabs(true)}>
+              {t('storage.moreTabs')} ▸
+            </button>
+          )}
         </div>
 
         {mode === 'save' && tab !== 'device' && (
@@ -157,7 +166,8 @@ export function StorageDialog({
                     run(async () => {
                       const { exportTrikkerXml, toWindows1252 } = await import('../export/trikker');
                       const bytes = toWindows1252(exportTrikkerXml(project, lang));
-                      await download(new Blob([bytes], { type: 'application/xml' }), safeName(name) + '.trik');
+                      const done = await download(new Blob([bytes], { type: 'application/xml' }), safeName(name) + '.trik');
+                      if (done) setNote(t('storage.exported', { name: done }));
                     })
                   }
                 >
@@ -171,7 +181,8 @@ export function StorageDialog({
                     run(async () => {
                       const { exportEendraadschema } = await import('../export/eendraadschema');
                       const file = safeName(name) + '.eds';
-                      await download(new Blob([exportEendraadschema(project, file)], { type: 'application/eds' }), file);
+                      const done = await download(new Blob([exportEendraadschema(project, file)], { type: 'application/eds' }), file);
+                      if (done) setNote(t('storage.exported', { name: done }));
                     })
                   }
                 >
@@ -185,6 +196,8 @@ export function StorageDialog({
                     run(async () => {
                       const { exportProjectV1 } = await import('../io/files');
                       const r = await exportProjectV1(project, name);
+                      if (!r.name) return;
+                      setNote(t('storage.exported', { name: r.name }));
                       if (r.losses.length) window.alert(t('format.exportV1Losses') + '\n\n' + r.losses.map((l) => '• ' + t('format.loss.' + l.kind, { label: l.label })).join('\n'));
                     })
                   }

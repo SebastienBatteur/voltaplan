@@ -215,21 +215,24 @@ export async function saveProject(project: Project, fileName: string, saveAs = f
  * nom (« … (v1).voltaplan »), jamais à la place du fichier courant. Renvoie le nom et la liste de ce qui n'a pas pu
  * être gardé, à afficher à l'utilisateur.
  */
-export async function exportProjectV1(project: Project, fileName: string): Promise<{ name: string; losses: Awaited<ReturnType<typeof projectToV1>>['losses'] }> {
+export async function exportProjectV1(project: Project, fileName: string): Promise<{ name: string | null; losses: Awaited<ReturnType<typeof projectToV1>>['losses'] }> {
   const { json, losses } = await projectToV1(project);
   const base = (fileName || project.meta.title || 'projet').replace(/[\\/:*?"<>|]/g, '_').replace(/\.[^.]*$/, '');
   const name = `${base} (v1)${EXT}`;
-  await download(new Blob([json], { type: 'application/json' }), name);
-  return { name, losses };
+  return { name: await download(new Blob([json], { type: 'application/json' }), name), losses };
 }
 
-export async function download(blob: Blob, name: string) {
+/**
+ * Enregistre un fichier produit (export) : boîte « Enregistrer » sur le bureau, téléchargement dans le navigateur.
+ * Rend le nom du fichier créé, ou `null` si l'utilisateur a annulé (bureau) : l'appelant peut le confirmer (écart O8).
+ */
+export async function download(blob: Blob, name: string): Promise<string | null> {
   if (isDesktop) {
     const ext = name.includes('.') ? name.slice(name.lastIndexOf('.')) : '';
     const path = await desktopSavePath(name, ext, ext.toUpperCase());
-    if (!path) return;
+    if (!path) return null;
     await desktopWriteBlob(path, blob, { backup: false });
-    return;
+    return path.split(/[\\/]/).pop() ?? name;
   }
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -237,6 +240,7 @@ export async function download(blob: Blob, name: string) {
   a.download = name;
   a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+  return name;
 }
 
 export function resetHandle() {
