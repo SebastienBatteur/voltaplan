@@ -1,0 +1,10 @@
+# Conventions REUSE (https://reuse.software, spécification 3.2) : copyright et licence de tous les fichiers du
+# dépôt déclarés ici, sans en-tête ajouté à chaque fichier. « aggregate » : une mention présente DANS un fichier
+# (contributeur, tiers) s'ajoute à celle-ci, elle n'est jamais remplacée. Voir docs/legal/license-compliance.md.
+version = 1
+
+[[annotations]]
+path = "**"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2026 Sébastien Batteur and VoltaPlan contributors"
+SPDX-License-Identifier = "AGPL-3.0-only"

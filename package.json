@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Voltaplan : schémas unifilaires, plans de position et tableaux électriques, avec contrôle des règles nationales (RGIE en Belgique). Open source.",
-  "license": "AGPL-3.0-or-later",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "vite",

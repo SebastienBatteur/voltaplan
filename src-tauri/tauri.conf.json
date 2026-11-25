@@ -44,7 +44,7 @@
     "active": true,
     "targets": "all",
     "category": "Productivity",
-    "license": "AGPL-3.0-or-later",
+    "license": "AGPL-3.0-only",
     "licenseFile": "../LICENSE",
     "shortDescription": "Schémas unifilaires et plans de position électriques",
     "longDescription": "Application open source pour dessiner les schémas unifilaires, plans de position et tableaux électriques, avec contrôle des règles nationales (RGIE en Belgique).",

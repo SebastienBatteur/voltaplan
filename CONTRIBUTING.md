@@ -1,6 +1,6 @@
 # Contribuer à Voltaplan
 
-Merci de vouloir aider. Voltaplan est une application **gratuite et open source** (AGPL-3.0-or-later) de schémas
+Merci de vouloir aider. Voltaplan est une application **gratuite et open source** (AGPL-3.0-only) de schémas
 électriques, avec une aide à la vérification du RGIE. Toutes les contributions sont utiles : code, règles
 réglementaires, traductions, essais sur le terrain, documentation.
 

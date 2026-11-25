@@ -164,9 +164,13 @@ Voltaplan est et restera **entièrement gratuit**, sans fonction réservée. Un 
 
 ## Licence
 
-[GNU AGPL v3 ou ultérieure](LICENSE) (`AGPL-3.0-or-later`), la licence open source la plus stricte :
+Copyright (C) 2026 Sébastien Batteur and VoltaPlan contributors.
+
+[GNU AGPL, version 3 uniquement](LICENSE) (`AGPL-3.0-only`), la licence open source la plus stricte. Les versions
+publiées du 2026-11-23 au 2026-11-25 sous `AGPL-3.0-or-later` le restent pour qui les a obtenues : voir
+[docs/legal/license-compliance.md](docs/legal/license-compliance.md).
 
 - toute version modifiée qui est distribuée doit rester sous AGPL, avec son code source ;
 - même chose pour une version proposée **en ligne** (service web) : ses utilisateurs doivent pouvoir obtenir le code source modifié.
 
-Les bibliothèques utilisées (React, zustand, zod, pdf.js, Tauri, SDK Anthropic) sont sous licences MIT ou Apache-2.0, compatibles.
+Les bibliothèques utilisées (React, zustand, zod, pdf.js, Tauri, SDK Anthropic…) gardent leurs licences et leurs mentions (MIT, Apache-2.0, BSD…), compatibles : liste générée à chaque compilation dans `THIRD-PARTY-LICENSES.txt`. Identification des versions et code source correspondant : [docs/architecture/project-identification.md](docs/architecture/project-identification.md).

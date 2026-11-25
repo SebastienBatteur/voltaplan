@@ -3,7 +3,7 @@ name = "voltaplan"
 version = "0.1.0"
 description = "Voltaplan : schémas unifilaires et plans de position électriques"
 edition = "2021"
-license = "AGPL-3.0-or-later"
+license = "AGPL-3.0-only"
 
 [lib]
 name = "voltaplan_lib"
