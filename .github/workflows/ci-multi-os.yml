@@ -48,3 +48,5 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # Provenance sous Windows, macOS et Linux (chemins, fins de ligne)
+      - run: npm run provenance -- verify dist --commit ${{ github.sha }}

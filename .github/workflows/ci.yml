@@ -53,6 +53,8 @@ jobs:
       # Tous les tests Vitest, dont la matrice réglementaire : jamais filtrés.
       - run: npm test
       - run: npm run build
+      # Provenance : schémas, empreintes exactes, bandeaux légaux, balises, précache, commit de cette exécution
+      - run: npm run provenance -- verify dist --commit ${{ github.sha }}
       - name: Version web (dist)
         # Seulement sur main (et lancement manuel) : les demandes de fusion n'en ont pas besoin,
         # et le stockage des artifacts est décompté sur un dépôt privé.

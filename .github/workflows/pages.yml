@@ -57,11 +57,24 @@ jobs:
       - name: Assembler le site (accueil, guide, application)
         run: |
           mkdir -p _site
-          cp -r site/* _site/
+          # « site/. » et non « site/* » : copie aussi les fichiers commençant par un point
+          cp -r site/. _site/
           cp public/icon.svg _site/icon.svg
           cp -r dist _site/app
+          mkdir -p _site/schemas
+          cp -r schemas/oss-provenance _site/schemas/
+      - name: Provenance (manifeste .well-known, cohérence avec la version servie)
+        # Écrit /.well-known/oss-provenance.json d'après app/build-info.json de CETTE compilation, puis vérifie
+        # l'ensemble : empreintes, bandeaux, commit de cette exécution, fichiers à point bien présents.
+        run: |
+          npm run provenance -- verify _site/app --commit ${{ github.sha }}
+          npm run provenance -- well-known _site app
+          npm run provenance -- verify-site _site
+          test -f _site/.well-known/oss-provenance.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
+        # v3 inclut les dossiers commençant par un point (.well-known) ; à revérifier avant de passer à une
+        # version qui les exclurait par défaut.
         with:
           path: _site
 
