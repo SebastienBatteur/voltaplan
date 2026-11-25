@@ -265,7 +265,10 @@ mise en place de l'enregistreur).
   navigateur n'a signalé ni la coupure ni le retour (`navigator.onLine` resté vrai, autres cartes réseau actives).
   L'enregistrement reste « en attente » jusqu'au clic suivant. Piste : nouvel essai périodique (délai croissant)
   tant qu'un envoi est en attente, en plus de `online`.
-- **S5 (corrigé pour Google Drive, à revérifier en réel) : un document interrompu est renvoyé depuis le début.**
+- **S5 (corrigé pour Google Drive, ✅ revérifié en réel le 2026-11-25 : PDF de 49 Mo, Wi-Fi coupé pendant la 1re
+  tranche à 09:31:39 UTC ; reprise automatique à 09:31:59 (S4), Drive indique 512 Ko reçus, l'envoi reprend à
+  l'octet 524 288 dans la **même** session (aucune nouvelle session), « Enregistré » à 09:32:38) : un document
+  interrompu est renvoyé depuis le début.**
   Correction : la session d'envoi est gardée en mémoire pour un document désigné par son empreinte
   (`assets/<sha256>.<ext>`) ; à l'essai suivant, Drive dit où reprendre ; session expirée : nouvelle session ;
   réponse perdue après la dernière tranche : pas de doublon. Tests : `test/driveResume.test.ts` (la reprise échoue
