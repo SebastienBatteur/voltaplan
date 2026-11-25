@@ -155,6 +155,8 @@ export const nl: Partial<Dict> = {
   'board.perRow': "Modules / rij",
   'board.auto': "Automatische indeling",
   'board.photo': "Foto van het bord…",
+  'board.photoMenu': "Foto",
+  'board.calibCancel': "Annuleren",
   'board.photoFit': "Foto uitlijnen (rijen)",
   'board.compare': "Vergelijken met de foto",
   'board.photoRemove': "Foto verwijderen",

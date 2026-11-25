@@ -1,5 +1,5 @@
 import { NumberField } from './NumberField';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { ancestors, createNode, insertChild, insertInSeries, isCircuit, mapTree, uid } from '../model/tree';
 import { useChain, useDerived } from './derived';
@@ -183,6 +183,21 @@ export function BoardView() {
   const H = reserveTop + 40 + Math.ceil(Math.max(1, unplaced.length) / Math.max(1, Math.floor(size.perRow / 2))) * (DEV_H + 20) + MARGIN;
   const pz = usePanZoom({ w: W, h: H }, (enc?.board.id ?? '') + '|' + size.rows + '|' + size.perRow);
 
+  // Calage : la vue cadre la photo (au téléphone, cadrée avec tout le tableau elle ne faisait que ~120 px de large) ;
+  // la vue d'ensemble revient à la fin
+  const calibrating = corners !== null;
+  const wasCalibrating = useRef(false);
+  useEffect(() => {
+    const ph = layout.photo;
+    if (calibrating && ph) requestAnimationFrame(() => pz.fitRect({ x: ph.x, y: ph.y, w: ph.w, h: ph.h }));
+    else if (!calibrating && wasCalibrating.current) pz.fit();
+    wasCalibrating.current = calibrating;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [calibrating]);
+  /** Calage d'avant un recalage, rendu si l'utilisateur annule. */
+  const prevCalibration = useRef<{ rows?: NonNullable<typeof layout.photo>['rows']; firstRow?: number } | null>(null);
+  const [photoOpen, setPhotoOpen] = useState(false);
+
   if (!enc)
     return (
       <div className="page-panel muted">
@@ -289,12 +304,21 @@ export function BoardView() {
   };
 
   /** Calage : 2 clics par rangée (bord gauche du 1er module, puis bout de la rangée), à mi-hauteur des appareils. */
+  const cancelCalibration = () => {
+    const prev = prevCalibration.current;
+    if (prev && layout.photo) save({ ...layout, photo: { ...layout.photo, rows: prev.rows, firstRow: prev.firstRow } });
+    prevCalibration.current = null;
+    setCorners(null);
+    setMsg(null);
+  };
+
   const finishCalibration = (pts: Pt[]) => {
     const ph = layout.photo;
     if (!ph) return;
     const rows = [];
     for (let r = 0; r < spanRows; r++) rows.push({ a: toPhotoPx(pts[2 * r]), b: toPhotoPx(pts[2 * r + 1]) });
     save({ ...layout, photo: { ...ph, rows, firstRow: spanFrom || undefined } });
+    prevCalibration.current = null;
     setCorners(null);
     setMsg(t('board.photoFitted'));
   };
@@ -601,7 +625,14 @@ export function BoardView() {
   const target = drag && dragged && drag.moved ? slotAt({ x: drag.pos.x + MOD / 2, y: drag.pos.y + DEV_H / 2 }, moduleWidth(dragged)) : null;
 
   return (
-    <div className="canvas-wrap stacked">
+    <div className={'canvas-wrap stacked' + (corners ? ' calibrating' : '')}>
+      {/* Téléphone, calage en cours : une seule ligne (étape, Annuler) au lieu de tous les réglages et d'une bulle */}
+      {corners && (
+        <div className="calib-bar narrow-only" role="status">
+          <span className="calib-step">{msg}</span>
+          <button onClick={cancelCalibration}>{t('board.calibCancel')}</button>
+        </div>
+      )}
       <button className="stack-toggle narrow-only" aria-expanded={toolsOpen || !!corners} onClick={() => setToolsOpen((v) => !v)}>
         <span className="twisty">{toolsOpen || corners ? '▾' : '▸'}</span> {t('board.settings')}
       </button>
@@ -638,14 +669,25 @@ export function BoardView() {
           {t('board.auto')}
         </button>
         <span className="sep" />
-        <button onClick={importPhoto} disabled={busy}>
-          {t('board.photo')}
-        </button>
+        {!layout.photo && (
+          <button onClick={importPhoto} disabled={busy}>
+            {t('board.photo')}
+          </button>
+        )}
         {layout.photo && (
           <>
+            {/* Barre compacte : les actions sur la photo dans un menu « Photo ▾ » (réglages sur deux lignes au lieu de six) */}
+            <button className="photo-toggle" aria-expanded={photoOpen} onClick={() => setPhotoOpen((v) => !v)}>
+              {t('board.photoMenu')} {photoOpen ? '▴' : '▾'}
+            </button>
+            <span className={'photo-actions' + (photoOpen ? ' open' : '')}>
+            <button onClick={importPhoto} disabled={busy}>
+              {t('board.photo')}
+            </button>
             <button
               className={corners ? 'active' : ''}
               onClick={() => {
+                prevCalibration.current = { rows: layout.photo!.rows, firstRow: layout.photo!.firstRow };
                 setCorners([]);
                 // Recalage : on revient à la photo brute
                 save({ ...layout, photo: { ...layout.photo!, rows: undefined, firstRow: undefined } });
@@ -656,7 +698,7 @@ export function BoardView() {
             </button>
             {corners && size.rows > 1 && (
               // Photo d'une partie du tableau (une photo par rangée) : rangées visibles sur cette photo
-              <label className="inline" title={t('assist.photoRowsHelp')}>
+              <label className="inline calib-keep" title={t('assist.photoRowsHelp')}>
                 {t('assist.photoRows')}
                 <select
                   value={spanFrom}
@@ -770,6 +812,7 @@ export function BoardView() {
             <button className="danger" onClick={() => save({ ...layout, photo: undefined, checks: undefined })}>
               {t('board.photoRemove')}
             </button>
+            </span>
           </>
         )}
       </div>

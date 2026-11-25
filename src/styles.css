@@ -443,8 +443,16 @@ main {
 .link-button:hover {
   text-decoration: underline;
 }
+/* Aide permanente d'une vue (réserve du tableau) : coin bas gauche du dessin sur grand écran (la barre de réglages
+   flotte en haut) ; ligne au-dessus du dessin quand les réglages sont empilés (voir plus bas) */
 .view-note {
-  padding: 2px 10px;
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 1;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--panel);
   color: var(--muted);
   font-size: 12px;
 }
@@ -809,6 +817,13 @@ main {
   gap: 4px;
   align-items: center;
   z-index: 2;
+}
+/* Actions sur la photo du tableau : dans la barre sur grand écran ; menu « Photo ▾ » sur la barre compacte */
+.photo-toggle {
+  display: none;
+}
+.photo-actions {
+  display: contents;
 }
 .plan-toolbar .sep {
   margin: 0 6px;
@@ -2093,6 +2108,53 @@ body.resizing-h * {
     left: 8px;
     right: 72px;
     transform: none;
+  }
+  /* Menu « Photo ▾ » : actions sur la photo repliées */
+  .plan-toolbar > .photo-toggle {
+    display: inline-flex;
+    align-items: center;
+  }
+  .photo-actions {
+    display: none;
+  }
+  .photo-actions.open {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+  }
+  /* Calage en cours : une ligne (étape + Annuler) ; des réglages, seul le choix des rangées reste ; pas de bulle */
+  .canvas-wrap.stacked > .calib-bar {
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: var(--accent-bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .calib-step {
+    flex: 1;
+    min-width: 0;
+    font-size: 13px;
+  }
+  .canvas-wrap.stacked > .view-note {
+    position: static;
+    background: none;
+  }
+  .canvas-wrap.stacked.calibrating > .stack-toggle,
+  .canvas-wrap.stacked.calibrating > .hint,
+  .canvas-wrap.stacked.calibrating > .view-note {
+    display: none;
+  }
+  .canvas-wrap.stacked.calibrating > .plan-toolbar > :not(.photo-actions),
+  .canvas-wrap.stacked.calibrating .photo-actions > :not(.calib-keep) {
+    display: none;
+  }
+  .canvas-wrap.stacked.calibrating .photo-actions {
+    display: flex;
+  }
+  .canvas-wrap.stacked.calibrating > .plan-toolbar:not(:has(.calib-keep)) {
+    display: none;
   }
 }
 

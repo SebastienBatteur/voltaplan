@@ -16,6 +16,8 @@ export const de: Partial<Dict> = {
   'view.board': 'Verteiler',
   'view.project': 'Projekt',
   'view.check': 'RGIE-Prüfung',
+  'board.photoMenu': "Foto",
+  'board.calibCancel': "Abbrechen",
   'view.checkShort': "RGIE",
   'view.checkCount': "{name}: {n} Hinweis(e)",
   'storage.pickerBlocked': "Der Browser hat das Dateifenster nicht geöffnet. Klicken Sie erneut auf „Speichern“.",

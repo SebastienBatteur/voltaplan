@@ -155,6 +155,8 @@ export const en: Partial<Dict> = {
   'board.perRow': "Modules / row",
   'board.auto': "Automatic layout",
   'board.photo': "Board photo…",
+  'board.photoMenu': "Photo",
+  'board.calibCancel': "Cancel",
   'board.photoFit': "Align photo (rows)",
   'board.compare': "Compare with photo",
   'board.photoRemove': "Remove photo",

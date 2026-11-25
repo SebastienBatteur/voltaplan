@@ -154,6 +154,8 @@ export const fr = {
   'board.perRow': "Modules / rangée",
   'board.auto': "Disposition automatique",
   'board.photo': "Photo du tableau…",
+  'board.photoMenu': "Photo",
+  'board.calibCancel': "Annuler",
   'board.photoFit': "Caler la photo (rangées)",
   'board.compare': "Comparer à la photo",
   'board.photoRemove': "Retirer la photo",

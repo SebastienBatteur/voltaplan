@@ -80,6 +80,8 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
   vbRef.current = vb;
   const [panning, setPanning] = useState(false);
 
+  /** Dernière vue d'ensemble posée par `fit` (voir plus bas). */
+  const lastFit = useRef<ViewBox | null>(null);
   const fit = useCallback(() => {
     const el = svgRef.current;
     if (!el) return;
@@ -105,10 +107,28 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
   const fitRef = useRef<(() => void) | null>(null);
   fitRef.current = fit;
 
+  /**
+   * Cadre une partie du dessin (p. ex. la photo du tableau pendant le calage). Ce n'est pas la vue d'ensemble : elle
+   * n'est pas recadrée automatiquement ensuite.
+   */
+  const fitRect = useCallback((box: { x: number; y: number; w: number; h: number }, margin = 8) => {
+    const el = svgRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return;
+    const ratio = r.width / r.height;
+    let w = box.w + 2 * margin;
+    let h = box.h + 2 * margin;
+    if (w / h > ratio) h = w / ratio;
+    else w = h * ratio;
+    // Plus la vue d'ensemble, dès maintenant : un redimensionnement dans la même image ne doit pas la rétablir
+    lastFit.current = null;
+    setVb({ x: box.x + box.w / 2 - w / 2, y: box.y + box.h / 2 - h / 2, w, h });
+  }, []);
+
   // Vue « tout le dessin » (dernier ajustement, pas de zoom ni de déplacement depuis) : elle le reste quand le dessin
   // grandit (ajout d'un élément) ou que la zone change de taille (panneau ouvert, rotation, colonne masquée) ; audit
   // visuel du 2026-11-25. Une vue zoomée ou déplacée par l'utilisateur n'est jamais touchée.
-  const lastFit = useRef<ViewBox | null>(null);
   const showsFit = () => {
     const a = lastFit.current;
     const b = vbRef.current;
@@ -359,5 +379,5 @@ export function usePanZoom(content: { x?: number; y?: number; w: number; h: numb
     });
   }, []);
 
-  return { svgRef, vb, fit, toSvg, reveal, onPointerDown, onPointerMove, onPointerUp, setVb, armLongPress, startPan, isPanning, panning };
+  return { svgRef, vb, fit, fitRect, toSvg, reveal, onPointerDown, onPointerMove, onPointerUp, setVb, armLongPress, startPan, isPanning, panning };
 }

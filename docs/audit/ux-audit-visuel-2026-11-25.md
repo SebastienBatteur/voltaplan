@@ -161,3 +161,14 @@ Après « Photo du tableau… », les réglages s'allongent (Caler la photo, ran
 Fond, Retirer) : **301 px, 45 % de la zone**, le dessin garde 322 px. Le calage démarre aussitôt et sa consigne
 s'affiche en bulle en bas du dessin. Surtout, la **photo n'occupe que 123 × 96 px** (le cadrage montre tout le
 tableau et la réserve) : trop petit pour viser au doigt le bord d'un module sans zoomer à deux doigts.
+
+Corrigé (même jour, branche `ux-suite`), mesuré à 375 × 812 :
+- **Calage** : les réglages se replient en une ligne (étape en cours + « Annuler », qui rend le calage précédent),
+  seul le choix des rangées reste ; la consigne n'est plus une bulle sur le dessin. La vue **cadre la photo** :
+  350 × 273 px au lieu de 123 × 96 ; la vue d'ensemble revient à la fin du calage. Dessin 546 px pendant le calage.
+- **Menu « Photo ▾ »** sur la barre compacte : changer de photo, caler, disposer, comparer, fond, retirer. Réglages
+  avec photo : **105 px au lieu de 301** ; dessin 518 px au lieu de 322. Grand écran inchangé (actions dans la barre).
+- Régression corrigée au passage : sur grand écran, l'aide « appareil(s) en réserve » passait sous la barre de
+  réglages flottante ; elle est maintenant au coin bas gauche du dessin.
+Vérifié avec une photo de test générée et les 4 clics de calage ; non vérifié sur téléphone réel ni avec une vraie
+photo de tableau.
