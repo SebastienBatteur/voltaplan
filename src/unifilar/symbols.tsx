@@ -73,10 +73,51 @@ const socketArcs = (n: ElNode) => {
   return c > 3 ? 1 : c;
 };
 
-const APPLIANCE_ABBR: Record<string, string> = {
+/**
+ * Symboles hors tableau 2.23 du RGIE : cadre avec une abréviation, définie dans la légende du dossier (3.1.2.1 :
+ * « clairement identifiable et défini dans la légende »). `isOffTable` les repère pour la légende.
+ */
+export const APPLIANCE_ABBR: Record<string, string> = {
   heatPump: 'PAC',
-  boiler: 'Chaud.',
+  boiler: 'CH',
+  airConditioner: 'AC',
+  hood: 'HT',
+  sauna: 'SA',
 };
+export const OTHER_ABBR: Record<string, string> = {
+  tvOutlet: 'TV',
+  phoneOutlet: 'TÉL',
+  subMeter: 'kWh',
+  surgeProtector: 'PF',
+  generator: 'G',
+  microInverter: 'MO',
+  ups: 'ASI',
+  ems: 'EMS',
+  peakLimiter: 'LP',
+  sgReady: 'SG',
+  mpptCharger: 'MPPT',
+  alarmPanel: 'CA',
+  firePanel: 'CI',
+  dialer: 'TRM',
+  camera: 'CAM',
+  intercom: 'PH',
+  speaker: 'HP',
+  microphone: 'MIC',
+  monitor: 'ÉCR',
+  touchscreen: 'TAC',
+  emergencyStop: 'AU',
+};
+export const DETECTOR_ABBR: Record<string, string> = { smoke: 'DF', heat: 'DC', gas: 'DG', magneticContact: 'CM', vibration: 'VIB' };
+
+/** Symbole hors tableau 2.23 (à définir dans la légende). */
+export function isOffTable(n: ElNode): boolean {
+  const p = n.props;
+  if (n.kind === 'appliance') return String(p.applianceType) in APPLIANCE_ABBR || p.applianceType === 'other';
+  if (n.kind === 'other') return String(p.otherType ?? '') in OTHER_ABBR || !p.otherType;
+  if (n.kind === 'detector') return String(p.detectorType ?? 'motion') in DETECTOR_ABBR || p.detectorType === 'presence';
+  if (n.kind === 'relay') return p.relayType === 'relay' || p.relayType === 'contactor' || p.relayType === undefined;
+  return n.kind === 'domotic' || n.kind === 'battery';
+}
 
 const KIND_ABBR: Record<string, string> = {
   relay: 'R',
@@ -86,6 +127,8 @@ const KIND_ABBR: Record<string, string> = {
 
 export function abbr(n: ElNode): string {
   if (n.kind === 'appliance') return APPLIANCE_ABBR[String(n.props.applianceType)] ?? String(n.props.name ?? '').slice(0, 5);
+  if (n.kind === 'other') return OTHER_ABBR[String(n.props.otherType ?? '')] ?? '?';
+  if (n.kind === 'detector') return DETECTOR_ABBR[String(n.props.detectorType ?? '')] ?? '';
   if (n.kind === 'relay') return ({ teleswitch: 'TR', contactor: 'K', timer: 't' } as Record<string, string>)[String(n.props.relayType)] ?? 'R';
   return KIND_ABBR[n.kind] ?? n.kind.slice(0, 3);
 }
@@ -776,14 +819,30 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
         </g>
       );
     }
-    case 'detector':
+    case 'detector': {
+      // Détecteur de mouvement (tableau 2.23 E) : deux arcs ; de présence : idem avec « P » ; autres (hors tableau) :
+      // abréviation (DF fumée, DC chaleur, DG gaz, CM contact magnétique, VIB vibration)
+      const dt = String(n.props.detectorType ?? 'motion');
+      const ab = DETECTOR_ABBR[dt];
       return (
         <g>
           {lead(6)}
           <rect x={6} y={-10} width={20} height={20} className="bg" />
-          <path d="M12 -5 q3 5 0 10 M16 -6 q4 6 0 12" className="nofill" />
+          {ab ? (
+            <text x={16} y={3} fontSize={ab.length > 2 ? 6 : 8} textAnchor="middle">
+              {ab}
+            </text>
+          ) : (
+            <path d="M12 -5 q3 5 0 10 M16 -6 q4 6 0 12" className="nofill" />
+          )}
+          {dt === 'presence' && (
+            <text x={22} y={8} fontSize={6} textAnchor="middle">
+              P
+            </text>
+          )}
         </g>
       );
+    }
     case 'relay': {
       const rt = String(n.props.relayType ?? 'relay');
       return (
@@ -839,6 +898,29 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
             <path d="M22 -7 L30 7 H22" className="nofill" />
           </g>
         );
+      if (ot === 'generator')
+        // Groupe électrogène : cercle et « G » (comme le moteur « M »)
+        return (
+          <g>
+            {lead(6)}
+            <circle cx={17} cy={0} r={10} className="bg" />
+            <text x={17} y={4} fontSize={11} textAnchor="middle" fontWeight="bold">
+              G
+            </text>
+          </g>
+        );
+      if (ot === 'subMeter')
+        // Compteur divisionnaire : même dessin que le compteur kWh
+        return (
+          <g>
+            {lead(4)}
+            <rect x={4} y={-8} width={26} height={16} className="bg" />
+            <line x1={4} y1={-4} x2={30} y2={-4} />
+            <text x={17} y={5} fontSize={7} textAnchor="middle">
+              kWh
+            </text>
+          </g>
+        );
       if (ot === 'dataOutlet')
         // Socle de prise data : trait et crochet (sans arc)
         return (
@@ -852,7 +934,7 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {lead(4)}
           <rect x={4} y={-h / 2} width={w - 4} height={h} className="bg" />
           <text x={4 + (w - 4) / 2} y={3} textAnchor="middle" fontSize={8}>
-            {n.props.name ? String(n.props.name).slice(0, 4) : abbr(n)}
+            {OTHER_ABBR[ot] ?? (n.props.name ? String(n.props.name).slice(0, 4) : abbr(n))}
           </text>
         </g>
       );

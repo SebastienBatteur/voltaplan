@@ -398,8 +398,37 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
       const hit = ELEMENTS.find(([re]) => re.test(sid));
       // Variantes du tableau 2.23 quand PlanElec les distingue (sonnerie, vibreur, trompe, sirène, gâche, prise data)
       const bellType = ({ 'sounder-bell': 'bell', 'sounder-buzzer': 'buzzer', 'sounder-horn': 'horn', 'sounder-siren': 'siren' } as Record<string, string>)[sid];
-      const otherType = /^lock-door-opener/.test(sid) ? 'doorStrike' : /^data-outlet/.test(sid) ? 'dataOutlet' : undefined;
-      const n = createNode(hit?.[1] ?? 'other', clean({ name: bellType || otherType ? undefined : sid, bellType, otherType, ...(hit?.[1] === 'appliance' ? { applianceType: 'other' } : {}) }));
+      const detectorType = ({ 'detector-smoke': 'smoke', 'detector-heat': 'heat', 'detector-gas': 'gas', 'detector-motion': 'motion', 'detector-presence': 'presence', 'detector-magnetic-contact': 'magneticContact', 'detector-vibration': 'vibration' } as Record<string, string>)[sid];
+      const otherType =
+        ({
+          'security-alarm-panel': 'alarmPanel',
+          'security-fire-panel': 'firePanel',
+          'security-dialer': 'dialer',
+          'security-camera': 'camera',
+          'communication-intercom': 'intercom',
+          'communication-speaker': 'speaker',
+          'communication-microphone': 'microphone',
+          'communication-monitor': 'monitor',
+          'communication-touchscreen': 'touchscreen',
+          'emergency-stop': 'emergencyStop',
+          'tv-outlet': 'tvOutlet',
+          'phone-outlet': 'phoneOutlet',
+        } as Record<string, string>)[sid] ?? (/^lock-door-opener/.test(sid) ? 'doorStrike' : /^data-outlet/.test(sid) ? 'dataOutlet' : /^tv-outlet/.test(sid) ? 'tvOutlet' : /^phone-outlet/.test(sid) ? 'phoneOutlet' : undefined);
+      // Serrure (« lock-lock ») : contrôleur de ronde / verrouillage électrique par serrure (tableau 2.23 E)
+      const isLock = sid === 'lock-lock';
+      const kind = isLock ? 'relay' : (hit?.[1] ?? 'other');
+      const n = createNode(
+        kind,
+        clean({
+          // Nom d'origine seulement pour un symbole sans équivalent (appareil générique : pas de nom technique)
+          name: bellType || otherType || detectorType || isLock || sid === 'appliance' ? undefined : sid,
+          bellType,
+          otherType,
+          detectorType,
+          ...(isLock ? { relayType: 'lockControl', inBoard: false } : {}),
+          ...(hit?.[1] === 'appliance' ? { applianceType: 'other' } : {}),
+        }),
+      );
       if (str(el.label)) n.location = str(el.label);
       n.source = { format: 'planelec', tag: sid, attrs: {} };
       project.loose.push(n);

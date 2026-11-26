@@ -90,3 +90,19 @@ Les imports Volter et PlanElec utilisent ces variantes au lieu d'un élément «
 
 Tout le tableau 2.23 est maintenant proposé. Les symboles hors tableau restent permis s'ils sont définis dans la
 légende (3.1.2.1).
+
+## Symboles hors tableau 2.23 (2026-11-26)
+
+Permis par le RGIE 3.1.2.1 s'ils sont « clairement identifiables et définis dans la légende ». Dessin commun : un cadre
+avec une abréviation courte ; la légende du dossier les regroupe sous « Symboles hors tableau 2.23 du RGIE (définis
+ici) », avec l'abréviation et sa signification. Dessins propres à Voltaplan (pas repris des logiciels concurrents).
+
+| Famille | Abréviations |
+| --- | --- |
+| Appareils | AC climatisation, HT hotte, SA sauna, PAC pompe à chaleur, CH chaudière |
+| Détecteurs | DF fumée, DC chaleur, DG gaz, CM contact magnétique, VIB vibration ; présence : symbole du détecteur de mouvement avec « P » |
+| Courant faible | TV prise télédistribution, TÉL prise téléphone, PH parlophone/vidéophone, HP haut-parleur, MIC microphone, ÉCR écran, TAC écran tactile |
+| Sécurité | CA centrale d'alarme, CI centrale incendie, TRM transmetteur, CAM caméra, AU arrêt d'urgence |
+| Énergie | G groupe électrogène (cercle, comme le moteur M), MO micro-onduleur, ASI alimentation sans interruption, EMS gestion de l'énergie, LP limiteur de pointe, SG commande SG-ready, MPPT régulateur de charge, PF parafoudre, kWh compteur divisionnaire |
+
+Les imports Volter, Draadwijs, PlanElec et Trikker utilisent ces types quand le logiciel d'origine les distingue.

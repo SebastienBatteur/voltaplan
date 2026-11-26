@@ -185,6 +185,10 @@ function mapProps(tag: string, a: Record<string, string>): Record<string, PropVa
       return clean({ count: count(a.Aantal), name: a.NaamKring?.trim() });
     case 'Relais':
       return { relayType: 'relay' };
+    case 'Trillingsdetector':
+      return { detectorType: 'vibration' };
+    case 'Bewegingsdetector':
+      return { detectorType: 'motion' };
     default:
       return clean({ name: TAG_KIND[tag] ? undefined : tag });
   }

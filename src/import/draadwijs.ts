@@ -59,6 +59,12 @@ const APPLIANCES: Record<string, string> = {
   Boiler: 'waterHeater',
   Ventilator: 'fan',
   Laadpaal: 'evCharger',
+  Dampkap: 'hood',
+  Airco: 'airConditioner',
+  Klimaatregeling: 'airConditioner',
+  Sauna: 'sauna',
+  Ketel: 'boiler',
+  Verwarmingsketel: 'boiler',
 };
 /** Lieux de pose (« plaatsing ») → mode de pose Voltaplan. */
 const METHODS: [RegExp, string][] = [

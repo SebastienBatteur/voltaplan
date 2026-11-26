@@ -60,8 +60,8 @@ export const VOLTER_TYPES: Record<string, Kind> = {
   pushButton: { kind: 'pushButton', control: true, wall: true },
   pushButtonIndicator: { kind: 'pushButton', props: { pilotLight: true }, control: true, wall: true },
   pushButtonProtected: { kind: 'pushButton', props: { protected: true }, control: true, wall: true },
-  motionDetector: { kind: 'detector', props: { name: 'Détecteur de mouvement' }, control: true },
-  presenceDetector: { kind: 'detector', props: { name: 'Détecteur de présence' }, control: true },
+  motionDetector: { kind: 'detector', props: { detectorType: 'motion' }, control: true },
+  presenceDetector: { kind: 'detector', props: { detectorType: 'presence' }, control: true },
   impulseSwitch: { kind: 'relay', props: { relayType: 'teleswitch' }, control: true },
   timer: { kind: 'relay', props: { relayType: 'timer' }, control: true },
   timerClock: { kind: 'relay', props: { relayType: 'timeSwitch' }, control: true },
@@ -79,7 +79,7 @@ export const VOLTER_TYPES: Record<string, Kind> = {
   ceeOutlet3P: sock({ childSafety: false, threePhase: true, reference: 'CEE 3P+T' }),
   ceeOutlet3PN: sock({ childSafety: false, threePhase: true, reference: 'CEE 3P+N+T' }),
   dataOutlet: { kind: 'other', props: { otherType: 'dataOutlet' }, wall: true },
-  coaxOutlet: { ...other('Prise télédistribution'), wall: true },
+  coaxOutlet: { kind: 'other', props: { otherType: 'tvOutlet' }, wall: true },
   // Appareils
   oven: app('oven'),
   cooktop: app('hob'),
@@ -96,7 +96,7 @@ export const VOLTER_TYPES: Record<string, Kind> = {
   heater: app('heater'),
   heaterAccumulation: app('storageHeater'),
   heaterAccumulationFan: app('storageHeaterFan'),
-  airco: app('other', { name: 'Climatisation' }),
+  airco: app('airConditioner'),
   laadpaal: app('evCharger'),
   // Panneaux solaires et batteries
   solarPanel: { kind: 'solarPanel' },
@@ -111,14 +111,14 @@ export const VOLTER_TYPES: Record<string, Kind> = {
   electricDoorLock: { kind: 'other', props: { otherType: 'doorStrike' } },
   clock: { kind: 'other', props: { otherType: 'clock' } },
   motherClock: { kind: 'other', props: { otherType: 'masterClock' } },
-  kwhMeter: other('Compteur kWh'),
+  kwhMeter: { kind: 'other', props: { otherType: 'subMeter' } },
   motor: { kind: 'motor' },
   transformer: { kind: 'transformer' },
   connectionBox: { kind: 'junctionBox', props: { name: 'Boîte de connexion' } },
   junctionBox: { kind: 'junctionBox' },
-  alarmPanel: other('Centrale d’alarme'),
-  firePanel: other('Centrale incendie'),
-  distributionBoard: other('Tableau de distribution'),
+  alarmPanel: { kind: 'other', props: { otherType: 'alarmPanel' } },
+  firePanel: { kind: 'other', props: { otherType: 'firePanel' } },
+  distributionBoard: { kind: 'board', props: { name: 'Tableau de distribution' } },
 };
 
 /** Mobilier Volter (`meubels.soort`) → catalogue de Voltaplan (src/plan/furniture.tsx). */

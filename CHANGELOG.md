@@ -13,6 +13,11 @@
 - Fin du tableau 2.23 : interrupteur et prise installés dans un tableau (cadre), unité de commande domotique
   (partie J : bouton-poussoir local, sans fil, programmée, par détection, extension), caractéristiques des sources
   sous leur symbole sur l'unifilaire (Pmax, Uprim/Usec, Pn, nombre et puissance crête des panneaux).
+- **Symboles hors tableau 2.23** (permis avec la légende, RGIE 3.1.2.1) : climatisation, hotte, sauna, détecteurs de
+  fumée, chaleur, gaz, présence, contact magnétique, vibration, prises TV et téléphone, parlophone, haut-parleur,
+  écrans, centrales d'alarme et incendie, transmetteur, caméra, arrêt d'urgence, groupe électrogène, micro-onduleur,
+  ASI, EMS, limiteur de pointe, SG-ready, MPPT, parafoudre, compteur divisionnaire. Cadre avec abréviation ; la
+  légende du dossier les regroupe à part, avec leur signification ; elle reprend aussi les éléments non raccordés.
 
 ### Import PlanElec Sketch (2026-11-26)
 

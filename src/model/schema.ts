@@ -24,7 +24,37 @@ export const SOCKET_KINDS = ['', 'switched', 'switchedLocked', 'shaver'] as cons
 /** Sonnerie et avertisseurs (tableau 2.23 G). */
 export const BELL_TYPES = ['bell', 'buzzer', 'horn', 'siren'] as const;
 /** Autres éléments du tableau 2.23 sans type propre : horloge, horloge mère, gâche électrique, prise data. */
-export const OTHER_TYPES = ['', 'clock', 'masterClock', 'doorStrike', 'dataOutlet'] as const;
+export const OTHER_TYPES = [
+  '',
+  'clock',
+  'masterClock',
+  'doorStrike',
+  'dataOutlet',
+  // Hors tableau 2.23 : cadre avec abréviation, défini dans la légende (RGIE 3.1.2.1)
+  'tvOutlet',
+  'phoneOutlet',
+  'subMeter',
+  'surgeProtector',
+  'generator',
+  'microInverter',
+  'ups',
+  'ems',
+  'peakLimiter',
+  'sgReady',
+  'mpptCharger',
+  'alarmPanel',
+  'firePanel',
+  'dialer',
+  'camera',
+  'intercom',
+  'speaker',
+  'microphone',
+  'monitor',
+  'touchscreen',
+  'emergencyStop',
+] as const;
+/** Détecteurs : mouvement (tableau 2.23 E), autres hors tableau (abréviation et légende). */
+export const DETECTOR_TYPES = ['motion', 'presence', 'smoke', 'heat', 'gas', 'magneticContact', 'vibration'] as const;
 export const APPLIANCE_TYPES = [
   'oven',
   'cooker',
@@ -39,6 +69,10 @@ export const APPLIANCE_TYPES = [
   'electricWaterHeater',
   'storageHeater',
   'storageHeaterFan',
+  // Hors tableau 2.23 (cadre avec abréviation, défini dans la légende : RGIE 3.1.2.1)
+  'airConditioner',
+  'hood',
+  'sauna',
   'heatPump',
   'boiler',
   'evCharger',
@@ -140,6 +174,7 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'protected', type: 'bool', default: false },
   ],
   bell: [{ key: 'bellType', type: 'enum', options: [...BELL_TYPES], default: 'bell' }],
+  detector: [{ key: 'detectorType', type: 'enum', options: [...DETECTOR_TYPES], default: 'motion' }],
   switch: [
     { key: 'switchType', type: 'enum', options: [...SWITCH_TYPES], default: 'single' },
     { key: 'pilotLight', type: 'bool', default: false },

@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { PROP_SCHEMAS } from '../src/model/schema';
 import { createNode } from '../src/model/tree';
 import type { NodeKind, PropValue } from '../src/model/types';
-import { Symbol, symbolSize } from '../src/unifilar/symbols';
+import { abbr, isOffTable, Symbol, symbolSize } from '../src/unifilar/symbols';
 
 const draw = (kind: NodeKind, props: Record<string, PropValue> = {}, bare?: boolean) =>
   renderToStaticMarkup(
@@ -77,5 +77,26 @@ describe('symboles du tableau 2.23', () => {
     expect(uni).toContain('Pmax 5000 W');
     expect(plan).not.toContain('Pmax');
     expect(renderToStaticMarkup(<svg><Symbol node={createNode('transformer', { uPrimary: 230, uSecondary: 12, power: 60 })} orient="h" /></svg>)).toContain('230/12 V');
+  });
+
+  it('symboles hors tableau 2.23 : abréviation dans un cadre, repérés pour la légende', () => {
+    const cases: [NodeKind, Record<string, PropValue>, string][] = [
+      ['appliance', { applianceType: 'airConditioner' }, 'AC'],
+      ['appliance', { applianceType: 'hood' }, 'HT'],
+      ['other', { otherType: 'tvOutlet' }, 'TV'],
+      ['other', { otherType: 'emergencyStop' }, 'AU'],
+      ['other', { otherType: 'alarmPanel' }, 'CA'],
+      ['detector', { detectorType: 'smoke' }, 'DF'],
+    ];
+    for (const [kind, props, ab] of cases) {
+      const n = createNode(kind, props);
+      expect(isOffTable(n), `${kind} ${JSON.stringify(props)}`).toBe(true);
+      expect(abbr(n)).toBe(ab);
+      expect(draw(kind, props)).toContain(ab);
+    }
+    // Symboles du tableau : pas dans la partie « hors tableau »
+    expect(isOffTable(createNode('appliance', { applianceType: 'washingMachine' }))).toBe(false);
+    expect(isOffTable(createNode('detector', { detectorType: 'motion' }))).toBe(false);
+    expect(isOffTable(createNode('other', { otherType: 'clock' }))).toBe(false);
   });
 });

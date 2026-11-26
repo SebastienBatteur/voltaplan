@@ -11,7 +11,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { ElNode, Project } from '../model/types';
 import type { LabelFn } from '../unifilar/layout';
 import { layoutUnifilar, type Prim } from '../unifilar/layout';
-import { Symbol, symbolSize } from '../unifilar/symbols';
+import { abbr, isOffTable, Symbol, symbolSize } from '../unifilar/symbols';
 import { walk } from '../model/tree';
 import { Walls, PlanSymbol, S, planBounds } from '../ui/PlanView';
 import { DeviceFace, DEV_H, LABEL_H, MARGIN, MOD, ROW_PITCH, rowTop } from '../ui/BoardView';
@@ -102,10 +102,11 @@ function UnifilarPrims({ prims }: { prims: Prim[] }) {
 }
 
 /** Variantes de symboles présentes dans le projet (pour la légende). */
-function legendItems(project: Project, t: Ctx['t']): { node: ElNode; text: string }[] {
-  const seen = new Map<string, { node: ElNode; text: string }>();
+function legendItems(project: Project, t: Ctx['t']): { node: ElNode; text: string; offTable: boolean }[] {
+  const seen = new Map<string, { node: ElNode; text: string; offTable: boolean }>();
   const yes = (v: unknown) => v === true;
-  for (const { node: n } of walk(project.roots)) {
+  // Tous les éléments, y compris ceux posés sur le plan sans être raccordés
+  for (const { node: n } of walk([...project.roots, ...project.loose])) {
     if (n.kind === 'cable' || n.kind === 'board') continue;
     const p = n.props;
     let key = n.kind;
@@ -140,9 +141,32 @@ function legendItems(project: Project, t: Ctx['t']): { node: ElNode; text: strin
         break;
       case 'relay':
         key += `|${p.relayType}`;
+        parts.splice(0, 1, t('enum.relayType.' + String(p.relayType ?? 'relay')));
+        break;
+      case 'other':
+        key += `|${p.otherType ?? ''}|${p.otherType ? '' : p.name ?? ''}`;
+        if (p.otherType) parts.splice(0, 1, t('enum.otherType.' + String(p.otherType)));
+        else if (p.name) parts.push(String(p.name));
+        break;
+      case 'detector':
+        key += `|${p.detectorType ?? 'motion'}`;
+        parts.splice(0, 1, t('enum.detectorType.' + String(p.detectorType ?? 'motion')));
+        break;
+      case 'bell':
+        key += `|${p.bellType ?? 'bell'}`;
+        parts.splice(0, 1, t('enum.bellType.' + String(p.bellType ?? 'bell')));
         break;
     }
-    if (!seen.has(key)) seen.set(key, { node: n, text: parts.join(', ') });
+    // Variantes du dessin (prises avec interrupteur, installé dans un tableau, domotique, bouton protégé…)
+    for (const k of ['socketKind', 'inBoard', 'ctlPush', 'ctlWireless', 'ctlTimer', 'ctlDetection', 'ctlExtension', 'protected'] as const) {
+      if (n.kind !== 'socket' && n.kind !== 'switch' && n.kind !== 'pushButton') continue;
+      const v = p[k];
+      if (v === undefined || v === false || v === '') continue;
+      key += `|${k}=${String(v)}`;
+      parts.push(k === 'socketKind' ? t('enum.socketKind.' + String(v)).toLowerCase() : t('prop.' + k).toLowerCase());
+    }
+    const abbrText = isOffTable(n) ? abbr(n) : '';
+    if (!seen.has(key)) seen.set(key, { node: n, text: (abbrText && abbrText !== '?' ? `${abbrText} : ` : '') + parts.join(', '), offTable: isOffTable(n) });
   }
   return [...seen.values()];
 }
@@ -351,12 +375,12 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
       kind: t('print.legend'),
       body: (
         <div className="legend-grid">
-          {items.map((it, i) => {
+          {[...items.filter((x) => !x.offTable), ...items.filter((x) => x.offTable)].map((it, i, all) => {
             const orient = ['protection', 'meter', 'origin', 'earth', 'earthBar'].includes(it.node.kind) ? 'v' : 'h';
             const sz = symbolSize(it.node, orient);
             const vb = orient === 'v' ? `${-sz.w / 2 - 4} -2 ${sz.w + 8} ${sz.h + 4}` : `-2 ${-sz.h / 2 - 4} ${sz.w + 8} ${sz.h + 8}`;
             return (
-              <div key={i} className="legend-item">
+              <div key={i} className={'legend-item' + (it.offTable && (i === 0 || !all[i - 1].offTable) ? ' legend-offtable-first' : '')} data-offtable={it.offTable ? t('print.legendOffTable') : undefined}>
                 <svg className="canvas unifilar" viewBox={vb} style={{ width: '14mm', height: '9mm' }}>
                   <g className="sym">
                     <Symbol node={it.node} orient={orient} />
