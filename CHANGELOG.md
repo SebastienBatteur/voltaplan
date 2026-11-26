@@ -2,6 +2,17 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Équiper une pièce (2026-11-26)
+
+- Sur le plan, le nom d'une pièce sélectionné propose « Équiper la pièce » : l'équipement habituel du type de pièce
+  (chambre, salon, salle à manger, cuisine, salle de bain, WC, hall, escalier, buanderie, bureau, garage, cave,
+  atelier, véranda, extérieur), à cocher, et le mobilier type. Pièce reconnue en français, néerlandais et anglais.
+- Les points sont posés à leur place : luminaire au centre, interrupteur à côté de la porte côté poignée,
+  va-et-vient aux deux portes du hall, prises réparties le long des murs (pas devant les portes), prises de chevet
+  de part et d'autre du lit, prises au plan de travail, cuisinière et hotte à la taque, applique et prise au lavabo.
+- Points ajoutés non raccordés, avec la pièce comme emplacement, à relier ensuite aux circuits. Ce n'est pas une
+  liste du RGIE (qui ne fixe pas de nombre de prises par pièce) : un point de départ, annulable par Ctrl+Z.
+
 ### Symboles du RGIE complétés (2026-11-26)
 
 - 22 symboles du tableau 2.23 qui manquaient : interrupteur tripolaire, va-et-vient bipolaire, à ouverture retardée,

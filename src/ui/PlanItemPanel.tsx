@@ -4,6 +4,7 @@ import type { PlanPage } from '../model/types';
 import { dist, setOpeningWidth, setWallLength } from '../plan/geometry';
 import type { PlanSel } from './PlanView';
 import { FURNITURE, type FurnitureKind } from '../plan/furniture';
+import { RoomEquip } from './RoomEquip';
 
 const OPENING_KINDS = ['door', 'doubleDoor', 'frenchDoor', 'slidingDoor', 'window', 'garageDoor', 'stairs'] as const;
 
@@ -108,6 +109,7 @@ export function PlanItemPanel({ page, sel, onDelete }: { page: PlanPage; sel: No
           <span>{t('plan.item.size')}</span>
           <NumberField min={1} max={10} step={0.5} value={l.size ?? 3} onCommit={(n) => setL({ size: n })} />
         </label>
+        <RoomEquip key={l.id + l.text} text={l.text} labelIndex={sel.index} />
       </>
     );
   } else if (sel.type === 'furniture') {

@@ -1587,6 +1587,24 @@ button.link {
   line-height: 1.6;
 }
 
+.room-equip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.room-equip label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.room-equip button {
+  align-self: flex-start;
+  margin-top: 4px;
+}
+
 .warn-text {
   color: var(--warning);
   font-weight: 700;

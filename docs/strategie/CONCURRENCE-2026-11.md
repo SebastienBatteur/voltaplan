@@ -16,6 +16,7 @@ descriptions des éditeurs. Les prix sont ceux affichés ce jour-là et peuvent 
 | **PlanElec** (planelec.be) | « Sketch » gratuit (PDF avec filigrane « Aperçu ») ; pass site 10 € par bien (15 € après 2026) ; abonnement 24 €/mois (29 € après 2026), 3 places, +12 €/place ; essai Pro 1 mois | Web | Facultatif pour Sketch, oui pour Pro | Nuage de l'éditeur ; Sketch dans le navigateur | Ouvre les .trik et les archives Trikker, plusieurs étages, tableau sur rails DIN avec bornes et barres N/PE, KNX (export ETS), tracé des câbles et chute de tension, PV (strings, MPPT, PVGIS, liste Synergrid), profils de charge Fluvius, 3D et étude d'éclairage, IA (plan, photo de tableau, dictée, réponses sourcées du RGIE), MCP, QR « vérifier le document » |
 | **Draadwijs** (draadwijs.be, YSM SComm, Beringen) | Démo gratuite (3 circuits, 3 différentiels, 1 page de plan, filigrane) ; Pass Projet 29 € HTVA par habitation (5 pour 99 €), 18 mois ; Pro 29 €/mois ou 299 €/an HTVA ; gratuit pour l'enseignement ; crédit IA en plus (10 conversions 10 €) | Web installable (hors ligne) | Non pour la démo | Sur l'appareil ; nuage chiffré avec Pass ou Pro | « RGIE Livre 1 version 07 », 70+ règles avec article, « Pourquoi ? » et bouton qui corrige, volumes de salle de bain, assistant habitation, placement automatique sur le plan, ouvre les .trik, photo d'un schéma papier → schéma (IA), chute de tension et courant de court-circuit, devis, étiquettes, dossier de contrôle, « garantie contrôle » (remboursement) |
 | **Trikker** | Licence payante | Windows | — | Local | Référence historique ; plan et unifilaire liés |
+| **Eendraadschema** (eendraadschema.goethals-jacobs.be) | Gratuit, open source | Web | Non | Navigateur | Schéma unifilaire et plan de situation ; fichier .eds (import Voltaplan : fait) |
 | **QElectroTech** | Gratuit, open source | Windows, macOS, Linux | Non | Local | Dessin électrique généraliste, sans règles RGIE |
 
 Sources : amperio.be (accueil, /tarifs, /schema-unifilaire) ; condui.be et /nl/pricing ; fil bouwinfo
@@ -64,7 +65,7 @@ filigrane** sans pass site ni abonnement, et autocontrôle RGIE, tableau et IA r
 
 | N° | Idée vue chez PlanElec | Intérêt | Compatible Voltaplan (local, gratuit, sans compte) | Effort | Proposition |
 | --- | --- | --- | --- | --- | --- |
-| P1 | **Équipement standard selon le type de local** (une chambre reçoit ses prises et son point lumineux) | Fort, gain de temps | Oui, règles locales ; à relier au catalogue des pièces | Moyen | Proposé |
+| P1 | **Équipement standard selon le type de local** (une chambre reçoit ses prises et son point lumineux) | Fort, gain de temps | Oui, règles locales ; à relier au catalogue des pièces | Moyen | **Fait** (« Équiper la pièce » sur le nom d'une pièce du plan) |
 | P2 | **Longueurs de câbles depuis le tracé** sur le plan (le long des murs, par le plafond, changement d'étage) puis chute de tension | Fort | Oui (le plan est à l'échelle) | Grand | Proposé, après l'échelle des plans importés |
 | P3 | **Tableau : bornes, barres N et PE, proposition de coffret** selon l'encombrement et la réserve | Moyen | Oui (le rangement automatique existe déjà) | Moyen | À discuter |
 | P4 | **Liste Synergrid C10/26** des onduleurs et calculateur de section public | Moyen | Oui si la liste publique peut être reprise (licence à vérifier) | Petit | À vérifier |
@@ -91,7 +92,7 @@ tout dossier réel est payant (29 € par habitation).
 | D1 | **Bouton « corriger » sur chaque remarque du contrôle** (« Choisir 20 A », « Circuit dédié », « Câble Cca ») | Très fort | Oui ; existe déjà pour la date 2023, à généraliser aux règles où la correction est sans ambiguïté | Moyen | **Proposé en priorité** |
 | D2 | **« Pourquoi ? »** : chaque règle expliquée en mots simples, avec l'article | Fort (particuliers, étudiants) | Oui, à partir du PDF officiel uniquement, relu par vous | Moyen | Proposé (rejoint A10) |
 | D3 | **Volumes de la salle de bain** dessinés autour de la baignoire ou de la douche, et chaque appareil vérifié par volume | Fort | Oui : le plan et le mobilier existent ; règles 7.01 à lire dans le PDF | Moyen à grand | Proposé |
-| D4 | **Placement automatique des points dans leur pièce** (prises au mur, interrupteurs près de la porte, lampes au centre) | Fort | Oui (pièces et emplacements connus) | Moyen | Proposé (avec P1) |
+| D4 | **Placement automatique des points dans leur pièce** (prises au mur, interrupteurs près de la porte, lampes au centre) | Fort | Oui (pièces et emplacements connus) | Moyen | **Fait** avec P1 (pour les points ajoutés par « Équiper la pièce ») |
 | D5 | **Insertion intelligente** : interrupteur croisé placé entre deux va-et-vient, nouveau circuit avec le câble du précédent, pièce reprise d'un point à l'autre | Moyen à fort | Oui | Petit à moyen | Proposé |
 | D6 | **Liste « Prêt pour le contrôleur »** (8 points, chacun avec un bouton qui y mène) | Fort | Oui ; l'assistant a déjà les données manquantes | Petit | Proposé |
 | D7 | **Courant de court-circuit par circuit** avec les longueurs du plan | Moyen | Oui (calculs existants + longueurs, voir P2) | Moyen | Plus tard |
