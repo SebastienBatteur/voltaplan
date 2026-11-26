@@ -149,6 +149,43 @@ const fold = (s: string) =>
     .replace(/[^a-z0-9' ]/g, '')
     .trim();
 
+/** Distance d'édition (Levenshtein). */
+export function editDistance(a: string, b: string): number {
+  const d = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = d[0];
+    d[0] = i;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = d[j];
+      d[j] = Math.min(d[j] + 1, d[j - 1] + 1, prev + (a[i - 1] === b[j - 1] ? 0 : 1));
+      prev = tmp;
+    }
+  }
+  return d[b.length];
+}
+
+/** Mots du vocabulaire des pièces (forme repliée), pour la correction des erreurs de lecture. */
+export const ROOM_WORDS = [
+  'cuisine', 'keuken', 'kitchen', 'living', 'salon', 'sejour', 'garage', 'bains', 'bain', 'badkamer', 'toilettes',
+  'toilet', 'hall', 'nuit', 'cellier', 'buanderie', 'berging', 'bureau', 'grenier', 'zolder', 'kelder', 'veranda',
+  'terrasse', 'chambre', 'slaapkamer', 'kamer', 'bedroom', 'nachthal', 'eetkamer', 'manger', 'dressing', 'atelier',
+];
+
+/**
+ * Correction d'un mot mal lu vers le vocabulaire (« baing » → « bains », « cuisi » → « cuisine », « charnbre » →
+ * « chambre »), à la manière d'un vocabulaire imposé au décodage : seulement si la ressemblance est forte (une
+ * erreur pour 5 à 6 lettres, deux à partir de 7, préfixe d'au moins 5 lettres) et sans hésitation entre deux mots.
+ * Les mots courts (< 5 lettres) ne sont jamais corrigés : « bare » ou « bale » ne deviennent pas « bain ».
+ */
+export function correctWord(word: string, vocabulary: string[] = ROOM_WORDS): string | undefined {
+  const w = fold(word);
+  if (vocabulary.includes(w)) return w;
+  if (w.length < 5) return undefined;
+  const max = w.length >= 7 ? 2 : 1;
+  const hits = vocabulary.filter((v) => v.length >= 5 && (editDistance(w, v) <= max || (w.length >= 5 && v.startsWith(w))));
+  return hits.length === 1 ? hits[0] : undefined;
+}
+
 export interface RoomLabel {
   text: string;
   /** Centre de la boîte (pixels de l'image analysée). */
@@ -161,10 +198,19 @@ export interface RoomLabel {
  * ligne regroupés (« hall de nuit », « chambre 3 »). Un mot hors vocabulaire n'est jamais pris pour une pièce.
  */
 export function roomLabels(words: OcrWord[]): RoomLabel[] {
-  const ws = words.filter((w) => w.text.trim()).map((w) => ({ ...w, f: fold(w.text) }));
+  // Un mot lu d'un bloc (« hall-de-nuit ») est découpé ; ses morceaux restent voisins (même source).
+  const ws = words
+    .filter((w) => w.text.trim())
+    .flatMap((w, src) =>
+      fold(w.text.replace(/-/g, ' '))
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((f, part) => ({ ...w, src, part, f: correctWord(f) ?? f })),
+    );
   const used = new Set<number>();
   const out: RoomLabel[] = [];
-  const sameLine = (a: OcrWord, b: OcrWord) => {
+  const sameLine = (a: (typeof ws)[number], b: (typeof ws)[number]) => {
+    if (a.src === b.src) return b.part === a.part + 1;
     const h = Math.max(a.bbox.y1 - a.bbox.y0, b.bbox.y1 - b.bbox.y0);
     const gap = b.bbox.x0 - a.bbox.x1;
     return Math.abs((a.bbox.y0 + a.bbox.y1) / 2 - (b.bbox.y0 + b.bbox.y1) / 2) < h * 0.6 && gap > -h && gap < h * 2.5;
@@ -193,7 +239,8 @@ export function roomLabels(words: OcrWord[]): RoomLabel[] {
       const x1 = Math.max(...box.map((b) => b.x1));
       const y0 = Math.min(...box.map((b) => b.y0));
       const y1 = Math.max(...box.map((b) => b.y1));
-      out.push({ text: idx.map((n) => ws[n].text.trim()).join(' '), x: (x0 + x1) / 2, y: (y0 + y1) / 2 });
+      const text = [...new Set(idx.map((n) => ws[n].src))].map((src) => ws.find((w) => w.src === src)!.text.trim()).join(' ');
+      out.push({ text, x: (x0 + x1) / 2, y: (y0 + y1) / 2 });
       idx.forEach((n) => used.add(n));
       break;
     }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { plausibleLabel, readDevice, readMeterPlate, roomLabels, type OcrWord } from '../src/ocr/parse';
+import { correctWord, plausibleLabel, readDevice, readMeterPlate, roomLabels, type OcrWord } from '../src/ocr/parse';
 
 describe('OCR — plaque de compteur', () => {
   it('ancien compteur triphasé : 220/380 V, 3x10(40) A → 3N x 400V proposé', () => {
@@ -64,5 +64,22 @@ describe('OCR — noms de pièces sur un plan', () => {
   it('un mot hors vocabulaire ou un numéro après une pièce qui n’en prend pas n’est pas une pièce', () => {
     expect(roomLabels([w('frigo', 0, 0), w('stéréo', 100, 0)])).toEqual([]);
     expect(roomLabels([w('living', 0, 0), w('2', 65, 0, 10)]).map((x) => x.text)).toEqual(['living']);
+  });
+});
+
+describe('OCR — correction vers le vocabulaire (comme un vocabulaire imposé au décodage)', () => {
+  it('erreurs de lecture vues sur de vraies photos corrigées, mots courts jamais forcés', () => {
+    expect(correctWord('baing')).toBe('bains');
+    expect(correctWord('cuisi')).toBe('cuisine');
+    expect(correctWord('charnbre')).toBe('chambre');
+    expect(correctWord('CELLIER')).toBe('cellier');
+    expect(correctWord('bare')).toBeUndefined();
+    expect(correctWord('bale')).toBeUndefined();
+    expect(correctWord('stereo')).toBeUndefined();
+  });
+
+  it('« hall-de-nuit » lu d’un bloc est reconnu comme une seule pièce', () => {
+    const r = roomLabels([{ text: 'hall-de-nuit', bbox: { x0: 0, y0: 0, x1: 120, y1: 20 } }, { text: 'baing', bbox: { x0: 300, y0: 0, x1: 360, y1: 20 } }]);
+    expect(r.map((x) => x.text)).toEqual(['hall-de-nuit', 'baing']);
   });
 });
