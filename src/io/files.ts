@@ -138,7 +138,7 @@ export async function readProjectFile(file: File): Promise<OpenResult> {
   currentPath = null;
   lastWritten = null;
   const r = await openProjectData(file, file.name);
-  const fileName = r.format === 'trik' || r.format === 'vschema' || r.format === 'eds' ? file.name.replace(/\.(trik|vschema|eds)$/i, EXT) : file.name;
+  const fileName = r.format === 'trik' || r.format === 'vschema' || r.format === 'eds' || r.format === 'draadwijs' ? file.name.replace(/\.(trik|vschema|eds|draadwijs)$/i, EXT) : file.name;
   return { project: r.project, fileName, warnings: r.warnings, report: r.report, needsNewFile: r.needsNewFile };
 }
 

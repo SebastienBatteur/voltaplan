@@ -42,8 +42,8 @@ export interface ElNode {
   /** Localisation / commentaire libre (ex. « Chambre 1 »). */
   location?: string;
   children: ElNode[];
-  /** Données sources (import Trikker, Volter ou Eendraadschema) conservées pour un export sans perte. */
-  source?: { format: 'trikker' | 'volter' | 'eendraadschema'; tag: string; attrs: Record<string, string> };
+  /** Données sources (import Trikker, Volter, Eendraadschema ou Draadwijs) conservées pour un export sans perte. */
+  source?: { format: 'trikker' | 'volter' | 'eendraadschema' | 'draadwijs'; tag: string; attrs: Record<string, string> };
 }
 
 export type RgieVersion = 'new' | 'old';

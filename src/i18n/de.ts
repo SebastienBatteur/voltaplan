@@ -9,6 +9,7 @@ export const de: Partial<Dict> = {
   'menu.saveAs': 'Speichern unter…',
   'menu.importTrikker': 'Trikker importieren (.trik)…',
   'menu.importVolter': 'Volter importieren (.vschema)…',
+  'menu.importDraadwijs': "Draadwijs importieren (.draadwijs)…",
   'pv.study': "PV-Simulation anfragen (SBG Energy)",
   'pv.studyHelp': "Formular auf einer externen Website, in einem neuen Tab. Es werden keine Projektdaten automatisch übertragen.",
   'pv.requestSoon': "Demnächst: Voltaplan kann die Anfrage vorausfüllen (Module, Wechselrichter, Batterie, Wärmepumpe, Boiler, Heizung, Ladestation), mit Ihrer Zustimmung.",
