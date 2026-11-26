@@ -36,7 +36,7 @@ export { APP_VERSION };
 /** Session de documents de l'application (une par onglet). */
 export const assetSession = new AssetSession(workingStore);
 
-export type DataFormat = 'v2' | 'v1' | 'trik' | 'vschema' | 'eds' | 'draadwijs' | 'planelec' | 'condui';
+export type DataFormat = 'v2' | 'v1' | 'trik' | 'vschema' | 'eds' | 'draadwijs' | 'planelec' | 'condui' | 'pdf';
 
 /** Format d'après les premiers octets. */
 export function detectFormat(head: Uint8Array): DataFormat | null {
@@ -107,6 +107,14 @@ export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSo
 export async function openProjectData(data: Blob | string, name: string, session: AssetSession = assetSession, opts: { background?: boolean } = {}): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
   const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : /\.eds$/i.test(name) ? 'eds' : /\.draadwijs$/i.test(name) ? 'draadwijs' : /\.planelec\.json$/i.test(name) || (/\.json$/i.test(name) && isPlanelec(decodeText(await blobBytes(blob.slice(0, 256))))) ? 'planelec' : detectFormat(await blobBytes(blob.slice(0, 64)));
+  // Dossier PDF d'un autre logiciel : lecture du texte (tableau des circuits), voir src/import/pdfDossier.ts
+  if (/\.pdf$/i.test(name)) {
+    checkFileSize({ name, size: blob.size }, 'pdf');
+    const [{ readPdfText }, { importPdfDossier }] = await Promise.all([import('./pdfText'), import('../import/pdfDossier')]);
+    const { items, pages } = await readPdfText(blob);
+    const { project, warnings } = importPdfDossier(items, pages, name);
+    return { project, format: 'pdf', warnings, needsNewFile: true };
+  }
   // Export Condui (.zip : manifest « project-with-assets » + project.json) ; une archive Voltaplan n'en a pas
   if (fmt === 'v2' && /\.zip$/i.test(name)) {
     checkFileSize({ name, size: blob.size }, 'project');

@@ -11,6 +11,7 @@ export const en: Partial<Dict> = {
   'menu.importDraadwijs': "Import Draadwijs (.draadwijs)…",
   'menu.importPlanelec': "Import PlanElec Sketch (.planelec.json)…",
   'menu.importCondui': "Import Condui (.zip export)…",
+  'menu.importPdfDossier': "Take over a PDF file from another program…",
   'pv.study': "Request a solar PV simulation (SBG Energy)",
   'pv.studyHelp': "Form on an external website, opened in a new tab. No project data is sent automatically.",
   'pv.requestSoon': "Coming soon: Voltaplan will be able to prefill the request (panels, inverter, battery, heat pump, water heater, heating, EV charger), with your consent.",

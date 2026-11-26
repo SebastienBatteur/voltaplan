@@ -2,6 +2,17 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Reprendre le dossier PDF d'un autre logiciel (2026-11-26)
+
+- Menu Fichier : un dossier PDF (Volter, Condui, Draadwijs, Amperio…) est lu dans le navigateur, sans envoi ni IA :
+  tableau des circuits (repère, nom, protection, câble, différentiel, nombre de points), en français,
+  néerlandais, anglais ou allemand ; sous-tableaux ; points comptés par leurs repères (A1, A2…) et typés d'après le
+  nom du circuit ; réseau et code EAN.
+- Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, position sur le plan,
+  différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
+- Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).
+- Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français et en néerlandais.
+
 ### Import Condui (2026-11-26)
 
 - Ouvre l'export « .zip » de Condui (menu Fichier, ou Ouvrir) : raccordement (calibre du disjoncteur de branchement,

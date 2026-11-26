@@ -130,7 +130,7 @@ Sources : sites et documentation des éditeurs, code source public d'Eendraadsch
 | PlanElec | Sketch : export `*.planelec.json` (« format » planelec-sketch, « version » 2 : schéma en arbre, plan en m, symboles sur feuille à 1:50) ; ouvre les `.trik` | **Examiné le 26/11** sur 3 exports d'essai | **Fait** (import) |
 | Draadwijs | `.draadwijs` (JSON, « version » 3, clés en néerlandais) : schéma en arbre, plan en cm, mesures, devis ; ouvre aussi les `.trik` | **Examiné le 26/11** sur 4 projets d'exemple | **Fait** (import) |
 | 1draad | Cité par Draadwijs comme « autre logiciel » | Non examiné | Inconnu |
-| Amperio | « exportable à tout moment », format non indiqué ; import seulement PDF/photo | Non | Inconnu ; essai de 7 jours avec compte |
+| Amperio | Pas d'export de projet trouvé (essai du 26/11/2026) ; dossier RGIE en PDF seulement | Non | **Fait** par le PDF : « Reprendre le dossier PDF d'un autre logiciel » (tableau des circuits), aussi pour Volter, Condui et Draadwijs ; PlanElec : PDF sans texte, non lisible |
 | Tricity | Non indiqué (app iPad/Mac payante) | Non | Inconnu |
 | QElectroTech | `.qet` (XML) | Oui (logiciel libre) | Faisable mais peu utile : schémas industriels, pas de dossier RGIE |
 
