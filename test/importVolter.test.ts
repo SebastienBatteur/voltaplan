@@ -181,6 +181,29 @@ describe('import Volter (.vschema)', () => {
     expect(warnings.join('\n')).toMatch(/lift/);
   });
 
+  it('place le sous-tableau sous son disjoncteur et suit les liaisons entre étages', () => {
+    const s = sample();
+    const modules = s.boards[0].modules as Record<string, unknown>[];
+    modules.push({ ...modules[2], id: 'feed', naam: 'Alimentation étage', ampere: 25, draaddikte: 4, differentieelId: null, feedsBoardId: 'sub', rijIndex: 0, kolom: 9 });
+    // Sous-tableau listé avant le principal : l'ordre du fichier ne doit pas compter
+    s.boards.unshift({ id: 'sub', naam: 'Étage', code: 'E', modules: [{ ...modules[2], id: 'c-up', naam: 'Circuit étage', differentieelId: null, rijIndex: 0, kolom: 1 }] } as never);
+    const up = s.project.floors[1];
+    up.components.push({ id: 'b9', type: 'pushButton', position: { x: 1, y: 1 }, rotation: 0, roomId: null, circuitId: 'c-light', label: '', labelOffset: null, quantity: 1, scale: 1 } as never);
+    (s.project as Record<string, unknown>).crossFloorConnections = [{ id: 'cf', fromId: 'b9', fromFloorId: 'f1', toId: 't1', toFloorId: 'f0' }];
+    const { project } = importVolter(JSON.stringify(s));
+    checkTree(project.roots);
+    const sub = [...walk(project.roots)].find((x) => x.node.kind === 'board' && x.node.props.name === 'Étage')!;
+    expect(sub.node.props.fixedLetter).toBe('E');
+    expect(sub.parent?.kind).toBe('cable');
+    expect(byId(project, 'feed')!.node.children[0].children).toContain(sub.node);
+    expect(sub.node.children.map((c) => c.id)).toEqual(['c-up']);
+    // Le bouton de l'étage rejoint le circuit et le groupe du télérupteur du rez (un seul bouton peut porter le
+    // télérupteur dans Voltaplan : les autres restent des points du même circuit)
+    const cableIds = [...walk(byId(project, 'c-light')!.node.children)].map((x) => x.node.id);
+    expect(cableIds).toContain('b9');
+    expect(byId(project, 't1')!.parent?.kind).toBe('pushButton');
+  });
+
   it('refuse un fichier qui n’est pas une sauvegarde Volter', () => {
     expect(() => importVolter('pas du json')).toThrow(/Volter/);
     expect(() => importVolter('{"a":1}')).toThrow(/Volter/);

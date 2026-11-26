@@ -103,3 +103,11 @@ disjoncteur différentiel 30 mA, liste d'attente (`wachtlijst`), codes EAN.
   `stairSpiral {radius, sweepDeg, turn}`.
 - Symboles posés sans circuit : `circuitId: null` (repris comme éléments non raccordés).
 - `roundControl` : seul symbole dont le libellé n'est pas certain (pris pour « Serrure de verrouillage »).
+
+## Relevé du 3e projet d'essai (étage et sous-tableau)
+
+- Sous-tableau : un disjoncteur du tableau parent porte `feedsBoardId` (id du sous-tableau) ; le sous-tableau a
+  `naam` et un repère `code` (« E »). Import : sous-tableau placé sous le câble de ce disjoncteur, repère repris.
+- `crossFloorConnections[] {id, fromId, fromFloorId, toId, toFloorId}` : liaison de commande entre deux étages
+  (bouton-poussoir de l'étage → télérupteur du rez). Import : traitée comme une liaison ordinaire.
+- Les modules d'un sous-tableau peuvent n'avoir ni `kolom` ni `position`.

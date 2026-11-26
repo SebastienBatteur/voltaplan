@@ -270,6 +270,15 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       }
     }
   }
+  // Liaisons entre étages (ex. bouton-poussoir à l'étage commandant un télérupteur du rez) : liaisons ordinaires
+  for (const l of arr(vp.crossFloorConnections)) {
+    const a = str(l.fromId);
+    const b = str(l.toId);
+    if (a && b) {
+      link(a, b);
+      link(b, a);
+    }
+  }
   const allowed = (parent: ElNode, child: ElNode) => ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
 
   /**
@@ -328,9 +337,18 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   const meter = origin.children[0];
   meter.children = [];
   let mainBoard: ElNode | null = null;
-  for (const b of arr(data.boards)) {
+  // Sous-tableaux : alimentés par un disjoncteur d'un autre tableau (`feedsBoardId`), placés sous son câble
+  const boardsIn = arr(data.boards);
+  const fed = new Set(boardsIn.flatMap((b) => arr(b.modules).map((m) => str(m.feedsBoardId)).filter((x): x is string => !!x)));
+  const boardNode = new Map<string, ElNode>();
+  const feeds: { cable: ElNode; boardId: string }[] = [];
+  // Tableau principal (non alimenté par un autre) d'abord
+  boardsIn.sort((a, b) => Number(fed.has(str(a.id) ?? '')) - Number(fed.has(str(b.id) ?? '')));
+  for (const b of boardsIn) {
     const modules = arr(b.modules);
-    const board = createNode('board', clean({ name: str(b.naam) }));
+    const board = createNode('board', clean({ name: str(b.naam), fixedLetter: str(b.code) }));
+    const boardId = str(b.id) ?? board.id;
+    boardNode.set(boardId, board);
     board.source = { format: 'volter', tag: 'board', attrs: attrs(b) };
     const order = (m: Obj) => (num(m.rijIndex) ?? 0) * 1000 + (num(m.kolom) ?? num(m.position) ?? 0);
     const sorted = [...modules].sort((a, c) => order(a) - order(c));
@@ -372,6 +390,8 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
         }),
       );
       cable.children = circuitItems(byCircuit.get(n.id) ?? []);
+      const feedsBoard = str(m.feedsBoardId);
+      if (feedsBoard) feeds.push({ cable, boardId: feedsBoard });
       byCircuit.delete(n.id);
       n.children = [cable];
       return n;
@@ -404,6 +424,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     const firstLevel = [...rcds.filter((m) => !placed.has(str(m.id)!)).map((m) => ({ o: order(m), n: rcdNode.get(str(m.id)!)! })), ...mcbs.filter((m) => !(typeof ownerOf(m) === 'string' && rcdNode.has(ownerOf(m) as string))).map((m, i) => ({ o: order(m), n: top[i] }))];
     firstLevel.sort((a, c) => a.o - c.o);
     board.children = firstLevel.map((x) => x.n);
+    if (fed.has(boardId)) continue;
     if (!mainBoard) {
       // Volter dessine toujours la terre sous le compteur : barrette et prise de terre (valeurs à compléter)
       board.children.push(createNode('earthBar', {}));
@@ -417,6 +438,13 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     } else mainBoard.children.splice(mainBoard.children.length - 1, 0, board);
   }
   if (!mainBoard) warnings.add('Aucun tableau dans la sauvegarde Volter.');
+  for (const id of fed) {
+    const sub = boardNode.get(id);
+    if (!sub) continue;
+    const feed = feeds.find((f) => f.boardId === id);
+    if (feed) feed.cable.children.push(sub);
+    else if (mainBoard) mainBoard.children.splice(mainBoard.children.length - 1, 0, sub);
+  }
   // Composants rattachés à un circuit absent, ou sans circuit : non raccordés
   for (const comps of byCircuit.values()) loose.push(...comps);
   project.loose = loose.map((c) => nodeOf.get(str(c.id)!)).filter((n): n is ElNode => !!n);
@@ -517,7 +545,6 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
-  if (arr(vp.crossFloorConnections).length) warnings.add('Liaisons entre étages de Volter non reprises : vérifiez les circuits concernés.');
   warnings.add('Volter ne sauvegarde ni le compteur ni la prise de terre : complétez le raccordement et la résistance de terre.');
   return { project, warnings: [...warnings] };
 }
