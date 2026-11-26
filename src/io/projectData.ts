@@ -126,6 +126,23 @@ export async function openProjectData(data: Blob | string, name: string, session
       }
     }
     await extractEmbeddedImages(project, async (b, n) => (await session.store.add(b, { name: n })).sha256);
+    // Bâtiment dessiné en image dans le PDF (Volter) : murs relevés sur l'image, comme pour une photo de plan
+    const { tracePlan } = await import('../plan/traceImage');
+    for (const b of backgrounds) {
+      const pg = project.plan.pages[b.pageIndex];
+      const bg = pg.images.find((im) => im.background && im.href);
+      if (!bg || pg.walls.length) continue;
+      try {
+        const t = await tracePlan(bg);
+        if (t.walls.length >= 3) {
+          pg.walls = t.walls;
+          pg.openings = t.openings;
+          warnings.push(`${pg.name} : ${t.walls.length} mur(s) relevé(s) sur l'image du plan (bâtiment dessiné en image dans le PDF) : à vérifier.`);
+        }
+      } catch {
+        // Lecture de l'image impossible : le fond de plan reste, sans murs
+      }
+    }
     return { project, format: 'pdf', warnings, needsNewFile: true };
   }
   // Export Condui (.zip : manifest « project-with-assets » + project.json) ; une archive Voltaplan n'en a pas

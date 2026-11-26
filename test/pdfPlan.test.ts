@@ -125,4 +125,63 @@ describe('plan lu dans le dessin du PDF', () => {
     expect(pg.symbols[0].pos.y).toBeGreaterThan(140 * k);
     expect(warnings.some((w) => /mur\(s\) et .* lus dans le dessin/.test(w))).toBe(true);
   });
+
+  it('import : noms de pièces lus sur le plan, pièce de chaque point posé', () => {
+    const t = (page: number, x: number, y: number, str: string, size = 6): PdfText => ({ page, x, y, str, size });
+    const items: PdfText[] = [
+      t(1, 50, 90, 'Circuit'),
+      t(1, 100, 90, 'Description'),
+      t(1, 300, 90, 'Protection'),
+      t(1, 50, 108, 'A'),
+      t(1, 100, 108, 'Prises'),
+      t(1, 300, 108, 'C20'),
+      t(2, 400, 440, 'Plan · Rez'),
+      t(2, 60, 560, 'échelle 1:50'),
+      t(2, 180, 150, 'Keuken', 9),
+      // Hors des murs (cartouche) : pas une pièce
+      t(2, 600, 500, 'Salon', 9),
+      t(2, 120, 106, 'A1'),
+    ];
+    const pages = [
+      { width: 595, height: 842 },
+      { width: 842, height: 595 },
+    ];
+    const { project } = importPdfDossier(items, pages, 'p.pdf', [[], room()]);
+    const pg = project.plan.pages[0];
+    expect(pg.labels.map((l) => l.text)).toEqual(['Keuken']);
+    const node = project.roots[0].children[0].children[0].children[0].children.find((n) => n.props.fixedLetter === 'A')!.children[0].children[0];
+    expect(node.location).toBe('Keuken');
+  });
+
+  it('import : face avant du tableau (rangées et colonnes en modules) ; différentiel laissé à placer', () => {
+    const t = (page: number, x: number, y: number, str: string): PdfText => ({ page, x, y, str, size: 7 });
+    const items: PdfText[] = [
+      t(1, 50, 90, 'Circuit'),
+      t(1, 100, 90, 'Description'),
+      t(1, 300, 90, 'Protection'),
+      ...['A', 'B', 'C', 'D'].map((c, i) => [t(1, 50, 108 + 18 * i, c), t(1, 100, 108 + 18 * i, 'Prises'), t(1, 300, 108 + 18 * i, 'C20 2P')]).flat(),
+      t(2, 40, 40, 'Tableau'),
+      t(2, 40, 230, 'FACE AVANT'),
+      // Rangée 1 : différentiel (sans repère de circuit), A, B ; rangée 2 : C, D
+      t(2, 80, 281, 'D1'),
+      t(2, 158, 281, 'A'),
+      t(2, 160, 288, 'C20'),
+      t(2, 236, 281, 'B'),
+      t(2, 237, 288, 'C20'),
+      t(2, 83, 318, 'C'),
+      t(2, 83, 325, 'C20'),
+      t(2, 158, 318, 'D'),
+      t(2, 160, 325, 'C20'),
+    ];
+    const { project, warnings } = importPdfDossier(items, [{ width: 595, height: 842 }, { width: 595, height: 842 }], 'p.pdf');
+    const board = project.roots[0].children[0].children[0].children[0];
+    const slots = project.boards![board.id].slots;
+    const at = (c: string) => slots[board.children.find((n) => n.props.fixedLetter === c)!.id];
+    // 2P = 2 modules ; une case de 78 pt = 2 modules : A en colonne 2 (le différentiel garde les colonnes 0-1)
+    expect(at('A')).toEqual({ row: 0, col: 2 });
+    expect(at('B')).toEqual({ row: 0, col: 4 });
+    expect(at('C')).toEqual({ row: 1, col: 0 });
+    expect(at('D')).toEqual({ row: 1, col: 2 });
+    expect(warnings.some((w) => /Face avant du tableau lue/.test(w))).toBe(true);
+  });
 });

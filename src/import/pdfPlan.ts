@@ -68,6 +68,14 @@ function segments(pts: Pt[], closed: boolean): [Pt, Pt][] {
 export function wallsInPolygon(pts: Pt[], minWall: number, maxWall: number, minLen: number): (PdfWall & { len: number })[] {
   const ring = dist(pts[0], pts[pts.length - 1]) < 0.5 ? pts.slice(0, -1) : pts;
   const edges = ring.map((p, i) => [p, ring[(i + 1) % ring.length]] as [Pt, Pt]).filter(([a, b]) => dist(a, b) >= minLen * 0.5);
+  return wallsFromEdgePairs(edges, minWall, maxWall, minLen, true);
+}
+
+/**
+ * Murs entre deux bords parallèles séparés d'une épaisseur de mur et qui se recouvrent. `opposite` : bords d'un même
+ * contour (sens opposés) ; sinon traits séparés. (Volter dessine le bâtiment en image : murs relevés sur l'image.)
+ */
+export function wallsFromEdgePairs(edges: [Pt, Pt][], minWall: number, maxWall: number, minLen: number, opposite: boolean): (PdfWall & { len: number })[] {
   const out: (PdfWall & { len: number })[] = [];
   for (let i = 0; i < edges.length; i++)
     for (let j = i + 1; j < edges.length; j++) {
@@ -77,8 +85,9 @@ export function wallsInPolygon(pts: Pt[], minWall: number, maxWall: number, minL
       const ux = (b.x - a.x) / la;
       const uy = (b.y - a.y) / la;
       const lc = dist(c, d);
-      // Parallèles et de sens opposés
-      if ((d.x - c.x) / lc * ux + (d.y - c.y) / lc * uy > -0.995) continue;
+      // Parallèles (de sens opposés pour un contour)
+      const dot = ((d.x - c.x) / lc) * ux + ((d.y - c.y) / lc) * uy;
+      if (opposite ? dot > -0.995 : Math.abs(dot) < 0.995) continue;
       const t = Math.abs((c.x - a.x) * -uy + (c.y - a.y) * ux);
       if (t < minWall || t > maxWall) continue;
       // Recouvrement le long de l'axe
@@ -228,7 +237,10 @@ export function planFromShapes(shapes: PdfShape[], opts: { minWall?: number; max
         const den = dx * ey - dy * ex;
         if (Math.abs(den) < 1e-6) continue;
         const k = ((v.a.x - w.a.x) * ey - (v.a.y - w.a.y) * ex) / den;
-        w[end] = { x: w.a.x + k * dx, y: w.a.y + k * dy };
+        // Prolongement court seulement (presque parallèles : intersection lointaine, ignorée)
+        const q = { x: w.a.x + k * dx, y: w.a.y + k * dy };
+        if (dist(q, p) > 1.5 * Math.max(v.thickness, w.thickness)) continue;
+        w[end] = q;
         break;
       }
     }

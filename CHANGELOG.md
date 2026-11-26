@@ -17,6 +17,10 @@
 - Une lampe et son interrupteur portent souvent le même repère : la lampe prend celui qui est le plus loin des murs,
   une prise ou un interrupteur celui qui est contre un mur.
 - Mettre à l'échelle un plan repris d'un PDF agit sur toute la page (fond, murs et points ensemble).
+- Noms des pièces lus sur le plan (Séjour, Keuken, Bad…) et posés comme noms de pièces ; chaque point posé prend sa
+  pièce. Bâtiment dessiné en image dans le PDF (Volter) : murs relevés sur l'image, comme pour une photo de plan.
+- Face avant des tableaux (« Disposition du tableau », « Face avant », page « Tableau ») : chaque disjoncteur est
+  placé à sa rangée et à sa colonne ; les différentiels restent à placer.
 - Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).
 - Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français, néerlandais, anglais et allemand.

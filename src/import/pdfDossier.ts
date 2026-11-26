@@ -9,9 +9,11 @@
  * (texte dessiné en traits, document scanné) ne peut pas être lu ainsi.
  */
 import { interpretLabel } from '../assist/labels';
-import { createNode, emptyPage, emptyProject } from '../model/tree';
+import { createNode, emptyPage, emptyProject, uid } from '../model/tree';
 import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/types';
 import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
+import { roomBounds } from '../plan/roomKit';
+import { enclosures, moduleWidth } from '../board/model';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -409,12 +411,95 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   mainBoard.children.push(...otherKids);
   if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
   const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings, shapes);
+  readBoardFronts(project, items, pages, nodesByCode, shared, warnings);
   warnings.add(
     backgrounds.length
       ? 'Le type exact des points et leurs commandes (interrupteurs) ne sont pas dans le texte du PDF : à compléter.'
       : 'Le type exact des points, leurs commandes (interrupteurs) et leur position sur le plan ne sont pas dans le texte du PDF : à compléter. Le plan peut être importé comme fond de plan (onglet Plan).',
   );
   return { project, warnings: [...warnings], circuits: rows.length, backgrounds };
+}
+
+/** Page de face avant d'un tableau (« Disposition du tableau », « Face avant », « Bordindeling »…), pas un schéma. */
+const FRONT_TITLE = /^(disposition du tableau.*|face avant|tableau|bordindeling.*|bordopstelling|board layout|switchboard layout|panel layout|verteilerbelegung|frontansicht|aanzicht bord)$/;
+const DIAGRAM = /(schema unifilaire|eendraadschema|single-line|single line|einlinien|stroomkringschema|plan de position|plan de situation|situatieschema|situation plan)/;
+/** Calibre écrit sous le repère dans une case de la face avant (« C16 », « B16 », « 16A »). */
+const RATING = /^([BCDK]\s?\d{1,3}\s?A?|\d{1,3}\s?A)$/i;
+
+/**
+ * Face avant des tableaux : sur une page de disposition, chaque case porte le repère du circuit (A, B…) et son calibre
+ * juste en dessous. Rangées = lignes de repères ; colonne (en modules) d'après l'abscisse, ramenée à la largeur des
+ * appareils. Les différentiels (sans repère de circuit) restent à placer : la disposition habituelle les complète.
+ */
+function readBoardFronts(
+  project: Project,
+  items: PdfText[],
+  pages: PdfPageSize[],
+  nodesByCode: Map<string, ElNode>,
+  shared: Set<string>,
+  warnings: Set<string>,
+): void {
+  const frontPages = pages
+    .map((_, i) => i + 1)
+    .filter((p) => {
+      const list = items.filter((it) => it.page === p);
+      return list.some((it) => FRONT_TITLE.test(fold(it.str))) && !list.some((it) => DIAGRAM.test(fold(it.str)));
+    });
+  if (!frontPages.length) return;
+  const encs = enclosures(project.roots);
+  const encOf = new Map<string, (typeof encs)[number]>();
+  for (const e of encs) for (const d of e.devices) encOf.set(d.id, e);
+  const found = new Map<string, { page: number; x: number; y: number; node: ElNode }>();
+  for (const p of frontPages) {
+    const list = items.filter((it) => it.page === p);
+    const here: { x: number; y: number; node: ElNode; code: string }[] = [];
+    for (const it of list) {
+      const code = it.str.trim();
+      const node = nodesByCode.get(code);
+      if (!node || shared.has(code) || found.has(code)) continue;
+      const below = list.some((q) => q !== it && q.y > it.y + 2 && q.y < it.y + 45 && Math.abs(q.x - it.x) < 25 && RATING.test(q.str.trim()));
+      if (below) here.push({ x: it.x, y: it.y, node, code });
+    }
+    if (here.length < 3) continue;
+    for (const h of here) found.set(h.code, { page: p, x: h.x, y: h.y, node: h.node });
+  }
+  if (!found.size) return;
+  let placedN = 0;
+  project.boards = { ...(project.boards ?? {}) };
+  for (const e of encs) {
+    const mine = [...found.values()].filter((f) => encOf.get(f.node.id) === e);
+    if (mine.length < 2) continue;
+    // Rangées : repères à la même hauteur (à 8 points près), de haut en bas
+    const lines: (typeof mine)[] = [];
+    for (const f of [...mine].sort((a, b) => a.y - b.y)) {
+      const l = lines.find((q) => q[0].page === f.page && Math.abs(q[0].y - f.y) <= 8);
+      if (l) l.push(f);
+      else lines.push([f]);
+    }
+    for (const l of lines) l.sort((a, b) => a.x - b.x);
+    // Largeur d'un module (points) : plus petit écart entre deux cases voisines, divisé par la largeur de la première
+    let unit = Infinity;
+    for (const l of lines) for (let i = 0; i + 1 < l.length; i++) unit = Math.min(unit, (l[i + 1].x - l[i].x) / moduleWidth(l[i].node));
+    if (!Number.isFinite(unit) || unit <= 0) continue;
+    const x0 = Math.min(...mine.map((f) => f.x));
+    const slots: Record<string, { row: number; col: number }> = {};
+    let perRow = 0;
+    lines.forEach((l, row) => {
+      let end = 0;
+      for (const f of l) {
+        const col = Math.max(end, Math.round((f.x - x0) / unit));
+        slots[f.node.id] = { row, col };
+        end = col + moduleWidth(f.node);
+        placedN++;
+      }
+      perRow = Math.max(perRow, end);
+    });
+    project.boards[e.board.id] = { slots };
+    const size = { rows: Math.max(1, Number(e.board.props.rows) || 2), perRow: Math.max(4, Number(e.board.props.modulesPerRow) || 13) };
+    if (lines.length > size.rows) e.board.props.rows = lines.length;
+    if (perRow > size.perRow) e.board.props.modulesPerRow = perRow;
+  }
+  if (placedN) warnings.add(`Face avant du tableau lue dans le PDF : ${placedN} disjoncteur(s) placé(s) à leur rangée ; différentiels et généraux à placer (onglet Tableau, « Mettre à jour »).`);
 }
 
 /** Éléments posés contre un mur (trait de raccordement tourné vers le mur le plus proche). */
@@ -440,7 +525,9 @@ function placeOnPlans(
   const drawn = new Map<number, ReturnType<typeof planFromShapes>>();
   let byDoors = 0;
   for (const pl of plans) {
-    const d = planFromShapes(shapes[pl.pdfPage - 1] ?? []);
+    // Moins de 3 murs : pas un plan dessiné en traits (bâtiment en image, Volter) ; relevé sur l'image ensuite
+    const d0 = planFromShapes(shapes[pl.pdfPage - 1] ?? []);
+    const d = d0.walls.length >= 3 ? d0 : { walls: [], openings: [] };
     drawn.set(pl.pdfPage, d);
     if (!pl.scaled) {
       const k = scaleFromDoors(d.openings);
@@ -508,6 +595,41 @@ function placeOnPlans(
       placed++;
     });
   }
+  // Noms des pièces : textes du plan reconnus comme une pièce (FR, NL, EN, DE), dans l'emprise des murs ; chaque
+  // point prend la pièce dont il est le plus proche du nom, à l'intérieur de ses murs
+  let rooms = 0;
+  for (const pl of plans) {
+    const target = byName.get(pl.name)!;
+    if (target.page.labels.length && pl !== plans.find((q) => q.name === pl.name)) continue;
+    const k = pl.mmPerPt;
+    const d = drawn.get(pl.pdfPage);
+    const xs = d?.walls.flatMap((v) => [v.a.x, v.b.x]) ?? [];
+    const ys = d?.walls.flatMap((v) => [v.a.y, v.b.y]) ?? [];
+    const inside = (x: number, y: number) => !xs.length || (x > Math.min(...xs) && x < Math.max(...xs) && y > Math.min(...ys) && y < Math.max(...ys));
+    for (const it of items) {
+      if (it.page !== pl.pdfPage) continue;
+      const str = it.str.trim();
+      if (str.length < 2 || str.split(/\s+/).length > 4 || POINT_LABEL.test(str)) continue;
+      const r = interpretLabel(str);
+      if (!r.room || r.usage || !inside(it.x, it.y)) continue;
+      if (target.page.labels.some((l) => l.text === str)) continue;
+      const w = str.length * it.size * 0.5;
+      target.page.labels.push({ id: uid(), text: str, pos: { x: Math.round((it.x + w / 2) * k), y: Math.round(it.y * k) }, size: 3 });
+      rooms++;
+    }
+  }
+  for (const { page } of byName.values()) {
+    if (!page.labels.length) continue;
+    const zones = page.labels.map((l) => ({ l, b: roomBounds(page, l.pos) }));
+    for (const s of page.symbols) {
+      const hit = zones
+        .filter(({ b }) => s.pos.x >= b.x0 - 50 && s.pos.x <= b.x1 + 50 && s.pos.y >= b.y0 - 50 && s.pos.y <= b.y1 + 50)
+        .sort((p, q) => (p.b.x1 - p.b.x0) * (p.b.y1 - p.b.y0) - (q.b.x1 - q.b.x0) * (q.b.y1 - q.b.y0))[0];
+      const node = pointsOf.flatMap((x) => x.points).find((n) => n.id === s.nodeId);
+      if (hit && node) node.location = hit.l.text;
+    }
+  }
+  if (rooms) warnings.add(`${rooms} nom(s) de pièce lu(s) sur le plan ; les points posés y prennent leur pièce.`);
   const nWalls = [...byName.values()].reduce((s, v) => s + v.page.walls.length, 0);
   const nOpen = [...byName.values()].reduce((s, v) => s + v.page.openings.length, 0);
   if (nWalls) warnings.add(`${nWalls} mur(s) et ${nOpen} porte(s) ou fenêtre(s) lus dans le dessin du PDF : à vérifier.`);
