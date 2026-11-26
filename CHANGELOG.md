@@ -21,6 +21,12 @@
   pièce. Bâtiment dessiné en image dans le PDF (Volter) : murs relevés sur l'image, comme pour une photo de plan.
 - Face avant des tableaux (« Disposition du tableau », « Face avant », page « Tableau ») : chaque disjoncteur est
   placé à sa rangée et à sa colonne ; les différentiels restent à placer.
+- Informations du dossier reprises du cartouche, de la page de garde ou de la fiche (FR, NL, EN, DE) : nom du projet,
+  adresse de l'installation, client, installateur, organisme agréé, calibre du branchement, date, numéro du dossier,
+  installation nouvelle ou existante.
+- Contrôle par la liste du matériel du PDF : points lumineux, prises (doubles et triples comprises) et commandes
+  comparés au schéma importé ; les écarts sont signalés à l'ouverture.
+- Import Condui : le code postal des adresses est maintenant repris.
 - Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).
 - Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français, néerlandais, anglais et allemand.

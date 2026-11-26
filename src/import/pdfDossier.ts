@@ -14,6 +14,7 @@ import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/ty
 import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
 import { roomBounds } from '../plan/roomKit';
 import { enclosures, moduleWidth } from '../board/model';
+import { applyPdfInfo, checkBom, readBom, readPdfInfo } from './pdfInfo';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -310,9 +311,12 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   const project = emptyProject();
   const all = items.map((i) => i.str).join(' ');
   const supply = detectSupply(all);
-  project.meta = { ...project.meta, title: fileName.replace(/\.pdf$/i, ''), supply: supply ?? project.meta.supply };
+  project.meta = { ...project.meta, title: fileName.replace(/\.pdf$/i, '').replace(/_+/g, ' ').trim(), supply: supply ?? project.meta.supply };
   const ean = /\b(54\d{16})\b/.exec(all.replace(/\s/g, ' '))?.[1];
   if (ean) project.meta.ean = ean;
+  // Cartouche, page de garde, fiche : adresse, client, installateur, date, numéro, calibre du branchement…
+  const got = applyPdfInfo(project, readPdfInfo(items));
+  if (got.length) warnings.add(`Informations du dossier reprises du PDF : ${got.join(', ')}. À vérifier dans l'onglet Projet.`);
   const meter = project.roots[0].children[0];
   const mainRcd = meter.children[0];
   const mainBoard = mainRcd.children[0];
@@ -412,6 +416,9 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
   const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings, shapes);
   readBoardFronts(project, items, pages, nodesByCode, shared, warnings);
+  // Contrôle par la liste du matériel du PDF (points lumineux, prises, commandes)
+  const bom = readBom(items);
+  if (bom) warnings.add(checkBom(project, bom));
   warnings.add(
     backgrounds.length
       ? 'Le type exact des points et leurs commandes (interrupteurs) ne sont pas dans le texte du PDF : à compléter.'

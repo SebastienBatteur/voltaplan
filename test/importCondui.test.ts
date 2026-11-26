@@ -362,6 +362,7 @@ describe('import Condui', () => {
     expect(m.mainCurrent).toBe(40);
     expect(m.installationDate).toBe('2024');
     expect(m.site.city).toBe('Liège');
+    expect(m.site.postalCode).toBe('4000');
     const meter = project.roots[0].children[0];
     expect(meter.kind).toBe('meter');
     const main = meter.children[0];

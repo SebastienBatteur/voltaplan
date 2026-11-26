@@ -151,7 +151,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
     isObj(a)
       ? clean({
           street: str(a.street),
-          zip: str(a.postalCode),
+          postalCode: str(a.postalCode),
           city: str(a.city),
           country: str(a.country),
         })
