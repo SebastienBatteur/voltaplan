@@ -2,6 +2,21 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Lecture locale des photos (OCR, sans IA) (2026-11-26)
+
+- **Moteur OCR local** (Tesseract 5 en WebAssembly, tesseract.js 7.0.0 ; langues française, néerlandaise et anglaise)
+  livré avec Voltaplan : aucune image envoyée, aucun service tiers, fonctionne hors ligne après une première lecture
+  (≈ 18 Mo, chargés seulement à la première lecture, pas à l'installation).
+- **Compteur** (onglet Projet) : la plaque est lue (tension, phases, « 3x10(40) A ») et l'alimentation **proposée**
+  (3N x 400V, 3 x 230V ou 2 x 230V) ; triphasé sans tension lue : les deux choix sont proposés.
+- **Plan** : « Lire les noms de pièces » pose les pièces lues sur le fond de plan, à leur place (vocabulaire
+  FR/NL/EN, mots mal lus corrigés : « baing » → Bains) ; plan photographié de travers : relu tourné.
+- **Tableau** : un seul bouton « Lire la photo » — l'IA si elle est configurée et déverrouillée, sinon la lecture
+  locale : appareils découpés sans IA, étiquettes (aussi verticales), calibres et sensibilités lisibles, proposés
+  avec une confiance faible, par le même chemin que la lecture par l'IA (brouillon ou comparaison).
+- Mesuré sur 18 photos réelles : bon pour plaques de compteurs, étiquettes imprimées et noms de pièces ; insuffisant
+  pour les calibres des petits modules depuis une photo du tableau entier (docs/strategie/ASSISTANT-COLLECTE.md § 8).
+
 ### Accueil, couleurs de circuits, matériel par pièce, étiquettes QR, DXF (2026-11-26)
 
 - **Mes projets** : écran d'accueil avec les actions principales et les derniers projets (navigateur, appareil,

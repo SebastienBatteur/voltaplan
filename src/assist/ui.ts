@@ -59,6 +59,8 @@ export async function draftFromReading(opts: {
   photoHref: string;
   photoSha?: string;
   engine?: Observation['engine'];
+  /** Lecture par l'IA (défaut) ou par l'OCR local (`deterministic`). */
+  method?: Observation['method'];
   calibration?: string;
   offset?: { row: number; module: number };
 }): Promise<ReadingResult> {
@@ -77,6 +79,7 @@ export async function draftFromReading(opts: {
         offset: opts.offset,
         reading: opts.reading,
         engine: opts.engine,
+        method: opts.method,
       },
       registerOriginal,
     );

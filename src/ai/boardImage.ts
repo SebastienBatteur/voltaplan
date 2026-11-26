@@ -10,7 +10,7 @@ import type { Pt } from '../model/types';
 /** Largeur d'un module dans l'image composée (pixels). */
 export const MOD_PX = 56;
 /** Hauteur d'un appareil modulaire, en modules (85 mm / 17,5 mm). */
-const DEVICE_MODULES = 85 / 17.5;
+export const DEVICE_MODULES = 85 / 17.5;
 /**
  * Bande autour de l'axe du rail, en hauteurs d'appareil : au-dessus, l'appareil et la bande d'étiquettes
  * (souvent à une hauteur d'appareil au-dessus de son bord, texte tourné de 90°) ; en dessous, l'appareil et
@@ -34,10 +34,10 @@ export interface ComposedGeometry {
   rows: { a: Pt; scale: number; angle: number }[];
 }
 
-export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): ComposedGeometry {
-  const margin = MOD_PX / 2;
-  const bandH = Math.round((BAND_ABOVE + BAND_BELOW) * MOD_PX);
-  const width = perRow * MOD_PX + 2 * margin;
+export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number, modPx = MOD_PX): ComposedGeometry {
+  const margin = modPx / 2;
+  const bandH = Math.round((BAND_ABOVE + BAND_BELOW) * modPx);
+  const width = perRow * modPx + 2 * margin;
   const rowTop: number[] = [];
   const bandTop: number[] = [];
   rows.forEach((_, i) => {
@@ -48,11 +48,11 @@ export function composedGeometry(rows: { a: Pt; b: Pt }[], perRow: number): Comp
     width,
     height: rows.length * (RULER_PX + bandH),
     margin,
-    axis: Math.round(BAND_ABOVE * MOD_PX),
+    axis: Math.round(BAND_ABOVE * modPx),
     rowTop,
     bandTop,
     bandH,
-    rows: rows.map(({ a, b }) => ({ a, scale: (perRow * MOD_PX) / Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)), angle: Math.atan2(b.y - a.y, b.x - a.x) })),
+    rows: rows.map(({ a, b }) => ({ a, scale: (perRow * modPx) / Math.max(1, Math.hypot(b.x - a.x, b.y - a.y)), angle: Math.atan2(b.y - a.y, b.x - a.x) })),
   };
 }
 
@@ -80,8 +80,13 @@ async function loadImage(href: string, timeoutMs = 15000): Promise<HTMLImageElem
 
 /** Image composée (JPEG, data URL) à partir de la photo et du calage de chaque rangée. */
 export async function composeBoardImage(href: string, rows: { a: Pt; b: Pt }[], perRow: number): Promise<string> {
+  return (await composeBoardCanvas(href, rows, perRow)).canvas.toDataURL('image/jpeg', 0.88);
+}
+
+/** Image composée (canevas) et sa géométrie ; `modPx` : largeur d'un module (plus grande pour l'OCR local). */
+export async function composeBoardCanvas(href: string, rows: { a: Pt; b: Pt }[], perRow: number, modPx = MOD_PX): Promise<{ canvas: HTMLCanvasElement; g: ComposedGeometry }> {
   const img = await loadImage(href);
-  const g = composedGeometry(rows, perRow);
+  const g = composedGeometry(rows, perRow, modPx);
   const c = document.createElement('canvas');
   c.width = g.width;
   c.height = g.height;
@@ -111,15 +116,15 @@ export async function composeBoardImage(href: string, rows: { a: Pt; b: Pt }[], 
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     for (let k = 0; k <= perRow; k++) {
-      const x = g.margin + k * MOD_PX + 0.5;
+      const x = g.margin + k * modPx + 0.5;
       ctx.beginPath();
       ctx.moveTo(x, top + 2);
       ctx.lineTo(x, top + RULER_PX + 6);
       ctx.stroke();
-      if (k < perRow) ctx.fillText(String(k), x + MOD_PX / 2, top + RULER_PX / 2 + 1);
+      if (k < perRow) ctx.fillText(String(k), x + modPx / 2, top + RULER_PX / 2 + 1);
     }
   });
-  return c.toDataURL('image/jpeg', 0.88);
+  return { canvas: c, g };
 }
 
 /** Sans calage : la photo réduite (côté le plus long ≤ 1600 px). */

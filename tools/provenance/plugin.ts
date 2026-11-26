@@ -15,6 +15,7 @@ import type { HtmlTagDescriptor, Plugin } from 'vite';
 import { buildIdOf, fingerprintsDoc, sha256hex, type FileEntry } from './fingerprints';
 import { buildInfo, embeddedBuild, identityOf, legalBanner, readCodeMeta, readGit, type EmbeddedBuild } from './identity';
 import { collectThirdParty, thirdPartyText } from './licenses';
+import { ocrFiles } from '../ocr/plugin';
 import { background, type Background } from './similarity';
 
 export const THIRD_PARTY_FILE = 'THIRD-PARTY-LICENSES.txt';
@@ -66,7 +67,8 @@ export function provenance(opts: { root?: string; env?: Record<string, string | 
     },
     generateBundle() {
       const ids = [...this.getModuleIds()].filter((m) => /[\\/]node_modules[\\/]/.test(m));
-      const list = collectThirdParty(ids);
+      // Fichiers du moteur OCR copiés tels quels (pas des modules) : leurs paquets sont aussi distribués
+      const list = collectThirdParty([...ids, ...Object.values(ocrFiles())]);
       this.emitFile({ type: 'asset', fileName: THIRD_PARTY_FILE, source: thirdPartyText(embedded.name, list) });
       if (env.OSP_FINGERPRINTS !== '0') {
         // Corpus de fond : code des bibliothèques réellement incluses (jamais caractéristique de ce projet)

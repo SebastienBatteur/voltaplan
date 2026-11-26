@@ -410,23 +410,26 @@ export function BoardView() {
     }
   };
 
-  const readWithAi = async () => {
+  /**
+   * Lecture de la photo, en une seule étape pour l'utilisateur : par l'IA si elle est configurée, autorisée et
+   * déverrouillée, sinon par l'OCR local (sans IA, rien n'est envoyé ; photo calée nécessaire). Même suite dans les
+   * deux cas : brouillon de relevé, ou disposition et comparaison avec le projet.
+   */
+  const readPhoto = async () => {
     const ph = layout.photo;
     if (!ph) return;
     const key = getSessionKey();
-    if (!aiReady(ai, !!key)) {
-      // Clé enregistrée mais verrouillée (après un rechargement) : phrase secrète demandée ici même
-      if (ai.key) {
-        setUnlock('');
-        setMsg(t('ai.askPass'));
-      } else setMsg(t('ai.needUnlock'));
+    const useAi = aiAllowed && aiReachable && aiReady(ai, !!key);
+    if (!useAi && !phRows.length) {
+      setMsg(t('board.photoCalibrateFirst'));
       return;
     }
     setUnlock(null);
     setBusy(true);
     const t0 = Date.now();
-    setMsg(t('ai.reading'));
-    const tick = window.setInterval(() => setMsg(`${t('ai.reading')} ${Math.round((Date.now() - t0) / 1000)} s`), 1000);
+    const label = useAi ? t('ai.reading') : t('ocr.boardReading');
+    setMsg(label);
+    const tick = useAi ? window.setInterval(() => setMsg(`${label} ${Math.round((Date.now() - t0) / 1000)} s`), 1000) : undefined;
     try {
       // Image composée (rangées redressées + règle des modules) si la photo est calée, sinon photo réduite
       const calibrated = phRows.length > 0;
@@ -435,23 +438,26 @@ export function BoardView() {
         setMsg(t('assist.partialPhotoOnly'));
         return;
       }
-      const image = calibrated ? await composeBoardImage(ph.href, phRows, size.perRow) : await shrinkPhoto(ph.href);
-      const engine = { provider: ai.provider, model: ai.model, promptVersion: BOARD_PROMPT_VERSION };
       // Format v2 : la photo est un document « asset:<sha256> » — son empreinte est celle du fichier d'origine
       const photoSha = assetShaOf(ph.href) ?? (await sha256(ph.href));
+      const { OCR_VERSION } = await import('../ocr/engine');
+      const image = useAi ? (calibrated ? await composeBoardImage(ph.href, phRows, size.perRow) : await shrinkPhoto(ph.href)) : photoSha + '|' + calibrationKey(phRows);
+      const engine = useAi ? { provider: ai.provider, model: ai.model, promptVersion: BOARD_PROMPT_VERSION } : { provider: 'local', model: 'tesseract.js ' + OCR_VERSION, promptVersion: 'ocr-1' };
       const inputHash = await aiInputHash(image, engine);
-      // Même photo, même image envoyée, même modèle : lecture déjà faite, aucun nouvel appel (cache)
+      // Même photo, même image (même calage), même moteur : lecture déjà faite, aucune nouvelle lecture (cache)
       const cached = draftMode && hasCachedReading(photoSha, inputHash, enc.board.id);
       const reading = cached
         ? undefined
-        : await readBoardPhoto({
-            config: { provider: ai.provider, model: ai.model, baseUrl: ai.baseUrl, apiKey: key ?? undefined },
-            photoDataUrl: image,
-            rows: calibrated ? phRows.length : size.rows,
-            perRow: size.perRow,
-            lang,
-            composed: calibrated,
-          });
+        : useAi
+          ? await readBoardPhoto({
+              config: { provider: ai.provider, model: ai.model, baseUrl: ai.baseUrl, apiKey: key ?? undefined },
+              photoDataUrl: image,
+              rows: calibrated ? phRows.length : size.rows,
+              perRow: size.perRow,
+              lang,
+              composed: calibrated,
+            })
+          : await (await import('../ocr/board')).readBoardOcr(ph.href, phRows, size.perRow, (f) => setMsg(`${label} ${Math.round(f * 100)} %`));
       if (draftMode) {
         // Relevé d'une installation existante : brouillon proposé (fusionné avec les autres photos du tableau), rien
         // n'est appliqué
@@ -461,6 +467,7 @@ export function BoardView() {
           photoHref: ph.href,
           photoSha,
           engine: { ...engine, inputHash },
+          method: useAi ? 'ai' : 'deterministic',
           calibration: calibrationKey(phRows),
           offset: { row: phFirst, module: 0 },
         });
@@ -514,7 +521,7 @@ export function BoardView() {
       } else if (e instanceof AiError) setMsg(e.code === 'refusal' ? t('ai.refused') : t('ai.error.' + e.code, { detail: e.detail }));
       else setMsg(m === 'refusal' ? t('ai.refused') : t('ai.error', { msg: m }));
     } finally {
-      window.clearInterval(tick);
+      if (tick !== undefined) window.clearInterval(tick);
       setBusy(false);
     }
   };
@@ -739,16 +746,10 @@ export function BoardView() {
             <button onClick={compare} disabled={busy || !devs.length}>
               {t('board.compare')}
             </button>
-            {aiAllowed && (
-              // Grisé tant que la clé n'est pas déverrouillée : le cadenas à côté la déverrouille sur place
-              <button
-                onClick={readWithAi}
-                disabled={busy || !aiOk}
-                title={!aiReachable ? t('app.needsNetwork') : aiOk ? t('ai.boardHelp') : t('ai.needUnlock')}
-              >
-                {t('ai.boardRead')}
-              </button>
-            )}
+            {/* Un seul bouton : l'IA si elle est prête, sinon la lecture locale (OCR) ; le cadenas déverrouille l'IA */}
+            <button onClick={readPhoto} disabled={busy} title={aiOk ? t('ai.boardHelp') : t('ocr.boardHelp')}>
+              {aiOk ? t('ai.boardRead') : t('ocr.boardRead')}
+            </button>
             {aiAllowed && aiNeedsKey && !aiUnlocked && ai.key && unlock === null && (
               <button
                 onClick={() => {
