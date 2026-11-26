@@ -26,6 +26,8 @@
   installation nouvelle ou existante.
 - Contrôle par la liste du matériel du PDF : points lumineux, prises (doubles et triples comprises) et commandes
   comparés au schéma importé ; les écarts sont signalés à l'ouverture.
+- Cartouche et légende repérés avant l'analyse du plan (libellés du cartouche, titre « Légende ») : ces zones, où il n'y
+  a jamais de mur, sont retirées de la lecture des murs, des pièces et des repères.
 - Import Condui : le code postal des adresses est maintenant repris.
 - Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { distToWalls, planFromShapes, scaleFromDoors, shapesFromOperatorList, wallsInPolygon, type PdfShape } from '../src/import/pdfPlan';
 import { importPdfDossier, type PdfText } from '../src/import/pdfDossier';
+import { noWallZones } from '../src/import/pdfInfo';
 import type { Pt } from '../src/model/types';
 
 const P = (x: number, y: number): Pt => ({ x, y });
@@ -183,5 +184,35 @@ describe('plan lu dans le dessin du PDF', () => {
     expect(at('C')).toEqual({ row: 1, col: 0 });
     expect(at('D')).toEqual({ row: 1, col: 2 });
     expect(warnings.some((w) => /Face avant du tableau lue/.test(w))).toBe(true);
+  });
+
+  it('cartouche et légende repérés d’abord : un trait épais dedans n’est pas un mur', () => {
+    const t = (page: number, x: number, y: number, str: string, size = 6): PdfText => ({ page, x, y, str, size });
+    const items: PdfText[] = [
+      t(1, 50, 90, 'Circuit'),
+      t(1, 100, 90, 'Description'),
+      t(1, 300, 90, 'Protection'),
+      t(1, 50, 108, 'A'),
+      t(1, 100, 108, 'Prises'),
+      t(1, 300, 108, 'C20'),
+      t(2, 430, 440, 'PLAN DE POSITION – Rez'),
+      t(2, 430, 460, 'Adresse de l’installation'),
+      t(2, 520, 460, 'Rue 1, 1000 Bruxelles'),
+      t(2, 430, 480, 'Organisme agréé'),
+      t(2, 30, 440, 'Légende', 8),
+    ];
+    const pages = [
+      { width: 595, height: 842 },
+      { width: 842, height: 595 },
+    ];
+    const zones = noWallZones(items, 2, pages[1]);
+    expect(zones).toHaveLength(2);
+    expect(zones[0].y0).toBeLessThan(440);
+    expect(zones[0].y1).toBe(595);
+    expect(zones[1].x1).toBeLessThan(zones[0].x0);
+    // Barre d'échelle (trait noir épais) dans la légende et cadre épais dans le cartouche : ignorés
+    const shapes = [...room(), line(P(40, 560), P(90, 560), 5), line(P(440, 520), P(800, 520), 5)];
+    const { project } = importPdfDossier(items, pages, 'p.pdf', [[], shapes]);
+    expect(project.plan.pages[0].walls).toHaveLength(4);
   });
 });

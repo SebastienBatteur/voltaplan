@@ -229,6 +229,48 @@ export function applyPdfInfo(project: Project, info: PdfInfo): string[] {
   return got;
 }
 
+// ————— Cartouche et légende : zones sans mur —————
+
+/** Libellés d'un cartouche (et mentions du logiciel) : ancres de la zone du cartouche. */
+const CARTOUCHE_ANCHOR =
+  /^(installation|installatie|installateur|installer|inspecteur|inspector|keurder|prufer|organisme agree.*|organisme|erkend organisme|document|documenttype|adresse.*|adres.*|address|client|klant|customer|kunde|responsable.*|resp\. .*|tension.*|spanning.*|ean|cree avec.*|genere avec.*|realise avec.*|made with.*|gemaakt met.*|erstellt mit.*|plan de position.*|plan de situation|situatieschema.*|situation plan|lageplan.*|plan · .*|feuille.*|blad .*|sheet .*|n° .*|visa .*|visum .*|date|datum|reseau.*|net.*|responsable des travaux|verantwoordelijke.*|organisme agree – .*)$/;
+const LEGEND_TITLE = /^(legende|legend|legenda|zeichenerklarung)( .*)?$/;
+
+export interface Rect {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+/**
+ * Zones d'une page de plan où il n'y a jamais de mur : le cartouche (libellés dans le bas de la page, jusqu'au bord)
+ * et la légende (à partir de son titre). Elles sont retirées avant de lire les murs, les pièces et les repères.
+ */
+export function noWallZones(items: PdfText[], page: number, size: { width: number; height: number }): Rect[] {
+  const list = items.filter((i) => i.page === page);
+  const zones: Rect[] = [];
+  const anchors = list.filter((i) => i.y > size.height * 0.55 && (CARTOUCHE_ANCHOR.test(fold(i.str)) || !!fieldOf(i.str)));
+  let cartouche: Rect | null = null;
+  if (anchors.length >= 2) {
+    const x0 = Math.min(...anchors.map((a) => a.x)) - 10;
+    const y0 = Math.min(...anchors.map((a) => a.y)) - Math.max(...anchors.map((a) => a.size)) - 8;
+    // Jusqu'au bord droit de la dernière colonne (valeurs comprises), et jusqu'en bas de la page
+    const lastCol = Math.max(...anchors.map((a) => a.x));
+    // Cartouche à droite de la page : jusqu'au bord (son cadre y va)
+    const x1 = x0 > size.width * 0.3 ? size.width : Math.min(size.width, Math.max(lastCol + 160, ...list.filter((i) => i.y >= y0 && i.x >= x0).map((i) => i.x + i.str.length * i.size * 0.55)));
+    cartouche = { x0: Math.max(0, x0), y0, x1, y1: size.height };
+    zones.push(cartouche);
+  }
+  for (const l of list.filter((i) => LEGEND_TITLE.test(fold(i.str)) && i.y > size.height * 0.4)) {
+    const right = cartouche && cartouche.x0 > l.x ? cartouche.x0 - 2 : Math.min(size.width, l.x + 400);
+    zones.push({ x0: Math.max(0, l.x - 10), y0: l.y - l.size - 6, x1: right, y1: size.height });
+  }
+  return zones;
+}
+
+export const inZone = (p: { x: number; y: number }, zones: Rect[]) => zones.some((z) => p.x >= z.x0 && p.x <= z.x1 && p.y >= z.y0 && p.y <= z.y1);
+
 // ————— Liste du matériel —————
 
 const BOM_TITLE = /^(liste du materiel|liste des materiels|liste de materiel|materiaallijst|materiaallijst|materialenlijst|stuklijst|bill of materials|material list|materials list|materialliste|stuckliste)$/;

@@ -14,7 +14,7 @@ import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/ty
 import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
 import { roomBounds } from '../plan/roomKit';
 import { enclosures, moduleWidth } from '../board/model';
-import { applyPdfInfo, checkBom, readBom, readPdfInfo } from './pdfInfo';
+import { applyPdfInfo, checkBom, inZone, noWallZones, readBom, readPdfInfo, type Rect } from './pdfInfo';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -509,6 +509,18 @@ function readBoardFronts(
   if (placedN) warnings.add(`Face avant du tableau lue dans le PDF : ${placedN} disjoncteur(s) placé(s) à leur rangée ; différentiels et généraux à placer (onglet Tableau, « Mettre à jour »).`);
 }
 
+/** Tracés hors des zones sans mur (cartouche, légende) : un sous-chemin entièrement dedans est retiré. */
+function outsideZones(shapes: PdfShape[], zones: Rect[]): PdfShape[] {
+  if (!zones.length) return shapes;
+  const out: PdfShape[] = [];
+  for (const s of shapes) {
+    const keep = s.paths.map((p) => !p.every((q) => inZone(q, zones)));
+    if (!keep.some(Boolean)) continue;
+    out.push({ ...s, paths: s.paths.filter((_, i) => keep[i]), curve: s.curve.filter((_, i) => keep[i]), closed: s.closed.filter((_, i) => keep[i]) });
+  }
+  return out;
+}
+
 /** Éléments posés contre un mur (trait de raccordement tourné vers le mur le plus proche). */
 const WALL_KINDS = new Set(['socket', 'switch', 'pushButton']);
 
@@ -530,10 +542,14 @@ function placeOnPlans(
   if (!plans.length) return [];
   // Murs, portes et fenêtres lus dans le dessin de chaque page de plan ; échelle estimée par les portes si besoin
   const drawn = new Map<number, ReturnType<typeof planFromShapes>>();
+  const zonesOf = new Map<number, Rect[]>();
   let byDoors = 0;
   for (const pl of plans) {
     // Moins de 3 murs : pas un plan dessiné en traits (bâtiment en image, Volter) ; relevé sur l'image ensuite
-    const d0 = planFromShapes(shapes[pl.pdfPage - 1] ?? []);
+    // Cartouche et légende retirés d'abord : jamais de mur dedans
+    const zones = noWallZones(items, pl.pdfPage, pages[pl.pdfPage - 1]);
+    zonesOf.set(pl.pdfPage, zones);
+    const d0 = planFromShapes(outsideZones(shapes[pl.pdfPage - 1] ?? [], zones));
     const d = d0.walls.length >= 3 ? d0 : { walls: [], openings: [] };
     drawn.set(pl.pdfPage, d);
     if (!pl.scaled) {
@@ -575,7 +591,7 @@ function placeOnPlans(
   // Repères des points sur chaque page de plan
   const labels = plans.flatMap((pl) =>
     items
-      .filter((it) => it.page === pl.pdfPage && POINT_LABEL.test(it.str.trim()))
+      .filter((it) => it.page === pl.pdfPage && POINT_LABEL.test(it.str.trim()) && !inZone(it, zonesOf.get(pl.pdfPage) ?? []))
       .map((it) => ({ it, pl, code: POINT_LABEL.exec(it.str.trim())![1], n: Number(POINT_LABEL.exec(it.str.trim())![2]) })),
   );
   const boardOf = (pl: PdfPlanPage) => (pl.board && pl.board !== mainBoard ? pl.board : mainBoard);
@@ -614,7 +630,7 @@ function placeOnPlans(
     const ys = d?.walls.flatMap((v) => [v.a.y, v.b.y]) ?? [];
     const inside = (x: number, y: number) => !xs.length || (x > Math.min(...xs) && x < Math.max(...xs) && y > Math.min(...ys) && y < Math.max(...ys));
     for (const it of items) {
-      if (it.page !== pl.pdfPage) continue;
+      if (it.page !== pl.pdfPage || inZone(it, zonesOf.get(pl.pdfPage) ?? [])) continue;
       const str = it.str.trim();
       if (str.length < 2 || str.split(/\s+/).length > 4 || POINT_LABEL.test(str)) continue;
       const r = interpretLabel(str);
