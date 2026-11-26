@@ -130,7 +130,7 @@ export function isRcd(n: ElNode): boolean {
   return n.kind === 'protection' && (n.props.device === 'rcd' || n.props.device === 'rcbo' || Number(n.props.residualCurrent) > 0);
 }
 
-function letterFor(i: number): string {
+export function letterFor(i: number): string {
   let s = '';
   i += 1;
   while (i > 0) {

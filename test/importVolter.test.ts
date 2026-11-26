@@ -153,6 +153,8 @@ describe('import Volter (.vschema)', () => {
     // Rangée 0 avant rangée 1 ; terre en dernier
     expect(board.children.map((c) => c.id).slice(0, 3)).toEqual(['c-hob', 'c-pv', 'r30']);
     expect(board.children.at(-1)!.kind).toBe('earthBar');
+    // Repères de Volter : disjoncteurs directs puis groupes des différentiels
+    expect(['c-hob', 'c-pv', 'c-light', 'c-sock'].map((id) => byId(project, id)!.node.props.fixedLetter)).toEqual(['A', 'B', 'C', 'D']);
   });
 
   it('groupe les points reliés : va-et-vient et télérupteur', () => {
@@ -197,6 +199,8 @@ describe('import Volter (.vschema)', () => {
     expect(sub.parent?.kind).toBe('cable');
     expect(byId(project, 'feed')!.node.children[0].children).toContain(sub.node);
     expect(sub.node.children.map((c) => c.id)).toEqual(['c-up']);
+    expect(byId(project, 'c-up')!.node.props.fixedLetter).toBe('E-A');
+    expect(byId(project, 'feed')!.node.props.fixedLetter).toBe('C');
     // Le bouton de l'étage rejoint le circuit et le groupe du télérupteur du rez (un seul bouton peut porter le
     // télérupteur dans Voltaplan : les autres restent des points du même circuit)
     const cableIds = [...walk(byId(project, 'c-light')!.node.children)].map((x) => x.node.id);

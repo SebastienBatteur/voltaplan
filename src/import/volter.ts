@@ -5,7 +5,7 @@
  * Les données d'origine de chaque élément sont gardées dans `node.source`.
  */
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
-import { createNode, emptyPage, emptyProject, uid } from '../model/tree';
+import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
 
 /** Unité Volter : 1 = 1 cm ; Voltaplan : mm. */
@@ -420,10 +420,23 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       if (typeof owner === 'string' && rcdNode.has(owner)) rcdNode.get(owner)!.children.push(n);
       else top.push(n);
     }
-    // Ordre du tableau : différentiels de premier niveau et disjoncteurs sans différentiel, par rangée puis colonne
+    // Ordre de l'unifilaire de Volter : disjoncteurs sans différentiel, puis groupes des différentiels, chacun par
+    // rangée puis colonne
     const firstLevel = [...rcds.filter((m) => !placed.has(str(m.id)!)).map((m) => ({ o: order(m), n: rcdNode.get(str(m.id)!)! })), ...mcbs.filter((m) => !(typeof ownerOf(m) === 'string' && rcdNode.has(ownerOf(m) as string))).map((m, i) => ({ o: order(m), n: top[i] }))];
-    firstLevel.sort((a, c) => a.o - c.o);
+    firstLevel.sort((a, c) => Number(a.n.props.device === 'rcd') - Number(c.n.props.device === 'rcd') || a.o - c.o);
     board.children = firstLevel.map((x) => x.n);
+    // Repères de Volter (A, B, C… dans cet ordre, circuits vides compris ; « E-A » dans le sous-tableau de code E) :
+    // ce sont ceux des étiquettes du tableau, gardés tels quels
+    const prefix = str(b.code) ? `${str(b.code)}-` : '';
+    let k = 0;
+    const letter = (nodes: ElNode[]) => {
+      for (const n of nodes) {
+        if (n.kind !== 'protection') continue;
+        if (n.props.device === 'mcb') n.props.fixedLetter = prefix + letterFor(k++);
+        else letter(n.children);
+      }
+    };
+    letter(board.children);
     if (fed.has(boardId)) continue;
     if (!mainBoard) {
       // Volter dessine toujours la terre sous le compteur : barrette et prise de terre (valeurs à compléter)
