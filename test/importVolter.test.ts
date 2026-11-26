@@ -179,9 +179,13 @@ describe('import Volter (.vschema)', () => {
     expect(project.plan.pages.map((p) => p.name)).toEqual(['Rez', 'Étage']);
     const pg = project.plan.pages[0];
     expect(pg.walls[0]).toEqual({ a: { x: 0, y: 0 }, b: { x: 10000, y: 0 }, thickness: 300 });
-    expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 }, width: 300 });
+    expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 }, width: 300, hinge: 'right', mirrored: false });
     expect(pg.openings[1]).toMatchObject({ kind: 'garageDoor', a: { x: 6750, y: 0 }, b: { x: 9250, y: 0 } });
     expect(pg.openings[2].kind).toBe('slidingDoor');
+    // Volter openDirection right, hingeSide right → battant côté -y, charnière en b
+    const s2 = sample();
+    Object.assign(s2.project.floors[0].doors[0], { openDirection: 'right', hingeSide: 'right' });
+    expect(importVolter(JSON.stringify(s2)).project.plan.pages[0].openings[0]).toMatchObject({ hinge: 'left', mirrored: true });
     expect(pg.symbols).toHaveLength(15);
     expect(pg.furniture?.map((f) => f.kind).sort()).toEqual(['spiralStairs', 'wc']);
     // Meuble Volter : coin supérieur gauche (900, 600) cm, 37 × 65 cm → centre en mm

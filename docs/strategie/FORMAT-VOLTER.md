@@ -119,3 +119,10 @@ disjoncteur différentiel 30 mA, liste d'attente (`wachtlijst`), codes EAN.
 - Repères des circuits : Volter ne les enregistre pas ; il les calcule à l'affichage (disjoncteurs sans différentiel
   d'abord, puis groupes des différentiels, par rangée et colonne, circuits vides compris ; « E-A » dans un
   sous-tableau de code E). L'import refait ce calcul et fixe ces repères (ceux des étiquettes du tableau).
+
+## Relevé du 5e projet d'essai (portes et meubles tournés), comparé au plan affiché par Volter
+
+- Meubles : `position` = coin supérieur gauche du meuble non tourné, `rotation` en degrés (sens horaire, y vers le
+  bas) autour de ce coin. Vérifié sur trois meubles tournés à 180° et 270° (le centre ne bouge pas).
+- Portes : `hingeSide` right = charnière au bout « fin » du mur (end) ; `openDirection` right = battant du côté
+  gauche du mur parcouru de start à end (-y local). `soort` : absent (battante), `garage`, `schuifOpbouw`.

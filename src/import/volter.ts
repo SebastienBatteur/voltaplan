@@ -505,7 +505,9 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       const soort = str(d.soort) ?? '';
       const kind = /^garage/i.test(soort) ? 'garageDoor' : /^schuif/i.test(soort) ? 'slidingDoor' : /^dubbel/i.test(soort) ? 'doubleDoor' : /^(raamdeur|franse)/i.test(soort) ? 'frenchDoor' : 'door';
       if (soort && kind === 'door') warnings.add(`Porte Volter de genre inconnu, dessinée comme une porte simple : ${soort}`);
-      page.openings.push({ kind, ...o, hinge: d.openDirection === 'right' ? 'right' : 'left', mirrored: d.hingeSide === 'right' });
+      // Sens vérifié sur le plan de Volter (schéma d'essai 5) : `hingeSide` right = charnière au bout b du mur
+      // (Voltaplan : mirrored) ; `openDirection` right = battant du côté -y local du mur (Voltaplan : hinge 'left')
+      page.openings.push({ kind, ...o, hinge: d.openDirection === 'right' ? 'left' : 'right', mirrored: d.hingeSide === 'right' });
     }
     for (const d of arr(f.windows)) {
       const o = opening(d);
