@@ -173,6 +173,12 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'reference', type: 'text' },
   ],
+  battery: [
+    { key: 'capacity', type: 'number', unit: 'kWh' },
+    { key: 'power', type: 'number', unit: 'W' },
+    { key: 'name', type: 'text' },
+    { key: 'reference', type: 'text' },
+  ],
   other: [
     { key: 'name', type: 'text' },
     { key: 'inBoard', type: 'bool', default: false },
@@ -189,7 +195,7 @@ export const ALLOWED_CHILDREN: Record<NodeKind, NodeKind[]> = {
   board: ['protection', 'earthBar', 'board'],
   cable: [
     'socket', 'switch', 'pushButton', 'light', 'appliance', 'junctionBox', 'relay', 'transformer',
-    'domotic', 'motor', 'solarPanel', 'inverter', 'bell', 'detector', 'board', 'cable', 'other',
+    'domotic', 'motor', 'solarPanel', 'inverter', 'battery', 'bell', 'detector', 'board', 'cable', 'other',
   ],
   socket: ['appliance', 'cable'],
   switch: ['light', 'cable', 'switch', 'appliance', 'motor', 'relay'],
@@ -204,7 +210,8 @@ export const ALLOWED_CHILDREN: Record<NodeKind, NodeKind[]> = {
   domotic: ['light', 'cable', 'appliance', 'motor'],
   motor: ['cable'],
   solarPanel: ['cable', 'solarPanel'],
-  inverter: ['cable', 'solarPanel', 'other'],
+  inverter: ['cable', 'solarPanel', 'battery', 'other'],
+  battery: ['cable'],
   bell: [],
   detector: ['light', 'cable'],
   other: ['cable', 'other'],

@@ -173,6 +173,18 @@ input:not([type]) {
 .brand {
   font-weight: 700;
   margin-right: 8px;
+  /* Bouton « Mes projets » : même aspect que le texte du logo */
+  background: none;
+  border: none;
+  padding: 2px 4px;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.brand:hover {
+  background: rgba(127, 127, 127, 0.15);
 }
 .logo {
   color: #e3a33a;

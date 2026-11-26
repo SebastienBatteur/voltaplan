@@ -27,6 +27,7 @@ export type NodeKind =
   | 'motor'
   | 'solarPanel'
   | 'inverter'
+  | 'battery' // batterie de stockage (accumulateur)
   | 'bell' // sonnerie / source sonore
   | 'detector' // détecteur
   | 'other';

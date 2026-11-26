@@ -48,7 +48,7 @@ export function symbolSize(n: ElNode, orient: 'v' | 'h'): { w: number; h: number
     case 'motor':
       return { w: 28, h: 24 };
     case 'appliance':
-      return { w: n.props.applianceType === 'freezer' ? 44 : 30, h: 24 };
+      return { w: 30, h: 24 };
     case 'board':
       return { w: 40, h: 16 };
     case 'meter':
@@ -275,7 +275,7 @@ function SwitchSym({ n, cx }: { n: ElNode; cx: number }) {
 }
 
 /** Appareil d'utilisation (tableau 2.23 G) : carré avec pictogramme. Boîte x∈[x0,x0+w], y∈[-h/2,h/2]. */
-function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
+function ApplianceSym({ n, x0 }: { n: ElNode; x0: number; w?: number }) {
   const t = String(n.props.applianceType ?? 'other');
   const s = 20;
   const cx = x0 + s / 2;
@@ -297,7 +297,7 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
       </g>
     );
   }
-  const box = <rect x={x0} y={-s / 2} width={t === 'freezer' ? w - (x0 - 0) : s} height={s} className="bg" />;
+  const box = <rect x={x0} y={-s / 2} width={s} height={s} className="bg" />;
   const flake = (x: number, size = 5) => (
     <g key={x} className="thin">
       <line x1={x - size} y1={0} x2={x + size} y2={0} />
@@ -363,7 +363,8 @@ function ApplianceSym({ n, x0, w }: { n: ElNode; x0: number; w: number }) {
       inner = flake(cx);
       break;
     case 'freezer':
-      inner = <>{[0, 1, 2].map((i) => flake(x0 + 6 + i * ((w - x0 - 12) / 2), 4))}</>;
+      // Congélateur : carré, trois étoiles côte à côte (« *** »)
+      inner = <>{[-6, 0, 6].map((dx) => flake(cx + dx, 2.6))}</>;
       break;
     case 'heater':
       inner = (
@@ -621,6 +622,21 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {lead(6)}
           <rect x={6} y={-10} width={22} height={20} className="bg" />
           <path d="M6 -10 L17 6 L28 -10" className="nofill" />
+        </g>
+      );
+    case 'battery':
+      // Accumulateur (tableau 2.23 H. Sources) : éléments « trait long fin / trait court épais » en série
+      return (
+        <g>
+          {lead(8)}
+          {[8, 16].map((x) => (
+            <g key={x}>
+              <line x1={x} y1={-9} x2={x} y2={9} />
+              <line x1={x + 4} y1={-4.5} x2={x + 4} y2={4.5} style={{ strokeWidth: 2.4 }} />
+            </g>
+          ))}
+          <line x1={12} y1={0} x2={16} y2={0} />
+          <text x={6} y={-6} fontSize={6} textAnchor="middle">+</text>
         </g>
       );
     case 'inverter': {

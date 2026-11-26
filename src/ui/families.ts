@@ -10,7 +10,7 @@ export const FAMILIES: { key: string; kinds: NodeKind[] }[] = [
   { key: 'lighting', kinds: ['light'] },
   { key: 'outlets', kinds: ['socket', 'appliance', 'motor'] },
   { key: 'controls', kinds: ['switch', 'pushButton', 'relay', 'detector'] },
-  { key: 'other', kinds: ['domotic', 'transformer', 'bell', 'solarPanel', 'inverter', 'other'] },
+  { key: 'other', kinds: ['domotic', 'transformer', 'bell', 'solarPanel', 'inverter', 'battery', 'other'] },
 ];
 
 /** Éléments qui ont un symbole sur le plan de position (tableau 2.23). */
@@ -28,6 +28,7 @@ export const PLACEABLE = new Set<NodeKind>([
   'motor',
   'solarPanel',
   'inverter',
+  'battery',
   'bell',
   'detector',
   'other',

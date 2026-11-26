@@ -7,6 +7,12 @@
 - Fichier → « Importer Volter (.vschema)… » : tableau (différentiel général, différentiels imbriqués, disjoncteurs
   et câbles), points groupés par liaison de commande, étages, murs, portes, fenêtres, mobilier, escaliers,
   surfaces extérieures, EAN et réseau. Ce que Volter n'enregistre pas (compteur, terre) est signalé.
+- Repères des circuits repris de Volter (A, B, C…, « E-A » dans un sous-tableau), sous-tableaux sous leur disjoncteur,
+  liaisons entre étages, portes de garage et coulissantes.
+- Nouvel élément **Batterie** (stockage) : symbole d'accumulateur, capacité (kWh) et puissance ; mobilier
+  **escalier en colimaçon** ; symbole du congélateur carré (trois étoiles).
+- Le logo « Voltaplan » ramène à « Mes projets ». Un fichier importé n'apparaît plus dans « Projets récents » avant
+  d'avoir été enregistré.
 
 ### Lecture locale des photos (OCR, sans IA) (2026-11-26)
 

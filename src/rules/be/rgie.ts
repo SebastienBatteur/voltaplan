@@ -49,7 +49,7 @@ export function maxProtectionFor(section: number): number | undefined {
 /** Noms de pièces évoquant un local avec baignoire ou douche : simple indice, à confirmer (propriété wetRoom). */
 export const WET_ROOM = /salle\s*de\s*bain|sdb|douche|badkamer|bathroom|\bbad\b|wellness|sauna|piscine|zwembad/i;
 const OVERCURRENT = new Set(['mcb', 'rcbo', 'fuse']);
-const LOAD_KINDS = new Set(['socket', 'light', 'appliance', 'motor', 'domotic', 'bell', 'solarPanel', 'inverter']);
+const LOAD_KINDS = new Set(['socket', 'light', 'appliance', 'motor', 'domotic', 'bell', 'solarPanel', 'inverter', 'battery']);
 
 interface Info {
   node: ElNode;
@@ -197,7 +197,7 @@ function checkRgie(project: Project): Finding[] {
     if (node.kind === 'cable') {
       const parent = ancestors.at(-1);
       // Côté continu photovoltaïque : hors périmètre de ces règles AC.
-      const dcSide = ancestors.some((a) => a.kind === 'inverter' || a.kind === 'solarPanel');
+      const dcSide = ancestors.some((a) => a.kind === 'inverter' || a.kind === 'solarPanel' || a.kind === 'battery');
       // Un câble dans le prolongement d'un autre câble/élément sans données hérite de celui du départ.
       const isStart = !parent || parent.kind === 'protection' || parent.kind === 'board' || parent.kind === 'meter' || parent.kind === 'origin';
       const section = n(node.props.section);

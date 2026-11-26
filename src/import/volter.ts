@@ -101,7 +101,7 @@ export const VOLTER_TYPES: Record<string, Kind> = {
   solarPanel: { kind: 'solarPanel' },
   inverter: { kind: 'inverter', props: { inverterType: 'dcAc' } },
   inverterAcDc: { kind: 'inverter', props: { inverterType: 'acDc' } },
-  battery: other('Batterie'),
+  battery: { kind: 'battery' },
   // Autres
   doorbell: { kind: 'bell', props: { name: 'Sonnette' } },
   horn: { kind: 'bell', props: { name: 'Avertisseur' } },
@@ -475,16 +475,18 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   for (const f of floors) {
     const page: PlanPage = emptyPage(str(f.name) ?? `Niveau ${num(f.level) ?? 0}`);
     page.furniture = [];
-    const walls = new Map<string, { a: Pt; b: Pt }>();
+    const walls = new Map<string, { a: Pt; b: Pt; thickness: number }>();
     for (const w of arr(f.walls)) {
       const a = pt(w.start);
       const b = pt(w.end);
-      walls.set(str(w.id) ?? uid(), { a, b });
-      page.walls.push({ a: round(a), b: round(b), thickness: (num(w.thickness) ?? 15) * CM });
+      const thickness = (num(w.thickness) ?? 15) * CM;
+      walls.set(str(w.id) ?? uid(), { a, b, thickness });
+      page.walls.push({ a: round(a), b: round(b), thickness });
       grow(a);
       grow(b);
     }
-    // Ouvertures : position = milieu de l'ouverture, en fraction de la longueur du mur
+    // Ouvertures : position = milieu de l'ouverture, en fraction de la longueur du mur ; largeur Volter = longueur
+    // de l'ouverture (a → b). Voltaplan : `width` = épaisseur du mur percé (profondeur de l'ouverture)
     const opening = (o: Obj) => {
       const w = walls.get(str(o.wallId) ?? '');
       if (!w) return null;
@@ -494,7 +496,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       const width = (num(o.width) ?? 80) * CM;
       const mid = (num(o.position) ?? 0.5) * len;
       const s = Math.max(0, mid - width / 2);
-      return { a: round({ x: w.a.x + ux * s, y: w.a.y + uy * s }), b: round({ x: w.a.x + ux * (s + width), y: w.a.y + uy * (s + width) }), width };
+      return { a: round({ x: w.a.x + ux * s, y: w.a.y + uy * s }), b: round({ x: w.a.x + ux * (s + width), y: w.a.y + uy * (s + width) }), width: w.thickness };
     };
     for (const d of arr(f.doors)) {
       const o = opening(d);

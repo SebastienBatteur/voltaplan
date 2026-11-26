@@ -492,9 +492,9 @@ export function App() {
     <NoticeHost.Provider value={noticeEl}>
     <div className="app">
       <header className="toolbar">
-        <div className="brand">
+        <button type="button" className="brand" title={t('menu.home')} aria-label={t('menu.home')} onClick={() => setHomeOpen(true)}>
           <span className="logo">{'⚡\uFE0E'}</span> <span className="brand-name">{APP_NAME}</span>
-        </div>
+        </button>
         <FileMenu
           actions={[
             { label: t('menu.home'), run: () => setHomeOpen(true) },

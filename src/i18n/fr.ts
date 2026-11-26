@@ -861,6 +861,7 @@ export const fr = {
   'kind.motor': 'Moteur',
   'kind.solarPanel': 'Panneaux solaires',
   'kind.inverter': 'Onduleur',
+  'kind.battery': 'Batterie',
   'kind.bell': 'Sonnerie',
   'kind.detector': 'Détecteur',
   'kind.other': 'Autre',
@@ -906,6 +907,7 @@ export const fr = {
   'enum.inverterType.acDc': "Redresseur/onduleur AC ↔ DC (batterie)",
   'enum.inverterType.dcDc': "Hacheur DC → DC",
   'prop.power': 'Puissance',
+  'prop.capacity': 'Capacité',
   'prop.relayType': 'Type',
   'prop.safety': 'Transformateur de sécurité',
 

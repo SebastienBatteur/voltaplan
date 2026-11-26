@@ -63,6 +63,7 @@ const KIND_CAT: Partial<Record<string, BomCategory>> = {
   earth: 'earth',
   solarPanel: 'energy',
   inverter: 'energy',
+  battery: 'energy',
   other: 'other',
 };
 
@@ -125,6 +126,8 @@ function describe(n: ElNode, lang: Lang, t: T, eq: Record<string, string>): { de
       return { desc: [t('kind.solarPanel'), p.name ? String(p.name) : ''].filter(Boolean).join(' · '), std: '', qty: Math.max(1, Number(p.count) || 1) };
     case 'inverter':
       return { desc: [t('enum.inverterType.' + String(p.inverterType ?? 'dcAc')), p.power ? fmtNum(p.power, lang) + ' W' : ''].filter(Boolean).join(' · '), std: '', qty: 1 };
+    case 'battery':
+      return { desc: [t('kind.battery'), p.capacity ? fmtNum(p.capacity, lang) + ' kWh' : '', p.power ? fmtNum(p.power, lang) + ' W' : '', p.name ? String(p.name) : ''].filter(Boolean).join(' · '), std: '', qty: 1 };
     case 'domotic':
     case 'other':
       return { desc: [t('kind.' + n.kind), p.name ? String(p.name) : ''].filter(Boolean).join(' · '), std: '', qty: 1 };

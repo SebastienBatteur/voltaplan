@@ -179,7 +179,7 @@ describe('import Volter (.vschema)', () => {
     expect(project.plan.pages.map((p) => p.name)).toEqual(['Rez', 'Étage']);
     const pg = project.plan.pages[0];
     expect(pg.walls[0]).toEqual({ a: { x: 0, y: 0 }, b: { x: 10000, y: 0 }, thickness: 300 });
-    expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 } });
+    expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 }, width: 300 });
     expect(pg.openings[1]).toMatchObject({ kind: 'garageDoor', a: { x: 6750, y: 0 }, b: { x: 9250, y: 0 } });
     expect(pg.openings[2].kind).toBe('slidingDoor');
     expect(pg.symbols).toHaveLength(15);
