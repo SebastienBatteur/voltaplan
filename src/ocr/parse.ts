@@ -195,6 +195,7 @@ export function correctWord(word: string, vocabulary: string[] = ROOM_WORDS): st
 }
 
 export interface RoomLabel {
+  /** Nom corrigé vers le vocabulaire, sans accents (« Hall de nuit », « Chambre 3 »). */
   text: string;
   /** Centre de la boîte (pixels de l'image analysée). */
   x: number;
@@ -247,8 +248,8 @@ export function roomLabels(words: OcrWord[]): RoomLabel[] {
       const x1 = Math.max(...box.map((b) => b.x1));
       const y0 = Math.min(...box.map((b) => b.y0));
       const y1 = Math.max(...box.map((b) => b.y1));
-      const text = [...new Set(idx.map((n) => ws[n].src))].map((src) => ws.find((w) => w.src === src)!.text.trim()).join(' ');
-      out.push({ text, x: (x0 + x1) / 2, y: (y0 + y1) / 2 });
+      // Texte corrigé (« baing » → « Bains »), première lettre en capitale
+      out.push({ text: phrase.charAt(0).toUpperCase() + phrase.slice(1), x: (x0 + x1) / 2, y: (y0 + y1) / 2 });
       idx.forEach((n) => used.add(n));
       break;
     }

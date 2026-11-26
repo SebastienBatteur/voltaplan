@@ -65,13 +65,13 @@ describe('OCR — noms de pièces sur un plan', () => {
 
   it('vocabulaire FR/NL, mots voisins regroupés, numéro de chambre gardé', () => {
     const r = roomLabels([w('garage', 100, 100), w('chambre', 400, 100), w('3', 470, 100, 12), w('hall', 100, 400, 40), w('de', 150, 400, 20), w('nuit', 180, 400, 40), w('keuken', 600, 300), w('730', 700, 500, 40), w('frigo', 600, 200)]);
-    expect(r.map((x) => x.text)).toEqual(['garage', 'chambre 3', 'hall de nuit', 'keuken']);
+    expect(r.map((x) => x.text)).toEqual(['Garage', 'Chambre 3', 'Hall de nuit', 'Keuken']);
     expect(r[1]).toMatchObject({ x: (400 + 482) / 2, y: 110 });
   });
 
   it('un mot hors vocabulaire ou un numéro après une pièce qui n’en prend pas n’est pas une pièce', () => {
     expect(roomLabels([w('frigo', 0, 0), w('stéréo', 100, 0)])).toEqual([]);
-    expect(roomLabels([w('living', 0, 0), w('2', 65, 0, 10)]).map((x) => x.text)).toEqual(['living']);
+    expect(roomLabels([w('living', 0, 0), w('2', 65, 0, 10)]).map((x) => x.text)).toEqual(['Living']);
   });
 });
 
@@ -88,6 +88,18 @@ describe('OCR — correction vers le vocabulaire (comme un vocabulaire imposé a
 
   it('« hall-de-nuit » lu d’un bloc est reconnu comme une seule pièce', () => {
     const r = roomLabels([{ text: 'hall-de-nuit', bbox: { x0: 0, y0: 0, x1: 120, y1: 20 } }, { text: 'baing', bbox: { x0: 300, y0: 0, x1: 360, y1: 20 } }]);
-    expect(r.map((x) => x.text)).toEqual(['hall-de-nuit', 'baing']);
+    expect(r.map((x) => x.text)).toEqual(['Hall de nuit', 'Bains']);
+  });
+});
+
+describe('OCR — position sur l’image d’origine après rotation', () => {
+  it('quart de tour dans les deux sens, puis réduction', async () => {
+    const { toOriginal } = await import('../src/ocr/plan');
+    // Image d'origine 100 × 50, agrandie ×2 → 200 × 100 ; tournée de 90° → 100 × 200
+    expect(toOriginal({ x: 10, y: 20 }, 0, 200, 100, 2)).toEqual({ x: 5, y: 10 });
+    // Point d'origine (5, 10) → agrandi (10, 20) → tourné 90° (100 - 20, 10) = (80, 10)
+    expect(toOriginal({ x: 80, y: 10 }, 90, 100, 200, 2)).toEqual({ x: 5, y: 10 });
+    // Tourné 270° : (y, w - x) = (20, 200 - 10) = (20, 190)
+    expect(toOriginal({ x: 20, y: 190 }, 270, 100, 200, 2)).toEqual({ x: 5, y: 10 });
   });
 });

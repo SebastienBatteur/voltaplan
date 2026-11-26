@@ -44,7 +44,7 @@ function pageToPx(bg: Bg, p: Pt, pw: number, ph: number): Pt {
 }
 
 /** Pixel de l'image → point de la page (mm). */
-function pxToPage(bg: Bg, p: Pt, pw: number, ph: number): Pt {
+export function pxToPage(bg: Bg, p: Pt, pw: number, ph: number): Pt {
   const x = (p.x / pw) * bg.w - bg.w / 2;
   const y = (p.y / ph) * bg.h - bg.h / 2;
   const a = (bg.angle * Math.PI) / 180;

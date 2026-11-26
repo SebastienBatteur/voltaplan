@@ -614,6 +614,33 @@ export function PlanView() {
             {t('plan.tool.trace')}
           </button>
         )}
+        {bg && (
+          <button
+            disabled={busy}
+            title={t('plan.roomsHelp')}
+            onClick={async () => {
+              setBusy(true);
+              try {
+                const { readPlanRooms } = await import('../ocr/plan');
+                const { rooms } = await readPlanRooms(bg);
+                const known = new Set(page.labels.map((l) => l.text.trim().toLowerCase()));
+                const fresh = rooms.filter((r) => !known.has(r.text.toLowerCase()));
+                if (fresh.length)
+                  editPage((pg) => ({
+                    ...pg,
+                    labels: [...pg.labels, ...fresh.map((r) => ({ id: uid(), text: r.text, pos: { x: Math.round(r.pos.x), y: Math.round(r.pos.y) }, size: 3 }))],
+                  }));
+                alert(rooms.length ? t('plan.roomsDone', { n: fresh.length, skip: rooms.length - fresh.length }) : t('plan.roomsNone'));
+              } catch (err) {
+                alert(t('ocr.error', { msg: String((err as Error).message ?? err) }));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {t('plan.tool.rooms')}
+          </button>
+        )}
         {bg && page.walls.length > 0 && (
           <button className={tool === 'align' ? 'active' : ''} onClick={() => chooseTool('align')} title={t('plan.hint.align0')}>
             {t('plan.tool.align')}
