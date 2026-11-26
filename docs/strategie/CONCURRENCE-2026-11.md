@@ -127,7 +127,7 @@ Sources : sites et documentation des éditeurs, code source public d'Eendraadsch
 | Condui | `.zip` « projet téléchargé » (données du projet + fonds de plan) ; PDF « éditable » contenant le projet (premium nuage) | Non publié (docs.condui.be : ZIP, contenu non décrit) | Possible après examen d'un **fichier d'exemple** (projet local gratuit, sans compte) |
 | Volter | `.vschema` (« Back-up importeren ») | **Examiné le 26/11** sur 5 projets d'essai : JSON lisible, non compressé (voir `FORMAT-VOLTER.md`) | **Fait** (import, dans `main`) |
 | PlanElec | Projets dans le nuage de l'éditeur (Sketch : aussi dans le navigateur) ; export SVG du schéma et du plan, PDF ; ouvre les `.trik` | Non publié | Inconnu : examiner l'export d'un projet d'essai de Sketch (gratuit, sans compte) s'il en propose un |
-| Draadwijs | Projets sur l'appareil (et nuage chiffré avec Pass ou Pro) ; listes exportées vers Excel ; ouvre les `.trik` | Non publié | Inconnu : examiner la démo (sans compte) ; les listes Excel ne suffisent pas pour reconstruire un schéma |
+| Draadwijs | `.draadwijs` (JSON, « version » 3, clés en néerlandais) : schéma en arbre, plan en cm, mesures, devis ; ouvre aussi les `.trik` | **Examiné le 26/11** sur 4 projets d'exemple | **Fait** (import) |
 | 1draad | Cité par Draadwijs comme « autre logiciel » | Non examiné | Inconnu |
 | Amperio | « exportable à tout moment », format non indiqué ; import seulement PDF/photo | Non | Inconnu ; essai de 7 jours avec compte |
 | Tricity | Non indiqué (app iPad/Mac payante) | Non | Inconnu |

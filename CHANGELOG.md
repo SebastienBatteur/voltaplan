@@ -2,6 +2,13 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Import Draadwijs (2026-11-26)
+
+- Fichier → « Importer Draadwijs (.draadwijs)… » : schéma (raccordement, différentiels, disjoncteurs et câbles,
+  points, sous-tableaux, inverseur de secours, panneaux solaires, batterie, borne), plan (murs, portes, fenêtres,
+  porte de garage, textes, symboles, meubles, compteur et terre), mesures, réseau, adresse et date de début des
+  travaux. Le devis Draadwijs n'est pas repris.
+
 ### Règles du 1/3/2025 et liste des circuits (2026-11-26)
 
 - Contrôle RGIE selon la date de début des travaux, comme pour le 1/6/2023 : depuis le **1/3/2025**, prises de 16 A
