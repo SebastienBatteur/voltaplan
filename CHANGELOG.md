@@ -1,5 +1,11 @@
 # Journal des modifications
 
+
+## Import Volter
+
+- Fichier → « Importer Volter (.vschema)… » : tableau (différentiel général, différentiels imbriqués, disjoncteurs
+  et câbles), points groupés par liaison de commande, étages, murs, portes, fenêtres, mobilier, escaliers,
+  surfaces extérieures, EAN et réseau. Ce que Volter n'enregistre pas (compteur, terre) est signalé.
 ## Non publié (audit de fiabilisation, novembre 2026)
 
 ### Lecture locale des photos (OCR, sans IA) (2026-11-26)

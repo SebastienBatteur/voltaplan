@@ -1,5 +1,7 @@
 # Format de sauvegarde Volter (`.vschema`)
 
+**Import réalisé** : menu Fichier → « Importer Volter (.vschema)… » (branche `import-volter`).
+
 Examen d'un projet d'essai fictif exporté par l'utilisateur le 26/11/2026 (Volter bêta, `"version": 2`).
 Le fichier d'exemple n'est **pas** versionné (il reste dans le dossier personnel de l'utilisateur).
 
@@ -59,8 +61,8 @@ en déduit les groupes 1, 2, 3… du circuit.
 
 ## Catalogue complet des symboles de Volter (captures d'écran du 26/11)
 
-Noms affichés par Volter (interface française). La clé interne (`type`) n'est connue que pour les symboles
-présents dans le fichier d'exemple (en **gras**) ; les autres demandent un fichier d'exemple qui les contient.
+Noms affichés par Volter (interface française). Toutes les clés internes (`type`) ont été relevées sur un
+2e projet d'essai contenant chaque symbole : la correspondance complète est dans `src/import/volter.ts` (`VOLTER_TYPES`).
 
 | Catégorie Volter | Symboles | Voltaplan aujourd'hui | Manque dans Voltaplan |
 | --- | --- | --- | --- |
@@ -91,3 +93,13 @@ bouton « Attribuer des symboles » (rattacher les points du plan à un circuit)
 Arrivée triphasée 3N400, disjoncteurs 3P/4P, fusibles, sous-tableau, plusieurs étages
 (`crossFloorConnections`), pièces tracées, étiquettes, prises simples/doubles/sans terre, circuit sans
 disjoncteur différentiel 30 mA, liste d'attente (`wachtlijst`), codes EAN.
+
+## Relevé du 2e projet d'essai
+
+- `spanning` : `3x400V+N` ; `installatiePeriode` : `tot2020` (autres valeurs inconnues) ; `eanCodes[] {id, label, code}`.
+- `labels[] {id, type: "label", position, text}` ; `buitenvlakken[] {soort: tuin/terras/oprit…, materiaal, naam,
+  vorm {soort: "veelhoek", punten[]} ou autre forme, toonOppervlakte}`.
+- `architecturalElements` : `stairStraight {width, length}`, `stairQuarterTurn {width, legALength, legBLength, turn}`,
+  `stairSpiral {radius, sweepDeg, turn}`.
+- Symboles posés sans circuit : `circuitId: null` (repris comme éléments non raccordés).
+- `roundControl` : seul symbole dont le libellé n'est pas certain (pris pour « Serrure de verrouillage »).
