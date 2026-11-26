@@ -100,6 +100,7 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     // Prises et circuits
     r('R-SOCKET-EARTH', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-SOCKET-CHILD', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation', ...PHY }),
+    r('R-SOCKET-IPXXD', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     r('R-SOCKET-MAX', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation', ...PHY }),
     r('R-SOCKET-SECTION', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     r('R-DEDICATED-CIRCUIT', { kind: 'nonCompliance', hazard: 'low', existing: 'recommendation', ...PHY }),

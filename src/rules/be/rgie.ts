@@ -91,16 +91,28 @@ export const RCD30_2023 = '2023-06-01';
  * → oui ; existante → inconnu (une question est posée sur le tableau, constat R-RCD30-DATE).
  */
 function since2023(project: Project, chain: ElNode[]): 'yes' | 'no' | 'unknown' {
+  return sinceDate(project, chain, RCD30_2023);
+}
+
+/** Modifications du Livre 1 applicables à partir du 1/3/2025 (AR du 3/10/2024 : prises, salles de bain, piscines). */
+export const RGIE_2025 = '2025-03-01';
+
+/**
+ * Règles d'une version du Livre 1 applicables à cette partie : exécution sur place commencée à la date `date` ou
+ * après (dispositions transitoires de chaque version). Même ordre de recherche que pour le 1/6/2023 ; la réponse
+ * « tableau fait avant / après le 1/6/2023 » ne tranche que ce qu'elle permet de déduire (avant 2023 ⇒ avant 2025).
+ */
+function sinceDate(project: Project, chain: ElNode[], date: string): 'yes' | 'no' | 'unknown' {
   const ctx = partContext(project, belgium, chain);
   if (!ctx.current) return 'no';
   for (const x of [...chain].reverse()) {
-    if (x.props.rgie2023 === 'after') return 'yes';
-    if (x.props.rgie2023 === 'before') return 'no';
     const d = normDate(x.props.installedOn);
-    if (d) return d >= RCD30_2023 ? 'yes' : 'no';
+    if (d) return d >= date ? 'yes' : 'no';
+    if (x.props.rgie2023 === 'before' && date >= RCD30_2023) return 'no';
+    if (x.props.rgie2023 === 'after' && date <= RCD30_2023) return 'yes';
   }
   const d = normDate(project.meta.installationDate);
-  if (d) return d >= RCD30_2023 ? 'yes' : 'no';
+  if (d) return d >= date ? 'yes' : 'no';
   return ctx.isNew ? 'yes' : 'unknown';
 }
 
@@ -234,7 +246,15 @@ function checkRgie(project: Project): Finding[] {
       // Valeur non renseignée = symbole par défaut (prise avec terre et sécurité enfant) : présent dans le dessin.
       // « false » = absence déclarée (saisie, ou reprise par l'assistant : « déduite » tant que non confirmée).
       if (node.props.earth === false) add('R-SOCKET-EARTH', nc, node.id, undefined, { knowledge: 'absent' });
-      if (node.props.childSafety === false && !node.props.threePhase) add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge: 'absent' });
+      // Depuis le 1/3/2025 (RGIE 5.3.5.2 a) : socles ≤ 16 A / 250 V au moins IPXX-D (obturateurs), sauf socle réservé à
+      // un ou plusieurs appareils d'un usage spécifique (prise d'un appareil dessiné sous elle). Avant cette date, la
+      // vérification de Voltaplan reste celle d'avant (prise sans sécurité enfant signalée).
+      const reserved = node.children.some((c) => c.kind === 'appliance');
+      if (node.props.childSafety === false && !node.props.threePhase) {
+        const when = sinceDate(project, [...ancestors, node], RGIE_2025);
+        if (when !== 'yes') add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge: 'absent' });
+        else if (!reserved) add('R-SOCKET-IPXXD', nc, node.id, undefined, { knowledge: 'absent' });
+      }
     }
   }
 

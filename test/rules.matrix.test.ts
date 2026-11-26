@@ -652,3 +652,41 @@ describe('matrice RGIE — existant sans date : question « tableau fait ou refa
     expect(qs).toEqual([expect.objectContaining({ id: 'q_board2023_' + board.id, about: { nodeId: board.id, prop: 'rgie2023' } })]);
   });
 });
+
+describe('matrice RGIE — prises, modifications du 1/3/2025 (RGIE 5.3.5.2 a)', () => {
+  const firstSocket = (sockets: ElNode) => sockets.children[0].children[0];
+
+  it('travaux commencés après le 1/3/2025 : prise sans obturateurs → IPXX-D exigé', () => {
+    const { p, sockets } = compliant();
+    p.meta.installationDate = '2025-06-01';
+    firstSocket(sockets).props.childSafety = false;
+    const f = get(p, 'R-SOCKET-IPXXD');
+    expect(f).toMatchObject({ status: 'nonCompliant' });
+    expect(ids(p)).not.toContain('R-SOCKET-CHILD');
+  });
+
+  it('prise réservée à un appareil précis (appareil dessiné sous elle) : exception du 5.3.5.2 a', () => {
+    const { p, sockets } = compliant();
+    p.meta.installationDate = '2025-06-01';
+    const s = firstSocket(sockets);
+    s.props.childSafety = false;
+    s.children.push(createNode('appliance', { applianceType: 'washingMachine' }));
+    expect(ids(p)).not.toContain('R-SOCKET-IPXXD');
+  });
+
+  it('travaux commencés avant le 1/3/2025 : la vérification d’avant reste (prise sans sécurité enfant)', () => {
+    const { p, sockets } = compliant();
+    p.meta.installationDate = '2024-09-01';
+    firstSocket(sockets).props.childSafety = false;
+    expect(ids(p)).toContain('R-SOCKET-CHILD');
+    expect(ids(p)).not.toContain('R-SOCKET-IPXXD');
+  });
+
+  it('date propre à une partie (installedOn) prioritaire sur la date du projet', () => {
+    const { p, sockets } = compliant();
+    p.meta.installationDate = '2024-09-01';
+    sockets.props.installedOn = '2025-04-01';
+    firstSocket(sockets).props.childSafety = false;
+    expect(ids(p)).toContain('R-SOCKET-IPXXD');
+  });
+});

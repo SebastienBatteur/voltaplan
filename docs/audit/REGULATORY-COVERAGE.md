@@ -78,7 +78,8 @@ manque, est déduite ou contradictoire.
 | R-CABLE-SECTION-MISSING / DATA-MISSING | Section / données du câble non renseignées | D | modérée | info insuffisante | — |
 | R-CABLE-NO-OVERCURRENT | Protection contre les surintensités en amont | P | élevée | non conforme | protection amont de nature inconnue (appareil non renseigné) → inconnu |
 | R-SOCKET-EARTH | Prise avec terre | P | élevée | non conforme (« sans terre » indiqué) | valeur absente = symbole avec terre (présent dans le dessin) ; valeur non confirmée → anomalie potentielle ; contradiction → contradictoire |
-| R-SOCKET-CHILD | Sécurité enfant | P | modérée | recommandation | idem R-SOCKET-EARTH |
+| R-SOCKET-CHILD | Sécurité enfant (travaux commencés avant le 1/3/2025 ou date inconnue) | P | modérée | recommandation | idem R-SOCKET-EARTH |
+| R-SOCKET-IPXXD | Prise ≤ 16 A sans IPXX-D, travaux commencés le 1/3/2025 ou après (RGIE 5.3.5.2 a, PDF p. 180) ; exception : prise réservée à un appareil précis | P | modérée | non conforme | dispositions transitoires 6.5.8.1, 2 et 6.5.8.2, 3 (prises posées avant le 1/3/2025 conformément au Livre 1 d'alors) |
 | R-SOCKET-MAX | ≤ 8 points de prise par circuit | P | faible | recommandation | compte des points dessinés (fait connu) |
 | R-SOCKET-SECTION | Prises en 2,5 mm² minimum | P | modérée | non conforme | sections connues seulement |
 | R-DEDICATED-CIRCUIT | Circuit spécialisé (four, taque, lave-linge…) | P | faible | recommandation | points dessinés (faits connus) |

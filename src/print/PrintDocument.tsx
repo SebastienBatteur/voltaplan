@@ -12,7 +12,7 @@ import type { ElNode, Project } from '../model/types';
 import type { LabelFn } from '../unifilar/layout';
 import { layoutUnifilar, type Prim } from '../unifilar/layout';
 import { Symbol, symbolSize } from '../unifilar/symbols';
-import { ancestors, isCircuit, walk } from '../model/tree';
+import { walk } from '../model/tree';
 import { Walls, PlanSymbol, S, planBounds } from '../ui/PlanView';
 import { DeviceFace, DEV_H, LABEL_H, MARGIN, MOD, ROW_PITCH, rowTop } from '../ui/BoardView';
 import { boardSize, enclosures, placed } from '../board/model';
@@ -25,6 +25,7 @@ import { getRulePack } from '../rules';
 import { BomTable } from '../ui/BomPanel';
 import { QrCode } from '../ui/QrCode';
 import { isHttpsUrl, qrLabelPayload } from './qrLabel';
+import { circuitRows } from './circuitList';
 
 export type PaperFormat = 'A4' | 'A3';
 export interface PrintSections {
@@ -309,8 +310,7 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
     }
 
   if (sec.circuits) {
-    const rows: ElNode[] = [];
-    for (const { node } of walk(project.roots)) if (isCircuit(node)) rows.push(node);
+    const rows = circuitRows(project, numbering, labelFn);
     const perPage = format === 'A3' ? 30 : 20;
     for (let i = 0; i < Math.max(1, Math.ceil(rows.length / perPage)); i++) {
       pages.push({
@@ -328,22 +328,16 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
               </tr>
             </thead>
             <tbody>
-              {rows.slice(i * perPage, (i + 1) * perPage).map((c) => {
-                const rcd = [...ancestors(project.roots, c.id)].reverse().find((a) => a.kind === 'protection' && Number(a.props.residualCurrent) > 0);
-                const cable = c.children.find((k) => k.kind === 'cable');
-                const letter = numbering.get(c.id) ?? '';
-                const points = [...walk(c.children)].filter(({ node }) => numbering.get(node.id)?.startsWith(letter) && !['switch', 'pushButton', 'relay', 'cable'].includes(node.kind)).length;
-                return (
-                  <tr key={c.id}>
-                    <td className="b">{letter}</td>
-                    <td>{String(c.props.circuitName ?? '')}</td>
-                    <td>{labelFn.protection(c).slice(1).join(' · ')}</td>
-                    <td>{rcd ? `${rcd.props.residualCurrent} mA${rcd.props.rcdType ? ' type ' + rcd.props.rcdType : ''}` : '—'}</td>
-                    <td>{cable ? labelFn.cable(cable) : '—'}</td>
-                    <td>{points}</td>
-                  </tr>
-                );
-              })}
+              {rows.slice(i * perPage, (i + 1) * perPage).map((r) => (
+                <tr key={r.id}>
+                  <td className="b">{r.letter}</td>
+                  <td>{r.name}</td>
+                  <td>{r.protection}</td>
+                  <td>{r.rcd || '—'}</td>
+                  <td>{r.cable || '—'}</td>
+                  <td>{r.points}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         ),

@@ -6,6 +6,7 @@ import { getRulePack } from '../rules';
 import { download } from '../io/files';
 import { safeName } from '../io/storage';
 import { fmtNum } from './labels';
+import { circuitCsv, circuitRows } from '../print/circuitList';
 
 /** Hook : liste du matériel du projet (mémorisée). */
 export function useBom(): BomLine[] {
@@ -71,7 +72,7 @@ export function BomPanel() {
   const lang = useStore((s) => s.lang);
   const project = useStore((s) => s.project);
   const fileName = useStore((s) => s.fileName);
-  const { numbering } = useDerived();
+  const { numbering, labelFn } = useDerived();
   const lines = useBom();
   const pack = getRulePack(project.meta.ruleset);
   const [byRoom, setByRoom] = useState(false);
@@ -106,6 +107,17 @@ export function BomPanel() {
         </div>
         <button className="primary" disabled={!lines.length} onClick={exportCsv}>
           {t('bom.exportCsv')}
+        </button>
+        <button
+          title={t('bom.circuitsCsvHelp')}
+          onClick={() =>
+            void download(
+              new Blob([circuitCsv(circuitRows(project, numbering, labelFn), t)], { type: 'text/csv;charset=utf-8' }),
+              safeName((fileName || project.meta.title || 'projet').replace(/\.[^.]*$/, '')) + '-' + t('bom.circuitsFile') + '.csv',
+            )
+          }
+        >
+          {t('bom.circuitsCsv')}
         </button>
       </div>
       <p className="muted small">{t(byRoom ? 'bom.byRoomHelp' : 'bom.help', { country: pack.country })}</p>

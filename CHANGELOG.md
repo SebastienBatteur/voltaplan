@@ -2,6 +2,14 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Règles du 1/3/2025 et liste des circuits (2026-11-26)
+
+- Contrôle RGIE selon la date de début des travaux, comme pour le 1/6/2023 : depuis le **1/3/2025**, prises de 16 A
+  au plus avec protection IPXX-D (obturateurs), sauf prise réservée à un appareil précis (RGIE 5.3.5.2 a). Les
+  règles de salle de bain de 2025 (volumes) suivront avec le dessin des volumes sur le plan.
+- **Liste des circuits en CSV** (onglet Matériel) : lettre, nom, protection, différentiel, câble, nombre de points
+  et pièces, pour un tableur ou un devis ; même liste que dans le dossier PDF.
+
 ### Import Volter (2026-11-26)
 
 - Fichier → « Importer Volter (.vschema)… » : tableau (différentiel général, différentiels imbriqués, disjoncteurs
