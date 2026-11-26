@@ -264,7 +264,7 @@ compté ×10 par GitHub pour un dépôt privé [à vérifier] ; gratuit pour un 
 | 2 | Nouveau projet, ajouter un circuit, Enregistrer : boîte « Enregistrer » du système, fichier créé | ☐ | ☐ | ☐ |
 | 3 | Modifier, Ctrl+S : même fichier réécrit, sans boîte de dialogue | ☐ | ☐ | ☐ |
 | 4 | Modifier le fichier ailleurs (copier un autre `.voltaplan` par-dessus), puis Ctrl+S dans l'app : message « modifié ailleurs », choix copie / remplacer | ☐ | ☐ | ☐ |
-| 5 | Ouvrir un `.voltaplan` et un `.trik` | ☐ | ☐ | ☐ |
+| 5 | Ouvrir un `.voltaplan`, un `.trik` et un `.eds` | ☐ | ☐ | ☐ |
 | 6 | Exporter Trikker et Eendraadschema : fichiers créés | ☐ | ☐ | ☐ |
 | 7 | Imprimer le dossier : aperçu, A4 paysage, impression ou PDF, **retour à l'éditeur après impression** | ☐ | ☐ (risque connu) | ☐ |
 | 8 | Fond de plan depuis un PDF | ☐ | ☐ | ☐ |

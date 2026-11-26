@@ -7,12 +7,14 @@ import { AssetUnavailableError } from '../format/session';
 import { MissingAssetsError } from '../io/projectData';
 import { RemoteAssetMismatchError } from '../format/folder';
 import { DesktopSaveError } from '../io/desktopSave';
+import { EdsError } from '../import/eendraadschema';
 
 type T = (k: string, p?: Record<string, string | number>) => string;
 
 /** Message d'erreur traduit quand l'erreur est connue (lecture d'un projet, fichier trop gros), sinon son texte. */
 export function errorText(e: unknown, t: T): string {
   if (e instanceof ProjectFileError) return t('file.error.' + e.code, e.params);
+  if (e instanceof EdsError) return t('eds.error.' + e.code, e.params);
   // Destination pleine : disque de l'appareil, ou espace du service (version gardée, pas de reprise automatique)
   if (e instanceof StorageFullError) return e.where === 'device' ? t('storage.full.device') : t('storage.full.cloud', { where: e.where });
   if (e instanceof FileTooLargeError) return t('storage.tooLarge', { where: e.where, size: Math.ceil(e.size / 1048576), limit: Math.floor(e.limit / 1048576) });

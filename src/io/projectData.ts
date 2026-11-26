@@ -3,13 +3,15 @@
  * GitHub) : le type est reconnu par sa signature, jamais par son extension.
  *   - `PK\x03\x04` : archive v2 (src/format/archive.ts) ;
  *   - `{` (ou BOM) : JSON v1, converti à l'ouverture (images rangées dans le stockage de travail) ;
- *   - `<?xml` : Trikker.
+ *   - `<?xml` : Trikker ;
+ *   - `EDS`/`TXT` suivi de la version : Eendraadschema (src/import/eendraadschema.ts).
  * Écriture : l'archive v2 est assemblée en flux à partir du modèle et des documents (stockage de travail ou
  * source de la session). Avant d'écrire, on vérifie que tous les documents sont disponibles : jamais un fichier
  * qui référence un document absent sans que l'utilisateur le sache.
  */
 import { version as APP_VERSION } from '../../package.json';
 import { importTrikker } from '../import/trikker';
+import { importEendraadschema } from '../import/eendraadschema';
 import type { MigrationWarning } from '../model/migrate';
 import type { Project } from '../model/types';
 import { readArchive, writeArchive, type ArchiveReport, type ArchiveWriteInput, type OpenedArchive } from '../format/archive';
@@ -29,11 +31,14 @@ export { APP_VERSION };
 /** Session de documents de l'application (une par onglet). */
 export const assetSession = new AssetSession(workingStore);
 
-export type DataFormat = 'v2' | 'v1' | 'trik';
+export type DataFormat = 'v2' | 'v1' | 'trik' | 'eds';
 
 /** Format d'après les premiers octets. */
 export function detectFormat(head: Uint8Array): DataFormat | null {
   if (head[0] === 0x50 && head[1] === 0x4b && head[2] === 0x03 && head[3] === 0x04) return 'v2';
+  // Eendraadschema : « EDS » ou « TXT » suivi de la version sur 3 chiffres
+  const tag = String.fromCharCode(...head.slice(0, 6));
+  if (/^(EDS|TXT)\d{3}$/.test(tag)) return 'eds';
   let i = 0;
   if (head[0] === 0xef && head[1] === 0xbb && head[2] === 0xbf) i = 3;
   while (i < head.length && (head[i] === 0x20 || head[i] === 0x0a || head[i] === 0x0d || head[i] === 0x09)) i++;
@@ -45,7 +50,7 @@ export function detectFormat(head: Uint8Array): DataFormat | null {
 export interface ProjectOpen {
   project: Project;
   format: DataFormat;
-  /** Avertissements : texte (import Trikker) ou clé de traduction. */
+  /** Avertissements : texte (import Trikker) ou clé de traduction (lecture d'un projet, import Eendraadschema). */
   warnings: (string | MigrationWarning)[];
   /** Archive v2 : rapport de validation (entrées ignorées, invalides, récupération). */
   report?: ArchiveReport;
@@ -96,7 +101,7 @@ export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSo
  */
 export async function openProjectData(data: Blob | string, name: string, session: AssetSession = assetSession, opts: { background?: boolean } = {}): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
-  const fmt = /\.trik$/i.test(name) ? 'trik' : detectFormat(await blobBytes(blob.slice(0, 64)));
+  const fmt = /\.trik$/i.test(name) ? 'trik' : /\.eds$/i.test(name) ? 'eds' : detectFormat(await blobBytes(blob.slice(0, 64)));
   if (fmt === 'v2') {
     const device = await currentDevice();
     const advice = capacityAdvice(blob.size, device, deviceLimits(device));
@@ -113,8 +118,13 @@ export async function openProjectData(data: Blob | string, name: string, session
     if (opts.background !== false) void session.copyInBackground();
     return { project, format: 'v2', warnings: w, report: a.report, needsNewFile: a.report.recovered };
   }
-  // v1 et Trikker : texte, plafond de taille de l'ancien format
-  checkFileSize({ name, size: blob.size }, fmt === 'trik' ? 'trik' : 'project');
+  // v1, Trikker et Eendraadschema : texte, plafond de taille de l'ancien format
+  checkFileSize({ name, size: blob.size }, fmt === 'trik' ? 'trik' : fmt === 'eds' ? 'eds' : 'project');
+  if (fmt === 'eds') {
+    // Pas d'image dans un .eds : rien à ranger dans le stockage de travail
+    const { project, warnings } = await importEendraadschema(decodeText(await blobBytes(blob)), name);
+    return { project, format: 'eds', warnings, needsNewFile: true };
+  }
   const add = async (b: Blob, n: string) => (await session.store.add(b, { name: n })).sha256;
   if (fmt === 'trik') {
     const { project, warnings } = importTrikker(decodeText(await blobBytes(blob)), name);

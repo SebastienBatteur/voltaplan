@@ -1,15 +1,16 @@
 /**
- * Tailles maximales des fichiers importés (projet, Trikker, image, PDF).
+ * Tailles maximales des fichiers importés (projet, Trikker, Eendraadschema, image, PDF).
  * Un fichier trop gros (ou piégé) bloquerait l'onglet : on le refuse avant de le lire, avec un message clair.
  */
 
 const MB = 1024 * 1024;
 
-export type ImportKind = 'project' | 'trik' | 'image' | 'pdf' | 'dxf';
+export type ImportKind = 'project' | 'trik' | 'eds' | 'image' | 'pdf' | 'dxf';
 
 export const IMPORT_LIMITS: Record<ImportKind, number> = {
   project: 50 * MB,
   trik: 20 * MB,
+  eds: 20 * MB,
   image: 25 * MB,
   pdf: 50 * MB,
   dxf: 30 * MB,
@@ -37,6 +38,7 @@ export function formatMb(bytes: number): string {
 /** Genre d'un fichier choisi, d'après son nom et son type. */
 export function importKind(file: { name: string; type?: string }): ImportKind {
   if (/\.trik$/i.test(file.name)) return 'trik';
+  if (/\.eds$/i.test(file.name)) return 'eds';
   if (/\.dxf$/i.test(file.name)) return 'dxf';
   if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') return 'pdf';
   if (file.type?.startsWith('image/') || /\.(jpe?g|png|gif|webp|bmp|heic|heif|tiff?|avif)$/i.test(file.name)) return 'image';

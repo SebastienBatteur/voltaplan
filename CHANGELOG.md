@@ -2,6 +2,14 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Import Eendraadschema (2026-11-26)
+
+- **Import des fichiers Eendraadschema (`.eds`)**, compressés ou non, versions 1 à 4 du format : menu Fichier et
+  écran « Mes projets ». Raccordement, tableaux, protections, câbles, prises, points lumineux, interrupteurs
+  (va-et-vient, permutateurs), appareils et infos du dossier sont repris ; une valeur absente reste absente ;
+  l'installation importée est une installation existante. Le plan de situation n'est pas repris (avertissement).
+  Fichier endommagé, trop gros ou de version inconnue : message clair (FR, NL, EN).
+
 ### Accueil, couleurs de circuits, matériel par pièce, étiquettes QR, DXF (2026-11-26)
 
 - **Mes projets** : écran d'accueil avec les actions principales et les derniers projets (navigateur, appareil,
