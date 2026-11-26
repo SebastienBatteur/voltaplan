@@ -13,12 +13,13 @@ descriptions des éditeurs. Les prix sont ceux affichés ce jour-là et peuvent 
 | **Condui** (condui.be) | Gratuit en local (PDF avec filigrane) ; 20 €/projet ; 30 €/mois ; équipe 45 €/mois | Web installable | Non en local, oui pour le nuage | Navigateur ou nuage de l'éditeur | Import Trikker, partage par lien ou QR, historique des versions (nuage), date d'installation des composants, off-grid et batterie, modèles, EN/NL/FR/DE |
 | **Tricity** (Netwalk) | 34,99 $ + abonnements in-app | iPad, Mac | Non indiqué | « Aucune donnée collectée » | Domotique (Niko, KNX, Bticino), solaire, bornes, AREI 2026, nomenclature, plan depuis JPG/PDF |
 | **Schneider eDesign**, **ABB EasyPro** | Gratuits | Web | Oui | Éditeur | Tableaux et devis avec les produits de la marque |
+| **PlanElec** (planelec.be) | « Sketch » gratuit (PDF avec filigrane « Aperçu ») ; pass site 10 € par bien (15 € après 2026) ; abonnement 24 €/mois (29 € après 2026), 3 places, +12 €/place ; essai Pro 1 mois | Web | Facultatif pour Sketch, oui pour Pro | Nuage de l'éditeur ; Sketch dans le navigateur | Ouvre les .trik et les archives Trikker, plusieurs étages, tableau sur rails DIN avec bornes et barres N/PE, KNX (export ETS), tracé des câbles et chute de tension, PV (strings, MPPT, PVGIS, liste Synergrid), profils de charge Fluvius, 3D et étude d'éclairage, IA (plan, photo de tableau, dictée, réponses sourcées du RGIE), MCP, QR « vérifier le document » |
 | **Trikker** | Licence payante | Windows | — | Local | Référence historique ; plan et unifilaire liés |
 | **QElectroTech** | Gratuit, open source | Windows, macOS, Linux | Non | Local | Dessin électrique généraliste, sans règles RGIE |
 
 Sources : amperio.be (accueil, /tarifs, /schema-unifilaire) ; condui.be et /nl/pricing ; fil bouwinfo
 « Condui.be – logiciel gratuit » ; apps.apple.com/app/id1044577046 (Tricity) ; se.com (eDesign) ;
-volter.be (analyse du 25 novembre) ; forums bricozone et circuitsonline.
+volter.be (analyse du 25 novembre) ; planelec.be/fr/pricing (tableau des fonctions, 26 novembre) ; forums bricozone et circuitsonline.
 
 ## 2. Où se situe Voltaplan
 
@@ -53,6 +54,30 @@ sans télémétrie, sans dépense).
 | A11 | **Allemand complet** | Condui | Faible (Communauté germanophone) | Oui (traduction partielle existante) | Moyen | Plus tard |
 | A12 | **Page « Pourquoi Voltaplan »** sur le site : gratuit, sans compte, hors ligne, sans filigrane | — | Fort (visibilité) | Oui | Petit | Proposé (sans nommer de concurrent) |
 | A13 | **Guides NL et EN** à jour des nouveautés | — | Moyen | Oui | Petit | À faire |
+
+### PlanElec (ajouté le 26/11/2026, d'après sa page de tarifs)
+
+Concurrent le plus complet à ce jour, en accès anticipé depuis l'automne 2026 (formules payantes depuis le 2/11).
+Même idée d'entrée gratuite que Voltaplan (« Sketch » sans compte, circuits illimités), mais **PDF avec
+filigrane** sans pass site ni abonnement, et autocontrôle RGIE, tableau et IA réservés aux formules payantes.
+
+| N° | Idée vue chez PlanElec | Intérêt | Compatible Voltaplan (local, gratuit, sans compte) | Effort | Proposition |
+| --- | --- | --- | --- | --- | --- |
+| P1 | **Équipement standard selon le type de local** (une chambre reçoit ses prises et son point lumineux) | Fort, gain de temps | Oui, règles locales ; à relier au catalogue des pièces | Moyen | Proposé |
+| P2 | **Longueurs de câbles depuis le tracé** sur le plan (le long des murs, par le plafond, changement d'étage) puis chute de tension | Fort | Oui (le plan est à l'échelle) | Grand | Proposé, après l'échelle des plans importés |
+| P3 | **Tableau : bornes, barres N et PE, proposition de coffret** selon l'encombrement et la réserve | Moyen | Oui (le rangement automatique existe déjà) | Moyen | À discuter |
+| P4 | **Liste Synergrid C10/26** des onduleurs et calculateur de section public | Moyen | Oui si la liste publique peut être reprise (licence à vérifier) | Petit | À vérifier |
+| P5 | **PV : strings, MPPT, prévision PVGIS, profils Fluvius, taille de batterie** | Moyen, en hausse | PVGIS est un service en ligne (appel externe, à signaler) ; le reste en local | Grand | Plus tard ; la batterie existe maintenant comme élément |
+| P6 | **KNX : adresses et export ETS** | Faible à moyen | Oui en local | Grand | Non pour l'instant (A7) |
+| P7 | **3D et étude d'éclairage** | Faible pour le dossier RGIE | Oui (WebGL) mais très lourd | Très grand | Non |
+| P8 | **QR « vérifier le document »** (origine et état du PDF) | Moyen | Sans serveur : empreinte du PDF dans le QR, vérifiable dans Voltaplan | Moyen | À discuter |
+| P9 | **Connexion d'un assistant IA personnel par MCP** | Moyen (utilisateurs avancés) | Oui : serveur MCP local sur le fichier ouvert (bureau) | Moyen | À discuter |
+| P10 | **Liste des circuits** exportée | Moyen | Oui | Petit | Proposé |
+
+**Ce que Voltaplan garde d'avance sur PlanElec** : tout est gratuit, y compris le contrôle RGIE, le tableau et les
+PDF **sans filigrane** ; aucun compte ni serveur de l'éditeur ; hors ligne complet ; application de bureau ;
+code ouvert ; lecture locale des photos sans IA (OCR) ; import **Volter** en plus de Trikker ; IA facultative avec
+la clé de l'utilisateur, sans quota imposé.
 
 ## 4. Ce qu'on ne copie pas, et pourquoi
 
