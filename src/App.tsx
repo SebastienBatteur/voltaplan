@@ -122,7 +122,7 @@ export function App() {
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       // Fichier Trikker, Volter ou Eendraadschema : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.(trik|vschema|eds|draadwijs)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      setToast({ text: t(/\.(trik|vschema|eds|draadwijs|planelec\.json)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -515,6 +515,7 @@ export function App() {
             { label: t('menu.importVolter'), run: () => open('.vschema') },
             { label: t('menu.importEds'), run: () => open('.eds') },
             { label: t('menu.importDraadwijs'), run: () => open('.draadwijs') },
+            { label: t('menu.importPlanelec'), run: () => open('.json') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },

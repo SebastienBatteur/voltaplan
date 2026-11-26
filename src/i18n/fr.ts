@@ -8,6 +8,7 @@ export const fr = {
   'menu.importTrikker': 'Importer Trikker (.trik)…',
   'menu.importVolter': 'Importer Volter (.vschema)…',
   'menu.importDraadwijs': "Importer Draadwijs (.draadwijs)…",
+  'menu.importPlanelec': "Importer PlanElec Sketch (.planelec.json)…",
   'pv.study': "Demander une simulation photovoltaïque (SBG Energy)",
   'pv.studyHelp': "Formulaire sur un site externe, ouvert dans un nouvel onglet. Aucune donnée du projet n'est transmise automatiquement.",
   'pv.requestSoon': "Bientôt : Voltaplan pourra préremplir la demande (panneaux, onduleur, batterie, pompe à chaleur, chauffe-eau, chauffage, borne), après votre accord.",

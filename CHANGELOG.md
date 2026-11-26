@@ -2,6 +2,13 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Import PlanElec Sketch (2026-11-26)
+
+- Fichier → « Importer PlanElec Sketch (.planelec.json)… » (un .json de PlanElec est aussi reconnu à l'ouverture) :
+  schéma (raccordement, compteur, différentiels, groupes, disjoncteurs, câbles, points, terre), repères comme dans
+  PlanElec, plan en mètres (murs, portes et leur sens, fenêtres, baies, porte de garage, pièces, escaliers droits et
+  en colimaçon, textes, formes, meubles), symboles posés et symboles hors schéma (détecteurs, sonnerie, prises data…).
+
 ### Import Draadwijs (2026-11-26)
 
 - Fichier → « Importer Draadwijs (.draadwijs)… » : schéma (raccordement, différentiels, disjoncteurs et câbles,

@@ -13,6 +13,7 @@ import { version as APP_VERSION } from '../../package.json';
 import { importTrikker } from '../import/trikker';
 import { importVolter } from '../import/volter';
 import { importDraadwijs } from '../import/draadwijs';
+import { importPlanelec, isPlanelec } from '../import/planelec';
 import { importEendraadschema } from '../import/eendraadschema';
 import type { MigrationWarning } from '../model/migrate';
 import type { Project } from '../model/types';
@@ -33,7 +34,7 @@ export { APP_VERSION };
 /** Session de documents de l'application (une par onglet). */
 export const assetSession = new AssetSession(workingStore);
 
-export type DataFormat = 'v2' | 'v1' | 'trik' | 'vschema' | 'eds' | 'draadwijs';
+export type DataFormat = 'v2' | 'v1' | 'trik' | 'vschema' | 'eds' | 'draadwijs' | 'planelec';
 
 /** Format d'après les premiers octets. */
 export function detectFormat(head: Uint8Array): DataFormat | null {
@@ -103,7 +104,7 @@ export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSo
  */
 export async function openProjectData(data: Blob | string, name: string, session: AssetSession = assetSession, opts: { background?: boolean } = {}): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
-  const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : /\.eds$/i.test(name) ? 'eds' : /\.draadwijs$/i.test(name) ? 'draadwijs' : detectFormat(await blobBytes(blob.slice(0, 64)));
+  const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : /\.eds$/i.test(name) ? 'eds' : /\.draadwijs$/i.test(name) ? 'draadwijs' : /\.planelec\.json$/i.test(name) || (/\.json$/i.test(name) && isPlanelec(decodeText(await blobBytes(blob.slice(0, 256))))) ? 'planelec' : detectFormat(await blobBytes(blob.slice(0, 64)));
   if (fmt === 'v2') {
     const device = await currentDevice();
     const advice = capacityAdvice(blob.size, device, deviceLimits(device));
@@ -121,7 +122,7 @@ export async function openProjectData(data: Blob | string, name: string, session
     return { project, format: 'v2', warnings: w, report: a.report, needsNewFile: a.report.recovered };
   }
   // v1, Trikker, Volter et Eendraadschema : texte, plafond de taille de l'ancien format
-  checkFileSize({ name, size: blob.size }, fmt === 'trik' || fmt === 'vschema' || fmt === 'draadwijs' ? 'trik' : fmt === 'eds' ? 'eds' : 'project');
+  checkFileSize({ name, size: blob.size }, fmt === 'trik' || fmt === 'vschema' || fmt === 'draadwijs' || fmt === 'planelec' ? 'trik' : fmt === 'eds' ? 'eds' : 'project');
   if (fmt === 'eds') {
     // Pas d'image dans un .eds : rien à ranger dans le stockage de travail
     const { project, warnings } = await importEendraadschema(decodeText(await blobBytes(blob)), name);
@@ -133,6 +134,10 @@ export async function openProjectData(data: Blob | string, name: string, session
     if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
     await extractEmbeddedImages(project, add);
     return { project, format: 'trik', warnings, needsNewFile: true };
+  }
+  if (fmt === 'planelec') {
+    const { project, warnings } = importPlanelec(decodeText(await blobBytes(blob)), name);
+    return { project, format: 'planelec', warnings, needsNewFile: true };
   }
   if (fmt === 'draadwijs') {
     const { project, warnings } = importDraadwijs(decodeText(await blobBytes(blob)), name);

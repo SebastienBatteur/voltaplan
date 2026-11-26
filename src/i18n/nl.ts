@@ -9,6 +9,7 @@ export const nl: Partial<Dict> = {
   'menu.importTrikker': 'Trikker importeren (.trik)…',
   'menu.importVolter': 'Volter importeren (.vschema)…',
   'menu.importDraadwijs': "Draadwijs importeren (.draadwijs)…",
+  'menu.importPlanelec': "PlanElec Sketch importeren (.planelec.json)…",
   'pv.study': "PV-simulatie aanvragen (SBG Energy)",
   'pv.studyHelp': "Formulier op een externe website, in een nieuw tabblad. Er worden geen projectgegevens automatisch doorgegeven.",
   'pv.requestSoon': "Binnenkort: Voltaplan kan de aanvraag vooraf invullen (panelen, omvormer, batterij, warmtepomp, boiler, verwarming, laadpaal), na uw akkoord.",
