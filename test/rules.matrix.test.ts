@@ -16,6 +16,7 @@ import type { ElNode, NodeKind, Project } from '../src/model/types';
 import { emptyEvidence } from '../src/assist/evidence';
 import { surveyQuestions } from '../src/assist/unconfirmed';
 import { translate } from '../src/i18n';
+import { fixesFor } from '../src/rules/fixes';
 
 /** Nœud avec ses enfants. */
 const createNode = (kind: NodeKind, props: ElNode['props'] = {}, children: ElNode[] = []): ElNode => ({ ...baseNode(kind, props), children });
@@ -688,5 +689,89 @@ describe('matrice RGIE — prises, modifications du 1/3/2025 (RGIE 5.3.5.2 a)', 
     sockets.props.installedOn = '2025-04-01';
     firstSocket(sockets).props.childSafety = false;
     expect(ids(p)).toContain('R-SOCKET-IPXXD');
+  });
+});
+
+describe('corrections en un clic (bouton « corriger »)', () => {
+  const fixOnce = (p: Project, ruleId: string) => {
+    const f = checkProject(p).find((x) => x.ruleId === ruleId);
+    expect(f, ruleId).toBeDefined();
+    const fixes = fixesFor(f!, p);
+    expect(fixes.length, ruleId).toBeGreaterThan(0);
+    return fixes[0].apply(p);
+  };
+
+  it('calibre trop grand pour la section : « Choisir 20 A » règle le constat, sans toucher au projet d’origine', () => {
+    const { p, sockets } = compliant();
+    sockets.props.ratedCurrent = 25;
+    const f = checkProject(p).find((x) => x.ruleId === 'R-CABLE-PROT')!;
+    expect(fixesFor(f, p)[0]).toMatchObject({ label: 'fix.rating', params: { value: 20 } });
+    const q = fixOnce(p, 'R-CABLE-PROT');
+    expect(ids(q)).not.toContain('R-CABLE-PROT');
+    expect(sockets.props.ratedCurrent).toBe(25);
+  });
+
+  it('prise sans obturateurs, sans terre : corrigées', () => {
+    const { p, sockets } = compliant();
+    const s = sockets.children[0].children[0];
+    s.props.childSafety = false;
+    s.props.earth = false;
+    let q = fixOnce(p, 'R-SOCKET-IPXXD');
+    q = fixOnce(q, 'R-SOCKET-EARTH');
+    expect(ids(q)).not.toContain('R-SOCKET-IPXXD');
+    expect(ids(q)).not.toContain('R-SOCKET-EARTH');
+  });
+
+  it('section des prises trop faible et câble sous 1,5 mm² : corrigées', () => {
+    const { p, sockets, lights } = compliant();
+    sockets.children[0].props.section = 1.5;
+    sockets.props.ratedCurrent = 16;
+    lights.children[0].props.section = 1;
+    lights.props.ratedCurrent = 10;
+    let q = fixOnce(p, 'R-SOCKET-SECTION');
+    q = fixOnce(q, 'R-CABLE-MIN');
+    expect(ids(q)).not.toContain('R-SOCKET-SECTION');
+    expect(ids(q)).not.toContain('R-CABLE-MIN');
+  });
+
+  it('réseau 3 × 230 V : disjoncteur 1P+N → bipolaire', () => {
+    const { p } = compliant();
+    p.meta.supply = '3 x 230V ~ 50Hz';
+    const q = fixOnce(p, 'R-POLES-NO-NEUTRAL');
+    expect(checkProject(q).filter((x) => x.ruleId === 'R-POLES-NO-NEUTRAL').length).toBeLessThan(checkProject(p).filter((x) => x.ruleId === 'R-POLES-NO-NEUTRAL').length);
+  });
+
+  it('circuit de prises hors 30 mA : rangé sous le 30 mA existant du tableau (place libre)', () => {
+    const { p, board, sockets } = compliant();
+    const rcd30 = board.children.find((c) => c.kind === 'protection')!;
+    rcd30.children[0].children = rcd30.children[0].children.filter((c) => c !== sockets);
+    board.children.push(sockets);
+    const f = checkProject(p).find((x) => x.ruleId === 'R-RCD30')!;
+    expect(fixesFor(f, p)[0]).toMatchObject({ label: 'fix.moveUnder30' });
+    const q = fixOnce(p, 'R-RCD30');
+    expect(ids(q)).not.toContain('R-RCD30');
+  });
+
+  it('30 mA déjà plein (8 circuits) : un nouveau 30 mA est créé avant la terre', () => {
+    const { p, board, sockets } = compliant();
+    const rcd30 = board.children.find((c) => c.kind === 'protection')!;
+    const group = rcd30.children[0];
+    group.children = group.children.filter((c) => c !== sockets);
+    while (group.children.length < 8) group.children.push(structuredClone(group.children[0]));
+    for (const c of group.children) c.id = Math.random().toString(36).slice(2);
+    board.children.push(sockets);
+    const f = checkProject(p).find((x) => x.ruleId === 'R-RCD30' && x.nodeId === sockets.id)!;
+    expect(fixesFor(f, p)[0]).toMatchObject({ label: 'fix.new30' });
+    const q = fixesFor(f, p)[0].apply(p);
+    const qb = q.roots[0].children[0].children[0].children[0];
+    expect(qb.children.at(-1)!.kind).toBe('earthBar');
+    expect(checkProject(q).some((x) => x.ruleId === 'R-RCD30' && x.nodeId === sockets.id)).toBe(false);
+  });
+
+  it('pas de correction quand elle n’est pas évidente (circuit sans nom)', () => {
+    const { p, sockets } = compliant();
+    sockets.props.circuitName = '';
+    const f = checkProject(p).find((x) => x.ruleId === 'R-CIRCUIT-NAME')!;
+    expect(fixesFor(f, p)).toEqual([]);
   });
 });

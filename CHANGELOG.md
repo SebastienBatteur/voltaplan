@@ -7,6 +7,11 @@
 - Contrôle RGIE selon la date de début des travaux, comme pour le 1/6/2023 : depuis le **1/3/2025**, prises de 16 A
   au plus avec protection IPXX-D (obturateurs), sauf prise réservée à un appareil précis (RGIE 5.3.5.2 a). Les
   règles de salle de bain de 2025 (volumes) suivront avec le dessin des volumes sur le plan.
+- **Bouton « corriger »** sur les remarques du contrôle quand la correction est évidente : calibre maximal pour la
+  section (« Choisir 20 A »), section minimale, prise avec obturateurs ou avec terre, disjoncteur bipolaire sur un
+  réseau 3 × 230 V, différentiel type A, circuit rangé sous un 30 mA du tableau qui a de la place (ou nouveau 30 mA).
+  Annulable comme toute modification. Les mentions manquantes du dossier mènent à l'onglet Projet.
+- Lien SBG Energy : la demande de simulation depuis Voltaplan est annoncée « en construction ».
 - **Liste des circuits en CSV** (onglet Matériel) : lettre, nom, protection, différentiel, câble, nombre de points
   et pièces, pour un tableur ou un devis ; même liste que dans le dossier PDF.
 

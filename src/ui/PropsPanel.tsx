@@ -118,6 +118,8 @@ export function PropsPanel() {
           </a>
           <br />
           <span className="muted small">{t('pv.studyHelp')}</span>
+          <br />
+          <span className="muted small">{t('pv.requestSoon')}</span>
         </p>
       )}
       {node.kind !== 'origin' && (

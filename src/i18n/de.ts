@@ -11,6 +11,7 @@ export const de: Partial<Dict> = {
   'menu.importVolter': 'Volter importieren (.vschema)…',
   'pv.study': "Ausführliche PV-Studie (SBG Energy)",
   'pv.studyHelp': "Ertrag, Module, Wechselrichter und Batterie: auf einer externen Website, in einem neuen Tab. Es werden keine Projektdaten übertragen.",
+  'pv.requestSoon': "Simulation direkt aus Voltaplan anfragen (Module, Wechselrichter, Batterie, Wärmepumpe, Boiler, Heizung, Ladestation): in Vorbereitung.",
   'menu.undo': 'Rückgängig',
   'menu.redo': 'Wiederholen',
   'menu.print': 'Drucken / PDF',

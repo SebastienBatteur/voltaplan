@@ -13,6 +13,7 @@ import {
   type SurveyFact,
 } from '../rules';
 import { ancestors } from '../model/tree';
+import { fixesFor, PROJECT_FIELDS } from '../rules/fixes';
 import { calcProject, roundTo } from '../calc/electrical';
 import { balanceProject, PHASES } from '../calc/balance';
 import { fmtNum } from './labels';
@@ -142,6 +143,9 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
   const { numbering, find, labelFn } = useDerived();
   const [derog, setDerog] = useState<{ reason: string; reference: string } | null>(null);
   const node = f.nodeId ? find(f.nodeId) : undefined;
+  // Correction en un clic (annulable) quand elle découle du constat sans ambiguïté
+  const fixes = f.derogation ? [] : fixesFor(f, project);
+  const toProject = !f.derogation && PROJECT_FIELDS.has(f.ruleId);
   // Pour une canalisation, on nomme le circuit qui l'alimente.
   const circuit = node?.kind === 'cable' ? [...ancestors(project.roots, node.id)].reverse().find((a) => a.kind === 'protection') : undefined;
   const advice = adviceText(f, t);
@@ -213,6 +217,16 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
             <strong>{t('check.advice')} :</strong> {advice ?? knowledgeHelp}
           </div>
         )
+      )}
+      {(fixes.length > 0 || toProject) && (
+        <div className="finding-actions finding-fixes" onClick={(e) => e.stopPropagation()}>
+          {fixes.map((x) => (
+            <button key={x.label} className="primary" title={t('fix.help')} onClick={() => useStore.getState().applyProject(x.apply)}>
+              ✓ {t(x.label, x.params)}
+            </button>
+          ))}
+          {toProject && <button onClick={() => setView('project')}>{t('fix.openProject')}</button>}
+        </div>
       )}
       {!compact && (node || canDerogate || survey || board2023) && (
         <div className="finding-actions" onClick={(e) => e.stopPropagation()}>
