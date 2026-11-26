@@ -8,6 +8,8 @@ export const en: Partial<Dict> = {
   'menu.save': 'Save',
   'menu.importTrikker': 'Import Trikker (.trik)…',
   'menu.importVolter': 'Import Volter (.vschema)…',
+  'pv.study': "Detailed solar PV study (SBG Energy)",
+  'pv.studyHelp': "Yield, panels, inverter and battery: on an external website, opened in a new tab. No project data is sent.",
   'menu.undo': 'Undo',
   'menu.redo': 'Redo',
   'menu.print': 'Print / PDF',

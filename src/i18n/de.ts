@@ -9,6 +9,8 @@ export const de: Partial<Dict> = {
   'menu.saveAs': 'Speichern unter…',
   'menu.importTrikker': 'Trikker importieren (.trik)…',
   'menu.importVolter': 'Volter importieren (.vschema)…',
+  'pv.study': "Ausführliche PV-Studie (SBG Energy)",
+  'pv.studyHelp': "Ertrag, Module, Wechselrichter und Batterie: auf einer externen Website, in einem neuen Tab. Es werden keine Projektdaten übertragen.",
   'menu.undo': 'Rückgängig',
   'menu.redo': 'Wiederholen',
   'menu.print': 'Drucken / PDF',

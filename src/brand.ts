@@ -29,3 +29,9 @@ export function migrateStorage() {
   }
 }
 migrateStorage();
+
+/**
+ * Étude photovoltaïque détaillée (production, strings, stockage) : hors de Voltaplan, sur le site de l'auteur.
+ * Ouvert seulement au clic, dans un nouvel onglet, sans aucune donnée du projet dans l'adresse.
+ */
+export const PV_STUDY_URL = 'https://sbg-energy.com/';

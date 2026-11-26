@@ -8,6 +8,8 @@ export const nl: Partial<Dict> = {
   'menu.save': 'Opslaan',
   'menu.importTrikker': 'Trikker importeren (.trik)…',
   'menu.importVolter': 'Volter importeren (.vschema)…',
+  'pv.study': "Uitgebreide PV-studie (SBG Energy)",
+  'pv.studyHelp': "Opbrengst, panelen, omvormer en batterij: op een externe website, in een nieuw tabblad. Er worden geen projectgegevens doorgegeven.",
   'menu.undo': 'Ongedaan maken',
   'menu.redo': 'Opnieuw',
   'menu.print': 'Afdrukken / PDF',

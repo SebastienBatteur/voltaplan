@@ -7,6 +7,8 @@ export const fr = {
   'menu.save': 'Enregistrer',
   'menu.importTrikker': 'Importer Trikker (.trik)…',
   'menu.importVolter': 'Importer Volter (.vschema)…',
+  'pv.study': "Étude photovoltaïque détaillée (SBG Energy)",
+  'pv.studyHelp': "Production, panneaux, onduleur et batterie : sur un site externe, ouvert dans un nouvel onglet. Aucune donnée du projet n'est transmise.",
   'menu.undo': 'Annuler',
   'menu.redo': 'Rétablir',
   'menu.print': 'Imprimer / PDF',

@@ -7,6 +7,7 @@ import type { ElNode, PropValue } from '../model/types';
 import { FindingItem } from './CheckPanel';
 import { getRulePack } from '../rules';
 import { isModularInBoard } from '../board/model';
+import { PV_STUDY_URL } from '../brand';
 
 function Field({ def, node }: { def: PropDef; node: ElNode }) {
   const t = useStore((s) => s.t);
@@ -110,6 +111,15 @@ export function PropsPanel() {
       {(PROP_SCHEMAS[node.kind] ?? []).map((d) => (
         <Field key={d.key} def={d} node={node} />
       ))}
+      {(node.kind === 'solarPanel' || node.kind === 'inverter' || node.kind === 'battery') && (
+        <p className="hint pv-study">
+          <a href={PV_STUDY_URL} target="_blank" rel="noopener noreferrer">
+            {t('pv.study')} ↗
+          </a>
+          <br />
+          <span className="muted small">{t('pv.studyHelp')}</span>
+        </p>
+      )}
       {node.kind !== 'origin' && (
         <label className="field">
           <span>{t('field.location')}</span>
