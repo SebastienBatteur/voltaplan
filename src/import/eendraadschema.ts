@@ -144,20 +144,38 @@ interface Item {
 
 /**
  * Versions 1 et 2 : position des propriétés dans `keys` (relevées dans les fonctions de conversion des anciens
- * fichiers d'Eendraadschema). Types non listés : seul le type est lu.
+ * fichiers d'Eendraadschema, pour chaque type). Types non listés (Container, Leiding, Media, Zekering…, qui
+ * n'existaient pas encore) : seul le type est lu.
  */
+const NR_ADRES = { nr: 10, adres: 15 };
+const SCHAKELAARS_KEYS = { aantal_schakelaars: 4, type_schakelaar: 5, nr: 10, adres: 15, heeft_signalisatielampje: 19, is_halfwaterdicht: 20, heeft_verklikkerlampje: 21, is_trekschakelaar: 25 };
 const LEGACY_KEYS: Record<string, Record<string, number>> = {
+  ...Object.fromEntries(
+    [
+      'Aansluitpunt', 'Aardingsonderbreker', 'Aftakdoos', 'Batterij', 'Bel', 'Diepvriezer', 'Droogkast', 'EV lader', 'Elektriciteitsmeter',
+      'Elektrische oven', 'Koelkast', 'Kookfornuis', 'Meerdere verbruikers', 'Microgolfoven', 'Motor', 'Omvormer', 'Overspanningsbeveiliging',
+      'Stoomoven', 'Vaatwasmachine', 'Ventilator', 'Wasmachine', 'Boiler', 'Verwarmingstoestel',
+    ].map((t) => [t, NR_ADRES]),
+  ),
+  Ketel: { aantal: 4, ...NR_ADRES },
+  'Warmtepomp/airco': { aantal: 4, ...NR_ADRES },
+  'USB lader': { aantal: 4, ...NR_ADRES },
+  Zonnepaneel: { aantal: 4, ...NR_ADRES },
+  Transformator: { voltage: 14, ...NR_ADRES },
+  'Zeldzame symbolen': { symbool: 16, ...NR_ADRES },
+  Domotica: { nr: 10, tekst: 15, adres: 23 },
+  'Domotica gestuurde verbruiker': NR_ADRES,
+  'Vrije tekst': { nr: 10, tekst: 15, vrije_tekst_type: 16, adres: 23 },
+  Verlenging: { nr: 10, adres: 23 },
+  Lichtcircuit: { ...SCHAKELAARS_KEYS, aantal_lichtpunten: 13 },
+  Schakelaars: SCHAKELAARS_KEYS,
   Aansluiting: { aantal_polen: 4, bescherming: 7, amperage: 8, type_kabel_na_teller: 9, nr: 10, differentieel_delta_amperage: 11, adres: 15, differentieel_is_selectief: 20, kortsluitvermogen: 22, naam: 23, type_kabel_voor_teller: 24 },
   Kring: { aantal_polen: 4, bescherming: 7, amperage: 8, type_kabel: 9, naam: 10, differentieel_delta_amperage: 11, kabel_is_aanwezig: 12, tekst: 15, kabel_locatie: 16, kabel_is_in_buis: 19, differentieel_is_selectief: 20, kortsluitvermogen: 22 },
   Bord: { is_geaard: 1, naam: 10, adres: 15 },
   Contactdoos: { is_geaard: 1, is_kinderveilig: 2, aantal: 4, nr: 10, adres: 15, aantal_fases_indien_meerfasig: 16, heeft_ingebouwde_schakelaar: 19, is_halfwaterdicht: 20, is_meerfasig: 21, heeft_nul_indien_meerfasig: 25, in_verdeelbord: 26 },
   Lichtpunt: { aantal: 4, nr: 10, aantal_buizen_indien_TL: 13, adres: 15, type_lamp: 16, type_noodverlichting: 17, is_wandlamp: 19, is_halfwaterdicht: 20, heeft_ingebouwde_schakelaar: 21 },
-  Schakelaars: { aantal_schakelaars: 4, type_schakelaar: 5, nr: 10, adres: 15, heeft_signalisatielampje: 19, is_halfwaterdicht: 20, heeft_verklikkerlampje: 21, is_trekschakelaar: 25 },
   Drukknop: { aantal: 4, nr: 10, aantal_knoppen_per_armatuur: 13, adres: 15, type_knop: 16, is_afgeschermd: 19, is_halfwaterdicht: 20, heeft_verklikkerlampje: 21 },
   Verbruiker: { nr: 10, tekst: 15, adres: 23 },
-  Elektriciteitsmeter: { nr: 10, adres: 15 },
-  Aftakdoos: { nr: 10, adres: 15 },
-  'Meerdere verbruikers': { nr: 10, adres: 15 },
   Splitsing: { adres: 15 },
 };
 
@@ -447,12 +465,15 @@ function withChain(top: ElNode[], chain: ElNode[], kids: ElNode[]): ElNode[] {
  * caractéristiques sont inconnues.
  */
 function circuit(p: Raw, type: string, kids: ElNode[], withCable: boolean, ctx: Ctx, location: string | undefined): ElNode[] {
-  const naam = str(p.naam);
-  const prot = protectionNode(p, type, type === 'Kring' ? { fixedLetter: naam && naam !== '---' ? naam : undefined, circuitName: str(p.tekst) } : {});
+  const naam = str(p.naam) === '---' ? undefined : str(p.naam);
+  const hasLoads = kids.some((k) => !FEED_KINDS.has(k.kind));
+  // Nom du Kring : lettre du circuit s'il alimente des points ; sinon (différentiel d'un groupe, « Diff »),
+  // simple libellé
+  const names: Record<string, PropValue> = type !== 'Kring' ? {} : hasLoads ? { fixedLetter: naam, circuitName: str(p.tekst) } : { circuitName: str(p.tekst) ?? naam };
+  const prot = protectionNode(p, type, names);
   const control = prot ? null : controlInsteadOfProtection(p, type);
   const head = prot ?? control;
   if (head && location) head.location = location;
-  const hasLoads = kids.some((k) => !FEED_KINDS.has(k.kind));
   let cable: ElNode | undefined;
   if (withCable) cable = cableNode(p, 'type_kabel', ctx, head ? undefined : type);
   else if (head && hasLoads) cable = node('cable', {});
@@ -463,11 +484,33 @@ function circuit(p: Raw, type: string, kids: ElNode[], withCable: boolean, ctx: 
   return withChain([chain[0]], chain, kids);
 }
 
+const COMMANDS = new Set<NodeKind>(['switch', 'relay', 'pushButton', 'detector']);
+
+/**
+ * « Meerdere verbruikers » : Eendraadschema dessine ses éléments en série sur une ligne. Une commande sans
+ * enfant (interrupteur, télérupteur…) commande ce qui la suit : les éléments suivants deviennent ses enfants,
+ * tant que Voltaplan les accepte sous une commande (une prise commandée reste à côté de l'interrupteur).
+ */
+function inSeries(nodes: ElNode[]): ElNode[] {
+  const out: ElNode[] = [];
+  let command: ElNode | undefined;
+  for (const n of nodes) {
+    if (command && ALLOWED_CHILDREN[command.kind]?.includes(n.kind)) {
+      command.children.push(n);
+      continue;
+    }
+    out.push(n);
+    command = COMMANDS.has(n.kind) && n.children.length === 0 ? n : undefined;
+  }
+  return out;
+}
+
 function convert(t: Tree, ctx: Ctx): ElNode[] {
   const p = t.item.props;
   const type = str(p.type) ?? '';
   const location = str(p.adres);
   const kids = () => convertChildren(t.children, ctx);
+  if (type === 'Meerdere verbruikers') return inSeries(kids());
   if (PASS_THROUGH.has(type)) return kids();
   switch (type) {
     case 'Bord': {
@@ -610,32 +653,62 @@ export function htmlLines(html: unknown): string[] {
     .filter(Boolean);
 }
 
-function addressFrom(lines: string[]): Address {
-  const a: Address = {};
-  const pc = lines.findIndex((l) => /^(B-)?\d{4}\s+\S/.test(l));
+interface Person {
+  name?: string;
+  address: Address;
+  email?: string;
+  vat?: string;
+  /** Lignes non reprises (téléphone…). */
+  rest: string[];
+}
+
+/**
+ * Personne (champ « owner » ou « installer ») : nom (1re ligne), e-mail, n° de TVA, adresse (ligne « code postal
+ * commune » et la rue juste au-dessus). Les autres lignes vont dans `rest`.
+ */
+function person(lines: string[]): Person {
+  const out: Person = { name: lines[0], address: {}, rest: [] };
+  const others = lines.slice(1);
+  const used = new Set<number>();
+  others.forEach((l, i) => {
+    const mail = /([^\s:<>]+@[^\s:<>]+\.[a-z]{2,})/i.exec(l);
+    const vat = /^(BTW|TVA|VAT)\s*:?\s*(\S.*)$/i.exec(l);
+    if (mail && !out.email) {
+      out.email = mail[1];
+      used.add(i);
+    } else if (vat && !out.vat) {
+      out.vat = vat[2];
+      used.add(i);
+    }
+  });
+  const pc = others.findIndex((l, i) => !used.has(i) && /^(B-)?\d{4}\s+\S/.test(l));
   if (pc >= 0) {
-    const m = /^(?:B-)?(\d{4})\s+(.+)$/.exec(lines[pc])!;
-    a.postalCode = m[1];
-    a.city = m[2];
-    if (pc > 0) a.street = lines[pc - 1];
-  } else if (lines.length) a.street = lines.join(', ');
-  return a;
+    const m = /^(?:B-)?(\d{4})\s+(.+)$/.exec(others[pc])!;
+    out.address.postalCode = m[1];
+    out.address.city = m[2];
+    used.add(pc);
+    if (pc > 0 && !used.has(pc - 1)) {
+      out.address.street = others[pc - 1];
+      used.add(pc - 1);
+    }
+  }
+  out.rest = others.filter((_, i) => !used.has(i));
+  return out;
 }
 
 function metaFrom(props: Raw, ctx: Ctx): Partial<Project['meta']> {
-  const owner = htmlLines(props.owner);
-  const installer = htmlLines(props.installer);
+  const owner = person(htmlLines(props.owner));
+  const inst = person(htmlLines(props.installer));
   const info = htmlLines(props.info);
-  const vat = installer.find((l) => /^(BTW|TVA|VAT)\s*:?\s*\S/i.test(l));
-  const inst = installer.filter((l) => l !== vat);
-  const meta: Partial<Project['meta']> = {
-    client: { name: owner[0], address: addressFrom(owner.slice(1)) },
-    site: {},
-    installer: { name: inst[0], vat: vat?.replace(/^(BTW|TVA|VAT)\s*:?\s*/i, ''), address: addressFrom(inst.slice(1)) },
-  };
+  const client: Project['meta']['client'] = { name: owner.name, address: owner.address };
+  if (owner.email) client.email = owner.email;
+  const installer: Project['meta']['installer'] = { name: inst.name, address: inst.address };
+  if (inst.vat) installer.vat = inst.vat;
+  if (inst.email) installer.email = inst.email;
+  const meta: Partial<Project['meta']> = { client, site: {}, installer };
   const control = htmlLines(props.control).join(', ');
   if (control) meta.inspectionBodyName = control;
-  const rest: string[] = [];
+  const rest: string[] = [...owner.rest, ...inst.rest];
   for (const l of info) {
     const ean = /^EAN\s*:?\s*(\d{18})$/i.exec(l);
     const earth = /^(Aarding|Mise à la terre|Earthing)\s*:?\s*(TT|TN|IT)$/i.exec(l);
@@ -720,7 +793,8 @@ export function parseEdsJson(json: string, version: number, fileName = 'Eendraad
 
   const props = doc.properties && typeof doc.properties === 'object' ? (doc.properties as Raw) : {};
   const meta = metaFrom(props, ctx);
-  const title = (str(props.filename) ?? fileName).replace(/\.eds$/i, '');
+  // Titre : nom du fichier ouvert ; à défaut, celui gardé dans le fichier par Eendraadschema
+  const title = (fileName !== 'Eendraadschema' ? fileName : (str(props.filename) ?? fileName)).replace(/\.eds$/i, '');
   project.meta = { ...project.meta, ...meta, title, installationKind: 'existing', rgieVersion: 'old' } as Project['meta'];
 
   const sit = doc.sitplanjson as Raw | undefined;

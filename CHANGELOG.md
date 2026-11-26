@@ -58,6 +58,8 @@
   (va-et-vient, permutateurs), appareils et infos du dossier sont repris ; une valeur absente reste absente ;
   l'installation importée est une installation existante. Le plan de situation n'est pas repris (avertissement).
   Fichier endommagé, trop gros ou de version inconnue : message clair (FR, NL, EN).
+  Essayé sur de vrais fichiers : les exemples publiés par Eendraadschema (format 1) et un schéma enregistré par
+  son application en ligne (format 4, compressé).
 
 ### Accueil, couleurs de circuits, matériel par pièce, étiquettes QR, DXF (2026-11-26)
 

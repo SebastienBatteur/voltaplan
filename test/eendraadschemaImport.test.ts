@@ -2,6 +2,7 @@
  * Import Eendraadschema (.eds). Tous les fichiers sont fabriqués ici (export Voltaplan ou JSON écrit à la main) :
  * aucun fichier réel de client.
  */
+import { existsSync, readFileSync } from 'node:fs';
 import { deflateSync } from 'node:zlib';
 import { exportEendraadschema } from '../src/export/eendraadschema';
 import { EdsError, decodeEds, importEendraadschema, inflateZlib, parseCable } from '../src/import/eendraadschema';
@@ -236,5 +237,63 @@ describe('import Eendraadschema : fichiers refusés avec un message clair', () =
     for (const lang of ['fr', 'nl', 'en'] as const)
       for (const code of ['notEds', 'corrupt', 'newerVersion', 'tooLarge'])
         expect(translate(lang, 'eds.error.' + code, { version: 5, max: 100 })).not.toBe('eds.error.' + code);
+  });
+});
+
+/**
+ * Vrais fichiers d'Eendraadschema, non versionnés (test/fixtures/*.eds est ignoré par git) :
+ *  - example000.eds, example001.eds, example_default.eds : exemples publiés dans le dépôt d'Eendraadschema
+ *    (github.com/igoethal/eendraadschema, dossier examples/, format 1) ;
+ *  - eds-voorbeeld2-v4.eds : « Voorbeeld 2 » de l'application en ligne, enregistré par elle (format 4, compressé).
+ * Données fictives (« Voornaam Achternaam »). Tests ignorés si les fichiers sont absents.
+ */
+describe.each(['example000', 'example001', 'example_default', 'eds-voorbeeld2-v4'].filter((f) => existsSync(`test/fixtures/${f}.eds`)))('vrai fichier Eendraadschema %s', (name) => {
+  const read = () => importEendraadschema(readFileSync(`test/fixtures/${name}.eds`, 'utf8'), name + '.eds');
+
+  it('structure : raccordement, différentiel général, groupe 30 mA', async () => {
+    const { project } = await read();
+    expect(project.roots).toHaveLength(1);
+    const [meter] = project.roots[0].children;
+    expect(meter.kind).toBe('meter');
+    const main = meter.children[0];
+    expect(main.props).toMatchObject({ device: 'rcd', residualCurrent: 300, poles: '2P' });
+    const rcd30 = byKind(project, 'protection').find((p) => p.props.residualCurrent === 30)!;
+    expect(rcd30.props.fixedLetter).toBeUndefined(); // « Diff » : libellé, pas une lettre de circuit
+    expect(rcd30.children[0].kind).toBe('board');
+    expect(project.meta.client).toMatchObject({ name: 'Voornaam Achternaam', address: { street: 'Straat 0', postalCode: '0000', city: 'gemeente' } });
+    expect(project.meta.installationKind).toBe('existing');
+  });
+
+  it('circuits A, B, C avec leurs câbles et points', async () => {
+    if (name === 'example_default') return; // schéma vide
+    const { project } = await read();
+    const circuits = byKind(project, 'protection').filter((p) => p.props.fixedLetter);
+    expect(circuits.map((c) => [c.props.fixedLetter, c.props.ratedCurrent, c.props.curve])).toEqual([
+      ['A', 20, 'C'],
+      ['B', 16, 'C'],
+      ['C', 16, 'C'],
+    ]);
+    for (const c of circuits) expect(c.children[0]).toMatchObject({ kind: 'cable', props: { cableType: 'XVB', conductors: 3, method: 'inWall', inConduit: true } });
+    // Aucun élément de commande vide : chaque Lichtcircuit commande son point lumineux
+    for (const n of byKind(project, 'switch').concat(byKind(project, 'relay'))) {
+      const leaf = (x: ElNode): boolean => x.children.length === 0 ? x.kind !== 'switch' && x.kind !== 'relay' : x.children.some(leaf);
+      if (n.source?.tag === 'Lichtcircuit') expect(leaf(n)).toBe(true);
+    }
+    expect(byKind(project, 'socket').length).toBeGreaterThan(3);
+  });
+
+  it('format 4 : interrupteur suivi de lampes dans « Meerdere verbruikers »', async () => {
+    if (name !== 'eds-voorbeeld2-v4' && name !== 'example001') return;
+    const { project } = await read();
+    const b = byKind(project, 'protection').find((p) => p.props.fixedLetter === 'B')!;
+    const sw = b.children[0].children[0];
+    expect(sw).toMatchObject({ kind: 'switch', props: { switchType: 'bipolar' } });
+    expect(sw.children.map((c) => [c.kind, c.props.lightType])).toEqual([
+      ['light', 'wall'],
+      ['light', 'standard'],
+    ]);
+    expect(byKind(project, 'relay')[0]).toMatchObject({ props: { relayType: 'teleswitch' }, children: [{ kind: 'light' }] });
+    expect(byKind(project, 'light').find((l) => l.location === 'Hue')?.props.lightType).toBe('led');
+    expect(byKind(project, 'appliance')[0].props.applianceType).toBe('microwave');
   });
 });
