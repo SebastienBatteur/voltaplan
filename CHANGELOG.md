@@ -51,6 +51,13 @@
   mal cadrée), mesurées sur la photo et seulement quand la lecture est incomplète (seuils réglés sur les photos réelles).
 - Mesuré sur 18 photos réelles : bon pour plaques de compteurs, étiquettes imprimées et noms de pièces ; insuffisant
   pour les calibres des petits modules depuis une photo du tableau entier (docs/strategie/ASSISTANT-COLLECTE.md § 8).
+### Import Eendraadschema (2026-11-26)
+
+- **Import des fichiers Eendraadschema (`.eds`)**, compressés ou non, versions 1 à 4 du format : menu Fichier et
+  écran « Mes projets ». Raccordement, tableaux, protections, câbles, prises, points lumineux, interrupteurs
+  (va-et-vient, permutateurs), appareils et infos du dossier sont repris ; une valeur absente reste absente ;
+  l'installation importée est une installation existante. Le plan de situation n'est pas repris (avertissement).
+  Fichier endommagé, trop gros ou de version inconnue : message clair (FR, NL, EN).
 
 ### Accueil, couleurs de circuits, matériel par pièce, étiquettes QR, DXF (2026-11-26)
 

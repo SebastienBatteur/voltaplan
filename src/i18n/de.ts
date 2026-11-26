@@ -14,6 +14,7 @@ export const de: Partial<Dict> = {
   'pv.requestSoon': "Demnächst: Voltaplan kann die Anfrage vorausfüllen (Module, Wechselrichter, Batterie, Wärmepumpe, Boiler, Heizung, Ladestation), mit Ihrer Zustimmung.",
   'palette.search': "Symbol suchen…",
   'palette.noMatch': "Kein passendes Symbol.",
+  'menu.importEds': 'Eendraadschema importieren (.eds)…',
   'menu.undo': 'Rückgängig',
   'menu.redo': 'Wiederholen',
   'menu.print': 'Drucken / PDF',

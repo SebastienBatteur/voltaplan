@@ -12,6 +12,7 @@ const sized = (name: string, size: number, type = '') => ({ name, size, type, sl
 describe('taille maximale des fichiers importés', () => {
   it('reconnaît le genre du fichier', () => {
     expect(importKind({ name: 'maison.trik' })).toBe('trik');
+    expect(importKind({ name: 'schema.EDS' })).toBe('eds');
     expect(importKind({ name: 'plan.PDF' })).toBe('pdf');
     expect(importKind({ name: 'x', type: 'application/pdf' })).toBe('pdf');
     expect(importKind({ name: 'photo.jpg' })).toBe('image');
@@ -20,7 +21,7 @@ describe('taille maximale des fichiers importés', () => {
   });
 
   it('limites raisonnables par genre', () => {
-    expect(IMPORT_LIMITS).toEqual({ project: 50 * MB, trik: 20 * MB, image: 25 * MB, pdf: 50 * MB, dxf: 30 * MB });
+    expect(IMPORT_LIMITS).toEqual({ project: 50 * MB, trik: 20 * MB, eds: 20 * MB, image: 25 * MB, pdf: 50 * MB, dxf: 30 * MB });
     expect(() => checkFileSize({ name: 'a.jpg', size: 25 * MB })).not.toThrow();
     expect(() => checkFileSize({ name: 'a.jpg', size: 25 * MB + 1 })).toThrow(FileTooLargeError);
     expect(() => checkFileSize({ name: 'a.trik', size: 21 * MB })).toThrow(FileTooLargeError);
@@ -33,6 +34,7 @@ describe('taille maximale des fichiers importés', () => {
   it('refuse un projet ou un .trik trop gros avant de le lire', async () => {
     await expect(readProjectFile(sized('gros.voltaplan', 51 * MB))).rejects.toBeInstanceOf(FileTooLargeError);
     await expect(readProjectFile(sized('gros.trik', 21 * MB))).rejects.toBeInstanceOf(FileTooLargeError);
+    await expect(readProjectFile(sized('gros.eds', 21 * MB))).rejects.toBeInstanceOf(FileTooLargeError);
   });
 
   it('refuse une image ou un PDF trop gros avant de le lire', async () => {

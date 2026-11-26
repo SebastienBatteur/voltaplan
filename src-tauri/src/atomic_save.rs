@@ -477,8 +477,9 @@ pub async fn file_state(granted: tauri::State<'_, Granted>, path: String) -> Res
     state_of(&target).map(|o| o.map(|s| (s.mtime_ms, s.size))).map_err(|e| e.to_string())
 }
 
-/// Fichiers que la page peut OUVRIR (lecture) : projets (`.voltaplan`, ancien `.openrgie`, JSON v1) et Trikker.
-pub const READ_EXTS: &[&str] = &["voltaplan", "openrgie", "json", "trik"];
+/// Fichiers que la page peut OUVRIR (lecture) : projets (`.voltaplan`, ancien `.openrgie`, JSON v1), Trikker et
+/// Eendraadschema.
+pub const READ_EXTS: &[&str] = &["voltaplan", "openrgie", "json", "trik", "eds"];
 /// Taille maximale lue d'un coup (les archives v2 sont plafonnées plus bas par la page).
 pub const READ_MAX: u64 = 1 << 30;
 
@@ -601,6 +602,7 @@ mod tests {
         assert_eq!(readable_ext(Path::new("/a/m.VOLTAPLAN")).as_deref(), Some("voltaplan"));
         assert_eq!(readable_ext(Path::new("/a/m.openrgie")).as_deref(), Some("openrgie"));
         assert_eq!(readable_ext(Path::new("/a/m.trik")).as_deref(), Some("trik"));
+        assert_eq!(readable_ext(Path::new("/a/m.eds")).as_deref(), Some("eds"));
         assert_eq!(readable_ext(Path::new("/a/m.json")).as_deref(), Some("json"));
         assert_eq!(readable_ext(Path::new("/a/m.exe")), None);
         assert_eq!(readable_ext(Path::new("/a/m")), None);

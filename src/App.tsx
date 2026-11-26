@@ -121,8 +121,8 @@ export function App() {
       setSaveState(null);
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
-      // Fichier Trikker : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.(trik|vschema)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      // Fichier Trikker, Volter ou Eendraadschema : import ; projet Voltaplan : simple ouverture
+      setToast({ text: t(/\.(trik|vschema|eds)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -348,7 +348,7 @@ export function App() {
         setPrintOpen(true);
       } else if (mod && key === 'o') {
         e.preventDefault();
-        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
+        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds'].join(','));
       } else if (e.key === 'Delete' && !typing && s.selectedId) s.remove(s.selectedId);
       else if (e.key === 'Escape') s.startPlacing(null);
     };
@@ -481,7 +481,7 @@ export function App() {
     }
     if (e.loc.kind === 'device') {
       setToast({ text: t('home.reopenDevice', { name: e.name }) });
-      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
+      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds'].join(','));
       return;
     }
     setToast({ text: t('home.reopenCloud', { name: e.name, where: whereLabel(e.loc) }) });
@@ -513,6 +513,7 @@ export function App() {
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
             { label: t('menu.importTrikker'), run: () => open('.trik') },
             { label: t('menu.importVolter'), run: () => open('.vschema') },
+            { label: t('menu.importEds'), run: () => open('.eds') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },
@@ -613,7 +614,7 @@ export function App() {
           mode={storage}
           onClose={() => setStorage(null)}
           onDevice={() => {
-            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
+            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds'].join(','));
             else
               void saveProject(useStore.getState().project, useStore.getState().fileName, true)
                 .then((name) => {
@@ -758,9 +759,10 @@ export function App() {
           onNew={(k) => {
             if (confirmDiscard()) setWizardKind(k);
           }}
-          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','))}
+          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds'].join(','))}
           onOpenStorage={() => setStorage('open')}
           onImportTrikker={() => void open('.trik')}
+          onImportEds={() => void open('.eds')}
           onOpenRecent={(e) => void openRecent(e)}
           whereLabel={(e) => whereLabel(e.loc)}
         />

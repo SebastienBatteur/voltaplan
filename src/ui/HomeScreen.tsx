@@ -17,6 +17,7 @@ export function HomeScreen({
   onOpenFile,
   onOpenStorage,
   onImportTrikker,
+  onImportEds,
   onOpenRecent,
   whereLabel,
 }: {
@@ -27,6 +28,8 @@ export function HomeScreen({
   onOpenFile: () => void;
   onOpenStorage: () => void;
   onImportTrikker: () => void;
+  /** Import d'un fichier Eendraadschema (.eds). Facultatif : carte masquée sans lui. */
+  onImportEds?: () => void;
   onOpenRecent: (e: RecentEntry) => void;
   whereLabel: (e: RecentEntry) => string;
 }) {
@@ -91,6 +94,13 @@ export function HomeScreen({
             <strong>{t('home.trikker')}</strong>
             <span className="muted small">{t('home.trikkerHelp')}</span>
           </button>
+          {onImportEds && (
+            <button className="home-card" onClick={onImportEds}>
+              <span className="home-card-icon" aria-hidden="true">⇪</span>
+              <strong>{t('home.eds')}</strong>
+              <span className="muted small">{t('home.edsHelp')}</span>
+            </button>
+          )}
         </div>
 
         <h2>{t('home.recent')}</h2>

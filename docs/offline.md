@@ -8,7 +8,7 @@ l'application fonctionne sans Internet. L'application de bureau (Tauri) n'en a p
 
 Tout ce qui ne dépend pas d'un service extérieur, **y compris les fonctions jamais utilisées en ligne** :
 schéma unifilaire, plan de position, tableau, contrôle RGIE, calculs, nomenclature, impression du dossier,
-fonds de plan PDF (lecteur pdf.js et son « worker »), import et export Trikker, export Eendraadschema,
+fonds de plan PDF (lecteur pdf.js et son « worker »), import et export Trikker et Eendraadschema,
 ouverture et enregistrement de fichiers sur l'appareil, projets gardés dans le navigateur.
 
 Indisponible hors ligne (un repère « Hors ligne » s'affiche près du bouton IA) : l'IA (Anthropic, OpenAI,
