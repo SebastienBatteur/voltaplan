@@ -188,6 +188,11 @@ export interface PlanPage {
   symbols: { nodeId: string; pos: Pt; rotation: number; labelSide?: string; autoRotate?: boolean }[];
   /** Textes libres (noms de pièces). */
   labels: { id: string; text: string; pos: Pt; size?: number }[];
+  /**
+   * Tracés de câbles entre deux points posés (repris d'un export Condui) : nœuds aux extrémités et points de
+   * passage intermédiaires (mm). Suivis par l'estimation de la longueur des câbles au lieu du trajet à angles droits.
+   */
+  wires?: { a: string; b: string; pts: Pt[]; /** Créé d'après l'unifilaire (import sans tracés), pas dessiné. */ auto?: boolean }[];
 }
 
 /** Disposition d'un tableau : position de chaque appareil (rangée, colonne en modules), photo et vérifications. */

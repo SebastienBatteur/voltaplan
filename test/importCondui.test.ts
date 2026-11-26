@@ -338,6 +338,20 @@ function sample() {
         geometry: { kind: 'point', position: { x: 100, y: 150 } },
         properties: { v1: { text: 'Note' } },
       },
+      {
+        id: 'pw1',
+        kind: 'electrical.plan-wire.lighting-control',
+        floorId: 'F0',
+        geometry: { kind: 'polyline', points: [{ x: 50, y: 60 }] },
+        properties: { route: { circuitId: 'x', floorId: 'F0', from: { endpointId: 's1', placementId: 'ps1' }, to: { endpointId: 'l1', placementId: 'pl1' } } },
+      },
+      {
+        id: 'pw2',
+        kind: 'electrical.plan-wire.sockets',
+        floorId: 'F0',
+        geometry: { kind: 'polyline', points: [] },
+        properties: { route: { floorId: 'F0', from: { placementId: 'inconnu' }, to: { placementId: 'pl1' } } },
+      },
     ],
     assets: [],
   };
@@ -443,6 +457,14 @@ describe('import Condui', () => {
     expect(new Set(ids).size).toBe(ids.length);
     const kinds = ids.map((id) => all(project.roots).find((n) => n.id === id)?.kind);
     expect(kinds).toEqual(expect.arrayContaining(['board', 'meter', 'earthBar', 'socket', 'light']));
+  });
+
+  it('tracés de câbles : de pose à pose par les points de passage (cm → mm) ; tracé sans point d’arrivée ignoré', () => {
+    const { project, warnings } = importCondui(JSON.stringify(sample()));
+    const s1 = find(project.roots, 'switch_1p_twoway');
+    const l1 = all(project.roots).find((n) => n.source?.attrs.label === 'D1' && n.kind === 'light')!;
+    expect(project.plan.pages[0].wires).toEqual([{ a: s1.id, b: l1.id, pts: [{ x: 1500, y: 1600 }] }]);
+    expect(warnings.some((w) => w.includes('Tracés'))).toBe(false);
   });
 
   it('ouverture du .zip exporté par Condui (manifeste + project.json)', async () => {

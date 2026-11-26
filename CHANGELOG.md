@@ -7,6 +7,14 @@
 - « Mettre à jour » et le bouton « Estimer les longueurs » (onglet Matériel) estiment la longueur de chaque câble
   d'après le plan de position : du tableau aux points dans l'ordre du schéma, à angles droits, avec montées, descentes,
   changement d'étage et 10 % de marge. Utilisée par le calcul de la chute de tension et la liste du matériel (« ≈ »).
+- Montée et descente selon la hauteur de pose : interrupteur et bouton-poussoir à hauteur de main (1,10 m) alimentés
+  par le plafond, interrupteur à tirette en haut (2,30 m), prise basse (0,25 m) par le bas, applique à 1,90 m.
+- Tracés de câbles Condui repris (de point à point par les points de passage) : dessinés en pointillé sur le plan et
+  suivis par l'estimation au lieu du trajet à angles droits ; le départ du tableau, que Condui ne trace pas, reste
+  estimé. Les exports PlanElec fournis ne contiennent pas de tracés (et leurs points n'ont pas de circuits).
+- Import sans tracés (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, circuits non tracés de Condui) :
+  tracés créés d'après l'unifilaire, du tableau au premier point puis de point en point dans l'ordre du schéma, à
+  angles droits ; dessinés plus pâles et signalés « à ajuster ».
 - Longueur marquée « estimée » ; une longueur saisie n'est jamais remplacée, et la saisir enlève la marque.
 - Le RGIE n'exige la longueur des canalisations que pour une installation non domestique (3.1.2.2 b) ; en domestique
   (3.1.2.2 a), type, section, nombre de conducteurs et mode de pose suffisent.
@@ -56,7 +64,7 @@
   de dérivation et borniers en ligne.
 - Plan : un étage par page, murs, portes (sens d'ouverture relevé sur le plan PDF de Condui), fenêtres, porte de
   garage, escaliers, voiture et sanitaires, notes ; symboles à leur place, quantité « 2x » gardée.
-- Non repris (avertissement à l'ouverture) : documents joints (fiches techniques), tracés de câbles.
+- Non repris (avertissement à l'ouverture) : documents joints (fiches techniques).
 - Le modèle accepte maintenant un transformateur commandé par un interrupteur (éclairage LED basse tension).
 
 ### Équiper une pièce (2026-11-26)

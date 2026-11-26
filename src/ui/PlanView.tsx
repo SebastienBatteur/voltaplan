@@ -863,6 +863,14 @@ export function PlanView() {
             const q = (preview ?? page).walls[sel.index][end];
             return <rect key={end} x={q.x - tol() * 0.6} y={q.y - tol() * 0.6} width={tol() * 1.2} height={tol() * 1.2} className="handle" />;
           })}
+        {/* Tracés de câbles (repris de Condui, ou créés d'après l'unifilaire : plus pâles), sous les symboles */}
+        {(page.wires ?? []).map((w, i) => {
+          const at = (id: string) => (dragging?.id === id ? dragging.pos : page.symbols.find((s) => s.nodeId === id)?.pos);
+          const a = at(w.a);
+          const b = at(w.b);
+          if (!a || !b) return null;
+          return <polyline key={'w' + i} points={[a, ...w.pts, b].map((p) => `${p.x},${p.y}`).join(' ')} className={w.auto ? 'plan-wire auto' : 'plan-wire'} />;
+        })}
         {page.symbols.map((s) => {
           const node = find(s.nodeId);
           if (!node) return null;

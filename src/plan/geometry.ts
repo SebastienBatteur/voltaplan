@@ -121,6 +121,7 @@ export function scalePage(page: PlanPage, p1: Pt, p2: Pt, realMm: number): PlanP
     labels: page.labels.map((l) => ({ ...l, pos: f(l.pos) })),
     symbols: page.symbols.map((s) => ({ ...s, pos: f(s.pos) })),
     furniture: page.furniture?.map((m) => ({ ...m, center: f(m.center) })),
+    wires: page.wires?.map((w) => ({ ...w, pts: w.pts.map(f) })),
   };
 }
 

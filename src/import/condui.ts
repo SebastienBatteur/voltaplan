@@ -719,9 +719,24 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
       });
     }
   }
+  // Tracés de câbles (« plan-wire ») : de la pose de départ à la pose d'arrivée par les points de passage
+  const nodeAt = new Map<string, string>();
+  for (const [id, list] of poses) for (const p of list) if (p.id) nodeAt.set(p.id, id);
+  let wires = 0;
+  for (const e of elements) {
+    if (!String(e.kind).startsWith('electrical.plan-wire')) continue;
+    const r = isObj(e.properties) && isObj(e.properties.route) ? e.properties.route : {};
+    const a = isObj(r.from) ? nodeAt.get(str(r.from.placementId) ?? '') : undefined;
+    const b = isObj(r.to) ? nodeAt.get(str(r.to.placementId) ?? '') : undefined;
+    const page = pageOf.get(str(r.floorId) ?? str(e.floorId) ?? '');
+    if (!a || !b || a === b || !page) continue;
+    const g = isObj(e.geometry) ? e.geometry : {};
+    (page.wires ??= []).push({ a, b, pts: arr(g.points).map(mm) });
+    wires++;
+  }
   if (multi) warnings.add('Points posés plusieurs fois sur un même étage dans Condui (quantité « 2x ») : une seule position reprise, la quantité est gardée.');
   if (skipped.size) warnings.add(`Éléments de plan Condui non repris : ${[...skipped].join(', ')}.`);
-  if (arr(el.wireRuns).length || elements.some((e) => String(e.kind).startsWith('electrical.plan-wire'))) warnings.add('Tracés de câbles Condui non repris.');
+  if (!wires && elements.some((e) => String(e.kind).startsWith('electrical.plan-wire'))) warnings.add('Tracés de câbles Condui non repris : points d’arrivée introuvables.');
   if (arr(data.assets).length) warnings.add(`${arr(data.assets).length} document(s) joint(s) au projet Condui (fiches techniques) non repris.`);
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);

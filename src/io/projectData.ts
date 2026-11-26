@@ -105,6 +105,17 @@ export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSo
  * aussitôt (F3 : le fichier peut être déplacé ensuite sans perte des documents déjà copiés).
  */
 export async function openProjectData(data: Blob | string, name: string, session: AssetSession = assetSession, opts: { background?: boolean } = {}): Promise<ProjectOpen> {
+  const r = await openProjectFile(data, name, session, opts);
+  // Import d'un autre logiciel sans tracés de câbles : tracés créés d'après l'unifilaire (points déjà posés)
+  if (r.format !== 'v1' && r.format !== 'v2') {
+    const { autoWires } = await import('../calc/cableLength');
+    const w = autoWires(r.project);
+    if (w.added) return { ...r, project: w.project, warnings: [...r.warnings, `${w.added} tracé(s) de câble créé(s) d'après l'unifilaire, à angles droits : à ajuster.`] };
+  }
+  return r;
+}
+
+async function openProjectFile(data: Blob | string, name: string, session: AssetSession, opts: { background?: boolean }): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
   const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : /\.eds$/i.test(name) ? 'eds' : /\.draadwijs$/i.test(name) ? 'draadwijs' : /\.planelec\.json$/i.test(name) || (/\.json$/i.test(name) && isPlanelec(decodeText(await blobBytes(blob.slice(0, 256))))) ? 'planelec' : detectFormat(await blobBytes(blob.slice(0, 64)));
   // Dossier PDF d'un autre logiciel : lecture du texte (tableau des circuits), voir src/import/pdfDossier.ts
