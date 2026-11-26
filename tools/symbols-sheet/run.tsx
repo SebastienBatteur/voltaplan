@@ -48,7 +48,7 @@ function Cell({ label, n }: { label: string; n: ElNode }) {
         <svg className="canvas" viewBox={`${-v.w / 2 - 30} -6 ${v.w + 60} ${v.h + 12}`} width={84} height={100} role="img" aria-label={`${n.kind} unifilaire`}>
           <Symbol node={n} orient="v" />
         </svg>
-        <svg className="canvas" viewBox={`-6 -20 ${h.w + 12} 40`} width={100} height={48} role="img" aria-label={`${n.kind} plan`}>
+        <svg className="canvas" viewBox={`-6 ${Math.min(-20, -h.h / 2 - 8)} ${h.w + 18} ${Math.max(40, h.h + 16)}`} width={100} height={48} role="img" aria-label={`${n.kind} plan`}>
           <Symbol node={n} orient="h" bare={!isWallMounted(n)} />
         </svg>
       </div>

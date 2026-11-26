@@ -10,6 +10,9 @@
   faisceau peu divergent et divergent, luminaire avec interrupteur, bloc autonome de sécurité, ballast, vibreur,
   trompe, sirène, horloge, horloge mère, gâche, chauffage à accumulation (avec ventilateur), chauffe-eau électrique.
   Les imports Volter et PlanElec les utilisent.
+- Fin du tableau 2.23 : interrupteur et prise installés dans un tableau (cadre), unité de commande domotique
+  (partie J : bouton-poussoir local, sans fil, programmée, par détection, extension), caractéristiques des sources
+  sous leur symbole sur l'unifilaire (Pmax, Uprim/Usec, Pn, nombre et puissance crête des panneaux).
 
 ### Import PlanElec Sketch (2026-11-26)
 

@@ -9,7 +9,17 @@
  */
 import type { ElNode } from '../model/types';
 
+/** Unité de commande domotique (tableau 2.23 J) : au moins un type de commande coché. */
+export const domoticControls = (n: ElNode) => (['ctlPush', 'ctlWireless', 'ctlTimer', 'ctlDetection', 'ctlExtension'] as const).filter((k) => n.props[k] === true);
+const framed = (n: ElNode) => (n.kind === 'switch' || n.kind === 'socket') && (n.props.inBoard === true || domoticControls(n).length > 0);
+
 export function symbolSize(n: ElNode, orient: 'v' | 'h'): { w: number; h: number } {
+  const s = baseSymbolSize(n, orient);
+  if (orient === 'h' && framed(n)) return { w: s.w + (n.props.ctlExtension === true ? 14 : 4), h: s.h + (domoticControls(n).length ? 12 : 6) };
+  return s;
+}
+
+function baseSymbolSize(n: ElNode, orient: 'v' | 'h'): { w: number; h: number } {
   if (orient === 'v') {
     switch (n.kind) {
       case 'origin':
@@ -78,6 +88,20 @@ export function abbr(n: ElNode): string {
   if (n.kind === 'appliance') return APPLIANCE_ABBR[String(n.props.applianceType)] ?? String(n.props.name ?? '').slice(0, 5);
   if (n.kind === 'relay') return ({ teleswitch: 'TR', contactor: 'K', timer: 't' } as Record<string, string>)[String(n.props.relayType)] ?? 'R';
   return KIND_ABBR[n.kind] ?? n.kind.slice(0, 3);
+}
+
+/** Caractéristiques d'une source sous son symbole (tableau 2.23 H : Pmax, U prim./U sec., quantité). */
+function SourceNote({ lines }: { lines: string[] }) {
+  const l = lines.filter(Boolean);
+  return (
+    <>
+      {l.map((t, i) => (
+        <text key={i} x={6} y={17 + i * 7} fontSize={6}>
+          {t}
+        </text>
+      ))}
+    </>
+  );
 }
 
 /** Petits traits au bout du levier d'un interrupteur (1 = unipolaire, 2 = bipolaire…). */
@@ -701,6 +725,7 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {lead(4)}
           <circle cx={12} cy={0} r={7} className="nofill" />
           <circle cx={21} cy={0} r={7} className="nofill" />
+          {bare === undefined && <SourceNote lines={[n.props.uPrimary && n.props.uSecondary ? `${n.props.uPrimary}/${n.props.uSecondary} V` : '', n.props.power ? `${n.props.power} VA` : '']} />}
         </g>
       );
     case 'solarPanel':
@@ -709,6 +734,7 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {lead(6)}
           <rect x={6} y={-10} width={22} height={20} className="bg" />
           <path d="M6 -10 L17 6 L28 -10" className="nofill" />
+          {bare === undefined && <SourceNote lines={[n.props.count ? `${n.props.count} ×` : '', n.props.name ? String(n.props.name) : '']} />}
         </g>
       );
     case 'battery':
@@ -746,6 +772,7 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {type === 'acDc' ? ac(8, -5) : dc(8, -7)}
           {type === 'dcAc' ? ac(18, 5) : dc(19, 2)}
           {type === 'acDc' && <path d="M19 8.5 h7 M20.5 7 l-1.5 1.5 l1.5 1.5 M24.5 7 l1.5 1.5 l-1.5 1.5" className="nofill" style={{ strokeWidth: 0.7 }} />}
+          {bare === undefined && <SourceNote lines={[n.props.power ? `Pmax ${n.props.power} W` : '']} />}
         </g>
       );
     }
@@ -907,7 +934,64 @@ export function Symbol({ node, orient, up, bare }: { node: ElNode; orient: 'v' |
       </g>
     );
   }
+  if (orient === 'h' && framed(node)) return <Framed n={node} bare={bare} />;
   return orient === 'v' ? <Vertical n={node} /> : <Horizontal n={node} bare={bare} />;
+}
+
+/**
+ * Interrupteur ou socle dans un cadre (tableau 2.23) : installé dans un tableau de répartition (cadre, double trait en
+ * bas) ou unité de commande domotique (partie J : rectangle en deux parties, en haut le type de commande — bouton-
+ * poussoir local, sans fil, programmée, par détection — et, à droite, l'extension par bouton-poussoir).
+ */
+function Framed({ n, bare }: { n: ElNode; bare?: boolean }) {
+  const { w, h } = baseSymbolSize(n, 'h');
+  const ctls = domoticControls(n).filter((k) => k !== 'ctlExtension');
+  const dom = domoticControls(n).length > 0;
+  const x0 = 6;
+  const x1 = w + 3;
+  const yb = h / 2 + 2;
+  const yt = -h / 2 - (dom ? 12 : 2);
+  const ys = -h / 2 - 2; // séparation des deux parties
+  const icon = (k: string, cx: number) => {
+    const cy = yt + 5;
+    switch (k) {
+      case 'ctlPush':
+        return (
+          <g key={k}>
+            <circle cx={cx} cy={cy} r={3.5} className="nofill" />
+            <circle cx={cx} cy={cy} r={1.5} className="nofill" />
+          </g>
+        );
+      case 'ctlTimer':
+        return (
+          <g key={k}>
+            <circle cx={cx} cy={cy} r={3.5} className="nofill" />
+            <path d={`M${cx} ${cy} v-2.5 M${cx} ${cy} h-2`} className="nofill" />
+          </g>
+        );
+      case 'ctlWireless':
+        return <path key={k} d={`M${cx - 3} ${cy - 1} v2 M${cx - 1} ${cy - 3} q2 3 0 6 M${cx + 1.5} ${cy - 4} q3 4 0 8`} className="nofill" />;
+      default:
+        // Détection : deux arcs
+        return <path key={k} d={`M${cx - 1.5} ${cy - 3} q2 3 0 6 M${cx + 1.5} ${cy - 4} q3 4 0 8`} className="nofill" />;
+    }
+  };
+  return (
+    <g>
+      <Horizontal n={n} bare={bare} />
+      <rect x={x0} y={yt} width={x1 - x0} height={yb - yt} className="nofill" />
+      {dom && <line x1={x0} y1={ys} x2={x1} y2={ys} />}
+      {ctls.map((k, i) => icon(k, x0 + 6 + i * 9))}
+      {n.props.ctlExtension === true && (
+        <g>
+          <line x1={x1} y1={yt + 5} x2={x1 + 5} y2={yt + 5} />
+          <circle cx={x1 + 9} cy={yt + 5} r={3.5} className="nofill" />
+          <circle cx={x1 + 9} cy={yt + 5} r={1.5} className="nofill" />
+        </g>
+      )}
+      {n.props.inBoard === true && <line x1={x0} y1={yb + 2} x2={x1} y2={yb + 2} />}
+    </g>
+  );
 }
 
 /**

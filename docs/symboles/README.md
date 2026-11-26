@@ -77,7 +77,16 @@ Relais (« R »), contacteur (« K »), commande de volet (interrupteur ▲▼),
 
 Les imports Volter et PlanElec utilisent ces variantes au lieu d'un élément « autre ».
 
-### Variantes du tableau pas encore proposées
+### Fin du tableau 2.23 (2026-11-26, pages imprimées 53 à 57)
 
-Interrupteur ou socle installé dans un tableau (cadre), appareil d'éclairage à trois tubes (le nombre de tubes est
-déjà écrit), symboles de domotique (J : unité de commande en deux parties).
+- **Interrupteur / socle installé dans un tableau** (E, F) : propriété « Dans le tableau » ; le symbole est encadré,
+  double trait en bas.
+- **Domotique** (J) : unité de commande en deux parties ; en bas le symbole de base (interrupteur ou socle), en haut
+  le ou les types de commande : bouton-poussoir local (◎), sans fil, programmée (horloge), par détection ; à droite
+  l'extension par bouton-poussoir.
+- **Sources** (H) : caractéristiques écrites sous le symbole, sur l'unifilaire seulement (Pmax de l'onduleur,
+  Uprim/Usec et Pn du transformateur, quantité et puissance crête des panneaux).
+- **Trois tubes fluorescents** : déjà dessinés (trois traits et le nombre).
+
+Tout le tableau 2.23 est maintenant proposé. Les symboles hors tableau restent permis s'ils sont définis dans la
+légende (3.1.2.1).

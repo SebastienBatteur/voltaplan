@@ -124,6 +124,14 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'threePhase', type: 'bool', default: false },
     { key: 'socketKind', type: 'enum', options: [...SOCKET_KINDS] },
+    // Tableau 2.23 E/F : installé dans un tableau de répartition (cadre à double trait en bas)
+    { key: 'inBoard', type: 'bool', default: false },
+    // Tableau 2.23 J (domotique) : unité de commande, partie supérieure = type(s) de commande
+    { key: 'ctlPush', type: 'bool', default: false },
+    { key: 'ctlWireless', type: 'bool', default: false },
+    { key: 'ctlTimer', type: 'bool', default: false },
+    { key: 'ctlDetection', type: 'bool', default: false },
+    { key: 'ctlExtension', type: 'bool', default: false },
     { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'reference', type: 'text' },
   ],
@@ -137,6 +145,14 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'pilotLight', type: 'bool', default: false },
     { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'signalLamp', type: 'bool' },
+    // Tableau 2.23 E/F : installé dans un tableau de répartition (cadre à double trait en bas)
+    { key: 'inBoard', type: 'bool', default: false },
+    // Tableau 2.23 J (domotique) : unité de commande, partie supérieure = type(s) de commande
+    { key: 'ctlPush', type: 'bool', default: false },
+    { key: 'ctlWireless', type: 'bool', default: false },
+    { key: 'ctlTimer', type: 'bool', default: false },
+    { key: 'ctlDetection', type: 'bool', default: false },
+    { key: 'ctlExtension', type: 'bool', default: false },
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'reference', type: 'text' },
   ],
@@ -186,6 +202,10 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
   ],
   transformer: [
     { key: 'safety', type: 'bool', default: true },
+    // Tableau 2.23 H : caractéristiques des sources (Uprim/Usec, Pn), sur le schéma ou dans le dossier
+    { key: 'uPrimary', type: 'number', unit: 'V' },
+    { key: 'uSecondary', type: 'number', unit: 'V' },
+    { key: 'power', type: 'number', unit: 'VA' },
     { key: 'inBoard', type: 'bool', default: false },
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'reference', type: 'text' },
