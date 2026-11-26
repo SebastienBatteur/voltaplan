@@ -99,3 +99,27 @@ mettent prises et éclairage sous le 300 mA seul. À corriger (règles, matrice 
 
 Utile en option (Ollama sur l'ordinateur, sans coût ni envoi de données), pas pour tester le code déterministe,
 qui se teste mieux par des tests classiques et des cas réels anonymisés.
+
+## 8. Essai d'OCR réel (26/11/2026)
+
+Tesseract 5.5.3 (anglais seulement), sur 18 photos réelles de l'utilisateur (6 compteurs, 9 tableaux, 4 plans ou
+schémas ; installations différentes ; photos non versionnées). Chaque photo est lue de 4 façons (brute, contraste,
+agrandie ×2, seuil) et, pour tableaux et plans, à 0°, 90° et 270°.
+
+| Document | Résultat | Utilisable pour |
+| --- | --- | --- |
+| Plaque de compteur (6) | Bon : tension (« 220/380 V », « 230V »), « 3x10(40) A » ou « 5 (60)A », « 50 Hz » lus sur presque toutes | Proposer l'alimentation (mono/tri, tension), à confirmer d'un clic ; « 3x » = triphasé |
+| Étiquettes imprimées du tableau | Bon à moyen : « SALLE DE BAIN », « LAVE VAISSELLE », « PRISES », « Prise four », « BOILER »… (jusqu'à 16/22 sur un tableau récent, étiquettes verticales lues après rotation) | Noms de circuits, pièces et usages proposés |
+| Calibres sur les modules | Moyen sur les modules récents à grosse inscription (C16, C20, C40, MWN 216A) ; mauvais sur les anciens modules (« N22-L (20 A) », quelques pixels de haut), même découpés module par module | Indice seulement ; photo rapprochée par rangée ou IA |
+| Sensibilité des différentiels | Irrégulier (« 30mA », « 0,03 A » parfois ; « 300mA » souvent manqué) | Indice à confirmer |
+| Plans (pièces) | Moyen : 7/12 à 9/12 noms de pièces (garage, cuisine, living, chambre 3…), cotes générales (13.00, 850) | Pièces proposées sur le plan, à compléter |
+| Ancien schéma unifilaire imprimé | Bon : 9/11 (« 3 x 400 V », 16A, 4P, 40A, références des onduleurs, 3G2.5) | Indices pour le brouillon |
+| Écriture à la main | Non lue | — |
+
+Faux positifs : le motif « calibre » trouve des C2, D0, B4… dans le bruit ; il faut un filtre (calibres normalisés
+seulement, et proximité d'un module détecté). La langue française (accents) et le néerlandais n'étaient pas
+installés : à refaire avec `fra` et `nld`.
+
+Conclusion : OCR local **utile** pour le compteur, les étiquettes imprimées et les noms de pièces des plans, en
+proposition à confirmer ; **insuffisant** pour les calibres des petits modules depuis une photo du tableau entier
+(→ photo rapprochée par rangée, ou IA si configurée).
