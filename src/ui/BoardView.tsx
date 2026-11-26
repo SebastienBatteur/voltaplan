@@ -32,6 +32,7 @@ import { AiError, isLocalUrl, PROVIDERS } from '../ai/provider';
 import { useOnline } from './UpdateBanner';
 import { unseal } from '../ai/secureStore';
 import { composeBoardImage, shrinkPhoto } from '../ai/boardImage';
+import { photoAdviceText } from './PhotoAdvice';
 import { aiInputHash, BOARD_PROMPT_VERSION, calibrationKey, draftFromReading, hasCachedReading, openAssistant, sha256 } from '../assist/ui';
 import { addBoard } from '../assist/boards';
 import { isStaleChunk, notifyUpdate } from '../appUpdate';
@@ -458,6 +459,17 @@ export function BoardView() {
               composed: calibrated,
             })
           : await (await import('../ocr/board')).readBoardOcr(ph.href, phRows, size.perRow, (f) => setMsg(`${label} ${Math.round(f * 100)} %`));
+      // Lecture locale presque vide : raison et solution pour refaire la photo (ou utiliser l'IA)
+      let advice = '';
+      if (!useAi && reading) {
+        const seen = reading.rows.flatMap((r) => r.devices);
+        if (!seen.length || seen.filter((d) => d.label || d.ratedCurrentA || d.residualCurrentmA).length / seen.length < 0.3) {
+          const { measurePhoto, qualityIssues } = await import('../ocr/quality');
+          const { resolveImageSrc } = await import('../io/projectData');
+          const blob = await (await fetch(await resolveImageSrc(ph.href))).blob();
+          advice = photoAdviceText(qualityIssues(await measurePhoto(blob), true), t);
+        }
+      }
       if (draftMode) {
         // Relevé d'une installation existante : brouillon proposé (fusionné avec les autres photos du tableau), rien
         // n'est appliqué
@@ -483,6 +495,7 @@ export function BoardView() {
             t('assist.draftReady', { devices: sum.devices, questions: sum.questions }),
             sum.sources > 1 ? t('assist.draftMerged', { sources: sum.sources, contradictions: sum.contradictions }) : '',
             sum.others ? t('assist.othersSeen', { n: sum.others }) : '',
+            advice,
           ]
             .filter(Boolean)
             .join(' '),
@@ -511,7 +524,8 @@ export function BoardView() {
         t('ai.readPlaced', { placed: now.length, left: left.length }) +
           ' ' +
           (changed.length ? t('ai.readApplied', { n: changed.length }) + ' ' : '') +
-          t('ai.readDone', { ok: diffs.filter((d) => d.ok).length, bad: diffs.filter((d) => !d.ok).length }),
+          t('ai.readDone', { ok: diffs.filter((d) => d.ok).length, bad: diffs.filter((d) => !d.ok).length }) +
+          (advice ? ' ' + advice : ''),
       );
     } catch (e) {
       const m = (e as Error).message;

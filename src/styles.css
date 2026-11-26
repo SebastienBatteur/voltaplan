@@ -2903,3 +2903,24 @@ body.resizing-h * {
 .ocr-result p {
   margin: 4px 0;
 }
+
+.photo-advice {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border-left: 3px solid var(--warning, #c78a00);
+  background: var(--warning-bg, rgba(199, 138, 0, 0.08));
+  border-radius: 4px;
+}
+.photo-advice ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+}
+.photo-advice em {
+  font-style: normal;
+  opacity: 0.85;
+}
+
+/* Messages sur plusieurs lignes (conseils pour refaire une photo) */
+.hint {
+  white-space: pre-line;
+}

@@ -2,34 +2,45 @@ import { useState } from 'react';
 import { useStore } from '../store';
 import { pickFile } from '../io/files';
 import { checkFileSize } from '../io/limits';
-import type { MeterPlate } from '../ocr/parse';
+import type { MeterOutcome } from '../ocr/meter';
+import { PhotoAdvice } from './PhotoAdvice';
 
 /**
- * Lecture de la plaque du compteur par l'OCR local (aucune IA, aucune image envoyée) : l'alimentation lue est
- * PROPOSÉE, l'utilisateur l'accepte ou l'ignore.
+ * Lecture de la plaque du compteur, en une seule étape : lecture locale (OCR, aucune image envoyée), puis l'IA
+ * seulement si la lecture locale est incomplète et que l'IA est configurée pour cet usage. L'alimentation lue est
+ * PROPOSÉE ; une photo insuffisante donne sa raison et la façon de la refaire.
  */
 export function MeterOcr({ onApply }: { onApply: (supply: string) => void }) {
   const t = useStore((s) => s.t);
+  const lang = useStore((s) => s.lang);
   const [busy, setBusy] = useState<number | null>(null);
-  const [result, setResult] = useState<MeterPlate | null>(null);
+  const [out, setOut] = useState<MeterOutcome | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const run = async () => {
     const file = await pickFile('image/*');
     if (!file) return;
     setError(null);
-    setResult(null);
+    setOut(null);
     setBusy(0);
     try {
       checkFileSize(file, 'image');
       const { readMeter } = await import('../ocr/meter');
-      setResult(await readMeter(file, (f) => setBusy(f)));
+      setOut(await readMeter(file, lang, (f) => setBusy(f)));
     } catch (e) {
       setError(t('ocr.error', { msg: e instanceof Error ? e.message : String(e) }));
     } finally {
       setBusy(null);
     }
   };
+
+  const apply = (s: string) => {
+    onApply(s);
+    setOut(null);
+  };
+  const r = out?.plate;
+  const aiNote =
+    out?.ai === 'locked' ? t('ocr.aiLocked') : out?.ai === 'offline' ? t('ocr.aiOffline') : out?.ai === 'error' ? t('ocr.aiError', { msg: out.aiError ?? '' }) : '';
 
   return (
     <div className="ocr-box">
@@ -42,48 +53,37 @@ export function MeterOcr({ onApply }: { onApply: (supply: string) => void }) {
         </p>
       )}
       {error && <p className="error-text small">{error}</p>}
-      {result && (
+      {out && r && (
         <div className="ocr-result" role="status">
-          {result.evidence.length > 0 && <p className="small">{t('ocr.readOn', { what: result.evidence.join(' · ') })}</p>}
-          {result.supply ? (
+          {r.evidence.length > 0 && <p className="small">{t('ocr.readOn', { what: r.evidence.join(' · ') })}</p>}
+          {r.supply ? (
             <p>
-              <strong>{t('ocr.proposeSupply', { supply: result.supply })}</strong>{' '}
-              <button
-                type="button"
-                className="primary"
-                onClick={() => {
-                  onApply(result.supply!);
-                  setResult(null);
-                }}
-              >
+              <strong>{t('ocr.proposeSupply', { supply: r.supply })}</strong>{' '}
+              <button type="button" className="primary" onClick={() => apply(r.supply!)}>
                 {t('ocr.apply')}
               </button>{' '}
-              <button type="button" onClick={() => setResult(null)}>
+              <button type="button" onClick={() => setOut(null)}>
                 {t('ocr.dismiss')}
               </button>
             </p>
-          ) : result.options ? (
+          ) : r.options ? (
             <p>
               <strong>{t('ocr.threePhase')}</strong>{' '}
-              {result.options.map((o) => (
-                <button
-                  key={o}
-                  type="button"
-                  onClick={() => {
-                    onApply(o);
-                    setResult(null);
-                  }}
-                >
+              {r.options.map((o) => (
+                <button key={o} type="button" onClick={() => apply(o)}>
                   {o}
                 </button>
               ))}{' '}
-              <button type="button" onClick={() => setResult(null)}>
+              <button type="button" onClick={() => setOut(null)}>
                 {t('ocr.dismiss')}
               </button>
             </p>
           ) : (
             <p className="muted small">{t('ocr.nothing')}</p>
           )}
+          <p className="muted small">{out.source === 'ai' ? t('ocr.byAi') : t('ocr.byOcr')}</p>
+          {aiNote && <p className="muted small">{aiNote}</p>}
+          <PhotoAdvice issues={out.issues} />
         </div>
       )}
     </div>

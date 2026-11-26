@@ -142,3 +142,15 @@ export async function ocrImage(
     scheduleRelease();
   }
 }
+
+/** Photo réduite (côté le plus long ≤ `maxSide`) en JPEG, pour l'envoyer à l'IA si elle est utilisée. */
+export async function photoDataUrl(photo: Blob, maxSide = 1600): Promise<string> {
+  const bmp = await createImageBitmap(photo);
+  const k = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * k);
+  c.height = Math.round(bmp.height * k);
+  c.getContext('2d')!.drawImage(bmp, 0, 0, c.width, c.height);
+  bmp.close();
+  return c.toDataURL('image/jpeg', 0.88);
+}

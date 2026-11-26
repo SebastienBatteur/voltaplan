@@ -7,7 +7,7 @@ import { loadAiSettings, saveAiSettings, getSessionKey, setSessionKey, type AiPe
 import { maskKey, seal, unseal } from '../ai/secureStore';
 import { useModalDialog } from './a11y';
 
-const PERMS: (keyof AiPermissions)[] = ['planFromPhoto', 'boardFromPhoto', 'unifilarFromDocument', 'fixSuggestions'];
+const PERMS: (keyof AiPermissions)[] = ['meterFromPhoto', 'planFromPhoto', 'boardFromPhoto', 'unifilarFromDocument', 'fixSuggestions'];
 
 /**
  * Réglages de l'IA optionnelle : fournisseur, modèle, clé d'API chiffrée localement, et ce que l'IA a le droit de générer.

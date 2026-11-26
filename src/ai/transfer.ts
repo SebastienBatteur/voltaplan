@@ -72,6 +72,7 @@ export function decodeAiTransfer(text: string): Omit<AiSettings, 'enabled'> {
   const perms = p.permissions ?? ({} as AiPermissions);
   const permissions: AiPermissions = {
     planFromPhoto: perms.planFromPhoto === true,
+    meterFromPhoto: perms.meterFromPhoto === true,
     boardFromPhoto: perms.boardFromPhoto === true,
     unifilarFromDocument: perms.unifilarFromDocument === true,
     fixSuggestions: perms.fixSuggestions === true,

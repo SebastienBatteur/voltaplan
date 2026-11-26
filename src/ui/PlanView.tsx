@@ -6,7 +6,8 @@ import { usePanZoom } from './usePanZoom';
 import { useCoarsePointer } from './touch';
 import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
 import type { ElNode, PlanPage, Pt } from '../model/types';
-import { uid } from '../model/tree';
+import { createNode, uid } from '../model/tree';
+import { photoAdviceText } from './PhotoAdvice';
 import {
   alignBackground,
   inRotatedRect,
@@ -621,16 +622,49 @@ export function PlanView() {
             onClick={async () => {
               setBusy(true);
               try {
-                const { readPlanRooms } = await import('../ocr/plan');
-                const { rooms } = await readPlanRooms(bg);
+                const { readPlan } = await import('../ocr/plan');
+                const out = await readPlan(bg, useStore.getState().lang);
                 const known = new Set(page.labels.map((l) => l.text.trim().toLowerCase()));
-                const fresh = rooms.filter((r) => !known.has(r.text.toLowerCase()));
-                if (fresh.length)
-                  editPage((pg) => ({
-                    ...pg,
-                    labels: [...pg.labels, ...fresh.map((r) => ({ id: uid(), text: r.text, pos: { x: Math.round(r.pos.x), y: Math.round(r.pos.y) }, size: 3 }))],
+                const fresh = out.rooms.filter((r) => !known.has(r.text.toLowerCase()));
+                const round = (p: { x: number; y: number }) => ({ x: Math.round(p.x), y: Math.round(p.y) });
+                // Pictogrammes repérés par l'IA : éléments non raccordés posés sur le plan, dans la pièce la plus proche
+                const roomAt = (p: { x: number; y: number }) =>
+                  [...page.labels.map((l) => ({ text: l.text, pos: l.pos })), ...fresh].sort((a, b) => Math.hypot(a.pos.x - p.x, a.pos.y - p.y) - Math.hypot(b.pos.x - p.x, b.pos.y - p.y))[0]?.text;
+                const nodes = out.symbols.map((s) => {
+                  const n = createNode(s.kind, s.kind === 'socket' && s.count ? { count: s.count } : s.kind === 'appliance' ? { applianceType: 'other' } : {});
+                  const room = roomAt(s.pos);
+                  if (room) n.location = room;
+                  return { node: n, pos: round(s.pos) };
+                });
+                if (fresh.length || nodes.length)
+                  useStore.getState().applyProject((p) => ({
+                    ...p,
+                    loose: [...p.loose, ...nodes.map((x) => x.node)],
+                    plan: {
+                      ...p.plan,
+                      pages: p.plan.pages.map((pg, i) =>
+                        i !== pageIndex
+                          ? pg
+                          : {
+                              ...pg,
+                              labels: [...pg.labels, ...fresh.map((r) => ({ id: uid(), text: r.text, pos: round(r.pos), size: 3 }))],
+                              symbols: [...pg.symbols, ...nodes.map((x) => ({ nodeId: x.node.id, pos: x.pos, rotation: 0, autoRotate: true }))],
+                            },
+                      ),
+                    },
                   }));
-                alert(rooms.length ? t('plan.roomsDone', { n: fresh.length, skip: rooms.length - fresh.length }) : t('plan.roomsNone'));
+                const aiNote =
+                  out.ai === 'locked' ? t('ocr.aiLocked') : out.ai === 'offline' ? t('ocr.aiOffline') : out.ai === 'error' ? t('ocr.aiError', { msg: out.aiError ?? '' }) : '';
+                alert(
+                  [
+                    out.rooms.length ? t('plan.roomsDone', { n: fresh.length, skip: out.rooms.length - fresh.length }) : t('plan.roomsNone'),
+                    out.ai === 'used' ? t('plan.symbolsDone', { n: nodes.length }) : out.ai === 'off' ? t('plan.symbolsNeedAi') : '',
+                    aiNote,
+                    photoAdviceText(out.issues, t),
+                  ]
+                    .filter(Boolean)
+                    .join('\n\n'),
+                );
               } catch (err) {
                 alert(t('ocr.error', { msg: String((err as Error).message ?? err) }));
               } finally {

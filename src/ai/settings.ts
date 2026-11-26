@@ -5,12 +5,14 @@ import { useSyncExternalStore } from 'react';
  */
 import { STORAGE_PREFIX } from '../brand';
 import type { SealedSecret } from './secureStore';
-import { PROVIDERS, type ProviderId } from './provider';
+import { isLocalUrl, PROVIDERS, type ProviderConfig, type ProviderId } from './provider';
 
 /** Ce que l'utilisateur autorise l'IA à générer. Tout est désactivé par défaut. */
 export interface AiPermissions {
-  /** Murs, portes et fenêtres à partir d'une photo ou d'un PDF de plan. */
+  /** Plan : noms de pièces et pictogrammes électriques à partir d'une photo ou d'un PDF de plan (après l'OCR local). */
   planFromPhoto: boolean;
+  /** Compteur : tension et phases lues sur la photo de la plaque, quand l'OCR local n'a pas tout lu. */
+  meterFromPhoto: boolean;
   /** Disposition des modules à partir d'une photo du tableau. */
   boardFromPhoto: boolean;
   /** Schéma unifilaire à partir d'un ancien dossier (PDF, photo). */
@@ -33,7 +35,7 @@ export const DEFAULT_AI: AiSettings = {
   enabled: false,
   provider: 'anthropic',
   model: 'claude-opus-5-5',
-  permissions: { planFromPhoto: false, boardFromPhoto: false, unifilarFromDocument: false, fixSuggestions: false },
+  permissions: { planFromPhoto: false, meterFromPhoto: false, boardFromPhoto: false, unifilarFromDocument: false, fixSuggestions: false },
 };
 
 const KEY = STORAGE_PREFIX + 'ai';
@@ -78,4 +80,18 @@ export const useAiUnlocked = () => useSyncExternalStore(subscribeSessionKey, () 
 /** L'IA peut-elle être appelée ? (activée, et clé déverrouillée si le fournisseur en exige une) */
 export function aiReady(s: AiSettings, unlocked: boolean): boolean {
   return s.enabled && (unlocked || !PROVIDERS[s.provider]?.needsKey(s));
+}
+
+/**
+ * État de l'IA pour un usage : `ready` (configuration d'appel fournie), `off` (désactivée ou usage non autorisé),
+ * `locked` (clé à déverrouiller), `offline` (pas de réseau, et pas de modèle local).
+ */
+export function aiFor(perm: keyof AiPermissions): { state: 'ready'; config: ProviderConfig } | { state: 'off' | 'locked' | 'offline' } {
+  const s = loadAiSettings();
+  if (!s.enabled || !s.permissions[perm]) return { state: 'off' };
+  const key = getSessionKey();
+  if (!aiReady(s, key !== null)) return { state: 'locked' };
+  const online = typeof navigator === 'undefined' || navigator.onLine !== false;
+  if (!online && !(s.provider === 'openaiCompatible' && isLocalUrl(s.baseUrl ?? ''))) return { state: 'offline' };
+  return { state: 'ready', config: { provider: s.provider, model: s.model, baseUrl: s.baseUrl, apiKey: key ?? undefined } };
 }

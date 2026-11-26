@@ -14,6 +14,12 @@
 - **Tableau** : un seul bouton « Lire la photo » — l'IA si elle est configurée et déverrouillée, sinon la lecture
   locale : appareils découpés sans IA, étiquettes (aussi verticales), calibres et sensibilités lisibles, proposés
   avec une confiance faible, par le même chemin que la lecture par l'IA (brouillon ou comparaison).
+- **L'IA après l'OCR, jamais à sa place** : compteur — l'IA n'est appelée que si la lecture locale n'a pas trouvé
+  l'alimentation (nouvel usage « Compteur » dans les réglages de l'IA) ; plan — l'IA (usage « Plan ») repère les
+  pictogrammes électriques, que l'OCR ne lit pas, et les pièces manquées ; ils sont posés sur le plan comme éléments
+  non raccordés, à rattacher à leurs circuits.
+- **Photo insuffisante** : raison et solution pour la refaire (floue, sombre, reflets, texte trop petit, voilée,
+  mal cadrée), mesurées sur la photo et seulement quand la lecture est incomplète (seuils réglés sur les photos réelles).
 - Mesuré sur 18 photos réelles : bon pour plaques de compteurs, étiquettes imprimées et noms de pièces ; insuffisant
   pour les calibres des petits modules depuis une photo du tableau entier (docs/strategie/ASSISTANT-COLLECTE.md § 8).
 
