@@ -6,6 +6,7 @@ export const fr = {
   'menu.open': 'Ouvrir…',
   'menu.save': 'Enregistrer',
   'menu.importTrikker': 'Importer Trikker (.trik)…',
+  'menu.importVolter': 'Importer Volter (.vschema)…',
   'menu.undo': 'Annuler',
   'menu.redo': 'Rétablir',
   'menu.print': 'Imprimer / PDF',

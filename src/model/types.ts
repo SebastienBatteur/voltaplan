@@ -42,7 +42,7 @@ export interface ElNode {
   location?: string;
   children: ElNode[];
   /** Données sources (import Trikker) conservées pour un export sans perte. */
-  source?: { format: 'trikker'; tag: string; attrs: Record<string, string> };
+  source?: { format: 'trikker' | 'volter'; tag: string; attrs: Record<string, string> };
 }
 
 export type RgieVersion = 'new' | 'old';

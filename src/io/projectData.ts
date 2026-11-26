@@ -10,6 +10,7 @@
  */
 import { version as APP_VERSION } from '../../package.json';
 import { importTrikker } from '../import/trikker';
+import { importVolter } from '../import/volter';
 import type { MigrationWarning } from '../model/migrate';
 import type { Project } from '../model/types';
 import { readArchive, writeArchive, type ArchiveReport, type ArchiveWriteInput, type OpenedArchive } from '../format/archive';
@@ -29,7 +30,7 @@ export { APP_VERSION };
 /** Session de documents de l'application (une par onglet). */
 export const assetSession = new AssetSession(workingStore);
 
-export type DataFormat = 'v2' | 'v1' | 'trik';
+export type DataFormat = 'v2' | 'v1' | 'trik' | 'vschema';
 
 /** Format d'après les premiers octets. */
 export function detectFormat(head: Uint8Array): DataFormat | null {
@@ -96,7 +97,7 @@ export function archiveSources(a: OpenedArchive): { originals: Map<string, DocSo
  */
 export async function openProjectData(data: Blob | string, name: string, session: AssetSession = assetSession, opts: { background?: boolean } = {}): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
-  const fmt = /\.trik$/i.test(name) ? 'trik' : detectFormat(await blobBytes(blob.slice(0, 64)));
+  const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : detectFormat(await blobBytes(blob.slice(0, 64)));
   if (fmt === 'v2') {
     const device = await currentDevice();
     const advice = capacityAdvice(blob.size, device, deviceLimits(device));
@@ -114,13 +115,17 @@ export async function openProjectData(data: Blob | string, name: string, session
     return { project, format: 'v2', warnings: w, report: a.report, needsNewFile: a.report.recovered };
   }
   // v1 et Trikker : texte, plafond de taille de l'ancien format
-  checkFileSize({ name, size: blob.size }, fmt === 'trik' ? 'trik' : 'project');
+  checkFileSize({ name, size: blob.size }, fmt === 'trik' || fmt === 'vschema' ? 'trik' : 'project');
   const add = async (b: Blob, n: string) => (await session.store.add(b, { name: n })).sha256;
   if (fmt === 'trik') {
     const { project, warnings } = importTrikker(decodeText(await blobBytes(blob)), name);
     if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
     await extractEmbeddedImages(project, add);
     return { project, format: 'trik', warnings, needsNewFile: true };
+  }
+  if (fmt === 'vschema') {
+    const { project, warnings } = importVolter(decodeText(await blobBytes(blob)), name);
+    return { project, format: 'vschema', warnings, needsNewFile: true };
   }
   // v1 : lu par tranches, images décodées au fil de la lecture (mémoire réduite, voir scanV1) ; repli sur la
   // lecture habituelle si le contenu sort du cas simple. Ni le texte complet ni les chaînes base64 ne sont gardés.

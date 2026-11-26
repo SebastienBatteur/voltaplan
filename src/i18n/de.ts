@@ -8,6 +8,7 @@ export const de: Partial<Dict> = {
   'menu.save': 'Speichern',
   'menu.saveAs': 'Speichern unter…',
   'menu.importTrikker': 'Trikker importieren (.trik)…',
+  'menu.importVolter': 'Volter importieren (.vschema)…',
   'menu.undo': 'Rückgängig',
   'menu.redo': 'Wiederholen',
   'menu.print': 'Drucken / PDF',

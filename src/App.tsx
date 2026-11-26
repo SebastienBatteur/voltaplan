@@ -119,7 +119,7 @@ export function App() {
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       // Fichier Trikker : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.trik$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      setToast({ text: t(/\.(trik|vschema)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -509,6 +509,7 @@ export function App() {
             },
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
             { label: t('menu.importTrikker'), run: () => open('.trik') },
+            { label: t('menu.importVolter'), run: () => open('.vschema') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },

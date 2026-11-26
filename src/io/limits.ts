@@ -36,7 +36,7 @@ export function formatMb(bytes: number): string {
 
 /** Genre d'un fichier choisi, d'après son nom et son type. */
 export function importKind(file: { name: string; type?: string }): ImportKind {
-  if (/\.trik$/i.test(file.name)) return 'trik';
+  if (/\.(trik|vschema)$/i.test(file.name)) return 'trik';
   if (/\.dxf$/i.test(file.name)) return 'dxf';
   if (/\.pdf$/i.test(file.name) || file.type === 'application/pdf') return 'pdf';
   if (file.type?.startsWith('image/') || /\.(jpe?g|png|gif|webp|bmp|heic|heif|tiff?|avif)$/i.test(file.name)) return 'image';

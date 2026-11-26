@@ -7,6 +7,7 @@ export const en: Partial<Dict> = {
   'menu.open': 'Open…',
   'menu.save': 'Save',
   'menu.importTrikker': 'Import Trikker (.trik)…',
+  'menu.importVolter': 'Import Volter (.vschema)…',
   'menu.undo': 'Undo',
   'menu.redo': 'Redo',
   'menu.print': 'Print / PDF',
