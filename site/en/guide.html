@@ -57,6 +57,8 @@
     </ol>
     <p class="note">Voltaplan is an aid: it replaces neither the official text of the RGIE (Belgian electrical installation regulations, Book 1) nor the opinion of the approved inspection body.</p>
 
+    <p><strong>My projects</strong>: when it opens, Voltaplan shows the main actions (new project, survey an existing installation, open a file or the cloud, import Trikker) and your latest projects; one click reopens them. Come back with <em>File → My projects (home)</em>. A <strong>new project</strong> takes 4 short steps (type, address and client, installer, supply), each optional. For a new installation you can start from a <strong>typical house</strong>: lighting, sockets, cooker, bathroom and washing machine under a 30 mA RCD, and earthing are already in place; then adapt it.</p>
+
     <h2 id="installer">Install</h2>
     <table>
       <tr><th>System</th><th>File</th><th>Note</th></tr>
@@ -107,6 +109,12 @@
       <li><strong>Electrical symbols</strong>: “Place on plan” from the properties or from the palette's <em>Not yet on the plan</em> list, or right-click on the plan to add a new one; then drag, rotate, remove. Ceiling lights, fluorescent tubes, appliances, motors and square elements are drawn without a connection stroke. Sockets, switches, push buttons, bells and wall lights keep their small stroke, <strong>turned automatically towards the nearest wall</strong> (it follows when they or the wall move); “Face the walls” applies it to the elements of an imported plan, and rotating an element by hand stops its automatic orientation.</li>
     </ul>
 
+    <ul>
+      <li><strong>DXF plan</strong> (AutoCAD, ArchiCAD, LibreCAD…): through <em>Background plan (photo / PDF / DXF)</em>. A DXF that states its unit is placed <strong>to scale straight away</strong>; otherwise use <em>Set scale</em>. Save a “binary” DXF as text (ASCII) DXF first.</li>
+      <li><strong>Circuit colours</strong>: each circuit gets a colour on the plan and the diagram, with a legend. The printed file stays black.</li>
+      <li><strong>Converters</strong>: choose the type (inverter DC → AC, rectifier/inverter AC ↔ DC for a home battery, chopper DC → DC); the symbols follow table 2.23 of the RGIE.</li>
+    </ul>
+
     <h2 id="tableau">Distribution board</h2>
     <p>DIN rows (number of rows and modules per row in the board's properties). Devices have their <strong>real width</strong>: a 1P+N circuit breaker can be 1 or 2 modules depending on the range, a 2P circuit breaker is 2, a 4P RCD is 4 — set this in “Width (modules)”. Drag and drop between rows and the reserve; “Automatic layout” arranges everything in tree order. Labels (reference + use) print at 1:1 scale.</p>
 
@@ -131,6 +139,8 @@
 
     <h2 id="materiel">Bill of materials</h2>
     <p><strong>Materials</strong> tab: materials are grouped by category and totalled (pieces, cable runs and total cable length). Items are described by their <strong>characteristics and European standard</strong> (e.g. “Circuit breaker 2P C20 A 3 kA — EN 60898-1”): manufacturer references, and even product ranges, differ from one country to another. Cables keep their national designation with the harmonised equivalent where one exists (VOB ≈ H07V-U/R). A manufacturer reference can be added to each element. CSV export for Excel; a “Bill of materials” page in the printed file.</p>
+
+    <p>The <strong>By room</strong> button sorts the materials room by room (from each element's location or its room on the plan), handy for the job or a quote.</p>
 
     <h2 id="controle">RGIE check</h2>
     <p><strong>A checking aid</strong>: it replaces neither the RGIE text nor the inspection by an approved body. Each finding has a <strong>status</strong>, a <strong>hazard</strong> level (high, moderate, low) and, where relevant, the <strong>blocking</strong> mark.</p>
@@ -157,6 +167,8 @@
     <h2 id="imprimer">Printing the file</h2>
     <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): first choose the <strong>document type</strong>. <em>Working document</em>: always printable, even with anomalies. <em>Inspection file</em>: for the approved body; marked “DRAFT — NOT COMPLIANT” while blocking findings remain. <em>Anomaly report</em>: all findings, the circuit list and the measurements. <em>Complete technical file</em>: all parts. Then: A4 or A3 landscape and the parts to include (single-line, plans, boards, circuits, legend, measurements, bill of materials, 1:1 labels, findings). Each page has the title block: document type, version and date, installer (name, capacity, VAT), address, voltage, EAN, signature boxes. In the print dialog, choose “Save as PDF” for a vector PDF. For labels, print at 100 % (no “fit to page”).</p>
 
+    <p><strong>QR labels for the board</strong>: 4 labels of 9 × 5.5 cm. With a <strong>link to the online file</strong> (Project tab, e.g. a Drive or OneDrive share link) the QR code opens that file; without one it holds the essentials (address, installer, phone, file number), readable offline. Voltaplan hosts nothing. File <strong>status</strong> (Project tab): <em>In progress</em>, <em>Ready for inspection</em> or <em>Inspected</em>.</p>
+
     <h2 id="sauver">Saving and opening</h2>
     <table>
       <tr><th>Location</th><th>What for</th></tr>
@@ -165,6 +177,9 @@
       <tr><td>GitHub</td><td>file in a repository (version history); personal token encrypted with a passphrase</td></tr>
       <tr><td>Drive, OneDrive, Dropbox</td><td>see below</td></tr>
     </table>
+
+    <h3 id="plusieurs">Working together</h3>
+    <p>Voltaplan has no team account: you simply share the project file, ideally in a <strong>shared folder</strong> (Drive, OneDrive, Dropbox or a network drive), opened with <em>This device</em> or the desktop app. One person edits at a time. If the file changed elsewhere since your last save, Voltaplan <strong>overwrites nothing</strong>: it warns you and keeps your version. Someone who only needs to read gets the PDF file.</p>
 
     <h2 id="nuage">Drive, OneDrive, Dropbox</h2>
     <p>Voltaplan talks to the service directly from your browser; there is no Voltaplan server in between. Each service requires you to <strong>register the application once</strong> to get an ID (public, not a secret). The redirect address to register is shown in Voltaplan (Save as… → Drive, OneDrive, Dropbox): it is the app's address followed by <code>oauth.html</code>.</p>
@@ -246,6 +261,9 @@
       <li><code>boardPhotoAi.ts</code>: the API call with the official <code>@anthropic-ai/sdk</code> SDK, loaded only on first use.</li>
     </ul>
     <p>The response is constrained by a schema (structured output): rows → devices with position, width, type, rating, curve, sensitivity, label and confidence level. Any new AI feature must have its own permission box, disabled by default, and must never send personal project data without the user knowing.</p>
+
+    <h3>Other devices</h3>
+    <p>In the AI settings, <strong>Other devices</strong> section: scan the <strong>QR code</strong> with the phone, or <em>Copy link</em> and paste it on the other device (<em>Receive: paste the link or code</em>). The key travels encrypted; the other device asks for the passphrase. No server is involved.</p>
 
     <h2 id="pays">Countries and regulations</h2>
     <p>The Belgian RGIE is the default standard (Project tab → Standard). The engine is designed for other countries: one country = one rules module, with its texts and lists (cable designations…), without changing the rest of the application. A designation that does not exist in the project's country is flagged.</p>

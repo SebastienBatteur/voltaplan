@@ -57,6 +57,8 @@
     </ol>
     <p class="note">Voltaplan is een hulpmiddel: het vervangt noch de officiële tekst van het AREI (Boek 1), noch het oordeel van het erkend organisme.</p>
 
+    <p><strong>Mijn projecten</strong>: bij het openen toont Voltaplan de hoofdacties (nieuw project, bestaande installatie opnemen, bestand of cloud openen, Trikker importeren) en uw laatste projecten; één klik opent ze opnieuw. Terug via <em>Bestand → Mijn projecten (start)</em>. Een <strong>nieuw project</strong> maakt u in 4 korte stappen (type, adres en klant, installateur, voeding); elke stap is optioneel. Voor een nieuwe installatie kunt u vertrekken van een <strong>typewoning</strong>: verlichting, stopcontacten, kookfornuis, badkamer en wasmachine onder een 30 mA-differentieel en aarding staan al klaar; pas daarna aan.</p>
+
     <h2 id="installer">Installeren</h2>
     <table>
       <tr><th>Systeem</th><th>Bestand</th><th>Opmerking</th></tr>
@@ -107,6 +109,12 @@
       <li><strong>Elektrische symbolen</strong>: „Op plan plaatsen” vanuit de eigenschappen of de lijst <em>Nog niet op het plan</em> van het palet, of rechtsklik op het plan om er een nieuw toe te voegen; daarna slepen, draaien, verwijderen. Lichtpunten, tl-buizen, toestellen, motoren en vierkante elementen worden zonder aansluitstreepje getekend. Stopcontacten, schakelaars, drukknoppen, bellen en wandlampen houden hun streepje, <strong>automatisch naar de dichtste muur gedraaid</strong> (het volgt als ze of de muur verplaatst worden); „Naar de muren richten” past het toe op de elementen van een ingevoerd plan, en met de hand draaien stopt het automatisch richten van dat element.</li>
     </ul>
 
+    <ul>
+      <li><strong>DXF-plan</strong> (AutoCAD, ArchiCAD, LibreCAD…): via <em>Achtergrondplan (foto / PDF / DXF)</em>. Een DXF met eenheid wordt <strong>meteen op schaal</strong> geplaatst; anders gebruikt u <em>Op schaal zetten</em>. Een „binaire” DXF eerst opslaan als tekst-DXF (ASCII).</li>
+      <li><strong>Kleuren per kring</strong>: elke kring krijgt een kleur op het plan en het eendraadschema, met legende. Het afgedrukte dossier blijft zwart.</li>
+      <li><strong>Omvormers</strong>: kies het type (omvormer DC → AC, gelijkrichter/omvormer AC ↔ DC voor een thuisbatterij, chopper DC → DC); de symbolen volgen tabel 2.23 van het AREI.</li>
+    </ul>
+
     <h2 id="tableau">Verdeelbord</h2>
     <p>DIN-rijen (aantal rijen en modules per rij in de eigenschappen van het verdeelbord). De toestellen hebben hun <strong>werkelijke breedte</strong>: een automaat 1P+N kan naargelang het gamma 1 of 2 modules breed zijn, een automaat 2P is er 2, een verliesstroomschakelaar 4P is er 4 — vul dit in bij „Breedte (modules)”. Slepen en neerzetten tussen de rijen en de reserve; „Automatische indeling” schikt alles in de volgorde van de boom. De etiketten (kenteken + gebruik) worden op schaal 1:1 afgedrukt.</p>
 
@@ -131,6 +139,8 @@
 
     <h2 id="materiel">Materiaallijst</h2>
     <p>Tabblad <strong>Materiaal</strong>: het materiaal is per categorie gegroepeerd en opgeteld (stuks, kabelstukken en totale kabellengte). Het wordt omschreven volgens zijn <strong>kenmerken en Europese norm</strong> (bv. „Automaat 2P C20 A 3 kA — EN 60898-1”): fabrikantreferenties en zelfs gamma's verschillen van land tot land. Kabels behouden hun nationale benaming met het geharmoniseerde equivalent als dat bestaat (VOB ≈ H07V-U/R). Aan elk element kan een fabrikantreferentie worden toegevoegd. CSV-export voor Excel; pagina „Materiaallijst” in het afgedrukte dossier.</p>
+
+    <p>De knop <strong>Per ruimte</strong> ordent het materiaal per ruimte (volgens de plaats van elk element of de ruimte op het plan), handig voor de werf of een offerte.</p>
 
     <h2 id="controle">AREI-controle</h2>
     <p><strong>Een hulpmiddel bij de controle</strong>: het vervangt de tekst van het AREI en de keuring door een erkend organisme niet. Elke vaststelling heeft een <strong>status</strong>, een <strong>gevaar</strong> (hoog, matig, laag) en, indien van toepassing, de vermelding <strong>blokkerend</strong>.</p>
@@ -157,6 +167,8 @@
     <h2 id="imprimer">Het dossier afdrukken</h2>
     <p><strong>Afdrukken / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): kies eerst het <strong>soort document</strong>. <em>Werkdocument</em>: altijd afdrukbaar, ook met afwijkingen. <em>Keuringsdossier</em>: voor het erkend organisme; vermelding « ONTWERP — NIET CONFORM » zolang er blokkerende vaststellingen zijn. <em>Rapport van afwijkingen</em>: alle vaststellingen, de lijst van de kringen en de metingen. <em>Volledig technisch dossier</em>: alle delen. Daarna: A4 of A3 liggend en de delen (eendraadschema, plannen, borden, kringen, legende, metingen, materiaallijst, etiketten 1:1, vaststellingen). Elke pagina heeft het titelblok: soort document, versie en datum, installateur (naam, hoedanigheid, btw), adres, spanning, EAN, handtekeningvakken. Kies in het afdrukvenster « Opslaan als PDF » voor een vector-PDF. Druk etiketten af op 100 % (zonder « aanpassen aan pagina »).</p>
 
+    <p><strong>QR-etiketten voor de kast</strong>: 4 etiketten van 9 × 5,5 cm. Met een <strong>link naar het online dossier</strong> (tabblad Project, bv. een deellink van Drive of OneDrive) opent de QR-code dat dossier; zonder link bevat hij de essentie (adres, installateur, telefoon, dossiernummer), leesbaar zonder verbinding. Voltaplan host niets. <strong>Status</strong> van het dossier (tabblad Project): <em>Bezig</em>, <em>Klaar voor keuring</em> of <em>Gekeurd</em>.</p>
+
     <h2 id="sauver">Opslaan en openen</h2>
     <table>
       <tr><th>Locatie</th><th>Waarvoor</th></tr>
@@ -165,6 +177,9 @@
       <tr><td>GitHub</td><td>bestand in een repository (versiegeschiedenis); persoonlijk token versleuteld met een wachtzin</td></tr>
       <tr><td>Drive, OneDrive, Dropbox</td><td>zie hieronder</td></tr>
     </table>
+
+    <h3 id="plusieurs">Met meerderen werken</h3>
+    <p>Voltaplan heeft geen teamaccount: u deelt gewoon het projectbestand, bij voorkeur in een <strong>gedeelde map</strong> (Drive, OneDrive, Dropbox of een netwerkschijf), geopend met <em>Dit toestel</em> of de desktopapp. Eén persoon bewerkt tegelijk. Is het bestand elders gewijzigd sinds uw laatste opslag, dan <strong>overschrijft Voltaplan niets</strong>: u wordt verwittigd en uw versie blijft bewaard. Wie enkel moet lezen, krijgt de PDF van het dossier.</p>
 
     <h2 id="nuage">Drive, OneDrive, Dropbox</h2>
     <p>Voltaplan praat rechtstreeks vanuit uw browser met de dienst; er zit geen server van Voltaplan tussen. Bij elke dienst moet u <strong>de toepassing één keer registreren</strong> om een ID te krijgen (openbaar, zonder geheim). Het omleidingsadres dat u moet opgeven, staat in Voltaplan (Opslaan als… → Drive, OneDrive, Dropbox): het is het adres van de toepassing gevolgd door <code>oauth.html</code>.</p>
@@ -246,6 +261,9 @@
       <li><code>boardPhotoAi.ts</code>: de API-aanroep met de officiële SDK <code>@anthropic-ai/sdk</code>, die pas bij het eerste gebruik wordt geladen.</li>
     </ul>
     <p>Het antwoord is aan een schema gebonden (gestructureerde uitvoer): rijen → toestellen met positie, breedte, type, nominale stroom, curve, gevoeligheid, etiket en betrouwbaarheidsniveau. Een nieuwe AI-functie moet een eigen toestemmingsvakje hebben, standaard uitgeschakeld, en mag nooit persoonsgegevens uit het project versturen zonder dat de gebruiker het weet.</p>
+
+    <h3>Andere toestellen</h3>
+    <p>In de AI-instellingen, rubriek <strong>Andere toestellen</strong>: scan de <strong>QR-code</strong> met de telefoon, of <em>Link kopiëren</em> en plak hem op het andere toestel (<em>Ontvangen: link of code plakken</em>). De sleutel reist versleuteld; het andere toestel vraagt de geheime zin. Er wordt geen server gebruikt.</p>
 
     <h2 id="pays">Landen en reglementen</h2>
     <p>Het Belgische AREI is de standaardreferentie (tabblad Project → Referentie). De motor is voorzien voor andere landen: één land = één regelmodule, met eigen teksten en lijsten (kabelbenamingen…), zonder de rest van de toepassing te wijzigen. Een benaming die niet bestaat in het land van het project wordt gemeld.</p>

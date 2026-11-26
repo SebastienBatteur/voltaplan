@@ -22,7 +22,7 @@
 - **Borne de recharge** : symbole redessiné d'après le tableau 2.23 du RGIE (colonne avec écran, « VE | EV »,
   socle, câble et fiche), au lieu d'un carré « VE ».
 - Analyse des outils concurrents et des améliorations possibles : `docs/strategie/CONCURRENCE-2026-11.md`.
-- Guide (FR) mis à jour.
+- Guides FR, NL et EN mis à jour ; site : démarrage guidé, sans compte, hors connexion, sans mesure d'audience.
 
 ### IA : configuration transférable entre appareils ; iPhone (2026-11-25)
 
