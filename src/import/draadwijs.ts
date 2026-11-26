@@ -6,7 +6,7 @@
  * d'origine de chaque élément sont gardées dans `node.source`.
  */
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
-import { createNode, emptyPage, emptyProject, uid } from '../model/tree';
+import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { Address, ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
 
 /** Unité Draadwijs : 1 = 1 cm ; Voltaplan : mm. */
@@ -158,6 +158,9 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
 
   // ——— Schéma ———
   const nodeOf = new Map<string, ElNode>();
+  // Repères des circuits comme dans Draadwijs : chaque disjoncteur dans l'ordre du schéma (y compris celui qui alimente
+  // un sous-tableau, et ceux du sous-tableau à la suite : L, M, N…), sauf repère imposé (« label »)
+  let nextLetter = 0;
   const allowed = (parent: ElNode, child: ElNode) => ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
   const make = (src: Obj, kind: NodeKind, props: Props, location?: string): ElNode => {
     const n = createNode(kind, clean(props));
@@ -193,7 +196,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
         const prot = make(src, 'protection', {
           device,
           circuitName: str(p.omschrijving),
-          fixedLetter: str(p.label),
+          fixedLetter: type === 'automaat' ? (str(p.label) ?? letterFor(nextLetter++)) : undefined,
           ratedCurrent: num(p.In),
           poles: POLES[String(p.polen ?? '')],
           curve: type === 'automaat' ? str(p.curve) : undefined,
@@ -359,7 +362,8 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
       grow(b);
     }
     // Ouvertures : « t » = milieu de l'ouverture en fraction du mur ; « breedte » = largeur (cm). Voltaplan : `width`
-    // = épaisseur du mur percé. « flip » : charnière à l'autre bout ; « kant » : battant de l'autre côté du mur.
+    // = épaisseur du mur percé. Sens vérifié sur le plan affiché par Draadwijs (habitation d'exemple) : « kant » faux =
+    // battant du côté +y local du mur (Voltaplan : hinge 'right'), vrai = côté -y ; « flip » : charnière à l'autre bout.
     for (const o of arr(f.openings)) {
       const w = walls.get(str(o.wallId) ?? '');
       if (!w) continue;
@@ -373,7 +377,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
       const soort = String(o.soort ?? '');
       const kind = soort === 'raam' ? 'window' : soort === 'poort' ? 'garageDoor' : soort === 'schuifdeur' ? 'slidingDoor' : soort === 'dubbeleDeur' ? 'doubleDoor' : 'door';
       if (!['raam', 'poort', 'deur', 'schuifdeur', 'dubbeleDeur'].includes(soort)) warnings.add(`Ouverture Draadwijs « ${soort} » dessinée comme une porte.`);
-      page.openings.push({ kind, a, b, width: w.thickness, ...(kind === 'window' ? {} : { hinge: o.kant === true ? 'right' : 'left', mirrored: o.flip === true }) });
+      page.openings.push({ kind, a, b, width: w.thickness, ...(kind === 'window' ? {} : { hinge: o.kant === true ? 'left' : 'right', mirrored: o.flip === true }) });
     }
     for (const tx of arr(f.texts)) {
       const t = str(tx.tekst);

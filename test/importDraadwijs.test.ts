@@ -98,6 +98,9 @@ describe('import Draadwijs (.draadwijs)', () => {
     expect(byId(project, 'ev')!.node.props).toMatchObject({ residualCurrent: 30, rcdType: 'B' });
     expect(byId(project, 'evc')!.node.props).toMatchObject({ applianceType: 'evCharger', power: 11000 });
     expect(warnings.join('\n')).toMatch(/vliegtuig/);
+    // Repères comme dans Draadwijs : ordre du schéma, disjoncteur d'alimentation du sous-tableau compris
+    const letters = ['c-light', 'c-sock', 'c-hob', 'c-pv', 'c-bat', 'c-sub', 'c-g'].map((id) => byId(project, id)!.node.props.fixedLetter);
+    expect(letters).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G']);
   });
 
   it('plan en mm : murs, ouvertures, textes, symboles, meubles, compteur et barrette de terre', () => {
@@ -106,7 +109,7 @@ describe('import Draadwijs (.draadwijs)', () => {
     expect(pg.name).toBe('Rez');
     expect(pg.walls[0]).toEqual({ a: { x: 0, y: 0 }, b: { x: 10000, y: 0 }, thickness: 300 });
     expect(pg.openings.map((o) => o.kind)).toEqual(['door', 'window', 'garageDoor']);
-    expect(pg.openings[0]).toMatchObject({ a: { x: 4500, y: 0 }, b: { x: 5500, y: 0 }, width: 300, hinge: 'right', mirrored: true });
+    expect(pg.openings[0]).toMatchObject({ a: { x: 4500, y: 0 }, b: { x: 5500, y: 0 }, width: 300, hinge: 'left', mirrored: true });
     expect(pg.labels.map((l) => l.text)).toContain('Séjour');
     expect(pg.symbols.find((s) => s.nodeId === 'o1')).toMatchObject({ pos: { x: 1000, y: 200 }, rotation: 90 });
     // Symbole du raccordement → compteur ; barrette de terre (« meetklem ») placée
