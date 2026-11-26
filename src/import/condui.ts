@@ -6,122 +6,100 @@
  * murs en polylignes, portes et fenêtres sur un segment de mur, escaliers, meubles, notes) ; un étage = une page.
  * Un symbole inconnu devient « autre » avec un avertissement ; les données d'origine sont gardées dans `node.source`.
  */
-import { ALLOWED_CHILDREN, CABLE_TYPES } from "../model/schema";
-import { createNode, emptyPage, emptyProject, uid } from "../model/tree";
-import type {
-  ElNode,
-  NodeKind,
-  PlanPage,
-  Project,
-  Pt,
-  PropValue,
-} from "../model/types";
+import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
+import { createNode, emptyPage, emptyProject, uid } from '../model/tree';
+import type { ElNode, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
 
 type Obj = Record<string, unknown>;
 type Props = Record<string, PropValue>;
-const isObj = (v: unknown): v is Obj =>
-  typeof v === "object" && v !== null && !Array.isArray(v);
+const isObj = (v: unknown): v is Obj => typeof v === 'object' && v !== null && !Array.isArray(v);
 const arr = (v: unknown): Obj[] => (Array.isArray(v) ? v.filter(isObj) : []);
-const str = (v: unknown): string | undefined =>
-  typeof v === "string" && v.trim()
-    ? v.trim()
-    : typeof v === "number"
-      ? String(v)
-      : undefined;
+const str = (v: unknown): string | undefined => (typeof v === 'string' && v.trim() ? v.trim() : typeof v === 'number' ? String(v) : undefined);
 const num = (v: unknown): number | undefined => {
-  if (typeof v === "number") return Number.isFinite(v) ? v : undefined;
-  if (typeof v !== "string" || !v.trim()) return undefined;
-  const n = parseFloat(v.replace(",", "."));
+  if (typeof v === 'number') return Number.isFinite(v) ? v : undefined;
+  if (typeof v !== 'string' || !v.trim()) return undefined;
+  const n = parseFloat(v.replace(',', '.'));
   return Number.isFinite(n) ? n : undefined;
 };
 const clean = (o: Props): Props => {
-  for (const k of Object.keys(o))
-    if (o[k] === undefined || o[k] === "") delete o[k];
+  for (const k of Object.keys(o)) if (o[k] === undefined || o[k] === '') delete o[k];
   return o;
 };
 
 /** Manifeste d'un export Condui ? */
-export const isConduiManifest = (text: string) =>
-  /"format"\s*:\s*"project-with-assets"/.test(text) && /"projectId"/.test(text);
+export const isConduiManifest = (text: string) => /"format"\s*:\s*"project-with-assets"/.test(text) && /"projectId"/.test(text);
 
 /** Réseau Condui (`nominalVoltage`) → libellé Voltaplan. */
 export function conduiSupply(v: unknown): string | undefined {
   if (!isObj(v)) return undefined;
-  const sys = String(v.system ?? "");
+  const sys = String(v.system ?? '');
   const ull = num(v.uLineToLine);
-  if (/^3N/i.test(sys) || (sys.startsWith("3") && ull === 400))
-    return "3N x 400V ~ 50Hz";
-  if (sys.startsWith("3")) return "3 x 230V ~ 50Hz";
-  if (sys.startsWith("2") || sys.startsWith("1")) return "2 x 230V ~ 50Hz";
+  if (/^3N/i.test(sys) || (sys.startsWith('3') && ull === 400)) return '3N x 400V ~ 50Hz';
+  if (sys.startsWith('3')) return '3 x 230V ~ 50Hz';
+  if (sys.startsWith('2') || sys.startsWith('1')) return '2 x 230V ~ 50Hz';
   return undefined;
 }
 
 const POLES: Record<string, string> = {
-  "1P": "1P",
-  "1P+N": "1P+N",
-  "2P": "2P",
-  "3P": "3P",
-  "3P+N": "4P",
-  "4P": "4P",
+  '1P': '1P',
+  '1P+N': '1P+N',
+  '2P': '2P',
+  '3P': '3P',
+  '3P+N': '4P',
+  '4P': '4P',
 };
 const SWITCHES: Record<string, string> = {
-  switch: "single",
-  switch_1p_twoway: "twoWay",
-  switch_cross: "intermediate",
-  switch_dimmer: "dimmer",
-  switch_1p_pull: "pullCord",
-  switch_shutter: "shutter",
-  switch_2p: "bipolar",
-  switch_double: "double",
+  switch: 'single',
+  switch_1p_twoway: 'twoWay',
+  switch_cross: 'intermediate',
+  switch_dimmer: 'dimmer',
+  switch_1p_pull: 'pullCord',
+  switch_shutter: 'shutter',
+  switch_2p: 'bipolar',
+  switch_double: 'double',
 };
 const APPLIANCES: Record<string, string> = {
-  stove: "cooker",
-  oven: "oven",
-  washer: "washingMachine",
-  dryer: "dryer",
-  dishwasher: "dishwasher",
-  fridge: "fridge",
-  freezer: "freezer",
-  microwave: "microwave",
-  ev: "evCharger",
-  boiler: "electricWaterHeater",
-  heating: "heater",
-  ventilation: "fan",
-  fixed_appliance_generic: "other",
-  hvac_source: "other",
+  stove: 'cooker',
+  oven: 'oven',
+  washer: 'washingMachine',
+  dryer: 'dryer',
+  dishwasher: 'dishwasher',
+  fridge: 'fridge',
+  freezer: 'freezer',
+  microwave: 'microwave',
+  ev: 'evCharger',
+  boiler: 'electricWaterHeater',
+  heating: 'heater',
+  ventilation: 'fan',
+  fixed_appliance_generic: 'other',
+  hvac_source: 'other',
 };
 const BELLS: Record<string, string> = {
-  bell: "bell",
-  buzzer: "buzzer",
-  horn: "horn",
-  siren: "siren",
+  bell: 'bell',
+  buzzer: 'buzzer',
+  horn: 'horn',
+  siren: 'siren',
 };
 const LIGHTS: Record<string, string> = {
-  light_point: "standard",
-  light_spot: "spot",
-  light_led: "led",
-  light_fluorescent: "fluo",
+  light_point: 'standard',
+  light_spot: 'spot',
+  light_led: 'led',
+  light_fluorescent: 'fluo',
 };
 /** Meubles du plan (« building.graphic.* ») → catalogue Voltaplan. */
 const FURNITURE: Record<string, string> = {
-  car: "car",
-  bathtub: "bathtub",
-  toilet: "wc",
-  shower: "shower",
-  sink: "washbasin",
-  washbasin: "washbasin",
-  bed: "bedDouble",
-  sofa: "sofa",
-  table: "diningTable",
+  car: 'car',
+  bathtub: 'bathtub',
+  toilet: 'wc',
+  shower: 'shower',
+  sink: 'washbasin',
+  washbasin: 'washbasin',
+  bed: 'bedDouble',
+  sofa: 'sofa',
+  table: 'diningTable',
 };
 /** Commandes qui reçoivent les éléments suivants de leur branche (va-et-vient, croisement, transformateur…). */
-const CHAIN = new Set<NodeKind>([
-  "switch",
-  "pushButton",
-  "relay",
-  "transformer",
-  "detector",
-]);
+const CHAIN = new Set<NodeKind>(['switch', 'pushButton', 'relay', 'transformer', 'detector']);
 
 /** Point sur le contour d'un polygone (à `tol` près) ? */
 function onOutline(pts: Pt[], p: Pt, tol: number): boolean {
@@ -131,12 +109,8 @@ function onOutline(pts: Pt[], p: Pt, tol: number): boolean {
     const dx = b.x - a.x;
     const dy = b.y - a.y;
     const l2 = dx * dx + dy * dy || 1;
-    const t = Math.max(
-      0,
-      Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2),
-    );
-    if (Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy)) <= tol)
-      return true;
+    const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / l2));
+    if (Math.hypot(p.x - (a.x + t * dx), p.y - (a.y + t * dy)) <= tol) return true;
   }
   return false;
 }
@@ -147,11 +121,7 @@ function inPolygon(p: Pt, pts: Pt[]): boolean {
   for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
     const a = pts[i];
     const b = pts[j];
-    if (
-      a.y > p.y !== b.y > p.y &&
-      p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x
-    )
-      inside = !inside;
+    if (a.y > p.y !== b.y > p.y && p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x) inside = !inside;
   }
   return inside;
 }
@@ -161,30 +131,16 @@ export interface ConduiImportResult {
   warnings: string[];
 }
 
-export function importCondui(
-  text: string,
-  fileName = "Projet Condui",
-): ConduiImportResult {
+export function importCondui(text: string, fileName = 'Projet Condui'): ConduiImportResult {
   let data: unknown;
   try {
     data = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch {
-    throw new Error(
-      "Ce fichier n'est pas un projet Condui valide (JSON illisible).",
-    );
+    throw new Error("Ce fichier n'est pas un projet Condui valide (JSON illisible).");
   }
-  if (
-    !isObj(data) ||
-    !isObj(data.disciplines) ||
-    !isObj(data.disciplines.electrical) ||
-    !isObj(data.building)
-  )
-    throw new Error("Ce fichier n'est pas un projet Condui valide.");
+  if (!isObj(data) || !isObj(data.disciplines) || !isObj(data.disciplines.electrical) || !isObj(data.building)) throw new Error("Ce fichier n'est pas un projet Condui valide.");
   const warnings = new Set<string>();
-  if (data.schemaVersion !== "2.3.0")
-    warnings.add(
-      `Version de fichier Condui ${String(data.schemaVersion)} : seule la version 2.3.0 a été testée, vérifiez le résultat.`,
-    );
+  if (data.schemaVersion !== '2.3.0') warnings.add(`Version de fichier Condui ${String(data.schemaVersion)} : seule la version 2.3.0 a été testée, vérifiez le résultat.`);
   const el = data.disciplines.electrical;
   const inst = isObj(el.installation) ? el.installation : {};
   const pj = isObj(data.project) ? data.project : {};
@@ -203,13 +159,10 @@ export function importCondui(
   const site = isObj(data.site) ? data.site : {};
   const installer = isObj(pj.installerOverride) ? pj.installerOverride : {};
   const supply = conduiSupply(inst.nominalVoltage);
-  if (!supply)
-    warnings.add(
-      "Réseau Condui non reconnu : à choisir dans les infos du projet.",
-    );
+  if (!supply) warnings.add('Réseau Condui non reconnu : à choisir dans les infos du projet.');
   project.meta = {
     ...project.meta,
-    title: str(pj.name) ?? fileName.replace(/\.zip$/i, ""),
+    title: str(pj.name) ?? fileName.replace(/\.zip$/i, ''),
     client: {
       name: isObj(pj.customer) ? str(pj.customer.name) : undefined,
       address: {},
@@ -224,30 +177,19 @@ export function importCondui(
 
   // ——— Schéma ———
   const nodeOf = new Map<string, ElNode>();
-  const make = (
-    src: Obj,
-    kind: NodeKind,
-    props: Props,
-    tag: string,
-  ): ElNode => {
+  const make = (src: Obj, kind: NodeKind, props: Props, tag: string): ElNode => {
     const n = createNode(kind, clean(props));
     n.id = str(src.id) ?? n.id;
     if (nodeOf.has(n.id)) n.id = uid();
     const attrs: Record<string, string> = {};
-    for (const [k, v] of Object.entries(src))
-      if (k !== "placements" && v !== null && v !== "" && v !== undefined)
-        attrs[k] = typeof v === "object" ? JSON.stringify(v) : String(v);
-    n.source = { format: "condui", tag, attrs };
+    for (const [k, v] of Object.entries(src)) if (k !== 'placements' && v !== null && v !== '' && v !== undefined) attrs[k] = typeof v === 'object' ? JSON.stringify(v) : String(v);
+    n.source = { format: 'condui', tag, attrs };
     nodeOf.set(n.id, n);
     return n;
   };
-  const allowed = (parent: ElNode, child: ElNode) =>
-    ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
+  const allowed = (parent: ElNode, child: ElNode) => ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
   /** Positions sur le plan (id du nœud → poses : étage, position en cm, rotation). */
-  const poses = new Map<
-    string,
-    { floor: string; pos: Pt; rot: number; id?: string }[]
-  >();
+  const poses = new Map<string, { floor: string; pos: Pt; rot: number; id?: string }[]>();
   const pose = (n: ElNode, src: Obj) => {
     const list = arr(src.placements)
       .filter((p) => isObj(p.pos) && str(p.floorId))
@@ -262,20 +204,18 @@ export function importCondui(
 
   /** Point du schéma (« endpoint » ou appareil en ligne « trunkDevice »). */
   const point = (ep: Obj): ElNode => {
-    const sym = String(ep.symbol ?? ep.type ?? "");
-    const count =
-      arr(ep.placements).length > 1 ? arr(ep.placements).length : undefined;
+    const sym = String(ep.symbol ?? ep.type ?? '');
+    const count = arr(ep.placements).length > 1 ? arr(ep.placements).length : undefined;
     const sp = isObj(ep.socketProps) ? ep.socketProps : {};
     const lp = isObj(ep.lightPointProps) ? ep.lightPointProps : {};
     const hv = isObj(ep.hvacProps) ? ep.hvacProps : {};
     const cp = isObj(ep.conversionProps) ? ep.conversionProps : {};
-    const name =
-      [str(cp.brand), str(cp.model)].filter(Boolean).join(" ") || undefined;
+    const name = [str(cp.brand), str(cp.model)].filter(Boolean).join(' ') || undefined;
     let n: ElNode;
     if (/^socket/.test(sym)) {
       n = make(
         ep,
-        "socket",
+        'socket',
         {
           count: num(sp.socketCount) ?? (/double/.test(sym) ? 2 : 1),
           earth: /gnd/.test(sym),
@@ -284,121 +224,64 @@ export function importCondui(
         },
         sym,
       );
-    } else if (SWITCHES[sym])
-      n = make(ep, "switch", { switchType: SWITCHES[sym] }, sym);
-    else if (sym === "switch_impulse" || sym === "push_button")
-      n = make(ep, "pushButton", {}, sym);
-    else if (sym === "switch_1p_changeover")
-      n = make(
-        ep,
-        "switch",
-        { switchType: "single", reference: "à bascule" },
-        sym,
-      );
+    } else if (SWITCHES[sym]) n = make(ep, 'switch', { switchType: SWITCHES[sym] }, sym);
+    else if (sym === 'switch_impulse' || sym === 'push_button') n = make(ep, 'pushButton', {}, sym);
+    else if (sym === 'switch_1p_changeover') n = make(ep, 'switch', { switchType: 'single', reference: 'à bascule' }, sym);
     else if (LIGHTS[sym]) {
-      const lightType =
-        lp.safety === true || lp.autonomous === true
-          ? "emergency"
-          : lp.onWall === true && sym === "light_point"
-            ? "wall"
-            : LIGHTS[sym];
-      n = make(ep, "light", { lightType, count }, sym);
-    } else if (sym === "smoke_detector")
-      n = make(ep, "detector", { detectorType: "smoke" }, sym);
-    else if (sym === "motion_detector")
-      n = make(ep, "detector", { detectorType: "motion" }, sym);
-    else if (sym === "relay")
-      n = make(ep, "relay", { relayType: "relay", inBoard: false }, sym);
-    else if (BELLS[sym]) n = make(ep, "bell", { bellType: BELLS[sym] }, sym);
-    else if (sym === "door_lock")
-      n = make(ep, "other", { otherType: "doorStrike" }, sym);
-    else if (sym === "motor") n = make(ep, "motor", {}, sym);
-    else if (sym === "furnace") {
+      const lightType = lp.safety === true || lp.autonomous === true ? 'emergency' : lp.onWall === true && sym === 'light_point' ? 'wall' : LIGHTS[sym];
+      n = make(ep, 'light', { lightType, count }, sym);
+    } else if (sym === 'smoke_detector') n = make(ep, 'detector', { detectorType: 'smoke' }, sym);
+    else if (sym === 'motion_detector') n = make(ep, 'detector', { detectorType: 'motion' }, sym);
+    else if (sym === 'relay') n = make(ep, 'relay', { relayType: 'relay', inBoard: false }, sym);
+    else if (BELLS[sym]) n = make(ep, 'bell', { bellType: BELLS[sym] }, sym);
+    else if (sym === 'door_lock') n = make(ep, 'other', { otherType: 'doorStrike' }, sym);
+    else if (sym === 'motor') n = make(ep, 'motor', {}, sym);
+    else if (sym === 'furnace') {
       // Chauffage (CVC) : pompe à chaleur (échange de chaleur à l'électricité), sinon chaudière
-      const hp =
-        hv.hvacType === "heat_exchange" || hv.energySource === "electricity";
-      n = make(
-        ep,
-        "appliance",
-        { applianceType: hp ? "heatPump" : "boiler" },
-        sym,
-      );
-    } else if (APPLIANCES[sym])
-      n = make(ep, "appliance", { applianceType: APPLIANCES[sym] }, sym);
-    else if (sym === "solar_panel") {
+      const hp = hv.hvacType === 'heat_exchange' || hv.energySource === 'electricity';
+      n = make(ep, 'appliance', { applianceType: hp ? 'heatPump' : 'boiler' }, sym);
+    } else if (APPLIANCES[sym]) n = make(ep, 'appliance', { applianceType: APPLIANCES[sym] }, sym);
+    else if (sym === 'solar_panel') {
       const s = isObj(ep.solarPanelProps) ? ep.solarPanelProps : {};
       n = make(
         ep,
-        "solarPanel",
+        'solarPanel',
         {
           count,
-          name:
-            [
-              str(s.brand),
-              str(s.model),
-              num(s.wattageW) ? `${num(s.wattageW)} Wc` : "",
-            ]
-              .filter(Boolean)
-              .join(" ") || undefined,
+          name: [str(s.brand), str(s.model), num(s.wattageW) ? `${num(s.wattageW)} Wc` : ''].filter(Boolean).join(' ') || undefined,
         },
         sym,
       );
-    } else if (
-      sym === "inverter" ||
-      sym === "rectifier" ||
-      sym === "dc_dc_converter" ||
-      sym === "converter_dc_dc"
-    ) {
-      const kw = num(String(cp.power ?? "").replace(/kw/i, ""));
+    } else if (sym === 'inverter' || sym === 'rectifier' || sym === 'dc_dc_converter' || sym === 'converter_dc_dc') {
+      const kw = num(String(cp.power ?? '').replace(/kw/i, ''));
       n = make(
         ep,
-        "inverter",
+        'inverter',
         {
-          inverterType:
-            sym === "rectifier" ? "acDc" : sym === "inverter" ? "dcAc" : "dcDc",
-          power: kw
-            ? Math.round(kw * (/kw/i.test(String(cp.power)) ? 1000 : 1))
-            : undefined,
+          inverterType: sym === 'rectifier' ? 'acDc' : sym === 'inverter' ? 'dcAc' : 'dcDc',
+          power: kw ? Math.round(kw * (/kw/i.test(String(cp.power)) ? 1000 : 1)) : undefined,
           name,
         },
         sym,
       );
-    } else if (sym === "transformer")
+    } else if (sym === 'transformer') n = make(ep, 'transformer', { safety: true, name: str(ep.labelNotes) }, sym);
+    else if (sym === 'battery') n = make(ep, 'battery', {}, sym);
+    else if (sym === 'junction_box' || sym === 'terminal_strip' || sym === 'junction_panel')
       n = make(
         ep,
-        "transformer",
-        { safety: true, name: str(ep.labelNotes) },
-        sym,
-      );
-    else if (sym === "battery") n = make(ep, "battery", {}, sym);
-    else if (
-      sym === "junction_box" ||
-      sym === "terminal_strip" ||
-      sym === "junction_panel"
-    )
-      n = make(
-        ep,
-        "junctionBox",
+        'junctionBox',
         {
-          name:
-            sym === "junction_panel"
-              ? (str(ep.label) ?? "Panneau de jonction")
-              : sym === "terminal_strip"
-                ? `Bornier ${str(ep.label) ?? ""}`.trim()
-                : undefined,
+          name: sym === 'junction_panel' ? (str(ep.label) ?? 'Panneau de jonction') : sym === 'terminal_strip' ? `Bornier ${str(ep.label) ?? ''}`.trim() : undefined,
         },
         sym,
       );
-    else if (sym === "energy_meter")
-      n = make(ep, "other", { otherType: "subMeter" }, sym);
-    else if (/^domotic/.test(sym)) n = make(ep, "domotic", {}, sym);
-    else if (sym === "light_sensor") {
-      n = make(ep, "other", { name: "Interrupteur crépusculaire" }, sym);
+    else if (sym === 'energy_meter') n = make(ep, 'other', { otherType: 'subMeter' }, sym);
+    else if (/^domotic/.test(sym)) n = make(ep, 'domotic', {}, sym);
+    else if (sym === 'light_sensor') {
+      n = make(ep, 'other', { name: 'Interrupteur crépusculaire' }, sym);
     } else {
-      n = make(ep, "other", { name: sym }, sym);
-      warnings.add(
-        `Symbole Condui non reconnu, importé comme « autre » : ${sym}`,
-      );
+      n = make(ep, 'other', { name: sym }, sym);
+      warnings.add(`Symbole Condui non reconnu, importé comme « autre » : ${sym}`);
     }
     if (str(ep.notes)) n.location = str(ep.notes);
     pose(n, ep);
@@ -412,65 +295,41 @@ export function importCondui(
     const ov = arr(c.sectionWireOverrides)[0];
     const cable = make(
       { id: uid() },
-      "cable",
+      'cable',
       {
-        cableType:
-          t && (CABLE_TYPES as readonly string[]).includes(t)
-            ? t
-            : t
-              ? "other"
-              : undefined,
+        cableType: t && (CABLE_TYPES as readonly string[]).includes(t) ? t : t ? 'other' : undefined,
         section: num(cb.sectionMm2),
         conductors: num(cb.conductors),
-        inConduit: ov && typeof ov.inTube === "boolean" ? ov.inTube : undefined,
+        inConduit: ov && typeof ov.inTube === 'boolean' ? ov.inTube : undefined,
         reference: str(cb.fireClass) ? `CPR ${str(cb.fireClass)}` : undefined,
       },
-      "cable",
+      'cable',
     );
     const eps = arr(c.endpoints);
-    const byId = new Map(eps.map((e) => [str(e.id) ?? "", e]));
+    const byId = new Map(eps.map((e) => [str(e.id) ?? '', e]));
     // Branches (E1, E2…) ; sans branches : regroupées par repère
-    let branches: Obj[][] = arr(c.branches).map((b) =>
-      Array.isArray(b.endpointIds)
-        ? b.endpointIds
-            .map((id) => byId.get(String(id)))
-            .filter((e): e is Obj => !!e)
-        : [],
-    );
+    let branches: Obj[][] = arr(c.branches).map((b) => (Array.isArray(b.endpointIds) ? b.endpointIds.map((id) => byId.get(String(id))).filter((e): e is Obj => !!e) : []));
     const inBranch = new Set(branches.flat());
     const rest = eps.filter((e) => !inBranch.has(e));
     if (rest.length) {
       const groups = new Map<string, Obj[]>();
-      for (const e of rest)
-        groups.set(str(e.label) ?? uid(), [
-          ...(groups.get(str(e.label) ?? "") ?? []),
-          e,
-        ]);
+      for (const e of rest) groups.set(str(e.label) ?? uid(), [...(groups.get(str(e.label) ?? '') ?? []), e]);
       branches = [...branches, ...groups.values()];
     }
-    const trunk = arr(c.trunkDevices).sort(
-      (a, b) => (num(a.trunkPosition) ?? 0) - (num(b.trunkPosition) ?? 0),
-    );
+    const trunk = arr(c.trunkDevices).sort((a, b) => (num(a.trunkPosition) ?? 0) - (num(b.trunkPosition) ?? 0));
     let ti = 0;
     const flushTrunk = (pos: number) => {
-      while (ti < trunk.length && (num(trunk[ti].trunkPosition) ?? 0) <= pos)
-        cable.children.push(point(trunk[ti++]));
+      while (ti < trunk.length && (num(trunk[ti].trunkPosition) ?? 0) <= pos) cable.children.push(point(trunk[ti++]));
     };
     branches.forEach((br, bi) => {
       flushTrunk(bi);
       let host: ElNode | null = null;
       for (const ep of br) {
         const n = point(ep);
-        if (
-          host &&
-          allowed(host, n) &&
-          (host.kind !== "detector" || n.kind === "light")
-        )
-          host.children.push(n);
-        else if (host && host.kind === "socket" && n.kind === "appliance")
-          host.children.push(n);
+        if (host && allowed(host, n) && (host.kind !== 'detector' || n.kind === 'light')) host.children.push(n);
+        else if (host && host.kind === 'socket' && n.kind === 'appliance') host.children.push(n);
         else cable.children.push(n);
-        if (CHAIN.has(n.kind) || (n.kind === "socket" && !host)) host = n;
+        if (CHAIN.has(n.kind) || (n.kind === 'socket' && !host)) host = n;
       }
     });
     flushTrunk(Infinity);
@@ -479,92 +338,61 @@ export function importCondui(
   };
 
   const protectionNode = (p: Obj, prefix: string): ElNode => {
-    const type = String(p.type ?? "MCB");
-    const device =
-      type === "RCD"
-        ? "rcd"
-        : type === "RCBO"
-          ? "rcbo"
-          : type === "FUSE"
-            ? "fuse"
-            : "mcb";
-    if (!["RCD", "RCBO", "MCB", "FUSE"].includes(type))
-      warnings.add(`Protection Condui « ${type} » importée comme disjoncteur.`);
+    const type = String(p.type ?? 'MCB');
+    const device = type === 'RCD' ? 'rcd' : type === 'RCBO' ? 'rcbo' : type === 'FUSE' ? 'fuse' : 'mcb';
+    if (!['RCD', 'RCBO', 'MCB', 'FUSE'].includes(type)) warnings.add(`Protection Condui « ${type} » importée comme disjoncteur.`);
     const c0 = arr(p.circuits)[0];
     const label = str(p.label);
     const n = make(
       p,
-      "protection",
+      'protection',
       {
         device,
         circuitName: str(c0?.notes) ?? str(p.labelNotes) ?? str(p.notes),
-        fixedLetter: device !== "rcd" && label ? prefix + label : undefined,
+        fixedLetter: device !== 'rcd' && label ? prefix + label : undefined,
         ratedCurrent: num(p.ratingA),
-        poles: POLES[String(p.polesConfig ?? "")],
-        curve: device === "mcb" || device === "rcbo" ? str(p.curve) : undefined,
+        poles: POLES[String(p.polesConfig ?? '')],
+        curve: device === 'mcb' || device === 'rcbo' ? str(p.curve) : undefined,
         breakingCapacity: num(p.breakingCapacityKa),
-        residualCurrent:
-          device === "rcd" || device === "rcbo"
-            ? num(p.sensitivityMa)
-            : undefined,
-        rcdType:
-          device === "rcd" || device === "rcbo"
-            ? str(p.residualCurrentType)
-            : undefined,
-        installedOn: num(c0?.rulesetDateOverride)
-          ? String(num(c0?.rulesetDateOverride))
-          : undefined,
+        residualCurrent: device === 'rcd' || device === 'rcbo' ? num(p.sensitivityMa) : undefined,
+        rcdType: device === 'rcd' || device === 'rcbo' ? str(p.residualCurrentType) : undefined,
+        installedOn: num(c0?.rulesetDateOverride) ? String(num(c0?.rulesetDateOverride)) : undefined,
       },
       type,
     );
     // Valeurs absentes dans Condui (différentiel sans calibre) : pas de valeur par défaut inventée
     if (num(p.ratingA) === undefined) {
       delete n.props.ratedCurrent;
-      warnings.add(
-        "Différentiel Condui sans calibre : à compléter dans Voltaplan.",
-      );
+      warnings.add('Différentiel Condui sans calibre : à compléter dans Voltaplan.');
     }
-    if (device === "rcd") delete n.props.curve;
-    if (num(p.breakingCapacityKa) === undefined)
-      delete n.props.breakingCapacity;
+    if (device === 'rcd') delete n.props.curve;
+    if (num(p.breakingCapacityKa) === undefined) delete n.props.breakingCapacity;
     return n;
   };
 
   /** Points de raccordement des tableaux sur le plan (circuit « PANEL » de chaque tableau). */
   const panelPose = new Map<string, Obj>();
   const board = (pn: Obj, prefix: string, letter?: string): ElNode => {
-    const b = make(
-      pn,
-      "board",
-      { name: str(pn.name), fixedLetter: letter },
-      "panel",
-    );
-    for (const c of arr(pn.circuits))
-      for (const ep of arr(c.endpoints))
-        if (ep.symbol === "panel_distribution") panelPose.set(b.id, ep);
+    const b = make(pn, 'board', { name: str(pn.name), fixedLetter: letter }, 'panel');
+    for (const c of arr(pn.circuits)) for (const ep of arr(c.endpoints)) if (ep.symbol === 'panel_distribution') panelPose.set(b.id, ep);
     const prots = arr(pn.protections);
-    const subs = new Map(arr(pn.subPanels).map((s) => [str(s.id) ?? "", s]));
+    const subs = new Map(arr(pn.subPanels).map((s) => [str(s.id) ?? '', s]));
     const nodes = new Map<string, ElNode>();
     // Circuit → protection qui le porte
     const ownerOfCircuit = new Map<string, Obj>();
-    for (const p of prots)
-      for (const c of arr(p.circuits)) ownerOfCircuit.set(str(c.id) ?? "", p);
+    for (const p of prots) for (const c of arr(p.circuits)) ownerOfCircuit.set(str(c.id) ?? '', p);
     const child = new Set<Obj>();
     for (const p of prots)
       for (const c of arr(p.circuits))
-        for (const id of Array.isArray(c.subCircuitIds)
-          ? c.subCircuitIds
-          : []) {
+        for (const id of Array.isArray(c.subCircuitIds) ? c.subCircuitIds : []) {
           const o = ownerOfCircuit.get(String(id));
           if (o) child.add(o);
         }
     const build = (p: Obj): ElNode => {
       const n = protectionNode(p, prefix);
-      nodes.set(str(p.id) ?? "", n);
+      nodes.set(str(p.id) ?? '', n);
       for (const c of arr(p.circuits)) {
-        const subIds = Array.isArray(c.subCircuitIds)
-          ? c.subCircuitIds.map(String)
-          : [];
+        const subIds = Array.isArray(c.subCircuitIds) ? c.subCircuitIds.map(String) : [];
         if (subIds.length) {
           // Différentiel (ou disjoncteur différentiel) de groupe : les circuits qu'il protège, dans l'ordre de Condui
           for (const id of subIds) {
@@ -576,11 +404,7 @@ export function importCondui(
         const cable = circuitCable(c, n);
         const sub = str(p.subPanelId);
         if (sub && subs.has(sub)) {
-          const sb = board(
-            subs.get(sub)!,
-            `${str(p.label) ?? ""}-`,
-            str(p.label),
-          );
+          const sb = board(subs.get(sub)!, `${str(p.label) ?? ''}-`, str(p.label));
           cable.children.push(sb);
           subs.delete(sub);
         }
@@ -588,8 +412,7 @@ export function importCondui(
       return n;
     };
     for (const p of prots) if (!child.has(p)) b.children.push(build(p));
-    for (const s of subs.values())
-      b.children.push(board(s, `${str(s.name) ?? ""}-`));
+    for (const s of subs.values()) b.children.push(board(s, `${str(s.name) ?? ''}-`));
     return b;
   };
 
@@ -597,17 +420,13 @@ export function importCondui(
   const meter = origin.children[0];
   meter.children = [];
   const feed = isObj(inst.feedTopology) ? inst.feedTopology : {};
-  const shared = isObj(feed.sharedFeed)
-    ? feed.sharedFeed
-    : isObj(inst.mainSupply)
-      ? inst.mainSupply
-      : {};
+  const shared = isObj(feed.sharedFeed) ? feed.sharedFeed : isObj(inst.mainSupply) ? inst.mainSupply : {};
   // Avant le compteur : disjoncteur de branchement (calibre du raccordement)
   for (const t of arr(shared.trunkDevices ?? shared.supplyTrunkDevices)) {
-    if (t.type === "protection") {
+    if (t.type === 'protection') {
       const a = num(t.ratingA);
       if (a) project.meta.mainCurrent = a;
-    } else if (t.type === "energy_meter") {
+    } else if (t.type === 'energy_meter') {
       meter.id = str(t.id) ?? meter.id;
       nodeOf.set(meter.id, meter);
       pose(meter, t);
@@ -618,13 +437,13 @@ export function importCondui(
   let mainBoard: ElNode | null = null;
   let mainIsMain = false;
   for (const pn of panels) {
-    const b = board(pn, "");
+    const b = board(pn, '');
     const rf = rootFeeds.find((r) => r.panelId === pn.id);
     // Têtes de tableau (général différentiel « Hoofd »…) entre le compteur et le tableau
     let parent: ElNode = meter;
     for (const t of arr(rf?.trunkDevices)) {
-      if (t.type !== "protection") continue;
-      const n = protectionNode({ ...t, type: t.protectionType, label: "" }, "");
+      if (t.type !== 'protection') continue;
+      const n = protectionNode({ ...t, type: t.protectionType, label: '' }, '');
       parent.children.push(n);
       parent = n;
     }
@@ -635,25 +454,22 @@ export function importCondui(
       mainIsMain = pn.isMain === true;
     }
   }
-  if (!mainBoard) warnings.add("Aucun tableau dans le projet Condui.");
+  if (!mainBoard) warnings.add('Aucun tableau dans le projet Condui.');
   // Terre : barrette (sectionneur de terre) et prise de terre dans le tableau principal
   let earthBar: ElNode | null = null;
   if (mainBoard) {
-    earthBar = createNode("earthBar", {});
-    earthBar.children.push(createNode("earth"));
+    earthBar = createNode('earthBar', {});
+    earthBar.children.push(createNode('earth'));
     nodeOf.set(earthBar.id, earthBar);
     mainBoard.children.push(earthBar);
   }
   for (const jp of arr(inst.junctionPanelPlacements)) {
-    const n = [...nodeOf.values()].find(
-      (x) =>
-        x.source?.tag === "junction_panel" && x.props.name === str(jp.label),
-    );
+    const n = [...nodeOf.values()].find((x) => x.source?.tag === 'junction_panel' && x.props.name === str(jp.label));
     if (n)
       poses.set(n.id, [
         ...(poses.get(n.id) ?? []),
         {
-          floor: str(jp.floorId) ?? "",
+          floor: str(jp.floorId) ?? '',
           pos: {
             x: num((jp.pos as Obj)?.x) ?? 0,
             y: num((jp.pos as Obj)?.y) ?? 0,
@@ -667,7 +483,7 @@ export function importCondui(
     for (const e of arr(inst.earthingPlacements))
       poses.set(earthBar.id, [
         {
-          floor: str(e.floorId) ?? "",
+          floor: str(e.floorId) ?? '',
           pos: {
             x: num((e.pos as Obj)?.x) ?? 0,
             y: num((e.pos as Obj)?.y) ?? 0,
@@ -684,13 +500,7 @@ export function importCondui(
   // ——— Plan (cm → mm) ———
   const floors = arr(data.building.floors);
   const elements = arr(data.elements);
-  const hidden = new Set(
-    floors.flatMap((f) =>
-      Array.isArray(f.hiddenSitplanElementIds)
-        ? f.hiddenSitplanElementIds.map(String)
-        : [],
-    ),
-  );
+  const hidden = new Set(floors.flatMap((f) => (Array.isArray(f.hiddenSitplanElementIds) ? f.hiddenSitplanElementIds.map(String) : [])));
   // Origine commune à tous les étages (les coordonnées Condui peuvent être négatives)
   const xs: number[] = [];
   const ys: number[] = [];
@@ -727,7 +537,7 @@ export function importCondui(
   for (const f of floors) {
     const page = emptyPage(str(f.name) ?? `Niveau ${pageOf.size}`);
     page.furniture = [];
-    pageOf.set(str(f.id) ?? "", page);
+    pageOf.set(str(f.id) ?? '', page);
     project.plan.pages.push(page);
   }
   // Murs (polylignes) : segments, par identifiant pour poser les ouvertures
@@ -735,17 +545,13 @@ export function importCondui(
   /** Murs fermés (pièces) de chaque étage : contour et surface, pour le sens d'ouverture des portes. */
   const rooms = new Map<string, { pts: Pt[]; area: number }[]>();
   for (const e of elements) {
-    const page = pageOf.get(str(e.floorId) ?? "");
+    const page = pageOf.get(str(e.floorId) ?? '');
     if (!page) continue;
     const kind = String(e.kind);
-    const v1 =
-      isObj(e.properties) && isObj(e.properties.v1) ? e.properties.v1 : {};
+    const v1 = isObj(e.properties) && isObj(e.properties.v1) ? e.properties.v1 : {};
     const g = isObj(e.geometry) ? e.geometry : {};
-    if (kind === "building.wall") {
-      const th =
-        (num(v1.thickness) ??
-          num((e.properties as Obj).masterWallThickness) ??
-          20) * 10;
+    if (kind === 'building.wall') {
+      const th = (num(v1.thickness) ?? num((e.properties as Obj).masterWallThickness) ?? 20) * 10;
       const pts = arr(g.points).map(mm);
       const segs: { a: Pt; b: Pt; th: number }[] = [];
       for (let i = 0; i + 1 < pts.length; i++) {
@@ -757,55 +563,33 @@ export function importCondui(
       }
       // Index des segments tels que Condui les compte (segments nuls compris)
       wallSegs.set(
-        str(v1.id) ?? "",
+        str(v1.id) ?? '',
         pts.slice(0, -1).map((a, i) => ({ a, b: pts[i + 1], th })),
       );
-      const closed =
-        pts.length > 3 &&
-        pts[0].x === pts[pts.length - 1].x &&
-        pts[0].y === pts[pts.length - 1].y;
+      const closed = pts.length > 3 && pts[0].x === pts[pts.length - 1].x && pts[0].y === pts[pts.length - 1].y;
       if (closed) {
-        const area =
-          Math.abs(
-            pts
-              .slice(0, -1)
-              .reduce(
-                (s, q, i) => s + q.x * pts[i + 1].y - pts[i + 1].x * q.y,
-                0,
-              ),
-          ) / 2;
-        rooms.set(str(e.floorId) ?? "", [
-          ...(rooms.get(str(e.floorId) ?? "") ?? []),
-          { pts, area },
-        ]);
+        const area = Math.abs(pts.slice(0, -1).reduce((s, q, i) => s + q.x * pts[i + 1].y - pts[i + 1].x * q.y, 0)) / 2;
+        rooms.set(str(e.floorId) ?? '', [...(rooms.get(str(e.floorId) ?? '') ?? []), { pts, area }]);
       }
     }
   }
   for (const e of elements) {
-    const page = pageOf.get(str(e.floorId) ?? "");
+    const page = pageOf.get(str(e.floorId) ?? '');
     if (!page) continue;
     const kind = String(e.kind);
-    const v1 =
-      isObj(e.properties) && isObj(e.properties.v1) ? e.properties.v1 : {};
+    const v1 = isObj(e.properties) && isObj(e.properties.v1) ? e.properties.v1 : {};
     const g = isObj(e.geometry) ? e.geometry : {};
-    if (kind === "building.door" || kind === "building.window") {
-      const seg = wallSegs.get(str(v1.wallId) ?? "")?.[
-        num(v1.segmentIndex) ?? 0
-      ];
+    if (kind === 'building.door' || kind === 'building.window') {
+      const seg = wallSegs.get(str(v1.wallId) ?? '')?.[num(v1.segmentIndex) ?? 0];
       if (!seg) {
-        skipped.add(
-          kind === "building.door" ? "porte sans mur" : "fenêtre sans mur",
-        );
+        skipped.add(kind === 'building.door' ? 'porte sans mur' : 'fenêtre sans mur');
         continue;
       }
       const len = Math.hypot(seg.b.x - seg.a.x, seg.b.y - seg.a.y) || 1;
       const ux = (seg.b.x - seg.a.x) / len;
       const uy = (seg.b.y - seg.a.y) / len;
       const w = (num(v1.width) ?? 90) * 10;
-      const c = Math.min(
-        len,
-        Math.max(0, (num(v1.centerAlongSegment) ?? len / 20) * 10),
-      );
+      const c = Math.min(len, Math.max(0, (num(v1.centerAlongSegment) ?? len / 20) * 10));
       const a = {
         x: Math.round(seg.a.x + ux * (c - w / 2)),
         y: Math.round(seg.a.y + uy * (c - w / 2)),
@@ -814,11 +598,10 @@ export function importCondui(
         x: Math.round(seg.a.x + ux * (c + w / 2)),
         y: Math.round(seg.a.y + uy * (c + w / 2)),
       };
-      if (kind === "building.window")
-        page.openings.push({ kind: "window", a, b, width: seg.th });
-      else if (v1.isOpening === true || v1.swing === "none")
+      if (kind === 'building.window') page.openings.push({ kind: 'window', a, b, width: seg.th });
+      else if (v1.isOpening === true || v1.swing === 'none')
         // Porte sans battant (porte de garage, baie) : dessinée comme une baie (trait pointillé)
-        page.openings.push({ kind: "garageDoor", a, b, width: seg.th });
+        page.openings.push({ kind: 'garageDoor', a, b, width: seg.th });
       else {
         // Sens d'ouverture, relevé sur le plan PDF de Condui (projet de démonstration) : « out » = vers l'extérieur
         // de la plus petite pièce fermée dont le mur porte la porte ; sur une cloison seule (mur ouvert), à droite
@@ -826,21 +609,19 @@ export function importCondui(
         // bout d'arrivée du segment (Voltaplan : mirrored).
         const mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
         const plusY = { x: mid.x - uy * 300, y: mid.y + ux * 300 };
-        const host = (rooms.get(str(e.floorId) ?? "") ?? [])
-          .filter((r) => onOutline(r.pts, mid, seg.th / 2 + 20))
-          .sort((r, q) => r.area - q.area)[0];
+        const host = (rooms.get(str(e.floorId) ?? '') ?? []).filter((r) => onOutline(r.pts, mid, seg.th / 2 + 20)).sort((r, q) => r.area - q.area)[0];
         let toPlusY = host ? !inPolygon(plusY, host.pts) : true;
-        if (v1.direction === "in") toPlusY = !toPlusY;
+        if (v1.direction === 'in') toPlusY = !toPlusY;
         page.openings.push({
-          kind: w >= 1400 ? "doubleDoor" : "door",
+          kind: w >= 1400 ? 'doubleDoor' : 'door',
           a,
           b,
           width: seg.th,
-          hinge: toPlusY ? "right" : "left",
-          mirrored: v1.swing === "right",
+          hinge: toPlusY ? 'right' : 'left',
+          mirrored: v1.swing === 'right',
         });
       }
-    } else if (kind === "building.stair") {
+    } else if (kind === 'building.stair') {
       // Escalier en L ou en U : une volée droite par segment
       const pts = arr(v1.points ?? g.points).map(mm);
       const w = (num(v1.width) ?? 80) * 10;
@@ -851,22 +632,20 @@ export function importCondui(
         if (len < 1) continue;
         page.furniture!.push({
           id: uid(),
-          kind: "stairs",
+          kind: 'stairs',
           center: {
             x: Math.round((a.x + b.x) / 2),
             y: Math.round((a.y + b.y) / 2),
           },
           w: Math.round(w),
           h: Math.round(len),
-          angle: Math.round(
-            (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI - 90,
-          ),
+          angle: Math.round((Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI - 90),
         });
       }
-    } else if (kind.startsWith("building.graphic.")) {
-      const k = FURNITURE[kind.slice("building.graphic.".length)];
+    } else if (kind.startsWith('building.graphic.')) {
+      const k = FURNITURE[kind.slice('building.graphic.'.length)];
       if (!k || !isObj(g.position)) {
-        skipped.add(kind.slice("building.graphic.".length));
+        skipped.add(kind.slice('building.graphic.'.length));
         continue;
       }
       page.furniture!.push({
@@ -877,11 +656,10 @@ export function importCondui(
         h: Math.round((num(g.height) ?? 100) * 10),
         angle: num(g.rotationDeg) ?? 0,
       });
-    } else if (kind === "annotation.note") {
+    } else if (kind === 'annotation.note') {
       const t = str(v1.text) ?? str(e.name);
-      if (t && isObj(g.position))
-        page.labels.push({ id: uid(), text: t, pos: mm(g.position), size: 3 });
-    } else if (kind === "building.room") {
+      if (t && isObj(g.position)) page.labels.push({ id: uid(), text: t, pos: mm(g.position), size: 3 });
+    } else if (kind === 'building.room') {
       const t = str(v1.name) ?? str(e.name) ?? str(v1.label);
       const pts = arr(v1.points ?? g.points).map(mm);
       if (t && pts.length)
@@ -894,8 +672,7 @@ export function importCondui(
           },
           size: 3,
         });
-    } else if (!kind.startsWith("electrical.") && kind !== "building.wall")
-      skipped.add(kind);
+    } else if (!kind.startsWith('electrical.') && kind !== 'building.wall') skipped.add(kind);
   }
   // Symboles : une pose par élément et par page (Condui en permet plusieurs : quantité « 2x »)
   let multi = false;
@@ -914,9 +691,7 @@ export function importCondui(
       done.add(p.floor);
       const pos = mm(p.pos);
       grow(pos);
-      const wall =
-        ["socket", "switch", "pushButton"].includes(n.kind) ||
-        (n.kind === "light" && n.props.lightType === "wall");
+      const wall = ['socket', 'switch', 'pushButton'].includes(n.kind) || (n.kind === 'light' && n.props.lightType === 'wall');
       page.symbols.push({
         nodeId: n.id,
         pos,
@@ -925,25 +700,11 @@ export function importCondui(
       });
     }
   }
-  if (multi)
-    warnings.add(
-      "Points posés plusieurs fois sur un même étage dans Condui (quantité « 2x ») : une seule position reprise, la quantité est gardée.",
-    );
-  if (skipped.size)
-    warnings.add(
-      `Éléments de plan Condui non repris : ${[...skipped].join(", ")}.`,
-    );
-  if (
-    arr(el.wireRuns).length ||
-    elements.some((e) => String(e.kind).startsWith("electrical.plan-wire"))
-  )
-    warnings.add("Tracés de câbles Condui non repris.");
-  if (arr(data.assets).length)
-    warnings.add(
-      `${arr(data.assets).length} document(s) joint(s) au projet Condui (fiches techniques) non repris.`,
-    );
-  if (!project.plan.pages.length)
-    project.plan.pages.push(emptyPage("Rez-de-chaussée"));
+  if (multi) warnings.add('Points posés plusieurs fois sur un même étage dans Condui (quantité « 2x ») : une seule position reprise, la quantité est gardée.');
+  if (skipped.size) warnings.add(`Éléments de plan Condui non repris : ${[...skipped].join(', ')}.`);
+  if (arr(el.wireRuns).length || elements.some((e) => String(e.kind).startsWith('electrical.plan-wire'))) warnings.add('Tracés de câbles Condui non repris.');
+  if (arr(data.assets).length) warnings.add(`${arr(data.assets).length} document(s) joint(s) au projet Condui (fiches techniques) non repris.`);
+  if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
   return { project, warnings: [...warnings] };
