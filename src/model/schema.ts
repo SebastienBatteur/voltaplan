@@ -271,7 +271,7 @@ export const ALLOWED_CHILDREN: Record<NodeKind, NodeKind[]> = {
     'domotic', 'motor', 'solarPanel', 'inverter', 'battery', 'bell', 'detector', 'board', 'cable', 'other',
   ],
   socket: ['appliance', 'cable'],
-  switch: ['light', 'cable', 'switch', 'appliance', 'motor', 'relay'],
+  switch: ['light', 'cable', 'switch', 'appliance', 'motor', 'relay', 'transformer'],
   pushButton: ['relay', 'bell', 'cable'],
   light: ['appliance', 'cable', 'light'],
   appliance: ['cable'],

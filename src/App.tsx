@@ -122,7 +122,7 @@ export function App() {
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       // Fichier Trikker, Volter ou Eendraadschema : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.(trik|vschema|eds|draadwijs|planelec\.json)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      setToast({ text: t(/\.(trik|vschema|eds|draadwijs|planelec\.json|zip)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -348,7 +348,7 @@ export function App() {
         setPrintOpen(true);
       } else if (mod && key === 'o') {
         e.preventDefault();
-        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs'].join(','));
+        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs', '.zip'].join(','));
       } else if (e.key === 'Delete' && !typing && s.selectedId) s.remove(s.selectedId);
       else if (e.key === 'Escape') s.startPlacing(null);
     };
@@ -481,7 +481,7 @@ export function App() {
     }
     if (e.loc.kind === 'device') {
       setToast({ text: t('home.reopenDevice', { name: e.name }) });
-      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs'].join(','));
+      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs', '.zip'].join(','));
       return;
     }
     setToast({ text: t('home.reopenCloud', { name: e.name, where: whereLabel(e.loc) }) });
@@ -516,6 +516,7 @@ export function App() {
             { label: t('menu.importEds'), run: () => open('.eds') },
             { label: t('menu.importDraadwijs'), run: () => open('.draadwijs') },
             { label: t('menu.importPlanelec'), run: () => open('.json') },
+            { label: t('menu.importCondui'), run: () => open('.zip') },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },
@@ -616,7 +617,7 @@ export function App() {
           mode={storage}
           onClose={() => setStorage(null)}
           onDevice={() => {
-            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs'].join(','));
+            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs', '.zip'].join(','));
             else
               void saveProject(useStore.getState().project, useStore.getState().fileName, true)
                 .then((name) => {
@@ -761,7 +762,7 @@ export function App() {
           onNew={(k) => {
             if (confirmDiscard()) setWizardKind(k);
           }}
-          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs'].join(','))}
+          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs', '.zip'].join(','))}
           onOpenStorage={() => setStorage('open')}
           onImportTrikker={() => void open('.trik')}
           onImportEds={() => void open('.eds')}

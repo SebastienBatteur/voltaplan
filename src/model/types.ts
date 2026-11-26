@@ -43,7 +43,7 @@ export interface ElNode {
   location?: string;
   children: ElNode[];
   /** Données sources (import Trikker, Volter, Eendraadschema, Draadwijs ou PlanElec) conservées pour un export sans perte. */
-  source?: { format: 'trikker' | 'volter' | 'eendraadschema' | 'draadwijs' | 'planelec'; tag: string; attrs: Record<string, string> };
+  source?: { format: 'trikker' | 'volter' | 'eendraadschema' | 'draadwijs' | 'planelec' | 'condui'; tag: string; attrs: Record<string, string> };
 }
 
 export type RgieVersion = 'new' | 'old';

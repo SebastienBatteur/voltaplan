@@ -64,7 +64,7 @@ async function call<T>(cmd: string, args?: Record<string, unknown> | Uint8Array,
 }
 
 /** Fichiers que le bureau sait ouvrir (même liste que READ_EXTS de atomic_save.rs). */
-export const DESKTOP_OPEN_EXTS = ['voltaplan', 'openrgie', 'json', 'trik', 'vschema', 'eds', 'draadwijs'];
+export const DESKTOP_OPEN_EXTS = ['voltaplan', 'openrgie', 'json', 'trik', 'vschema', 'eds', 'draadwijs', 'zip'];
 
 /**
  * Boîte « Ouvrir » du système (ouverte par Rust, `pick_open_path`) puis lecture du fichier choisi (`read_file`).

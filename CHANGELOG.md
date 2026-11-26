@@ -2,6 +2,18 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Import Condui (2026-11-26)
+
+- Ouvre l'export « .zip » de Condui (menu Fichier, ou Ouvrir) : raccordement (calibre du disjoncteur de branchement,
+  compteur), général différentiel, tableaux et sous-tableaux, différentiels de groupe avec leurs circuits, repères
+  des circuits, câbles (type, section, classe CPR), points avec leurs commandes (va-et-vient, croisement,
+  transformateur), prises doubles, appareils (y compris pompe à chaleur et chaudière), panneaux et onduleur, boîtes
+  de dérivation et borniers en ligne.
+- Plan : un étage par page, murs, portes (sens d'ouverture relevé sur le plan PDF de Condui), fenêtres, porte de
+  garage, escaliers, voiture et sanitaires, notes ; symboles à leur place, quantité « 2x » gardée.
+- Non repris (avertissement à l'ouverture) : documents joints (fiches techniques), tracés de câbles.
+- Le modèle accepte maintenant un transformateur commandé par un interrupteur (éclairage LED basse tension).
+
 ### Équiper une pièce (2026-11-26)
 
 - Sur le plan, le nom d'une pièce sélectionné propose « Équiper la pièce » : l'équipement habituel du type de pièce
