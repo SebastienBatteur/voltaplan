@@ -28,6 +28,7 @@ import { mergeSources, projectAssetRefs, splitProject, type AssetRef } from '../
 import { AssetSession, type DocSource } from '../format/session';
 import { blobBytes } from '../format/sha256';
 import { checkFileSize } from './limits';
+import { FILE_FORMAT, LEGACY_FORMATS } from '../brand';
 import { sanitizeProjectImages } from './sanitize';
 import { parseProjectChecked } from './storage';
 
@@ -77,7 +78,7 @@ const SNIFF_JSON_MAX = 32 << 20;
  * Condui (.zip avec manifeste) ou archive Voltaplan, Eendraadschema, Trikker (XML), JSON PlanElec, Volter,
  * Draadwijs ou projet Voltaplan v1. Repli sur l'extension, `null` si rien n'est reconnu.
  */
-export async function sniffFormat(blob: Blob, name: string): Promise<DataFormat | null> {
+export async function sniffFormat(blob: Blob, name: string): Promise<DataFormat | 'zip' | null> {
   const head = await blobBytes(blob.slice(0, 64));
   if (String.fromCharCode(...head.slice(0, 5)) === '%PDF-') return 'pdf';
   const sig = detectFormat(head);
@@ -86,6 +87,8 @@ export async function sniffFormat(blob: Blob, name: string): Promise<DataFormat 
       const zip = await openZip(blob);
       const man = zip.entries.find((e) => e.path === 'manifest.json');
       if (man && zip.entries.some((e) => e.path === 'project.json') && isConduiManifest(decodeText(await zip.readBytes(man, 1 << 20)))) return 'condui';
+      // Ni archive Voltaplan (mimetype, project.json) ni export Condui : simple emballage, voir zipCandidates
+      if (!zip.entries.some((e) => e.path === 'mimetype' || e.path === 'project.json')) return 'zip';
     } catch {
       // Archive illisible ici : la lecture de l'archive Voltaplan dira pourquoi
     }
@@ -103,14 +106,52 @@ export async function sniffFormat(blob: Blob, name: string): Promise<DataFormat 
           const proj = o.project && typeof o.project === 'object';
           if (proj && Array.isArray(o.boards)) return 'vschema';
           if (proj && o.root && typeof o.root === 'object') return 'draadwijs';
+          const f = String(o.format ?? '');
+          if (f === FILE_FORMAT || LEGACY_FORMATS.includes(f)) return 'v1';
         }
+        // JSON d'un logiciel inconnu
+        return formatFromName(name);
       } catch {
         // JSON illisible : la lecture du projet dira pourquoi
       }
     }
     return formatFromName(name) ?? 'v1';
   }
+  // XML : Trikker seulement (élément racine « Document »)
+  if (sig === 'trik') return /<Document[\s>]/.test(decodeText(await blobBytes(blob.slice(0, 4096)))) ? 'trik' : formatFromName(name);
   return sig ?? formatFromName(name);
+}
+
+/** Fichiers d'une archive inconnue qui peuvent être un schéma (extensions), les plus probables d'abord. */
+const ZIP_KNOWN = /\.(trik|vschema|eds|draadwijs|voltaplan|openrgie|planelec\.json)$/i;
+const ZIP_MAYBE = /\.(json|xml|zip|pdf)$/i;
+/** Au plus : fichiers essayés, taille d'un fichier (le test reste léger). */
+const ZIP_TRIES = 6;
+const ZIP_ENTRY_MAX = 32 << 20;
+
+/**
+ * Archive .zip qui n'est ni un projet Voltaplan ni un export Condui (fichier envoyé zippé, dossier exporté) : le
+ * fichier de schéma qu'elle contient. Seul le sommaire est lu, puis au plus quelques fichiers candidats.
+ */
+async function zipCandidates(blob: Blob): Promise<{ path: string; data: Blob }[]> {
+  const zip = await openZip(blob);
+  const files = zip.entries.filter((e) => !e.path.endsWith('/') && !e.encrypted && e.uncompressedSize > 0 && e.uncompressedSize <= ZIP_ENTRY_MAX && !/(^|\/)(__MACOSX|\.)/.test(e.path));
+  const rank = (p: string) => (ZIP_KNOWN.test(p) ? 0 : ZIP_MAYBE.test(p) ? 1 : 2);
+  const list = files.filter((e) => rank(e.path) < 2).sort((a, b) => rank(a.path) - rank(b.path) || b.uncompressedSize - a.uncompressedSize);
+  const out: { path: string; data: Blob }[] = [];
+  for (const e of list.slice(0, ZIP_TRIES)) out.push({ path: e.path, data: new Blob([(await zip.readBytes(e, ZIP_ENTRY_MAX)) as Uint8Array<ArrayBuffer>]) });
+  return out;
+}
+
+/** Fichier non reconnu : parle-t-il d'électricité ? (début du texte seulement) */
+async function unknownFileError(blob: Blob, name: string): Promise<Error> {
+  const { looksElectric, WORDS_SAMPLE } = await import('../import/electricWords');
+  const electric = looksElectric(decodeText(await blobBytes(blob.slice(0, WORDS_SAMPLE))));
+  return new Error(
+    electric
+      ? `« ${name} » ressemble à un schéma électrique d'un logiciel que Voltaplan ne connaît pas encore : rien n'a été importé. Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`
+      : `« ${name} » n'est pas un fichier de schéma électrique reconnu. Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`,
+  );
 }
 
 export interface ProjectOpen {
@@ -176,11 +217,30 @@ export async function openProjectData(data: Blob | string, name: string, session
   return r;
 }
 
-async function openProjectFile(data: Blob | string, name: string, session: AssetSession, opts: { background?: boolean }): Promise<ProjectOpen> {
+async function openProjectFile(data: Blob | string, name: string, session: AssetSession, opts: { background?: boolean }, depth = 0): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
   // Source reconnue d'après le contenu, quelle que soit l'extension (un seul « Importer » pour tout)
   const fmt = await sniffFormat(blob, name);
-  if (!fmt) throw new Error(`Format de fichier non reconnu : « ${name} ». Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`);
+  if (fmt === 'zip') {
+    // Archive quelconque : le premier fichier de schéma reconnu qu'elle contient (un seul niveau)
+    if (depth === 0) {
+      checkFileSize({ name, size: blob.size }, 'project');
+      let last: unknown;
+      for (const c of await zipCandidates(blob)) {
+        const inner = await sniffFormat(c.data, c.path);
+        if (!inner || inner === 'zip') continue;
+        try {
+          const r = await openProjectFile(c.data, c.path.split('/').pop()!, session, opts, 1);
+          return { ...r, needsNewFile: true, warnings: [`Fichier « ${c.path} » repris de l'archive « ${name} ».`, ...r.warnings] };
+        } catch (e) {
+          last = e;
+        }
+      }
+      if (last) throw last;
+    }
+    throw new Error(`L'archive « ${name} » ne contient aucun fichier de schéma reconnu (projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF).`);
+  }
+  if (!fmt) throw await unknownFileError(blob, name);
   // Dossier PDF d'un autre logiciel : lecture du texte (tableau des circuits), voir src/import/pdfDossier.ts
   if (fmt === 'pdf') {
     checkFileSize({ name, size: blob.size }, 'pdf');

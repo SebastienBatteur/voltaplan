@@ -8,6 +8,11 @@
   est reconnue d'après le contenu, quelle que soit l'extension : signature (PDF, archive, XML Trikker,
   Eendraadschema), manifeste Condui dans l'archive, structure du JSON (PlanElec, Volter, Draadwijs, sinon projet
   Voltaplan) ; l'extension ne sert qu'en repli. Format inconnu : message qui liste les formats reconnus.
+- Fichier non reconnu, test léger (sommaire et début du fichier seulement) : une archive .zip quelconque est
+  ouverte et le fichier de schéma qu'elle contient est importé (au plus 6 fichiers essayés) ; un JSON ou XML
+  inconnu qui contient des mots d'une installation électrique (FR, NL, EN, DE) est signalé « schéma d'un logiciel
+  non reconnu », sinon « pas un fichier de schéma électrique ». Un PDF sans texte, ou dont les 3 premières pages ne
+  parlent pas d'électricité, est refusé avant la lecture complète (tracés compris).
 - Application de bureau : les fichiers Volter, Draadwijs, Condui (.zip) et PDF n'étaient pas autorisés à
   l'ouverture (liste d'extensions côté Rust incomplète) ; corrigé.
 
