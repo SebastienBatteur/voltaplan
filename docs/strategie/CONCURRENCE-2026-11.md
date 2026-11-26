@@ -14,12 +14,13 @@ descriptions des éditeurs. Les prix sont ceux affichés ce jour-là et peuvent 
 | **Tricity** (Netwalk) | 34,99 $ + abonnements in-app | iPad, Mac | Non indiqué | « Aucune donnée collectée » | Domotique (Niko, KNX, Bticino), solaire, bornes, AREI 2026, nomenclature, plan depuis JPG/PDF |
 | **Schneider eDesign**, **ABB EasyPro** | Gratuits | Web | Oui | Éditeur | Tableaux et devis avec les produits de la marque |
 | **PlanElec** (planelec.be) | « Sketch » gratuit (PDF avec filigrane « Aperçu ») ; pass site 10 € par bien (15 € après 2026) ; abonnement 24 €/mois (29 € après 2026), 3 places, +12 €/place ; essai Pro 1 mois | Web | Facultatif pour Sketch, oui pour Pro | Nuage de l'éditeur ; Sketch dans le navigateur | Ouvre les .trik et les archives Trikker, plusieurs étages, tableau sur rails DIN avec bornes et barres N/PE, KNX (export ETS), tracé des câbles et chute de tension, PV (strings, MPPT, PVGIS, liste Synergrid), profils de charge Fluvius, 3D et étude d'éclairage, IA (plan, photo de tableau, dictée, réponses sourcées du RGIE), MCP, QR « vérifier le document » |
+| **Draadwijs** (draadwijs.be, YSM SComm, Beringen) | Démo gratuite (3 circuits, 3 différentiels, 1 page de plan, filigrane) ; Pass Projet 29 € HTVA par habitation (5 pour 99 €), 18 mois ; Pro 29 €/mois ou 299 €/an HTVA ; gratuit pour l'enseignement ; crédit IA en plus (10 conversions 10 €) | Web installable (hors ligne) | Non pour la démo | Sur l'appareil ; nuage chiffré avec Pass ou Pro | « RGIE Livre 1 version 07 », 70+ règles avec article, « Pourquoi ? » et bouton qui corrige, volumes de salle de bain, assistant habitation, placement automatique sur le plan, ouvre les .trik, photo d'un schéma papier → schéma (IA), chute de tension et courant de court-circuit, devis, étiquettes, dossier de contrôle, « garantie contrôle » (remboursement) |
 | **Trikker** | Licence payante | Windows | — | Local | Référence historique ; plan et unifilaire liés |
 | **QElectroTech** | Gratuit, open source | Windows, macOS, Linux | Non | Local | Dessin électrique généraliste, sans règles RGIE |
 
 Sources : amperio.be (accueil, /tarifs, /schema-unifilaire) ; condui.be et /nl/pricing ; fil bouwinfo
 « Condui.be – logiciel gratuit » ; apps.apple.com/app/id1044577046 (Tricity) ; se.com (eDesign) ;
-volter.be (analyse du 25 novembre) ; planelec.be/fr/pricing (tableau des fonctions, 26 novembre) ; forums bricozone et circuitsonline.
+volter.be (analyse du 25 novembre) ; planelec.be/fr/pricing (tableau des fonctions, 26 novembre) ; draadwijs.be/fr (accueil et tarifs, 26 novembre) ; forums bricozone et circuitsonline.
 
 ## 2. Où se situe Voltaplan
 
@@ -78,6 +79,33 @@ filigrane** sans pass site ni abonnement, et autocontrôle RGIE, tableau et IA r
 PDF **sans filigrane** ; aucun compte ni serveur de l'éditeur ; hors ligne complet ; application de bureau ;
 code ouvert ; lecture locale des photos sans IA (OCR) ; import **Volter** en plus de Trikker ; IA facultative avec
 la clé de l'utilisateur, sans quota imposé.
+
+### Draadwijs (ajouté le 26/11/2026, d'après sa page d'accueil)
+
+Le plus proche de Voltaplan dans l'esprit : centré sur le dossier pour le contrôleur, contrôle RGIE pendant le
+dessin, hors ligne, projets sur l'appareil. Mais la démo gratuite est bridée (3 circuits, 1 page, filigrane) et
+tout dossier réel est payant (29 € par habitation).
+
+| N° | Idée vue chez Draadwijs | Intérêt | Compatible Voltaplan | Effort | Proposition |
+| --- | --- | --- | --- | --- | --- |
+| D1 | **Bouton « corriger » sur chaque remarque du contrôle** (« Choisir 20 A », « Circuit dédié », « Câble Cca ») | Très fort | Oui ; existe déjà pour la date 2023, à généraliser aux règles où la correction est sans ambiguïté | Moyen | **Proposé en priorité** |
+| D2 | **« Pourquoi ? »** : chaque règle expliquée en mots simples, avec l'article | Fort (particuliers, étudiants) | Oui, à partir du PDF officiel uniquement, relu par vous | Moyen | Proposé (rejoint A10) |
+| D3 | **Volumes de la salle de bain** dessinés autour de la baignoire ou de la douche, et chaque appareil vérifié par volume | Fort | Oui : le plan et le mobilier existent ; règles 7.01 à lire dans le PDF | Moyen à grand | Proposé |
+| D4 | **Placement automatique des points dans leur pièce** (prises au mur, interrupteurs près de la porte, lampes au centre) | Fort | Oui (pièces et emplacements connus) | Moyen | Proposé (avec P1) |
+| D5 | **Insertion intelligente** : interrupteur croisé placé entre deux va-et-vient, nouveau circuit avec le câble du précédent, pièce reprise d'un point à l'autre | Moyen à fort | Oui | Petit à moyen | Proposé |
+| D6 | **Liste « Prêt pour le contrôleur »** (8 points, chacun avec un bouton qui y mène) | Fort | Oui ; l'assistant a déjà les données manquantes | Petit | Proposé |
+| D7 | **Courant de court-circuit par circuit** avec les longueurs du plan | Moyen | Oui (calculs existants + longueurs, voir P2) | Moyen | Plus tard |
+| D8 | **Source de secours / inverseur** : contrôle aussi quand seule la source de secours alimente | Moyen, en hausse (batteries) | Oui | Moyen | À discuter |
+| D9 | **Recherche multilingue** dans la palette (« stopcontact » trouve la prise) | Petit mais agréable | Oui | Petit | Proposé |
+| D10 | **Base de connaissances** (articles sur le schéma, le contrôle à la vente, les erreurs fréquentes) | Fort pour être trouvé | Oui (site statique) ; références RGIE vérifiées dans le PDF | Moyen | À faire avec vous |
+| D11 | **Version du RGIE affichée** (« Livre 1, version 07 ») | Confiance | Oui : rejoint la question en attente sur les versions 2022, 2025 et 2026 | Petit | En attente de votre réponse |
+
+Non retenus : la « garantie contrôle » remboursée (engagement commercial, sans objet pour un outil gratuit) et le
+service payant de transfert de schémas.
+
+**Ce que Voltaplan garde d'avance sur Draadwijs** : complet et gratuit, sans limite de circuits ni filigrane ;
+aucun compte ; import Volter ; lecture des photos de compteur, de plan et de tableau sans IA ; IA avec la clé de
+l'utilisateur, sans crédit à acheter ; code ouvert ; application de bureau.
 
 ## 4. Ce qu'on ne copie pas, et pourquoi
 
