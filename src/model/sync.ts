@@ -13,7 +13,7 @@
  */
 import type { BoardLayout, ElNode, PlanPage, Project, Pt } from './types';
 import { computeNumbering, isCircuit, walk } from './tree';
-import { autoLayout, boardSize, enclosures, moduleWidth, placed } from '../board/model';
+import { autoLayout, boardSize, conventionalLayout, enclosures, moduleWidth, placed } from '../board/model';
 
 /** Éléments posés automatiquement sur le plan. */
 export const PLAN_KINDS = new Set(['board', 'socket', 'switch', 'pushButton', 'light', 'appliance', 'motor', 'bell', 'detector', 'domotic']);
@@ -52,7 +52,9 @@ function syncBoards(project: Project, isNew: (id: string) => boolean, rep: SyncR
     const { rows, perRow } = boardSize(enc.board);
     const layout = boards[enc.board.id];
     if (!layout || !Object.keys(layout.slots).length) {
-      const auto = autoLayout(enc, rows, perRow);
+      // Rangement habituel s'il tient dans le tableau, sinon rangement compact dans l'ordre du schéma
+      const usual = conventionalLayout(enc, rows, perRow, enc.board.props.mainRow === 'bottom' ? 'bottom' : 'top');
+      const auto = usual.rows <= rows ? usual : autoLayout(enc, rows, perRow);
       boards[enc.board.id] = { ...(layout ?? {}), slots: auto.slots };
       rep.boardPlaced += Object.keys(auto.slots).length;
       rep.boardNoRoom += enc.devices.length - Object.keys(auto.slots).length;

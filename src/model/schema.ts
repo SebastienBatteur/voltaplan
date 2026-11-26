@@ -80,6 +80,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'fixedLetter', type: 'text' },
     { key: 'rows', type: 'number', default: 2 },
     { key: 'modulesPerRow', type: 'number', default: 13 },
+    // Rangée principale (général, circuits hors 30 mA) en haut ou en bas du tableau : rangement automatique
+    { key: 'mainRow', type: 'enum', options: ['top', 'bottom'], default: 'top' },
     { key: 'installedOn', type: 'text' },
     { key: 'installationKind', type: 'enum', options: ['', 'new', 'existing'] },
     // Facteur de simultanéité (0–1) saisi par l'utilisateur : aucun n'est supposé par défaut

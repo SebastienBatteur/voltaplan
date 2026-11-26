@@ -138,6 +138,75 @@ export function autoLayout(enc: Enclosure, rows: number, perRow: number): BoardL
   return { slots };
 }
 
+/** Différentiel 30 mA (ou moins), tête d'un groupe de circuits. */
+export const isRcd30 = (n: ElNode) =>
+  n.kind === 'protection' && String(n.props.device ?? '') === 'rcd' && Number(n.props.residualCurrent) > 0 && Number(n.props.residualCurrent) <= 30;
+const isMultiPhase = (n: ElNode) => /^[34]/.test(String(n.props.poles ?? ''));
+
+/**
+ * Rangement habituel d'un tableau (pratique des installateurs, pas une exigence du RGIE) :
+ *  - chaque différentiel 30 mA monophasé ouvre une rangée, suivi de ses disjoncteurs ; la place restante sert de
+ *    réserve ; un groupe trop long continue sur la rangée suivante ;
+ *  - une rangée « principale », en haut ou en bas, porte l'interrupteur ou le différentiel général et tout ce qui
+ *    n'est pas derrière un 30 mA ; un différentiel 30 mA triphasé et ses disjoncteurs s'y ajoutent s'il reste la
+ *    place, sinon ils ont leur propre rangée.
+ * Renvoie la disposition et le nombre de rangées nécessaires (au moins `rows`).
+ */
+export function conventionalLayout(enc: Enclosure, rows: number, perRow: number, mainRow: 'top' | 'bottom' = 'top'): { slots: BoardLayout['slots']; rows: number } {
+  const inEnc = new Set(enc.devices.map((d) => d.id));
+  const grouped = new Set<string>();
+  const groups: { head: ElNode; members: ElNode[] }[] = [];
+  for (const d of enc.devices) {
+    if (grouped.has(d.id) || !isRcd30(d)) continue;
+    const ids = new Set<string>();
+    const walk = (n: ElNode) => {
+      ids.add(n.id);
+      n.children.forEach(walk);
+    };
+    walk(d);
+    const members = enc.devices.filter((x) => x !== d && ids.has(x.id) && inEnc.has(x.id));
+    [d, ...members].forEach((x) => grouped.add(x.id));
+    groups.push({ head: d, members });
+  }
+  const main = enc.devices.filter((d) => !grouped.has(d.id));
+  type Row = ElNode[];
+  const fill = (items: ElNode[], start: Row[] = []): Row[] => {
+    const out = start.length ? start : [[]];
+    for (const it of items) {
+      const cur = out[out.length - 1];
+      const used = cur.reduce((a, x) => a + moduleWidth(x), 0);
+      if (cur.length && used + moduleWidth(it) > perRow) out.push([it]);
+      else cur.push(it);
+    }
+    return out;
+  };
+  let mainRows: Row[] = main.length ? fill(main) : [];
+  const groupRows: Row[] = [];
+  for (const g of groups) {
+    const items = [g.head, ...g.members];
+    const width = items.reduce((a, x) => a + moduleWidth(x), 0);
+    const last = mainRows[mainRows.length - 1];
+    const free = last ? perRow - last.reduce((a, x) => a + moduleWidth(x), 0) : 0;
+    if (isMultiPhase(g.head) && last && width <= free) last.push(...items);
+    else if (isMultiPhase(g.head)) mainRows = [...mainRows, ...fill(items)];
+    else groupRows.push(...fill(items));
+  }
+  const need = Math.max(rows, mainRows.length + groupRows.length);
+  const ordered: { row: Row; at: number }[] =
+    mainRow === 'top'
+      ? [...mainRows, ...groupRows].map((row, i) => ({ row, at: i }))
+      : [...groupRows.map((row, i) => ({ row, at: i })), ...mainRows.map((row, i) => ({ row, at: need - mainRows.length + i }))];
+  const slots: BoardLayout['slots'] = {};
+  for (const { row, at } of ordered) {
+    let col = 0;
+    for (const d of row) {
+      slots[d.id] = { row: at, col };
+      col += moduleWidth(d);
+    }
+  }
+  return { slots, rows: need };
+}
+
 /**
  * Place (ou déplace) un appareil à (row, col). Les appareils de la rangée situés à droite sont poussés
  * pour faire de la place. Renvoie null si la rangée déborde.

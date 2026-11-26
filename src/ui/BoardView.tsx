@@ -6,7 +6,7 @@ import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
 import {
-  autoLayout,
+  conventionalLayout,
   BOARD_EXTRA_KINDS,
   boardCandidates,
   boardSize,
@@ -660,12 +660,12 @@ export function BoardView() {
           <NumberField min={4} max={36} value={size.perRow} onCommit={(n) => setProps(enc.board.id, { modulesPerRow: Math.round(n) })} />
         </label>
         <button
+          title={t('board.autoHelp')}
           onClick={() => {
-            // Ajoute les rangées nécessaires pour placer tous les appareils
-            const all = autoLayout(enc, 99, size.perRow);
-            const need = Math.max(size.rows, ...Object.values(all.slots).map((s) => s.row + 1));
-            if (need > size.rows) setProps(enc.board.id, { rows: need });
-            save({ ...layout, slots: autoLayout(enc, need, size.perRow).slots });
+            // Rangement habituel ; ajoute les rangées nécessaires pour placer tous les appareils
+            const usual = conventionalLayout(enc, size.rows, size.perRow, enc.board.props.mainRow === 'bottom' ? 'bottom' : 'top');
+            if (usual.rows > size.rows) setProps(enc.board.id, { rows: usual.rows });
+            save({ ...layout, slots: usual.slots });
           }}
         >
           {t('board.auto')}
