@@ -17,8 +17,14 @@ export const PROTECTION_DEVICES = ['mcb', 'rcd', 'rcbo', 'fuse', 'switch'] as co
 export const POLES = ['1P', '1P+N', '2P', '3P', '3P+N', '4P'] as const;
 export const CABLE_TYPES = ['VOB', 'XVB', 'EXVB', 'VFVB', 'XGB', 'CRVB', 'XFVB', 'H07V-U', 'H07V-K', 'other'] as const;
 export const INSTALL_METHODS = ['inWall', 'onWall', 'underground', 'air', 'parallel'] as const;
-export const SWITCH_TYPES = ['single', 'double', 'twoWay', 'intermediate', 'dimmer', 'bipolar', 'shutter', 'pullCord'] as const;
-export const LIGHT_TYPES = ['standard', 'led', 'fluo', 'spot', 'wall', 'emergency'] as const;
+export const SWITCH_TYPES = ['single', 'double', 'twoWay', 'intermediate', 'dimmer', 'bipolar', 'shutter', 'pullCord', 'tripolar', 'twoWayBipolar', 'delayed'] as const;
+export const LIGHT_TYPES = ['standard', 'led', 'fluo', 'spot', 'wall', 'emergency', 'floodNarrow', 'floodWide', 'withSwitch', 'emergencyUnit', 'auxiliary'] as const;
+/** Variantes de socle (tableau 2.23 F) : avec interrupteur bipolaire, de verrouillage, avec transformateur (rasoir). */
+export const SOCKET_KINDS = ['', 'switched', 'switchedLocked', 'shaver'] as const;
+/** Sonnerie et avertisseurs (tableau 2.23 G). */
+export const BELL_TYPES = ['bell', 'buzzer', 'horn', 'siren'] as const;
+/** Autres éléments du tableau 2.23 sans type propre : horloge, horloge mère, gâche électrique, prise data. */
+export const OTHER_TYPES = ['', 'clock', 'masterClock', 'doorStrike', 'dataOutlet'] as const;
 export const APPLIANCE_TYPES = [
   'oven',
   'cooker',
@@ -30,6 +36,9 @@ export const APPLIANCE_TYPES = [
   'washingMachine',
   'dryer',
   'waterHeater',
+  'electricWaterHeater',
+  'storageHeater',
+  'storageHeaterFan',
   'heatPump',
   'boiler',
   'evCharger',
@@ -114,9 +123,15 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'childSafety', type: 'bool', default: true },
     { key: 'splashProof', type: 'bool', default: false },
     { key: 'threePhase', type: 'bool', default: false },
+    { key: 'socketKind', type: 'enum', options: [...SOCKET_KINDS] },
     { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'reference', type: 'text' },
   ],
+  pushButton: [
+    { key: 'pilotLight', type: 'bool', default: false },
+    { key: 'protected', type: 'bool', default: false },
+  ],
+  bell: [{ key: 'bellType', type: 'enum', options: [...BELL_TYPES], default: 'bell' }],
   switch: [
     { key: 'switchType', type: 'enum', options: [...SWITCH_TYPES], default: 'single' },
     { key: 'pilotLight', type: 'bool', default: false },
@@ -162,7 +177,9 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'cosPhi', type: 'number' },
   ],
   relay: [
-    { key: 'relayType', type: 'enum', options: ['relay', 'teleswitch', 'contactor', 'timer'], default: 'relay' },
+    // Commandes en boîtier du tableau 2.23 E : minuterie, interrupteur horaire, télérupteur, thermostat, contrôleur de
+    // ronde / verrouillage électrique par serrure ; relais et contacteur (hors tableau, abréviation et légende)
+    { key: 'relayType', type: 'enum', options: ['relay', 'teleswitch', 'contactor', 'timer', 'timeSwitch', 'thermostat', 'lockControl'], default: 'relay' },
     { key: 'inBoard', type: 'bool', default: true },
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'reference', type: 'text' },
@@ -180,6 +197,7 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'reference', type: 'text' },
   ],
   other: [
+    { key: 'otherType', type: 'enum', options: [...OTHER_TYPES] },
     { key: 'name', type: 'text' },
     { key: 'inBoard', type: 'bool', default: false },
     { key: 'modules', type: 'number', unit: 'mod' },

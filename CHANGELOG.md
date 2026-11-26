@@ -2,6 +2,15 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Symboles du RGIE complétés (2026-11-26)
+
+- 22 symboles du tableau 2.23 qui manquaient : interrupteur tripolaire, va-et-vient bipolaire, à ouverture retardée,
+  bouton-poussoir à accès protégé, interrupteur horaire, thermostat, contrôleur de ronde / verrouillage par serrure,
+  prises avec interrupteur bipolaire (de verrouillage) et avec transformateur (rasoir), prise data, projecteurs à
+  faisceau peu divergent et divergent, luminaire avec interrupteur, bloc autonome de sécurité, ballast, vibreur,
+  trompe, sirène, horloge, horloge mère, gâche, chauffage à accumulation (avec ventilateur), chauffe-eau électrique.
+  Les imports Volter et PlanElec les utilisent.
+
 ### Import PlanElec Sketch (2026-11-26)
 
 - Fichier → « Importer PlanElec Sketch (.planelec.json)… » (un .json de PlanElec est aussi reconnu à l'ouverture) :

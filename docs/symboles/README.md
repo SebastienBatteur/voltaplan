@@ -67,10 +67,17 @@ dans les figures 3.1 et 3.2 où les mêmes symboles sont tournés selon le circu
 Relais (« R »), contacteur (« K »), commande de volet (interrupteur ▲▼), pompe à chaleur (« PAC »), chaudière
 (« Chaud. »), mention « LED ». Ils figurent dans la légende imprimée quand le projet les utilise.
 
+### Variantes ajoutées le 2026-11-26 (tableau 2.23, pages imprimées 52 à 55)
+
+| Partie | Symboles |
+| --- | --- |
+| E. Interrupteurs | tripolaire (trois traits), va-et-vient bipolaire, à ouverture retardée (« t ») ; bouton-poussoir à accès protégé (glace à briser) ; en boîtier : interrupteur horaire (horloge et contact), thermostat (θ), contrôleur de ronde / verrouillage par serrure (trou de serrure) |
+| F. Socles | avec interrupteur bipolaire, avec interrupteur bipolaire de verrouillage (point noir), avec transformateur de séparation (rasoir) ; prise data (crochet, élément « autre ») |
+| G. Appareils | projecteur à faisceau peu divergent et divergent, luminaire avec interrupteur incorporé, bloc autonome de sécurité (carré), appareil auxiliaire (ballast) ; vibreur, trompe, sirène ; horloge, horloge mère, gâche électrique ; chauffage à accumulation (avec ou sans ventilateur), chauffe-eau électrique sans accumulation (le « boiler » reste le chauffe-eau à accumulation) |
+
+Les imports Volter et PlanElec utilisent ces variantes au lieu d'un élément « autre ».
+
 ### Variantes du tableau pas encore proposées
 
-Interrupteur tripolaire, à ouverture retardée (« t ») ; bouton-poussoir à lampe témoin, à accès protégé ; interrupteur
-horaire, thermostat, contrôleur de ronde ; socle avec interrupteur, avec transformateur (rasoir), prise data ;
-projecteur à faisceau (peu) divergent, luminaire avec interrupteur, bloc autonome ; appareil auxiliaire ; vibreur,
-trompe, sirène, horloge, gâche ; chauffage à accumulation (avec ventilateur), chauffe-eau à accumulation ; borne
-de recharge au dessin détaillé (Voltaplan : cadre « VE ») ; redresseur, hacheur ; symboles de domotique (J).
+Interrupteur ou socle installé dans un tableau (cadre), appareil d'éclairage à trois tubes (le nombre de tubes est
+déjà écrit), symboles de domotique (J : unité de commande en deux parties).

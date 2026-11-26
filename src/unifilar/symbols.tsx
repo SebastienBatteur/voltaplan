@@ -36,7 +36,7 @@ export function symbolSize(n: ElNode, orient: 'v' | 'h'): { w: number; h: number
     case 'switch':
       return { w: n.props.signalLamp === true ? 44 : 32, h: 32 };
     case 'pushButton':
-      return { w: 22, h: 22 };
+      return { w: n.props.protected === true ? 28 : 22, h: 22 };
     case 'light':
       return { w: 32, h: 24 };
     case 'cable':
@@ -44,11 +44,11 @@ export function symbolSize(n: ElNode, orient: 'v' | 'h'): { w: number; h: number
     case 'junctionBox':
       return { w: 24, h: 20 };
     case 'bell':
-      return { w: 22, h: 20 };
+      return { w: n.props.bellType === 'horn' ? 30 : 26, h: 20 };
     case 'motor':
       return { w: 28, h: 24 };
     case 'appliance':
-      return { w: 30, h: 24 };
+      return { w: n.props.applianceType === 'storageHeaterFan' ? 38 : 30, h: 24 };
     case 'board':
       return { w: 40, h: 16 };
     case 'meter':
@@ -231,7 +231,7 @@ function SwitchSym({ n, cx }: { n: ElNode; cx: number }) {
   const r = 4;
   // Levier vers le haut à droite (≈ 60°), longueur 13.
   const up = { x1: cx + r * 0.5, y1: -r * 0.87, x2: cx + 7, y2: -16 };
-  const poles = type === 'bipolar' ? 2 : 1;
+  const poles = type === 'bipolar' || type === 'twoWayBipolar' ? 2 : type === 'tripolar' ? 3 : 1;
   return (
     <g>
       <circle cx={cx} cy={0} r={r} className="bg" />
@@ -254,11 +254,19 @@ function SwitchSym({ n, cx }: { n: ElNode; cx: number }) {
           <line x1={cx - 7} y1={-16} x2={cx - 12} y2={-16} />
         </>
       )}
-      {(type === 'twoWay' || type === 'intermediate') && (
+      {(type === 'twoWay' || type === 'twoWayBipolar' || type === 'intermediate') && (
         <>
           <line x1={cx - r * 0.5} y1={r * 0.87} x2={cx - 7} y2={16} />
           <line x1={cx - 7} y1={16} x2={cx - 12} y2={16} />
+          {/* Va-et-vient bipolaire (tableau 2.23 E) : deux traits aux deux bouts */}
+          {type === 'twoWayBipolar' && <line x1={cx - 5.4} y1={12.4} x2={cx - 10.4} y2={12.4} />}
         </>
+      )}
+      {/* Ouverture retardée (tableau 2.23 E) : « t » au bout du levier */}
+      {type === 'delayed' && (
+        <text x={up.x2 + 3} y={up.y2 + 7} fontSize={7}>
+          t
+        </text>
       )}
       {type === 'intermediate' && (
         <>
@@ -297,7 +305,7 @@ function ApplianceSym({ n, x0 }: { n: ElNode; x0: number; w?: number }) {
       </g>
     );
   }
-  const box = <rect x={x0} y={-s / 2} width={s} height={s} className="bg" />;
+  const box = <rect x={x0} y={-s / 2} width={t === 'storageHeaterFan' ? s + 8 : s} height={s} className="bg" />;
   const flake = (x: number, size = 5) => (
     <g key={x} className="thin">
       <line x1={x - size} y1={0} x2={x + size} y2={0} />
@@ -383,6 +391,34 @@ function ApplianceSym({ n, x0 }: { n: ElNode; x0: number; w?: number }) {
         </>
       );
       break;
+    case 'electricWaterHeater':
+      // Chauffe-eau électrique (sans accumulation) : cercle hachuré
+      return (
+        <g>
+          <circle cx={cx} cy={0} r={10} className="bg" />
+          {[-6, -3, 0, 3, 6].map((dx) => (
+            <line key={dx} x1={cx + dx} y1={-Math.sqrt(100 - dx * dx)} x2={cx + dx} y2={Math.sqrt(100 - dx * dx)} style={{ strokeWidth: 0.8 }} />
+          ))}
+        </g>
+      );
+    case 'storageHeater':
+    case 'storageHeaterFan':
+      // Chauffage à accumulation : hachures dans un cadre intérieur ; avec ventilateur : deux petits cercles
+      inner = (
+        <>
+          <rect x={x0 + 2.5} y={-7.5} width={t === 'storageHeaterFan' ? 9 : 15} height={15} className="nofill" />
+          {(t === 'storageHeaterFan' ? [-6, -4, -2] : [-5, -2.5, 0, 2.5, 5]).map((dx) => (
+            <line key={dx} x1={cx + dx} y1={-6} x2={cx + dx} y2={6} style={{ strokeWidth: 0.8 }} />
+          ))}
+          {t === 'storageHeaterFan' && (
+            <>
+              <circle cx={x0 + 17} cy={0} r={2.4} className="nofill" />
+              <circle cx={x0 + 22} cy={0} r={2.4} className="nofill" />
+            </>
+          )}
+        </>
+      );
+      break;
     case 'waterHeater': {
       // Chauffe-eau à accumulation : double cercle hachuré
       return (
@@ -452,6 +488,20 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
               h
             </text>
           )}
+          {/* Avec interrupteur bipolaire (de verrouillage : point noir) ; avec transformateur de séparation (rasoir) */}
+          {(n.props.socketKind === 'switched' || n.props.socketKind === 'switchedLocked') && (
+            <>
+              <line x1={last - 2} y1={-6} x2={last + 6} y2={-14} />
+              <Ticks x={last + 6} y={-14} n={2} />
+              {n.props.socketKind === 'switchedLocked' && <circle cx={last - 2} cy={0} r={2.2} className="fill" />}
+            </>
+          )}
+          {n.props.socketKind === 'shaver' && (
+            <>
+              <circle cx={last - 3} cy={-3} r={3} className="nofill" />
+              <circle cx={last - 3} cy={3} r={3} className="nofill" />
+            </>
+          )}
           {n.props.threePhase === true && (
             <text x={last - 9} y={3} fontSize={7}>
               3~
@@ -500,6 +550,8 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           ) : (
             <circle cx={13} cy={0} r={3} className="nofill" />
           )}
+          {/* Accès protégé (glace à briser, tableau 2.23 E) : capot à droite */}
+          {n.props.protected === true && <path d="M21 -9 h3 v18 h-3 M24 -9 h2 M24 9 h2" className="nofill" />}
         </g>
       );
     case 'light': {
@@ -525,6 +577,15 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
             <line x1={28} y1={-6} x2={28} y2={6} />
           </g>
         );
+      if (t === 'auxiliary')
+        // Appareil auxiliaire pour lampe à décharge (tableau 2.23 G) : rectangle dans un rectangle
+        return (
+          <g>
+            {lead(4)}
+            <rect x={4} y={-6} width={26} height={12} className="bg" />
+            <rect x={8} y={-2.5} width={18} height={5} className="nofill" />
+          </g>
+        );
       const cx = 17;
       const r = 8;
       const cross = (
@@ -535,8 +596,8 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
       );
       return (
         <g>
-          {lead(t === 'spot' ? 4 : cx)}
-          {t === 'spot' ? (
+          {lead(t === 'spot' || t === 'floodNarrow' || t === 'floodWide' ? 4 : t === 'emergencyUnit' ? cx - r - 2 : cx)}
+          {t === 'spot' || t === 'floodNarrow' || t === 'floodWide' ? (
             // Projecteur : ⊗ entouré d'un arc
             <>
               <path d={`M${cx - 3} -10 A11 11 0 0 0 ${cx - 3} 10`} className="nofill" />
@@ -546,6 +607,18 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
             </>
           ) : (
             cross
+          )}
+          {/* Projecteur à faisceau peu divergent (flèches parallèles) ou divergent (flèches écartées) */}
+          {t === 'floodNarrow' && <path d={`M${cx + 11} -3 h8 m-3 -2 l3 2 l-3 2 M${cx + 11} 3 h8 m-3 -2 l3 2 l-3 2`} className="nofill" />}
+          {t === 'floodWide' && <path d={`M${cx + 10} -3 l7 -5 m-3.5 0 l3.5 0 l-1 3 M${cx + 10} 3 l7 5 m-3.5 0 l3.5 0 l-1 -3`} className="nofill" />}
+          {/* Luminaire avec interrupteur unipolaire incorporé : une branche de la croix se termine en levier */}
+          {t === 'withSwitch' && <line x1={cx + r} y1={-r} x2={cx + r + 4} y2={-r + 4} />}
+          {/* Bloc autonome d'éclairage de sécurité : croix et point dans un carré */}
+          {t === 'emergencyUnit' && (
+            <>
+              <rect x={cx - r - 2} y={-r - 2} width={2 * r + 4} height={2 * r + 4} className="nofill" />
+              <circle cx={cx} cy={0} r={3} className="fill" />
+            </>
           )}
           {t === 'wall' && <line x1={cx + r + 3} y1={-r - 2} x2={cx + r + 3} y2={r + 2} style={{ strokeWidth: 2 }} />}
           {t === 'emergency' && <circle cx={cx} cy={0} r={3} className="fill" />}
@@ -583,14 +656,28 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           <circle cx={13} cy={0} r={3} className="fill" />
         </g>
       );
-    case 'bell':
-      // Sonnerie : demi-disque
+    case 'bell': {
+      // Tableau 2.23 G : sonnerie (demi-disque), vibreur (demi-disque tourné vers le fil), trompe (carré et pavillon),
+      // sirène (triangle)
+      const bt = String(n.props.bellType ?? 'bell');
       return (
         <g>
-          {lead(8)}
-          <path d="M8 -8 A8 8 0 0 1 8 8 Z" className="bg" />
+          {lead(bt === 'buzzer' ? 18 : 8)}
+          {bt === 'buzzer' ? (
+            <path d="M18 -8 A8 8 0 0 0 18 8 Z" className="bg" />
+          ) : bt === 'horn' ? (
+            <>
+              <rect x={8} y={-6} width={12} height={12} className="bg" />
+              <path d="M20 0 L28 -5 V5 Z" className="nofill" />
+            </>
+          ) : bt === 'siren' ? (
+            <path d="M8 -9 L24 0 L8 9 Z" className="bg" />
+          ) : (
+            <path d="M8 -8 A8 8 0 0 1 8 8 Z" className="bg" />
+          )}
         </g>
       );
+    }
     case 'motor':
       return (
         <g>
@@ -679,11 +766,67 @@ function Horizontal({ n, bare }: { n: ElNode; bare?: boolean }) {
           {rt === 'teleswitch' ? (
             // Tableau 2.23 E : ┘ └ (deux équerres ouvertes vers le haut)
             <path d="M9 3 h4 v-5 M25 3 h-4 v-5" className="nofill" />
+          ) : rt === 'timeSwitch' ? (
+            // Interrupteur horaire : horloge et contact
+            <>
+              <circle cx={10} cy={0} r={4} className="nofill" />
+              <path d="M10 0 v-3 M10 0 h2.5 M16 1 h4 l5 -3 M25 1 h2" className="nofill" />
+            </>
+          ) : rt === 'thermostat' ? (
+            // Thermostat : θ
+            <>
+              <ellipse cx={17} cy={0} rx={3.5} ry={5} className="nofill" />
+              <line x1={13.5} y1={0} x2={20.5} y2={0} />
+            </>
+          ) : rt === 'lockControl' ? (
+            // Contrôleur de ronde / verrouillage électrique par serrure : trou de serrure
+            <path d="M17 -4.5 a2.2 2.2 0 1 1 0.01 0 Z M15.8 -1 L14.8 5 H19.2 L18.2 -1 Z" className="fill" />
           ) : (
             <text x={17} y={3} fontSize={8} textAnchor="middle">
               {abbr(n)}
             </text>
           )}
+        </g>
+      );
+    }
+    case 'other': {
+      const ot = String(n.props.otherType ?? '');
+      if (ot === 'clock' || ot === 'masterClock')
+        // Horloge (cercle et aiguilles) ; horloge mère : double cercle
+        return (
+          <g>
+            {lead(4)}
+            <circle cx={15} cy={0} r={11} className="bg" />
+            {ot === 'masterClock' && <circle cx={15} cy={0} r={8} className="nofill" />}
+            <path d="M15 0 v-6 M15 0 h-5" className="nofill" />
+            <circle cx={15} cy={0} r={1.2} className="fill" />
+          </g>
+        );
+      if (ot === 'doorStrike')
+        // Gâche électrique : bobine dans un boîtier et pêne (triangle)
+        return (
+          <g>
+            {lead(4)}
+            <rect x={4} y={-7} width={18} height={14} className="bg" />
+            <path d="M7 1 q1.5 -4 3 0 q1.5 -4 3 0 q1.5 -4 3 0 q1.5 -4 3 0" className="nofill" />
+            <path d="M22 -7 L30 7 H22" className="nofill" />
+          </g>
+        );
+      if (ot === 'dataOutlet')
+        // Socle de prise data : trait et crochet (sans arc)
+        return (
+          <g>
+            {lead(10)}
+            <path d="M16 -8 H10 V8 H16" className="nofill" />
+          </g>
+        );
+      return (
+        <g>
+          {lead(4)}
+          <rect x={4} y={-h / 2} width={w - 4} height={h} className="bg" />
+          <text x={4 + (w - 4) / 2} y={3} textAnchor="middle" fontSize={8}>
+            {n.props.name ? String(n.props.name).slice(0, 4) : abbr(n)}
+          </text>
         </g>
       );
     }

@@ -86,6 +86,7 @@ const ELEMENTS: [RegExp, NodeKind, string?][] = [
   [/^domotics/, 'domotic'],
   [/^appliance$/, 'appliance'],
   [/^sounder-/, 'bell'],
+  [/^lock-door-opener/, 'other'],
   [/^detector-/, 'detector'],
   [/^(data-outlet|tv-outlet|phone-outlet)/, 'other'],
   [/^(communication|lock|security|emergency)/, 'other'],
@@ -395,7 +396,10 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
         continue;
       }
       const hit = ELEMENTS.find(([re]) => re.test(sid));
-      const n = createNode(hit?.[1] ?? 'other', clean({ name: sid, ...(hit?.[1] === 'appliance' ? { applianceType: 'other' } : {}) }));
+      // Variantes du tableau 2.23 quand PlanElec les distingue (sonnerie, vibreur, trompe, sirène, gâche, prise data)
+      const bellType = ({ 'sounder-bell': 'bell', 'sounder-buzzer': 'buzzer', 'sounder-horn': 'horn', 'sounder-siren': 'siren' } as Record<string, string>)[sid];
+      const otherType = /^lock-door-opener/.test(sid) ? 'doorStrike' : /^data-outlet/.test(sid) ? 'dataOutlet' : undefined;
+      const n = createNode(hit?.[1] ?? 'other', clean({ name: bellType || otherType ? undefined : sid, bellType, otherType, ...(hit?.[1] === 'appliance' ? { applianceType: 'other' } : {}) }));
       if (str(el.label)) n.location = str(el.label);
       n.source = { format: 'planelec', tag: sid, attrs: {} };
       project.loose.push(n);

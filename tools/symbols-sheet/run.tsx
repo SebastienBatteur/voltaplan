@@ -17,7 +17,7 @@ import type { ElNode, NodeKind, PropValue } from '../../src/model/types';
 
 const KINDS: NodeKind[] = [
   'origin', 'meter', 'protection', 'board', 'cable', 'earthBar', 'earth', 'socket', 'switch', 'pushButton', 'light',
-  'appliance', 'junctionBox', 'bell', 'motor', 'transformer', 'solarPanel', 'inverter', 'detector', 'relay',
+  'appliance', 'junctionBox', 'bell', 'motor', 'transformer', 'solarPanel', 'inverter', 'battery', 'detector', 'relay', 'other',
 ] as NodeKind[];
 /** Propriétés sans effet sur le dessin. */
 const SKIP = new Set(['wetRoom', 'installationKind', 'phase', 'material', 'curve', 'cableType']);
