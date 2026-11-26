@@ -31,7 +31,7 @@ export function migrateStorage() {
 migrateStorage();
 
 /**
- * Étude photovoltaïque détaillée (production, strings, stockage) : hors de Voltaplan, sur le site de l'auteur.
+ * Demande de simulation photovoltaïque détaillée (formulaire de SBG Energy, site de l'auteur), hors de Voltaplan.
  * Ouvert seulement au clic, dans un nouvel onglet, sans aucune donnée du projet dans l'adresse.
  */
-export const PV_STUDY_URL = 'https://sbg-energy.com/';
+export const PV_STUDY_URL = 'https://sbg-energy.com/sim/new/';

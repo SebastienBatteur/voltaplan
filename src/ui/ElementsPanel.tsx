@@ -4,9 +4,10 @@ import { useDerived } from './derived';
 import { ALLOWED_CHILDREN } from '../model/schema';
 import { ancestors, createNode, walk } from '../model/tree';
 import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
-import { FURNITURE, FURNITURE_GROUPS, FurnitureShape, type FurnitureKind } from '../plan/furniture';
+import { FurnitureCatalog } from '../plan/FurnitureCatalog';
+import { kindKeywords, matches, normalize, searchFurniture } from './paletteSearch';
 import { FAMILIES, PLACEABLE } from './families';
-import { usePlanUi, type PlanTool } from './planUi';
+import { usePlanUi } from './planUi';
 import type { ElNode, NodeKind } from '../model/types';
 
 /** Pictogramme d'un élément de l'unifilaire (le symbole du plan de position, sans trait s'il n'est pas au mur). */
@@ -20,14 +21,14 @@ export function KindIcon({ node }: { node: ElNode }) {
   );
 }
 
-const PLAN_TOOLS: PlanTool[] = ['wall', 'door', 'window', 'label'];
-
 /**
  * Palette « Éléments » (colonne de gauche, sous « Propriétés ») :
  *  - les éléments de l'unifilaire par grandes familles ; un clic les ajoute sous l'élément sélectionné,
  *    ou, sur le plan, les place au prochain clic (on choisit alors où ils se branchent dans l'unifilaire) ;
- *  - sur le plan : les outils (murs, portes, fenêtres, textes, mobilier) et les éléments de l'unifilaire pas
- *    encore placés, rangés par circuit ; un clic puis un clic sur le plan les place.
+ *  - sur le plan : le mobilier (même catalogue que le menu « Mobilier » de la barre du plan, où sont aussi les outils
+ *    murs, portes, fenêtres et textes) et les éléments de l'unifilaire pas encore placés, rangés par circuit ;
+ *  - une recherche en haut, dans toutes les langues de l'application et les variantes (« lave-linge »,
+ *    « stopcontact », « Steckdose »).
  */
 export function ElementsPanel() {
   const t = useStore((s) => s.t);
@@ -43,6 +44,11 @@ export function ElementsPanel() {
   const [msg, setMsg] = useState<string | null>(null);
   const onPlan = view === 'plan';
   const selected = selectedId ? find(selectedId) : undefined;
+  const [query, setQuery] = useState('');
+  const keywords = useMemo(() => new Map(FAMILIES.flatMap((f) => f.kinds).map((k) => [k, kindKeywords(k)] as const)), []);
+  const furnitureHits = useMemo(() => searchFurniture(query), [query]);
+  const noHit =
+    (!onPlan || furnitureHits.size === 0) && !FAMILIES.some((f) => f.kinds.some((k) => (!onPlan || PLACEABLE.has(k)) && matches(query, keywords.get(k) ?? '')));
 
   /** Un exemplaire de chaque type, pour dessiner son pictogramme. */
   const samples = useMemo(() => {
@@ -58,13 +64,15 @@ export function ElementsPanel() {
     const groups = new Map<string, { title: string; nodes: ElNode[] }>();
     for (const { node } of walk(project.roots)) {
       if (!PLACEABLE.has(node.kind) || placed.has(node.id)) continue;
+      // Recherche : aussi sur les éléments à placer (repère, nom, type, pièce)
+      if (query.trim() && !matches(query, normalize([numbering.get(node.id), labelFn.title(node), node.location].filter(Boolean).join(' ')) + ' ' + (keywords.get(node.kind) ?? ''))) continue;
       const circuit = [...ancestors(project.roots, node.id)].reverse().find((a) => a.kind === 'protection' && numbering.has(a.id));
       const key = circuit?.id ?? '';
       if (!groups.has(key)) groups.set(key, { title: circuit ? `${numbering.get(circuit.id)} ${labelFn.title(circuit)}` : t('palette.noCircuit'), nodes: [] });
       groups.get(key)!.nodes.push(node);
     }
     return [...groups.values()];
-  }, [onPlan, project, numbering, labelFn, t]);
+  }, [onPlan, project, numbering, labelFn, t, query, keywords]);
 
   const clickKind = (k: NodeKind) => {
     setMsg(null);
@@ -87,48 +95,31 @@ export function ElementsPanel() {
 
   return (
     <div className="palette">
-      {onPlan && (
-        <>
-          <div className="palette-title">{t('palette.plan')}</div>
-          <div className="palette-items">
-            {PLAN_TOOLS.map((tl) => (
-              <button key={tl} className={tool === tl ? 'active' : ''} title={t('plan.hint.' + tl)} onClick={() => usePlanUi.getState().setTool(tl)}>
-                {t('plan.tool.' + tl)}
-              </button>
-            ))}
+      <input
+        type="search"
+        className="palette-search"
+        placeholder={t('palette.search')}
+        aria-label={t('palette.search')}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      {onPlan && furnitureHits.size > 0 && (
+        <details key={query ? 'furniture-q' : 'furniture'} className="palette-group" open={!!query.trim()}>
+          <summary>{t('plan.tool.furniture')}</summary>
+          <div className="palette-catalog">
+            <FurnitureCatalog t={t} active={tool === 'furniture' ? furnKind : null} only={furnitureHits} onPick={(k) => usePlanUi.getState().pickFurniture(k)} />
           </div>
-          {FURNITURE_GROUPS.map((g) => (
-            <details key={g} className="palette-group">
-              <summary>{t('furniture.group.' + g)}</summary>
-              <div className="palette-items icons">
-                {(Object.keys(FURNITURE) as FurnitureKind[])
-                  .filter((k) => FURNITURE[k].group === g)
-                  .map((k) => {
-                    const d = FURNITURE[k];
-                    const box = Math.max(d.w, d.h) * 1.1;
-                    return (
-                      <button key={k} title={t('furniture.' + k)} className={tool === 'furniture' && furnKind === k ? 'active' : ''} onClick={() => usePlanUi.getState().pickFurniture(k)}>
-                        <svg viewBox={`${-box / 2} ${-box / 2} ${box} ${box}`} className="catalog-icon">
-                          <FurnitureShape kind={k} w={d.w} h={d.h} />
-                        </svg>
-                        <span>{t('furniture.' + k)}</span>
-                      </button>
-                    );
-                  })}
-              </div>
-            </details>
-          ))}
-        </>
+        </details>
       )}
 
       <div className="palette-title" title={onPlan ? t('palette.placeHelp') : undefined}>
         {t('palette.unifilar')}
       </div>
       {FAMILIES.map((f) => {
-        const kinds = f.kinds.filter((k) => !onPlan || PLACEABLE.has(k));
+        const kinds = f.kinds.filter((k) => (!onPlan || PLACEABLE.has(k)) && matches(query, keywords.get(k) ?? ''));
         if (!kinds.length) return null;
         return (
-          <details key={f.key} className="palette-group" open={f.key === 'lighting' || f.key === 'outlets' || f.key === 'controls'}>
+          <details key={f.key + (query ? '-q' : '')} className="palette-group" open={!!query.trim() || f.key === 'lighting' || f.key === 'outlets' || f.key === 'controls'}>
             <summary>{t('family.' + f.key)}</summary>
             <div className="palette-items icons">
               {kinds.map((k) => {
@@ -151,12 +142,13 @@ export function ElementsPanel() {
           </details>
         );
       })}
+      {query.trim() && noHit && <p className="muted small">{t('palette.noMatch')}</p>}
       {msg && <p className="muted small">{msg}</p>}
 
       {onPlan && (
         <>
           <div className="palette-title">{t('palette.unplaced')}</div>
-          {unplaced.length === 0 && <p className="muted small">{t('palette.noUnplaced')}</p>}
+          {unplaced.length === 0 && !query.trim() && <p className="muted small">{t('palette.noUnplaced')}</p>}
           {unplaced.map((g) => (
             <details key={g.title} className="palette-group" open>
               <summary>

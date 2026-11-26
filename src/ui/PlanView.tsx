@@ -26,7 +26,8 @@ import {
 import { PlanItemPanel } from './PlanItemPanel';
 import { usePlanUi, type PlanTool } from './planUi';
 import { PlanAddDialog } from './PlanAddDialog';
-import { FURNITURE, FURNITURE_GROUPS, FurnitureShape, type FurnitureKind } from '../plan/furniture';
+import { FURNITURE, FurnitureShape } from '../plan/furniture';
+import { FurnitureCatalog } from '../plan/FurnitureCatalog';
 import { DxfError } from '../io/dxf';
 import { readBackground } from '../io/background';
 import { pickFile } from '../io/files';
@@ -533,35 +534,15 @@ export function PlanView() {
           </button>
           {catalogOpen && (
             <div className="catalog" onPointerLeave={(e) => e.pointerType === 'mouse' && setCatalogOpen(false)}>
-              {FURNITURE_GROUPS.map((g) => (
-                <div key={g}>
-                  <div className="catalog-group">{t('furniture.group.' + g)}</div>
-                  <div className="catalog-items">
-                    {(Object.keys(FURNITURE) as FurnitureKind[])
-                      .filter((k) => FURNITURE[k].group === g)
-                      .map((k) => {
-                        const d = FURNITURE[k];
-                        const box = Math.max(d.w, d.h) * 1.1;
-                        return (
-                          <button
-                            key={k}
-                            title={t('furniture.' + k)}
-                            onClick={() => {
-                              chooseTool('furniture');
-                              usePlanUi.getState().pickFurniture(k);
-                              setCatalogOpen(false);
-                            }}
-                          >
-                            <svg viewBox={`${-box / 2} ${-box / 2} ${box} ${box}`} className="catalog-icon">
-                              <FurnitureShape kind={k} w={d.w} h={d.h} />
-                            </svg>
-                            <span>{t('furniture.' + k)}</span>
-                          </button>
-                        );
-                      })}
-                  </div>
-                </div>
-              ))}
+              <FurnitureCatalog
+                t={t}
+                active={tool === 'furniture' ? furnKind : null}
+                onPick={(k) => {
+                  chooseTool('furniture');
+                  usePlanUi.getState().pickFurniture(k);
+                  setCatalogOpen(false);
+                }}
+              />
             </div>
           )}
         </span>

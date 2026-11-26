@@ -2936,3 +2936,12 @@ body.resizing-h * {
 .hint {
   white-space: pre-line;
 }
+
+/* Recherche de la palette ; mobilier dans la palette : même catalogue que le menu « Mobilier » du plan */
+.palette-search {
+  width: 100%;
+  margin: 2px 0 6px;
+}
+.palette-catalog .catalog-items {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+}

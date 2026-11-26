@@ -11,7 +11,11 @@
   section (« Choisir 20 A »), section minimale, prise avec obturateurs ou avec terre, disjoncteur bipolaire sur un
   réseau 3 × 230 V, différentiel type A, circuit rangé sous un 30 mA du tableau qui a de la place (ou nouveau 30 mA).
   Annulable comme toute modification. Les mentions manquantes du dossier mènent à l'onglet Projet.
-- Lien SBG Energy : la demande de simulation depuis Voltaplan est annoncée « en construction ».
+- Lien « Demander une simulation photovoltaïque » vers le formulaire de SBG Energy (https://sbg-energy.com/sim/new/) ;
+  le préremplissage depuis Voltaplan est annoncé « bientôt ».
+- Palette « Éléments » : **recherche de pictogrammes** dans toutes les langues de l'application et ses variantes
+  (« lave-linge », « stopcontact », « Steckdose », « colimaçon ») ; plus de doublon des outils Mur, Porte, Fenêtre,
+  Texte (ils restent dans la barre du plan) ; le mobilier y a le même catalogue que le menu « Mobilier ».
 - **Liste des circuits en CSV** (onglet Matériel) : lettre, nom, protection, différentiel, câble, nombre de points
   et pièces, pour un tableur ou un devis ; même liste que dans le dossier PDF.
 
