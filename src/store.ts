@@ -116,6 +116,8 @@ export const useStore = create<State>((set, get) => {
         const upd = (list: ElNode[]) =>
           updateNode(list, id, (n) => {
             const props = { ...n.props, ...patch };
+            // Longueur saisie à la main : ce n'est plus une estimation d'après le plan
+            if ('length' in patch && !('lengthEstimated' in patch)) delete props.lengthEstimated;
             for (const k of Object.keys(props)) if (props[k] === undefined || props[k] === '') delete props[k];
             return { ...n, props };
           });

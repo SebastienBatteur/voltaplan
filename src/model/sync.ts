@@ -14,6 +14,7 @@
 import type { BoardLayout, ElNode, PlanPage, Project, Pt } from './types';
 import { computeNumbering, isCircuit, walk } from './tree';
 import { autoLayout, boardSize, conventionalLayout, enclosures, moduleWidth, placed } from '../board/model';
+import { estimateCableLengths } from '../calc/cableLength';
 
 /** Éléments posés automatiquement sur le plan. */
 export const PLAN_KINDS = new Set(['board', 'socket', 'switch', 'pushButton', 'light', 'appliance', 'motor', 'bell', 'detector', 'domotic']);
@@ -28,6 +29,10 @@ export interface SyncReport {
   boardNoRoom: number;
   planByRoom: number;
   planToPlace: number;
+  /** Câbles dont la longueur a été estimée d'après le plan, et câbles sans longueur ni point posé. */
+  cablesEstimated?: number;
+  cablesNotPlaced?: number;
+  cablesNoBoard?: number;
   revision?: string;
 }
 
@@ -153,8 +158,13 @@ export function syncProject(
     revisions.push({ version, date: opts.today, description });
     rep.revision = version;
   }
+  // Longueur des câbles estimée d'après le plan (les longueurs saisies ne sont pas touchées)
+  const est = estimateCableLengths({ ...project, plan: { ...project.plan, pages } });
+  rep.cablesEstimated = est.estimated;
+  rep.cablesNotPlaced = est.notPlaced;
+  rep.cablesNoBoard = est.noBoard;
   return {
-    project: { ...project, boards, plan: { ...project.plan, pages }, meta: { ...project.meta, revisions, syncedIds: all } },
+    project: { ...project, roots: est.project.roots, boards, plan: { ...project.plan, pages }, meta: { ...project.meta, revisions, syncedIds: all } },
     report: rep,
   };
 }

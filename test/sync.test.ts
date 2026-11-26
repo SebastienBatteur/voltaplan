@@ -1,7 +1,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import { importTrikker } from '../src/import/trikker';
 import { syncProject, freeSlot } from '../src/model/sync';
-import { createNode, emptyProject, emptyPage, walk } from '../src/model/tree';
+import { createNode, emptyProject, emptyPage, findNode, walk } from '../src/model/tree';
 import type { ElNode, Project } from '../src/model/types';
 
 const opts = { today: '2026-11-23', firstRevisionText: 'Version initiale', revisionText: (l: string) => 'Ajout ' + l };
@@ -51,7 +51,9 @@ describe('mise à jour après ajout de circuits', () => {
     const [a] = board.children;
     moved.boards[board.id].slots[a.id] = { row: 0, col: 3 };
     const added = circuit('Cuisine');
-    board.children = [...board.children, added];
+    // Le circuit est ajouté au tableau du projet mis à jour (pas à l'objet d'avant la mise à jour)
+    const synced = findNode(moved.roots, board.id)!;
+    synced.children = [...synced.children, added];
     const { project: q, report } = syncProject(moved, opts);
     expect(report.newCircuits).toHaveLength(1);
     expect(report.boardPlaced).toBe(1);

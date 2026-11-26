@@ -32,6 +32,8 @@ export interface BomLine {
   /** Câbles : longueur totale connue (m) et nombre de tronçons sans longueur. */
   length?: number;
   missingLength?: number;
+  /** Une partie de la longueur est estimée d'après le plan. */
+  estimated?: boolean;
   /** Repères (numérotation RGIE) des éléments concernés. */
   refs: string[];
 }
@@ -177,6 +179,7 @@ export function billOfMaterials(
       const len = Number(node.props.length);
       if (len > 0) line.length! += len;
       else line.missingLength!++;
+      if (len > 0 && node.props.lengthEstimated === true) line.estimated = true;
     }
     // Repère : le sien, sinon celui du circuit (canalisations)
     const ref = numbering.get(node.id) ?? [...ancestors(project.roots, node.id)].reverse().map((a) => numbering.get(a.id)).find(Boolean);

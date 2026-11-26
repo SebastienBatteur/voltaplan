@@ -2,6 +2,15 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Longueur des câbles estimée d'après le plan (2026-11-26)
+
+- « Mettre à jour » et le bouton « Estimer les longueurs » (onglet Matériel) estiment la longueur de chaque câble
+  d'après le plan de position : du tableau aux points dans l'ordre du schéma, à angles droits, avec montées, descentes,
+  changement d'étage et 10 % de marge. Utilisée par le calcul de la chute de tension et la liste du matériel (« ≈ »).
+- Longueur marquée « estimée » ; une longueur saisie n'est jamais remplacée, et la saisir enlève la marque.
+- Le RGIE n'exige la longueur des canalisations que pour une installation non domestique (3.1.2.2 b) ; en domestique
+  (3.1.2.2 a), type, section, nombre de conducteurs et mode de pose suffisent.
+
 ### Reprendre le dossier PDF d'un autre logiciel (2026-11-26)
 
 - Menu Fichier : un dossier PDF (Volter, Condui, Draadwijs, Amperio…) est lu dans le navigateur, sans envoi ni IA :

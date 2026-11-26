@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useStore } from '../store';
+import { estimateCableLengths } from '../calc/cableLength';
 import { useDerived } from './derived';
 import { billOfMaterials, billOfMaterialsByRoom, bomCsv, BOM_CATEGORIES, type BomLine } from '../bom/bom';
 import { getRulePack } from '../rules';
@@ -48,7 +49,7 @@ export function BomTable({ lines, compact }: { lines: BomLine[]; compact?: boole
                   {l.qty}
                   {l.cat === 'cable' && (
                     <div className="muted small">
-                      {l.length ? fmtNum(Math.round(l.length * 10) / 10, lang) + ' m' : ''}
+                      {l.length ? (l.estimated ? '≈ ' : '') + fmtNum(Math.round(l.length * 10) / 10, lang) + ' m' : ''}
                       {l.missingLength ? (l.length ? ' + ' : '') + t('bom.noLength', { n: l.missingLength }) : ''}
                     </div>
                   )}
@@ -105,6 +106,16 @@ export function BomPanel() {
             {t('bom.byRoom')}
           </button>
         </div>
+        <button
+          title={t('bom.estimateHelp')}
+          onClick={() => {
+            const r = estimateCableLengths(useStore.getState().project);
+            if (r.estimated) useStore.getState().applyProject(() => r.project);
+            alert([t('bom.estimated', { n: r.estimated }), r.notPlaced ? t('sync.cablesNotPlaced', { n: r.notPlaced }) : '', r.noBoard ? t('sync.cablesNoBoard', { n: r.noBoard }) : ''].filter(Boolean).join('\n'));
+          }}
+        >
+          {t('bom.estimate')}
+        </button>
         <button className="primary" disabled={!lines.length} onClick={exportCsv}>
           {t('bom.exportCsv')}
         </button>

@@ -23,7 +23,7 @@ export function SyncDialog({ onClose }: { onClose: () => void }) {
       firstRevisionText: t('project.revInitial'),
       revisionText: (list) => t('sync.revText', { list }),
     });
-    const changed = r.report.newNodes > 0 || r.report.boardPlaced > 0 || r.report.planByRoom + r.report.planToPlace > 0 || !!r.report.revision;
+    const changed = r.report.newNodes > 0 || r.report.boardPlaced > 0 || r.report.planByRoom + r.report.planToPlace > 0 || !!r.report.revision || !!r.report.cablesEstimated;
     if (changed) applyProject(() => r.project);
     setReport(r.report);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -46,9 +46,12 @@ export function SyncDialog({ onClose }: { onClose: () => void }) {
   if (r.boardNoRoom) items.push(t('sync.boardNoRoom', { n: r.boardNoRoom }));
   if (r.planByRoom) items.push(t('sync.planRoom', { n: r.planByRoom }));
   if (r.planToPlace) items.push(t('sync.planToPlace', { n: r.planToPlace }));
+  if (r.cablesEstimated) items.push(t('sync.cables', { n: r.cablesEstimated }));
+  if (r.cablesNotPlaced) items.push(t('sync.cablesNotPlaced', { n: r.cablesNotPlaced }));
+  if (r.cablesNoBoard) items.push(t('sync.cablesNoBoard', { n: r.cablesNoBoard }));
   if (r.revision) items.push(t('sync.revision', { v: r.revision }));
   items.push(t('sync.derived'));
-  const changed = r.newNodes > 0 || r.boardPlaced > 0 || r.planByRoom + r.planToPlace > 0 || !!r.revision;
+  const changed = r.newNodes > 0 || r.boardPlaced > 0 || r.planByRoom + r.planToPlace > 0 || !!r.revision || !!r.cablesEstimated;
   return (
     <div className="modal-back" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal" role="dialog" aria-modal="true" ref={dialogRef} aria-label={t('sync.title')}>

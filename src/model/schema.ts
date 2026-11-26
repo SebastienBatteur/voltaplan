@@ -149,6 +149,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'inConduit', type: 'bool', default: true },
     { key: 'method', type: 'enum', options: [...INSTALL_METHODS], default: 'inWall' },
     { key: 'length', type: 'number', unit: 'm' },
+    // Longueur estimée d'après le plan (src/calc/cableLength.ts) ; une saisie de la longueur enlève la marque
+    { key: 'lengthEstimated', type: 'bool' },
     { key: 'reference', type: 'text' },
   ],
   socket: [
