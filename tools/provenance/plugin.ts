@@ -65,7 +65,11 @@ export function provenance(opts: { root?: string; env?: Record<string, string | 
     transformIndexHtml() {
       return provenanceTags(embedded);
     },
-    generateBundle() {
+    generateBundle(_options, bundle) {
+      // Moteur OCR copié tel quel (pas des modules) : bandeau « code tiers » en tête des fichiers JavaScript
+      for (const f of Object.values(bundle))
+        if (f.type === 'asset' && f.fileName.startsWith('ocr/') && f.fileName.endsWith('.js'))
+          f.source = legalBanner(embedded, true) + '\n' + (typeof f.source === 'string' ? f.source : new TextDecoder().decode(f.source));
       const ids = [...this.getModuleIds()].filter((m) => /[\\/]node_modules[\\/]/.test(m));
       // Fichiers du moteur OCR copiés tels quels (pas des modules) : leurs paquets sont aussi distribués
       const list = collectThirdParty([...ids, ...Object.values(ocrFiles())]);

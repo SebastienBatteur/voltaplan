@@ -25,7 +25,11 @@ export function ocrFiles(): Record<string, string> {
   const core = dirname(require.resolve('tesseract.js-core/package.json'));
   const version = JSON.parse(readFileSync(join(tjs, 'package.json'), 'utf8')).version as string;
   const dir = `ocr/${version}/`;
-  const out: Record<string, string> = { [dir + 'worker.min.js']: join(tjs, 'dist', 'worker.min.js') };
+  const out: Record<string, string> = {
+    [dir + 'worker.min.js']: join(tjs, 'dist', 'worker.min.js'),
+    // Mentions de licence auxquelles renvoie worker.min.js
+    [dir + 'worker.min.js.LICENSE.txt']: join(tjs, 'dist', 'worker.min.js.LICENSE.txt'),
+  };
   for (const f of ['tesseract-core-lstm.wasm.js', 'tesseract-core-simd-lstm.wasm.js', 'tesseract-core-relaxedsimd-lstm.wasm.js']) out[dir + 'core/' + f] = join(core, f);
   for (const l of OCR_LANGS) {
     const data = dirname(require.resolve(`@tesseract.js-data/${l}/package.json`));
@@ -43,7 +47,7 @@ export function ocrAssets(): Plugin {
         const path = decodeURIComponent((req.url ?? '').split('?')[0]).replace(/^\/+/, '');
         const src = files[path];
         if (!src) return next();
-        res.setHeader('Content-Type', path.endsWith('.js') ? 'text/javascript' : 'application/octet-stream');
+        res.setHeader('Content-Type', path.endsWith('.js') ? 'text/javascript' : path.endsWith('.txt') ? 'text/plain; charset=utf-8' : 'application/octet-stream');
         res.end(readFileSync(src));
       });
     },

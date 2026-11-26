@@ -13,6 +13,7 @@ describe('moteur OCR livré avec Voltaplan', () => {
     expect(Object.keys(f).sort()).toEqual(
       [
         'worker.min.js',
+        'worker.min.js.LICENSE.txt',
         'core/tesseract-core-lstm.wasm.js',
         'core/tesseract-core-relaxedsimd-lstm.wasm.js',
         'core/tesseract-core-simd-lstm.wasm.js',
@@ -23,6 +24,6 @@ describe('moteur OCR livré avec Voltaplan', () => {
         .map((x) => `ocr/${OCR_VERSION}/${x}`)
         .sort(),
     );
-    for (const src of Object.values(f)) expect(readFileSync(src).length).toBeGreaterThan(100_000);
+    for (const [k, src] of Object.entries(f)) expect(readFileSync(src).length).toBeGreaterThan(k.endsWith('.txt') ? 100 : 100_000);
   });
 });
