@@ -57,6 +57,29 @@ Chaque composant porte son `circuitId` (= id du disjoncteur). Les `connections` 
 (interrupteur → lampe, télérupteur → bouton-poussoir, batterie → onduleur → panneaux) : l'unifilaire de Volter
 en déduit les groupes 1, 2, 3… du circuit.
 
+## Catalogue complet des symboles de Volter (captures d'écran du 26/11)
+
+Noms affichés par Volter (interface française). La clé interne (`type`) n'est connue que pour les symboles
+présents dans le fichier d'exemple (en **gras**) ; les autres demandent un fichier d'exemple qui les contient.
+
+| Catégorie Volter | Symboles | Voltaplan aujourd'hui | Manque dans Voltaplan |
+| --- | --- | --- | --- |
+| Éclairage | **Point lumineux**, **Applique murale**, Ruban LED, Dalle LED (**ledmaat** strip/tegel), **Projecteur**, **Luminaire fluorescent**, Projecteur divergent / peu divergent, Éclairage de secours autonome / sur circuit dédié, Luminaire avec interrupteur, Ballast | `light` standard, led, wall, spot, fluo, emergency | secours autonome vs circuit dédié, projecteur (peu) divergent, luminaire avec interrupteur, ballast |
+| Interrupteurs | **Interrupteur**, **va-et-vient**, unipolaire double allumage, **croisé**, **variateur**, **bouton-poussoir**, bouton-poussoir avec voyant / protégé, détecteur de mouvement / de présence, tripolaire, **bipolaire**, bipolaire avec voyant, bipolaire va-et-vient, à tirette, temporisé, **télérupteur**, minuterie, horloge programmatrice, thermostat, serrure de verrouillage, interrupteur avec lampe de signalisation, interrupteur avec voyant | `switch` (single, double, twoWay, intermediate, dimmer, bipolar, shutter, pullCord) + voyant ; `pushButton` ; `detector` ; `relay` (télérupteur, minuterie) | tripolaire, bipolaire va-et-vient, temporisé, horloge programmatrice, thermostat, serrure de verrouillage |
+| Prises | Prise de courant, avec terre, **avec terre et protection enfant**, avec protection enfant, étanche, hermétique avec terre et protection enfant, avec transformateur de sécurité, avec interrupteur bipolaire (verrouillable), CEE 2P+T / 3P+T / 3P+N+T, data, télédistribution | `socket` (terre, protection enfant, étanche, triphasée) | transformateur de sécurité, interrupteur bipolaire (verrouillable), CEE 2P+T vs 3P+T vs 3P+N+T, prises data et télédistribution (courant faible) |
+| Appareils | Four, **Plaque de cuisson**, **Chauffe-eau**, **Machine à laver**, **Sèche-linge**, **Lave-vaisselle**, Appareil ménager, **Réfrigérateur**, **Congélateur**, **Micro-ondes**, **Ventilateur**, Appareil de chauffage, **Climatisation**, chauffage à accumulation (avec ventilateur), Chauffe-eau à accumulation, **Borne de recharge** | `appliance` : tous sauf ci-contre | climatisation, chauffage à accumulation (± ventilateur) |
+| Panneaux solaires et batteries | **Panneau solaire** (`wattpiek`), Onduleur DC/AC, **Onduleur AC/DC** (`maximaalVermogen`), **Batterie** | `solarPanel`, `inverter` (dcAc, acDc) | batterie |
+| Autres | Sonnette, Avertisseur, Sirène, Ronfleur, Serrure électrique, Horloge, Horloge mère, Compteur kWh, Moteur, Transformateur, Boîte de connexion, Boîte de dérivation, Centrale d'alarme, Centrale incendie, Tableau de distribution | `bell`, `meter`, `motor`, `transformer`, `junctionBox`, `board` | serrure électrique, horloge (mère), centrales d'alarme et d'incendie (→ `other` en attendant) |
+
+Hors électricité, également enregistrés dans le fichier : **Aménagement** (escaliers droit, quart tournant,
+colimaçon ; lits, placard ; canapé, fauteuil, tables, chaise ; plan de travail, plaque, évier ; baignoire, douche,
+lavabo, WC ; clim extérieure / murale / cassette ; ascenseur) dans `meubels` et `architecturalElements`, et
+**Extérieur** (jardin, terrasse, allée, chemin ; rectangle, forme libre, cercle) sans doute dans `buitenvlakken`.
+Voltaplan n'a pas de mobilier : à l'import, on peut les dessiner en simple contour gris sur le plan, ou les ignorer.
+
+Interface : vues « Rail / Arbre / Les deux » du tableau, compteur « 5/8 » circuits par différentiel 30 mA,
+bouton « Attribuer des symboles » (rattacher les points du plan à un circuit), repères A, B, C… par disjoncteur.
+
 ## Ce que le fichier ne contient pas (dans l'exemple)
 
 - Ni compteur ni mise à la terre (résistance, type de prise de terre) : à demander dans l'assistant.
