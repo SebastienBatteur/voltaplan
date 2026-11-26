@@ -242,6 +242,7 @@ export const fr = {
   'furniture.doubleWashbasin': "Double lavabo",
   'furniture.car': "Voiture",
   'furniture.stairs': "Escalier",
+  'furniture.spiralStairs': "Escalier en colimaçon",
   'board.none': "Aucun tableau dans l'installation. Ajoutez un tableau dans l'arbre (unifilaire).",
   'board.rows': "Rangées",
   'board.perRow': "Modules / rangée",

@@ -498,7 +498,12 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     };
     for (const d of arr(f.doors)) {
       const o = opening(d);
-      if (o) page.openings.push({ kind: 'door', ...o, hinge: d.openDirection === 'right' ? 'right' : 'left', mirrored: d.hingeSide === 'right' });
+      if (!o) continue;
+      // Genre de porte (`soort`) : absent = porte battante simple
+      const soort = str(d.soort) ?? '';
+      const kind = /^garage/i.test(soort) ? 'garageDoor' : /^schuif/i.test(soort) ? 'slidingDoor' : /^dubbel/i.test(soort) ? 'doubleDoor' : /^(raamdeur|franse)/i.test(soort) ? 'frenchDoor' : 'door';
+      if (soort && kind === 'door') warnings.add(`Porte Volter de genre inconnu, dessinée comme une porte simple : ${soort}`);
+      page.openings.push({ kind, ...o, hinge: d.openDirection === 'right' ? 'right' : 'left', mirrored: d.hingeSide === 'right' });
     }
     for (const d of arr(f.windows)) {
       const o = opening(d);
@@ -511,12 +516,19 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
         skipped.add(str(m.soort) ?? '?');
         continue;
       }
-      page.furniture.push(furniture(kind, pt(m.position), (num(m.breedte) ?? 60) * CM, (num(m.diepte) ?? 60) * CM, num(m.rotation) ?? 0));
+      // Volter : `position` = coin supérieur gauche du meuble (rotation autour de ce coin) ; Voltaplan : centre
+      const w = (num(m.breedte) ?? 60) * CM;
+      const h = (num(m.diepte) ?? 60) * CM;
+      const angle = num(m.rotation) ?? 0;
+      const corner = pt(m.position);
+      const t = (angle * Math.PI) / 180;
+      const center = { x: corner.x + (w / 2) * Math.cos(t) - (h / 2) * Math.sin(t), y: corner.y + (w / 2) * Math.sin(t) + (h / 2) * Math.cos(t) };
+      page.furniture.push(furniture(kind, center, w, h, angle % 360));
     }
     for (const s of arr(f.architecturalElements)) {
       const c = pt(s.position);
       const r = (num(s.radius) ?? 0) * CM;
-      if (s.kind === 'stairSpiral') page.furniture.push(furniture('stairs', c, 2 * r, 2 * r, num(s.rotation) ?? 0));
+      if (s.kind === 'stairSpiral') page.furniture.push(furniture('spiralStairs', c, 2 * r, 2 * r, num(s.rotation) ?? 0));
       else if (s.kind === 'stairStraight') page.furniture.push(furniture('stairs', c, (num(s.width) ?? 80) * CM, (num(s.length) ?? 200) * CM, num(s.rotation) ?? 0));
       else if (s.kind === 'stairQuarterTurn') page.furniture.push(furniture('stairs', c, (num(s.legALength) ?? 140) * CM, (num(s.legBLength) ?? 120) * CM, num(s.rotation) ?? 0));
       else skipped.add(String(s.kind));

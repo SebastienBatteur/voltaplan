@@ -243,6 +243,7 @@ export const nl: Partial<Dict> = {
   'furniture.doubleWashbasin': "Dubbele lavabo",
   'furniture.car': "Auto",
   'furniture.stairs': "Trap",
+  'furniture.spiralStairs': "Wenteltrap",
   'board.none': "Geen verdeelbord in de installatie. Voeg een bord toe in de boom (eendraadschema).",
   'board.rows': "Rijen",
   'board.perRow': "Modules / rij",

@@ -54,7 +54,11 @@ function sample() {
           name: 'Rez',
           level: 0,
           walls: [{ id: 'w1', start: { x: 0, y: 0 }, end: { x: 1000, y: 0 }, thickness: 30 }],
-          doors: [{ id: 'd1', wallId: 'w1', position: 0.5, width: 80, openDirection: 'left', hingeSide: 'left' }],
+          doors: [
+            { id: 'd1', wallId: 'w1', position: 0.5, width: 80, openDirection: 'left', hingeSide: 'left' },
+            { id: 'd2', wallId: 'w1', position: 0.8, width: 250, openDirection: 'left', hingeSide: 'left', soort: 'garage' },
+            { id: 'd3', wallId: 'w1', position: 0.2, width: 90, openDirection: 'left', hingeSide: 'left', soort: 'schuifOpbouw' },
+          ],
           windows: [],
           rooms: [],
           components: [
@@ -176,8 +180,13 @@ describe('import Volter (.vschema)', () => {
     const pg = project.plan.pages[0];
     expect(pg.walls[0]).toEqual({ a: { x: 0, y: 0 }, b: { x: 10000, y: 0 }, thickness: 300 });
     expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 } });
+    expect(pg.openings[1]).toMatchObject({ kind: 'garageDoor', a: { x: 6750, y: 0 }, b: { x: 9250, y: 0 } });
+    expect(pg.openings[2].kind).toBe('slidingDoor');
     expect(pg.symbols).toHaveLength(15);
-    expect(pg.furniture?.map((f) => f.kind).sort()).toEqual(['stairs', 'wc']);
+    expect(pg.furniture?.map((f) => f.kind).sort()).toEqual(['spiralStairs', 'wc']);
+    // Meuble Volter : coin supérieur gauche (900, 600) cm, 37 × 65 cm → centre en mm
+    expect(pg.furniture?.find((f) => f.kind === 'wc')).toMatchObject({ center: { x: 9185, y: 6325 }, w: 370, h: 650 });
+    expect(pg.furniture?.find((f) => f.kind === 'spiralStairs')).toMatchObject({ center: { x: 5000, y: 5000 }, w: 1400 });
     expect(pg.labels.map((l) => l.text).sort()).toEqual(['Rond-point', 'Séjour', 'Terrasse']);
     expect(pg.rects).toContainEqual({ center: { x: 5000, y: 5000 }, w: 2000, h: 2000, angle: 0 });
     expect(project.loose.map((n) => n.props.name)).toEqual(['unknownThing']);

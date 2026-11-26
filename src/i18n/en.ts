@@ -243,6 +243,7 @@ export const en: Partial<Dict> = {
   'furniture.doubleWashbasin': "Double washbasin",
   'furniture.car': "Car",
   'furniture.stairs': "Stairs",
+  'furniture.spiralStairs': "Spiral staircase",
   'board.none': "No distribution board in the installation. Add a board in the tree (single-line diagram).",
   'board.rows': "Rows",
   'board.perRow': "Modules / row",

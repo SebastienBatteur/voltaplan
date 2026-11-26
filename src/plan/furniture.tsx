@@ -32,6 +32,7 @@ export const FURNITURE = {
   // Divers
   car: { w: 1800, h: 4400, group: 'other' },
   stairs: { w: 1000, h: 3000, group: 'other' },
+  spiralStairs: { w: 1400, h: 1400, group: 'other' },
 } as const;
 
 export type FurnitureKind = keyof typeof FURNITURE;
@@ -231,6 +232,26 @@ export function FurnitureShape({ kind, w, h }: { kind: string; w: number; h: num
           ))}
           {/* flèche de montée */}
           <path d={`M0 ${y0 + h - 150} V${y0 + 200} m-120 200 l120 -200 l120 200`} fill="none" />
+        </g>
+      );
+    }
+    case 'spiralStairs': {
+      // Escalier en colimaçon : fût central, marches rayonnantes, flèche de montée le long du cercle
+      const r = m / 2;
+      const core = Math.max(60, r * 0.14);
+      const n = 12;
+      const ra = r * 0.62;
+      const end = (-75 * Math.PI) / 180;
+      return (
+        <g>
+          <circle cx={0} cy={0} r={r} />
+          <circle cx={0} cy={0} r={core} />
+          {Array.from({ length: n }).map((_, i) => {
+            const a = (i * 2 * Math.PI) / n;
+            return <line key={i} x1={Math.cos(a) * core} y1={Math.sin(a) * core} x2={Math.cos(a) * r} y2={Math.sin(a) * r} />;
+          })}
+          <path d={`M${ra} 0 A${ra} ${ra} 0 1 1 ${Math.cos(end) * ra} ${Math.sin(end) * ra}`} fill="none" />
+          <circle cx={ra} cy={0} r={Math.max(25, r * 0.04)} />
         </g>
       );
     }

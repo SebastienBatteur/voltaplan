@@ -114,6 +114,9 @@ export function App() {
       const r = opened ?? (await readProjectFile(file!));
       const shownName = opened ? opened.name : file!.name;
       s.loadProject(r.project, r.fileName);
+      // Import (Trikker, Volter) ou ancien format converti : aucun fichier Voltaplan n'existe encore sous ce nom.
+      // Non enregistré tant que l'utilisateur ne l'a pas fait (sinon « Projets récents » renverrait à un fichier absent)
+      if (r.needsNewFile) useStore.setState({ dirty: true });
       location.current = { kind: 'device' };
       setSaveState(null);
       const nodes = [...walk(r.project.roots)].length;
@@ -345,7 +348,7 @@ export function App() {
         setPrintOpen(true);
       } else if (mod && key === 'o') {
         e.preventDefault();
-        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
+        open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
       } else if (e.key === 'Delete' && !typing && s.selectedId) s.remove(s.selectedId);
       else if (e.key === 'Escape') s.startPlacing(null);
     };
@@ -478,7 +481,7 @@ export function App() {
     }
     if (e.loc.kind === 'device') {
       setToast({ text: t('home.reopenDevice', { name: e.name }) });
-      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
+      void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
       return;
     }
     setToast({ text: t('home.reopenCloud', { name: e.name, where: whereLabel(e.loc) }) });
@@ -610,7 +613,7 @@ export function App() {
           mode={storage}
           onClose={() => setStorage(null)}
           onDevice={() => {
-            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','));
+            if (storage === 'open') void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','));
             else
               void saveProject(useStore.getState().project, useStore.getState().fileName, true)
                 .then((name) => {
@@ -755,7 +758,7 @@ export function App() {
           onNew={(k) => {
             if (confirmDiscard()) setWizardKind(k);
           }}
-          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik'].join(','))}
+          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema'].join(','))}
           onOpenStorage={() => setStorage('open')}
           onImportTrikker={() => void open('.trik')}
           onOpenRecent={(e) => void openRecent(e)}
