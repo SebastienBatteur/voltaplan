@@ -86,20 +86,26 @@ export const RCD30_2023 = '2023-06-01';
 
 /**
  * RGIE 4.2.4.3 b, 5e et 6e alinéas (modifications du 1/6/2023) applicables à cette partie : exécution commencée le
- * 1/6/2023 ou après (date de la partie, sinon du projet). Sans date : installation neuve → oui ; existante → non
- * (dérogation de la partie 6 présumée pour une installation antérieure ; à préciser par la date).
+ * 1/6/2023 ou après. Du plus proche au plus lointain : réponse « tableau fait ou refait avant / après le 1/6/2023 »
+ * (`rgie2023` du tableau) ou date de la partie (`installedOn`), puis date du projet. Sans rien : installation neuve
+ * → oui ; existante → inconnu (une question est posée sur le tableau, constat R-RCD30-DATE).
  */
-function since2023(project: Project, chain: ElNode[]): boolean {
+function since2023(project: Project, chain: ElNode[]): 'yes' | 'no' | 'unknown' {
   const ctx = partContext(project, belgium, chain);
-  if (!ctx.current) return false;
-  let d: string | undefined;
+  if (!ctx.current) return 'no';
   for (const x of [...chain].reverse()) {
-    d = normDate(x.props.installedOn);
-    if (d) break;
+    if (x.props.rgie2023 === 'after') return 'yes';
+    if (x.props.rgie2023 === 'before') return 'no';
+    const d = normDate(x.props.installedOn);
+    if (d) return d >= RCD30_2023 ? 'yes' : 'no';
   }
-  d ??= normDate(project.meta.installationDate);
-  return d ? d >= RCD30_2023 : ctx.isNew;
+  const d = normDate(project.meta.installationDate);
+  if (d) return d >= RCD30_2023 ? 'yes' : 'no';
+  return ctx.isNew ? 'yes' : 'unknown';
 }
+
+/** Tableau le plus proche dans la chaîne (celui à qui demander s'il a été fait ou refait avant ou après le 1/6/2023). */
+const boardOf = (chain: ElNode[]) => [...chain].reverse().find((x) => x.kind === 'board');
 
 /** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
 type Raw = Omit<Finding, 'severity'>;
@@ -233,6 +239,12 @@ function checkRgie(project: Project): Finding[] {
   }
 
   // --- Règles par circuit ---
+  // Tableaux dont la date (avant / après le 1/6/2023) décide des règles 30 mA de 2023 : une question par tableau
+  const dateNeeded = new Map<string, number>();
+  const askDate = (chain: ElNode[]) => {
+    const b = boardOf(chain);
+    if (b) dateNeeded.set(b.id, (dateNeeded.get(b.id) ?? 0) + 1);
+  };
   const rcd300Drawn = infos.some((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= 300);
   for (const { node: circuit, ancestors } of infos) {
     if (!isCircuit(circuit)) continue;
@@ -287,7 +299,9 @@ function checkRgie(project: Project): Finding[] {
     // Une prise dont le seul enfant est un appareil (prise dédiée) suit la règle de cet appareil.
     const generalSocket = sockets.some((sk) => !(sk.children.length === 1 && sk.children[0].kind === 'appliance'));
     const lighting = content.some((c) => c.kind === 'light');
-    const rule2023 = (generalSocket || lighting) && since2023(project, [...ancestors, circuit]);
+    const when = generalSocket || lighting ? since2023(project, [...ancestors, circuit]) : 'no';
+    const rule2023 = when === 'yes';
+    if (when === 'unknown' && !(minRcd <= 30)) askDate([...ancestors, circuit]);
     if ((wet || wetAppliance || rule2023) && !(minRcd <= 30)) {
       const reason = wet ? 'wetRoom' : wetAppliance ? String(wetAppliance.props.applianceType) : generalSocket ? 'sockets' : 'lighting';
       if (unknownSens) add('R-RCD30', nc, circuit.id, { reason }, { knowledge: 'unknown' });
@@ -307,8 +321,12 @@ function checkRgie(project: Project): Finding[] {
   for (const { node: rcd, ancestors } of infos) {
     if (!isRcd(rcd) || !((n(rcd.props.residualCurrent) ?? Infinity) <= 30)) continue;
     const count = collect(rcd.children).filter((i) => isCircuit(i.node)).length;
-    if (count > 8 && since2023(project, [...ancestors, rcd])) add('R-RCD30-MAX', nc, rcd.id, { count });
+    if (count <= 8) continue;
+    const when = since2023(project, [...ancestors, rcd]);
+    if (when === 'yes') add('R-RCD30-MAX', nc, rcd.id, { count });
+    else if (when === 'unknown') askDate([...ancestors, rcd]);
   }
+  for (const [boardId, count] of dateNeeded) add('R-RCD30-DATE', nc, boardId, { count, board2023: boardId }, { knowledge: 'unknown' });
 
   // Photovoltaïque : panneaux ou onduleur DC → AC (un redresseur/onduleur AC ↔ DC seul est celui d'une batterie)
   const pv = infos.find((i) => i.node.kind === 'solarPanel' || (i.node.kind === 'inverter' && (i.node.props.inverterType ?? 'dcAc') === 'dcAc'));

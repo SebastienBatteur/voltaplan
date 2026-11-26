@@ -70,6 +70,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'modules', type: 'number', unit: 'mod' },
     { key: 'oldPart', type: 'bool' },
     { key: 'installedOn', type: 'text' },
+    // Tableau fait ou refait avant ou après le 1/6/2023 (RGIE 4.2.4.3 b : prises et éclairage sous 30 mA, 8 circuits)
+    { key: 'rgie2023', type: 'enum', options: ['', 'before', 'after'] },
     { key: 'installationKind', type: 'enum', options: ['', 'new', 'existing'] },
     { key: 'wetRoom', type: 'enum', options: WET_ROOM_OPTIONS },
     { key: 'series', type: 'bool' },

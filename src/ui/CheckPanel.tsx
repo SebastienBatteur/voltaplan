@@ -117,6 +117,22 @@ function SurveyButtons({ fact }: { fact: SurveyFact }) {
   );
 }
 
+/** Réponse à « tableau fait ou refait avant ou après le 1/6/2023 ? » (écrit la propriété `rgie2023` du tableau). */
+function Board2023Buttons({ boardId }: { boardId: string }) {
+  const t = useStore((s) => s.t);
+  const setProps = useStore((s) => s.setProps);
+  const set = (v: 'before' | 'after') => (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setProps(boardId, { rgie2023: v });
+  };
+  return (
+    <>
+      <button onClick={set('before')}>{t('enum.rgie2023.before')}</button>
+      <button onClick={set('after')}>{t('enum.rgie2023.after')}</button>
+    </>
+  );
+}
+
 export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
   const t = useStore((s) => s.t);
   const select = useStore((s) => s.select);
@@ -143,6 +159,7 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
   const canDerogate = !compact && (f.status === 'nonCompliant' || f.status === 'recommendation' || f.status === 'warning' || f.status === 'potential');
   // Fait du relevé non dessiné (terre, différentiels) : l'utilisateur confirme ce qu'il a constaté sur place.
   const survey = !compact && f.fact ? f.fact : undefined;
+  const board2023 = !compact && typeof f.params?.board2023 === 'string' ? f.params.board2023 : undefined;
   const saveDerogation = () => {
     if (!derog?.reason.trim()) return;
     const list = project.meta.derogations ?? [];
@@ -197,9 +214,10 @@ export function FindingItem({ f, compact }: { f: Finding; compact?: boolean }) {
           </div>
         )
       )}
-      {!compact && (node || canDerogate || survey) && (
+      {!compact && (node || canDerogate || survey || board2023) && (
         <div className="finding-actions" onClick={(e) => e.stopPropagation()}>
           {survey && <SurveyButtons fact={survey} />}
+          {board2023 && <Board2023Buttons boardId={board2023} />}
           {node && <button onClick={go('unifilar')}>{t('check.goUnifilar')}</button>}
           {pageOf >= 0 && <button onClick={go('plan')}>{t('check.goPlan')}</button>}
           {inBoard && <button onClick={go('board')}>{t('check.goBoard')}</button>}

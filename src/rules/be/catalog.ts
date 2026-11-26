@@ -89,6 +89,7 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     r('R-RCD-MAIN', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-RCD30', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-RCD30-MAX', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
+    r('R-RCD30-DATE', { kind: 'missingData', hazard: 'high', ...PHY }),
     r('R-RCD-TYPE-A', { kind: 'nonCompliance', hazard: 'medium', existing: 'recommendation', ...PHY }),
     // Canalisations
     r('R-CABLE-SECTION-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),

@@ -585,7 +585,7 @@ describe('matrice RGIE — 30 mA depuis le 1/6/2023 (4.2.4.3 b, 5e et 6e alinéa
     expect(ids(p)).toContain('R-RCD30');
   });
 
-  it('existant sans date : dérogation présumée ; existant daté après le 1/6/2023 : règle appliquée', () => {
+  it('existant sans date : question sur le tableau (pas de non-conformité) ; existant daté après le 1/6/2023 : règle appliquée', () => {
     const { p } = onMain();
     p.meta.installationKind = 'existing';
     expect(ids(p)).not.toContain('R-RCD30');
@@ -616,5 +616,39 @@ describe('matrice RGIE — 30 mA depuis le 1/6/2023 (4.2.4.3 b, 5e et 6e alinéa
     expect(get(p, 'R-RCD30-MAX')).toMatchObject({ status: 'nonCompliant', blocking: true, params: { count: 9 } });
     p.meta.installationDate = '2022-01-10';
     expect(ids(p)).not.toContain('R-RCD30-MAX');
+  });
+});
+
+describe('matrice RGIE — existant sans date : question « tableau fait ou refait avant / après le 1/6/2023 »', () => {
+  const undated = () => {
+    const c = compliant({ pre2023: true });
+    delete c.p.meta.installationDate;
+    c.p.meta.installationKind = 'existing';
+    return c;
+  };
+
+  it('une seule question par tableau, non bloquante, avec le nombre de points concernés', () => {
+    const { p, board } = undated();
+    const f = checkProject(p).filter((x) => x.ruleId === 'R-RCD30-DATE');
+    expect(f).toHaveLength(1);
+    expect(f[0]).toMatchObject({ nodeId: board.id, status: 'insufficientData', knowledge: 'unknown', blocking: false, params: { count: 2, board2023: board.id } });
+    expect(ids(p)).not.toContain('R-RCD30');
+  });
+
+  it('réponse « après » : règles 30 mA appliquées ; « avant » : dérogation, plus de question', () => {
+    const { p, board } = undated();
+    board.props.rgie2023 = 'after';
+    expect(ids(p)).not.toContain('R-RCD30-DATE');
+    expect(ids(p)).toContain('R-RCD30');
+    board.props.rgie2023 = 'before';
+    expect(ids(p)).not.toContain('R-RCD30-DATE');
+    expect(ids(p)).not.toContain('R-RCD30');
+  });
+
+  it('question pour l’assistant, une seule fois par tableau', () => {
+    const { p, board } = undated();
+    p.evidence = emptyEvidence();
+    const qs = surveyQuestions(p, checkProject(p)).filter((q) => q.id.startsWith('q_board2023_'));
+    expect(qs).toEqual([expect.objectContaining({ id: 'q_board2023_' + board.id, about: { nodeId: board.id, prop: 'rgie2023' } })]);
   });
 });

@@ -135,7 +135,24 @@ export function surveyQuestions(project: Project, findings: Finding[]): Question
   const known = new Set(project.evidence.questions.map((q) => q.id));
   const facts = new Set<SurveyFact>();
   for (const f of findings) if (f.fact && (f.knowledge === 'unknown' || f.knowledge === 'contradictory')) facts.add(f.fact);
-  return [...facts]
+  // Tableau fait ou refait avant ou après le 1/6/2023 (règles 30 mA de 2023) : une question par tableau
+  const boards: Question[] = findings
+    .filter((f) => f.ruleId === 'R-RCD30-DATE' && typeof f.params?.board2023 === 'string')
+    .map((f) => String(f.params!.board2023))
+    .filter((id) => !known.has('q_board2023_' + id))
+    .map((id) => ({
+      id: 'q_board2023_' + id,
+      kind: 'choice' as const,
+      about: { nodeId: id, prop: 'rgie2023' },
+      text: { key: 'survey.question.board2023' },
+      options: [
+        { value: 'before', observations: [], label: 'enum.rgie2023.before' },
+        { value: 'after', observations: [], label: 'enum.rgie2023.after' },
+      ],
+      priority: 'high' as const,
+      status: 'open' as const,
+    }));
+  const factQuestions: Question[] = [...facts]
     .filter((fact) => !known.has(surveyQuestionId(fact)))
     .map((fact) => ({
       id: surveyQuestionId(fact),
@@ -149,4 +166,5 @@ export function surveyQuestions(project: Project, findings: Finding[]): Question
       priority: 'high' as const,
       status: 'open' as const,
     }));
+  return [...factQuestions, ...boards];
 }
