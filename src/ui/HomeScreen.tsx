@@ -16,8 +16,7 @@ export function HomeScreen({
   onNew,
   onOpenFile,
   onOpenStorage,
-  onImportTrikker,
-  onImportEds,
+  onImport,
   onOpenRecent,
   whereLabel,
 }: {
@@ -27,9 +26,8 @@ export function HomeScreen({
   onNew: (kind: 'new' | 'existing') => void;
   onOpenFile: () => void;
   onOpenStorage: () => void;
-  onImportTrikker: () => void;
-  /** Import d'un fichier Eendraadschema (.eds). Facultatif : carte masquée sans lui. */
-  onImportEds?: () => void;
+  /** Import d'un fichier d'un autre logiciel : la source est reconnue d'après le contenu. */
+  onImport: () => void;
   onOpenRecent: (e: RecentEntry) => void;
   whereLabel: (e: RecentEntry) => string;
 }) {
@@ -89,18 +87,11 @@ export function HomeScreen({
             <strong>{t('home.openCloud')}</strong>
             <span className="muted small">{t('home.openCloudHelp')}</span>
           </button>
-          <button className="home-card" onClick={onImportTrikker}>
+          <button className="home-card" onClick={onImport}>
             <span className="home-card-icon" aria-hidden="true">⇪</span>
-            <strong>{t('home.trikker')}</strong>
-            <span className="muted small">{t('home.trikkerHelp')}</span>
+            <strong>{t('home.import')}</strong>
+            <span className="muted small">{t('home.importHelp')}</span>
           </button>
-          {onImportEds && (
-            <button className="home-card" onClick={onImportEds}>
-              <span className="home-card-icon" aria-hidden="true">⇪</span>
-              <strong>{t('home.eds')}</strong>
-              <span className="muted small">{t('home.edsHelp')}</span>
-            </button>
-          )}
         </div>
 
         <h2>{t('home.recent')}</h2>

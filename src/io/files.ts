@@ -110,6 +110,8 @@ export interface OpenResult {
    * l'original, il demande un emplacement (le fichier ouvert n'est jamais la cible par défaut).
    */
   needsNewFile: boolean;
+  /** Fichier d'un autre logiciel (import), pas un projet Voltaplan. */
+  imported?: boolean;
 }
 
 /**
@@ -138,8 +140,10 @@ export async function readProjectFile(file: File): Promise<OpenResult> {
   currentPath = null;
   lastWritten = null;
   const r = await openProjectData(file, file.name);
-  const fileName = r.format === 'trik' || r.format === 'vschema' || r.format === 'eds' || r.format === 'draadwijs' || r.format === 'planelec' || r.format === 'condui' || r.format === 'pdf' ? file.name.replace(/(\.planelec\.json|\.(trik|vschema|eds|draadwijs|zip|pdf))$/i, EXT) : file.name;
-  return { project: r.project, fileName, warnings: r.warnings, report: r.report, needsNewFile: r.needsNewFile };
+  const imported = r.format !== 'v1' && r.format !== 'v2';
+  // Import : même nom, extension .voltaplan (l'extension d'origine, quelle qu'elle soit, est remplacée)
+  const fileName = imported ? file.name.replace(/(\.planelec)?\.[a-z0-9]{1,10}$/i, '') + EXT : file.name;
+  return { project: r.project, fileName, warnings: r.warnings, report: r.report, needsNewFile: r.needsNewFile, imported };
 }
 
 /**

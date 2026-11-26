@@ -2,6 +2,15 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Un seul « Importer » (2026-11-26)
+
+- Menu Fichier et accueil : un seul « Importer d'un autre logiciel… » au lieu d'une entrée par logiciel. La source
+  est reconnue d'après le contenu, quelle que soit l'extension : signature (PDF, archive, XML Trikker,
+  Eendraadschema), manifeste Condui dans l'archive, structure du JSON (PlanElec, Volter, Draadwijs, sinon projet
+  Voltaplan) ; l'extension ne sert qu'en repli. Format inconnu : message qui liste les formats reconnus.
+- Application de bureau : les fichiers Volter, Draadwijs, Condui (.zip) et PDF n'étaient pas autorisés à
+  l'ouverture (liste d'extensions côté Rust incomplète) ; corrigé.
+
 ### Longueur des câbles estimée d'après le plan (2026-11-26)
 
 - « Mettre à jour » et le bouton « Estimer les longueurs » (onglet Matériel) estiment la longueur de chaque câble

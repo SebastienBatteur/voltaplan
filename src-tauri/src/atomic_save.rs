@@ -477,9 +477,9 @@ pub async fn file_state(granted: tauri::State<'_, Granted>, path: String) -> Res
     state_of(&target).map(|o| o.map(|s| (s.mtime_ms, s.size))).map_err(|e| e.to_string())
 }
 
-/// Fichiers que la page peut OUVRIR (lecture) : projets (`.voltaplan`, ancien `.openrgie`, JSON v1), Trikker et
-/// Eendraadschema.
-pub const READ_EXTS: &[&str] = &["voltaplan", "openrgie", "json", "trik", "eds"];
+/// Fichiers que la page peut OUVRIR (lecture) : projets (`.voltaplan`, ancien `.openrgie`, JSON v1) et imports
+/// d'autres logiciels (Trikker, Volter, Eendraadschema, Draadwijs, PlanElec `.json`, Condui `.zip`, dossier PDF).
+pub const READ_EXTS: &[&str] = &["voltaplan", "openrgie", "json", "trik", "vschema", "eds", "draadwijs", "zip", "pdf"];
 /// Taille maximale lue d'un coup (les archives v2 sont plafonnées plus bas par la page).
 pub const READ_MAX: u64 = 1 << 30;
 
@@ -604,6 +604,10 @@ mod tests {
         assert_eq!(readable_ext(Path::new("/a/m.trik")).as_deref(), Some("trik"));
         assert_eq!(readable_ext(Path::new("/a/m.eds")).as_deref(), Some("eds"));
         assert_eq!(readable_ext(Path::new("/a/m.json")).as_deref(), Some("json"));
+        assert_eq!(readable_ext(Path::new("/a/m.vschema")).as_deref(), Some("vschema"));
+        assert_eq!(readable_ext(Path::new("/a/m.draadwijs")).as_deref(), Some("draadwijs"));
+        assert_eq!(readable_ext(Path::new("/a/m.zip")).as_deref(), Some("zip"));
+        assert_eq!(readable_ext(Path::new("/a/m.pdf")).as_deref(), Some("pdf"));
         assert_eq!(readable_ext(Path::new("/a/m.exe")), None);
         assert_eq!(readable_ext(Path::new("/a/m")), None);
         // Seuls les chemins choisis dans la boîte « Ouvrir » sont lisibles

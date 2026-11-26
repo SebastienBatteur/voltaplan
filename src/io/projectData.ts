@@ -52,6 +52,67 @@ export function detectFormat(head: Uint8Array): DataFormat | null {
   return null;
 }
 
+/** Extensions des fichiers reconnus (projets Voltaplan et imports), pour les boîtes « Ouvrir ». */
+export const IMPORT_EXTS = ['.trik', '.vschema', '.eds', '.draadwijs', '.json', '.zip', '.pdf'];
+
+/** Format d'après l'extension seule (repli quand le contenu ne suffit pas). */
+function formatFromName(name: string): DataFormat | null {
+  if (/\.trik$/i.test(name)) return 'trik';
+  if (/\.vschema$/i.test(name)) return 'vschema';
+  if (/\.eds$/i.test(name)) return 'eds';
+  if (/\.draadwijs$/i.test(name)) return 'draadwijs';
+  if (/\.planelec\.json$/i.test(name)) return 'planelec';
+  if (/\.pdf$/i.test(name)) return 'pdf';
+  return null;
+}
+
+/** Plus grand fichier JSON lu en entier pour reconnaître sa source (Volter, Draadwijs) ; au-delà : projet v1. */
+/** Boîte « Importer » : tous les formats reconnus (la source est ensuite reconnue d'après le contenu). */
+export const IMPORT_ACCEPT = [...IMPORT_EXTS, 'application/pdf'].join(',');
+
+const SNIFF_JSON_MAX = 32 << 20;
+
+/**
+ * Source d'un fichier d'après son contenu (signature, structure), quelle que soit son extension : PDF, export
+ * Condui (.zip avec manifeste) ou archive Voltaplan, Eendraadschema, Trikker (XML), JSON PlanElec, Volter,
+ * Draadwijs ou projet Voltaplan v1. Repli sur l'extension, `null` si rien n'est reconnu.
+ */
+export async function sniffFormat(blob: Blob, name: string): Promise<DataFormat | null> {
+  const head = await blobBytes(blob.slice(0, 64));
+  if (String.fromCharCode(...head.slice(0, 5)) === '%PDF-') return 'pdf';
+  const sig = detectFormat(head);
+  if (sig === 'v2') {
+    try {
+      const zip = await openZip(blob);
+      const man = zip.entries.find((e) => e.path === 'manifest.json');
+      if (man && zip.entries.some((e) => e.path === 'project.json') && isConduiManifest(decodeText(await zip.readBytes(man, 1 << 20)))) return 'condui';
+    } catch {
+      // Archive illisible ici : la lecture de l'archive Voltaplan dira pourquoi
+    }
+    return 'v2';
+  }
+  if (sig === 'v1') {
+    const start = decodeText(await blobBytes(blob.slice(0, 4096)));
+    if (isPlanelec(start)) return 'planelec';
+    if (blob.size <= SNIFF_JSON_MAX) {
+      try {
+        const text = decodeText(await blobBytes(blob));
+        const d: unknown = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
+        if (d && typeof d === 'object') {
+          const o = d as Record<string, unknown>;
+          const proj = o.project && typeof o.project === 'object';
+          if (proj && Array.isArray(o.boards)) return 'vschema';
+          if (proj && o.root && typeof o.root === 'object') return 'draadwijs';
+        }
+      } catch {
+        // JSON illisible : la lecture du projet dira pourquoi
+      }
+    }
+    return formatFromName(name) ?? 'v1';
+  }
+  return sig ?? formatFromName(name);
+}
+
 export interface ProjectOpen {
   project: Project;
   format: DataFormat;
@@ -117,9 +178,11 @@ export async function openProjectData(data: Blob | string, name: string, session
 
 async function openProjectFile(data: Blob | string, name: string, session: AssetSession, opts: { background?: boolean }): Promise<ProjectOpen> {
   const blob = typeof data === 'string' ? new Blob([data]) : data;
-  const fmt = /\.trik$/i.test(name) ? 'trik' : /\.vschema$/i.test(name) ? 'vschema' : /\.eds$/i.test(name) ? 'eds' : /\.draadwijs$/i.test(name) ? 'draadwijs' : /\.planelec\.json$/i.test(name) || (/\.json$/i.test(name) && isPlanelec(decodeText(await blobBytes(blob.slice(0, 256))))) ? 'planelec' : detectFormat(await blobBytes(blob.slice(0, 64)));
+  // Source reconnue d'après le contenu, quelle que soit l'extension (un seul « Importer » pour tout)
+  const fmt = await sniffFormat(blob, name);
+  if (!fmt) throw new Error(`Format de fichier non reconnu : « ${name} ». Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`);
   // Dossier PDF d'un autre logiciel : lecture du texte (tableau des circuits), voir src/import/pdfDossier.ts
-  if (/\.pdf$/i.test(name)) {
+  if (fmt === 'pdf') {
     checkFileSize({ name, size: blob.size }, 'pdf');
     const [{ readPdfText }, { importPdfDossier }] = await Promise.all([import('./pdfText'), import('../import/pdfDossier')]);
     const { items, pages, shapes } = await readPdfText(blob);
@@ -157,15 +220,12 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
     return { project, format: 'pdf', warnings, needsNewFile: true };
   }
   // Export Condui (.zip : manifest « project-with-assets » + project.json) ; une archive Voltaplan n'en a pas
-  if (fmt === 'v2' && /\.zip$/i.test(name)) {
+  if (fmt === 'condui') {
     checkFileSize({ name, size: blob.size }, 'project');
     const zip = await openZip(blob);
-    const man = zip.entries.find((e) => e.path === 'manifest.json');
-    const pj = zip.entries.find((e) => e.path === 'project.json');
-    if (man && pj && isConduiManifest(decodeText(await zip.readBytes(man, 1 << 20)))) {
-      const { project, warnings } = importCondui(decodeText(await zip.readBytes(pj, 40 << 20)), name);
-      return { project, format: 'condui', warnings, needsNewFile: true };
-    }
+    const pj = zip.entries.find((e) => e.path === 'project.json')!;
+    const { project, warnings } = importCondui(decodeText(await zip.readBytes(pj, 40 << 20)), name);
+    return { project, format: 'condui', warnings, needsNewFile: true };
   }
   if (fmt === 'v2') {
     const device = await currentDevice();

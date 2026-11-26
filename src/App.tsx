@@ -61,7 +61,7 @@ import { useDerived } from './ui/derived';
 import { errorText } from './ui/errors';
 import { isDesktop, openDesktopProject, pickFile, readProjectFile, resetHandle, saveProject } from './io/files';
 import { emptyProject, walk } from './model/tree';
-import { assetSession } from './io/projectData';
+import { assetSession, IMPORT_ACCEPT } from './io/projectData';
 import { makeDisplayImage } from './io/background';
 import { setOpenModels } from './format/assetsIdb';
 import { LegalFooter, LegalLinks } from './ui/LegalFooter';
@@ -112,7 +112,6 @@ export function App() {
       const file = isDesktop ? null : await pickFile(accept);
       if (!opened && !file) return;
       const r = opened ?? (await readProjectFile(file!));
-      const shownName = opened ? opened.name : file!.name;
       s.loadProject(r.project, r.fileName);
       // Import (Trikker, Volter) ou ancien format converti : aucun fichier Voltaplan n'existe encore sous ce nom.
       // Non enregistré tant que l'utilisateur ne l'a pas fait (sinon « Projets récents » renverrait à un fichier absent)
@@ -122,7 +121,7 @@ export function App() {
       const nodes = [...walk(r.project.roots)].length;
       const symbols = r.project.plan.pages.reduce((a, p) => a + p.symbols.length, 0);
       // Fichier Trikker, Volter ou Eendraadschema : import ; projet Voltaplan : simple ouverture
-      setToast({ text: t(/\.(trik|vschema|eds|draadwijs|planelec\.json|zip|pdf)$/i.test(shownName) ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
+      setToast({ text: t(r.imported ? 'import.done' : 'open.done', { nodes, symbols }), warnings: r.warnings.map((w) => (typeof w === 'string' ? w : t(w.key, w.params))) });
     } catch (e) {
       setToast({ text: errorText(e, t) });
     }
@@ -511,13 +510,7 @@ export function App() {
               },
             },
             { label: t('menu.open'), shortcut: 'Ctrl+O', run: () => setStorage('open') },
-            { label: t('menu.importTrikker'), run: () => open('.trik') },
-            { label: t('menu.importVolter'), run: () => open('.vschema') },
-            { label: t('menu.importEds'), run: () => open('.eds') },
-            { label: t('menu.importDraadwijs'), run: () => open('.draadwijs') },
-            { label: t('menu.importPlanelec'), run: () => open('.json') },
-            { label: t('menu.importCondui'), run: () => open('.zip') },
-            { label: t('menu.importPdfDossier'), run: () => open('.pdf,application/pdf') },
+            { label: t('menu.import'), run: () => open(IMPORT_ACCEPT) },
             { label: t('menu.save'), shortcut: 'Ctrl+S', run: () => save(false), separatorBefore: true },
             { label: t('menu.saveAs'), shortcut: 'Ctrl+Maj+S', run: () => save(true) },
             { label: t('menu.versions'), run: () => setVersionsOpen(true) },
@@ -763,10 +756,9 @@ export function App() {
           onNew={(k) => {
             if (confirmDiscard()) setWizardKind(k);
           }}
-          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS, '.json', '.trik', '.vschema', '.eds', '.draadwijs', '.zip'].join(','))}
+          onOpenFile={() => void open([FILE_EXT, ...LEGACY_EXTS].join(','))}
           onOpenStorage={() => setStorage('open')}
-          onImportTrikker={() => void open('.trik')}
-          onImportEds={() => void open('.eds')}
+          onImport={() => void open(IMPORT_ACCEPT)}
           onOpenRecent={(e) => void openRecent(e)}
           whereLabel={(e) => whereLabel(e.loc)}
         />
