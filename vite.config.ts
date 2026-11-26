@@ -5,6 +5,7 @@ import { join, relative, resolve } from 'node:path';
 import { cspString, webCsp } from './src/security/csp';
 import { SW_FILE, buildPrecacheManifest, renderServiceWorker } from './src/sw/precache';
 import { provenance } from './tools/provenance/plugin';
+import { ocrAssets } from './tools/ocr/plugin';
 import pkg from './package.json';
 
 /**
@@ -48,7 +49,7 @@ function serviceWorker(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), cspMeta(), serviceWorker(), provenance({ root: __dirname, version: pkg.version })],
+  plugins: [react(), cspMeta(), ocrAssets(), serviceWorker(), provenance({ root: __dirname, version: pkg.version })],
   base: './',
   test: { globals: true, environment: 'jsdom', setupFiles: ['test/setup.ts'], exclude: ['**/node_modules/**', '**/dist/**', '**/.claude/**', 'src-tauri/**'] },
 });

@@ -35,6 +35,7 @@ describe('liste des fichiers hors ligne', () => {
   it('ni le service worker, ni les cartes de sources, ni les fichiers système', () => {
     expect(isPrecached('sw.js')).toBe(false);
     expect(isPrecached('assets/a.js.map')).toBe(false);
+    expect(isPrecached('ocr/7.0.0/core/tesseract-core-lstm.wasm.js')).toBe(false);
     expect(isPrecached('icons/.DS_Store')).toBe(false);
     expect(isPrecached('assets/sw.js')).toBe(true);
   });

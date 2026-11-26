@@ -78,9 +78,27 @@ async function fromCache(req, fallbackUrl) {
   }
 }
 
+/**
+ * Moteur OCR (dossier « ocr/<version>/ ») : gardé dans son propre cache à la première lecture, pour fonctionner
+ * ensuite hors ligne sans alourdir l'installation. Le nom des fichiers contient la version : pas de mélange.
+ */
+const OCR_CACHE = 'ocr-files';
+async function fromOcrCache(req) {
+  const cache = await caches.open(OCR_CACHE);
+  const hit = await cache.match(req);
+  if (hit) return hit;
+  const res = await fetch(req);
+  if (res.ok) await cache.put(req, res.clone());
+  return res;
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (!handles(req)) return;
+  if (new URL(req.url).pathname.includes('/ocr/')) {
+    event.respondWith(fromOcrCache(req));
+    return;
+  }
   if (req.mode === 'navigate') {
     const url = new URL(req.url);
     const scope = self.registration ? self.registration.scope : new URL('./', self.location.href).href;

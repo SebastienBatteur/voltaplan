@@ -2889,3 +2889,17 @@ body.resizing-h * {
   margin-top: auto;
   font-style: italic;
 }
+
+/* Lecture OCR locale (compteur, plan) */
+.ocr-box {
+  margin: 4px 0 8px;
+}
+.ocr-result {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--border, #ccc);
+  border-radius: 6px;
+}
+.ocr-result p {
+  margin: 4px 0;
+}

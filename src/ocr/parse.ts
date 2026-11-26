@@ -31,12 +31,13 @@ export interface MeterPlate {
   maxA?: number;
   frequencyHz?: number;
   /**
-   * Alimentation proposée (texte du projet). Triphasé avec tension composée (220/380, 230/400) → « 3N x 400V ~ 50Hz » ;
-   * monophasé 230 V : deux possibilités sur le réseau belge (« 2 x 230V » ou « 1N x 230V »), donc aucune proposition
-   * unique : `supplyOptions` les liste et la question est posée.
+   * Alimentation proposée, dans les valeurs du projet : triphasé avec neutre (220/380, 230/400) → « 3N x 400V ~ 50Hz » ;
+   * triphasé sans neutre (« 3 x 230 V ») → « 3 x 230V ~ 50Hz » ; monophasé 230 V → « 2 x 230V ~ 50Hz ». Toujours à
+   * confirmer par l'utilisateur.
    */
   supply?: string;
-  supplyOptions?: string[];
+  /** Triphasé lu (« 3x10(40) A ») sans la tension : avec ou sans neutre, à choisir par l'utilisateur. */
+  options?: string[];
   /** Extraits du texte qui justifient la lecture (affichés à l'utilisateur). */
   evidence: string[];
 }
@@ -68,8 +69,15 @@ export function readMeterPlate(raw: string): MeterPlate {
   }
   const hz = /\b(50|60)\s*Hz/i.exec(t);
   if (hz) out.frequencyHz = Number(hz[1]);
-  if (out.phases === 3 && comp) out.supply = '3N x 400V ~ 50Hz';
-  else if (out.phases === 1 && out.voltage) out.supplyOptions = ['2 x 230V ~ 50Hz', '1N x 230V ~ 50Hz'];
+  const delta = /\b3\s*x\s*(220|230)\s*V\b(?!\s*\/)/i.exec(t);
+  if (comp) out.supply = '3N x 400V ~ 50Hz';
+  else if (delta) {
+    out.phases = 3;
+    out.voltage = delta[1];
+    out.supply = '3 x 230V ~ 50Hz';
+    if (!out.evidence.includes(delta[0].trim())) out.evidence.push(delta[0].trim());
+  } else if (out.phases === 1 && out.voltage) out.supply = '2 x 230V ~ 50Hz';
+  else if (out.phases === 3) out.options = ['3N x 400V ~ 50Hz', '3 x 230V ~ 50Hz'];
   return out;
 }
 

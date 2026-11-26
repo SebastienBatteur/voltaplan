@@ -32,6 +32,8 @@ export function isPrecached(path: string): boolean {
   // Métadonnées de provenance : écrites après le service worker, lues par les scanners en ligne (jamais hors ligne)
   if (p === 'build-info.json' || p === 'fingerprints.json') return false;
   if (p.endsWith('.map')) return false;
+  // Moteur OCR (≈ 18 Mo) : mis en cache à la première lecture seulement (voir sw.js), pas à l'installation
+  if (p.startsWith('ocr/')) return false;
   const base = p.split('/').pop() ?? p;
   if (base.startsWith('.') || base === 'Thumbs.db') return false;
   return true;

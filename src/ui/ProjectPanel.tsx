@@ -5,6 +5,7 @@ import type { Revision } from '../model/types';
 import { RULE_PACKS, findRulePack, getRulePack, packLabel, projectContext } from '../rules';
 import { useStore } from '../store';
 import type { Address } from '../model/types';
+import { MeterOcr } from './MeterOcr';
 
 function AddressFields({ value, onChange }: { value: Address; onChange: (a: Address) => void }) {
   const t = useStore((s) => s.t);
@@ -135,6 +136,7 @@ export function ProjectPanel() {
             ))}
           </select>
         </label>
+        <MeterOcr onApply={(supply) => setMeta({ supply })} />
         <label className="field">
           <span>{t('project.earthing')}</span>
           <select value={meta.earthing} onChange={(e) => setMeta({ earthing: e.target.value as 'TT' })}>

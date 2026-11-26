@@ -8,11 +8,19 @@ describe('OCR — plaque de compteur', () => {
     expect(m.evidence).toContain('220/380 V');
   });
 
-  it('compteur numérique monophasé : 230V, 0,25-5 (60)A → deux alimentations possibles, aucune choisie', () => {
+  it('compteur numérique monophasé : 230V, 0,25-5 (60)A → 2 x 230V proposé', () => {
     const m = readMeterPlate('230V ~ 50Hz\n0,25 - 5 (60)A\n-25°C / +55°C\nIP51');
-    expect(m).toMatchObject({ phases: 1, voltage: '230', baseA: 5, maxA: 60 });
+    expect(m).toMatchObject({ phases: 1, voltage: '230', baseA: 5, maxA: 60, supply: '2 x 230V ~ 50Hz' });
+  });
+
+  it('triphasé sans neutre : 3 x 230 V → 3 x 230V proposé', () => {
+    expect(readMeterPlate('3 x 230 V 50 Hz 10(60) A')).toMatchObject({ phases: 3, supply: '3 x 230V ~ 50Hz' });
+  });
+
+  it('triphasé lu sans la tension : deux choix proposés, aucun imposé', () => {
+    const m = readMeterPlate('AEG 3x 10(40) A 150 tr/kWh');
     expect(m.supply).toBeUndefined();
-    expect(m.supplyOptions).toEqual(['2 x 230V ~ 50Hz', '1N x 230V ~ 50Hz']);
+    expect(m).toMatchObject({ phases: 3, options: ['3N x 400V ~ 50Hz', '3 x 230V ~ 50Hz'] });
   });
 
   it('rien de reconnaissable : aucune proposition', () => {
