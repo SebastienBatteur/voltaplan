@@ -11,6 +11,7 @@
 import { interpretLabel } from '../assist/labels';
 import { createNode, emptyPage, emptyProject } from '../model/tree';
 import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/types';
+import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -297,7 +298,7 @@ export function findPlanPages(items: PdfText[], pages: PdfPageSize[]): PdfPlanPa
 }
 
 /** Projet Voltaplan à partir du texte d'un dossier PDF. */
-export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileName = 'Dossier PDF'): PdfDossierResult {
+export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileName = 'Dossier PDF', shapes: PdfShape[][] = []): PdfDossierResult {
   const rows = readCircuitTables(items, pages);
   if (!rows.length) {
     if (!items.length) throw new Error("Ce PDF ne contient pas de texte lisible (texte dessiné ou document scanné) : il ne peut pas être repris automatiquement. Importez-le comme fond de plan, ou utilisez la lecture d'une photo du tableau.");
@@ -407,7 +408,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   }
   mainBoard.children.push(...otherKids);
   if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
-  const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings);
+  const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings, shapes);
   warnings.add(
     backgrounds.length
       ? 'Le type exact des points et leurs commandes (interrupteurs) ne sont pas dans le texte du PDF : à compléter.'
@@ -431,9 +432,25 @@ function placeOnPlans(
   pointsOf: { row: DossierCircuit; points: ElNode[] }[],
   mainBoard: string,
   warnings: Set<string>,
+  shapes: PdfShape[][] = [],
 ): { pageIndex: number; pdfPage: number }[] {
   const plans = findPlanPages(items, pages);
   if (!plans.length) return [];
+  // Murs, portes et fenêtres lus dans le dessin de chaque page de plan ; échelle estimée par les portes si besoin
+  const drawn = new Map<number, ReturnType<typeof planFromShapes>>();
+  let byDoors = 0;
+  for (const pl of plans) {
+    const d = planFromShapes(shapes[pl.pdfPage - 1] ?? []);
+    drawn.set(pl.pdfPage, d);
+    if (!pl.scaled) {
+      const k = scaleFromDoors(d.openings);
+      if (k) {
+        pl.mmPerPt = k;
+        pl.scaled = true;
+        byDoors++;
+      }
+    }
+  }
   const backgrounds: { pageIndex: number; pdfPage: number }[] = [];
   const byName = new Map<string, { page: PlanPage; mmPerPt: number }>();
   project.plan.pages = [];
@@ -443,7 +460,18 @@ function placeOnPlans(
     const page = emptyPage(pl.name);
     const w = Math.round(size.width * pl.mmPerPt);
     const h = Math.round(size.height * pl.mmPerPt);
-    page.images.push({ center: { x: Math.round(w / 2), y: Math.round(h / 2) }, w, h, angle: 0, href: '', background: true });
+    const d = drawn.get(pl.pdfPage);
+    const k = pl.mmPerPt;
+    const mm = (p: { x: number; y: number }) => ({ x: Math.round(p.x * k), y: Math.round(p.y * k) });
+    if (d) {
+      page.walls = d.walls.map((v) => ({ a: mm(v.a), b: mm(v.b), thickness: Math.round(v.thickness * k) }));
+      page.openings = d.openings.map((o) =>
+        o.kind === 'door'
+          ? { kind: 'door' as const, a: mm(o.a), b: mm(o.b), width: Math.round(o.width * k), hinge: o.plusY ? ('right' as const) : ('left' as const), mirrored: o.hingeAtB }
+          : { kind: 'window' as const, a: mm(o.a), b: mm(o.b), width: Math.round(o.width * k) },
+      );
+    }
+    page.images.push({ center: { x: Math.round(w / 2), y: Math.round(h / 2) }, w, h, angle: 0, href: '', background: true, linked: true });
     byName.set(pl.name, { page, mmPerPt: pl.mmPerPt });
     backgrounds.push({ pageIndex: project.plan.pages.length, pdfPage: pl.pdfPage });
     project.plan.pages.push(page);
@@ -461,7 +489,14 @@ function placeOnPlans(
   let missing = 0;
   for (const { row, points } of pointsOf) {
     points.forEach((node, i) => {
-      const l = labels.find((x) => x.code === row.code && x.n === i + 1 && boardOf(x.pl) === (row.board || mainBoard)) ?? labels.find((x) => x.code === row.code && x.n === i + 1 && !x.pl.board);
+      const same = (x: (typeof labels)[number]) => x.code === row.code && x.n === i + 1;
+      let cands = labels.filter((x) => same(x) && boardOf(x.pl) === (row.board || mainBoard));
+      if (!cands.length) cands = labels.filter((x) => same(x) && !x.pl.board);
+      // Même repère pour la lampe et son interrupteur : la lampe est le repère le plus loin des murs, une prise ou un
+      // interrupteur le plus près (murs lus dans le dessin de la page)
+      const wallsOf = (x: (typeof labels)[number]) => drawn.get(x.pl.pdfPage)?.walls ?? [];
+      const dw = (x: (typeof labels)[number]) => distToWalls({ x: x.it.x, y: x.it.y }, wallsOf(x));
+      const l = cands.length > 1 && cands.some((x) => wallsOf(x).length) ? [...cands].sort((p, q) => (WALL_KINDS.has(node.kind) ? dw(p) - dw(q) : dw(q) - dw(p)))[0] : cands[0];
       if (!l) {
         missing++;
         return;
@@ -473,6 +508,10 @@ function placeOnPlans(
       placed++;
     });
   }
+  const nWalls = [...byName.values()].reduce((s, v) => s + v.page.walls.length, 0);
+  const nOpen = [...byName.values()].reduce((s, v) => s + v.page.openings.length, 0);
+  if (nWalls) warnings.add(`${nWalls} mur(s) et ${nOpen} porte(s) ou fenêtre(s) lus dans le dessin du PDF : à vérifier.`);
+  if (byDoors) warnings.add("Échelle estimée d'après les portes (largeur courante 85 cm) : vérifiez une cote, et corrigez avec « Mettre à l'échelle » si besoin.");
   const unscaled = plans.filter((pl) => !pl.scaled).map((pl) => pl.name);
   warnings.add(
     `Plans du PDF repris en fond de plan (${[...byName.keys()].join(', ')})${placed ? ` ; ${placed} point(s) posé(s) à côté de leur repère, position à vérifier` : ''}${missing ? ` ; ${missing} sans repère trouvé (à placer)` : ''}.`,

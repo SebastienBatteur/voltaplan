@@ -426,7 +426,8 @@ export function PlanView() {
         const answer = prompt(t('plan.scalePrompt'));
         const mm = answer ? parseLength(answer) : null;
         if (mm) {
-          if (hasBg && page.walls.length) {
+          // Murs dessinés à part (à l'échelle) : seul le fond est mis à l'échelle ; murs relevés sur le fond : tout
+          if (hasBg && page.walls.length && !page.images.some((i) => i.background && i.linked)) {
             editPage((pg) => scaleBackground(pg, pts[0], pts[1], mm));
             chooseTool('wall');
           } else {

@@ -4,11 +4,12 @@
  * (src/import/pdfDossier.ts).
  */
 import type { PdfPageSize, PdfText } from '../import/pdfDossier';
+import { shapesFromOperatorList, type PdfShape } from '../import/pdfPlan';
 
 /** Au-delà, un « dossier » n'en est plus un (et la lecture deviendrait longue). */
 const MAX_PAGES = 60;
 
-export async function readPdfText(data: Blob): Promise<{ items: PdfText[]; pages: PdfPageSize[] }> {
+export async function readPdfText(data: Blob): Promise<{ items: PdfText[]; pages: PdfPageSize[]; shapes: PdfShape[][] }> {
   const pdfjs = await import('pdfjs-dist');
   const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
   pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
@@ -16,10 +17,14 @@ export async function readPdfText(data: Blob): Promise<{ items: PdfText[]; pages
   try {
     const items: PdfText[] = [];
     const pages: PdfPageSize[] = [];
+    const shapes: PdfShape[][] = [];
     for (let i = 1; i <= Math.min(doc.numPages, MAX_PAGES); i++) {
       const page = await doc.getPage(i);
       const vp = page.getViewport({ scale: 1 });
       pages.push({ width: vp.width, height: vp.height });
+      // Tracés (murs, portes, fenêtres des plans) : voir src/import/pdfPlan.ts
+      const ol = await page.getOperatorList();
+      shapes.push(shapesFromOperatorList(ol.fnArray, ol.argsArray as unknown[][], pdfjs.OPS as unknown as Record<string, number>, vp.transform));
       const tc = await page.getTextContent();
       for (const it of tc.items) {
         if (!('str' in it) || !it.str.trim()) continue;
@@ -29,7 +34,7 @@ export async function readPdfText(data: Blob): Promise<{ items: PdfText[]; pages
         items.push({ page: i, x: e, y: vp.height - f, str: it.str, size: Math.hypot(a, b) });
       }
     }
-    return { items, pages };
+    return { items, pages, shapes };
   } finally {
     await doc.destroy();
   }

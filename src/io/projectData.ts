@@ -111,8 +111,8 @@ export async function openProjectData(data: Blob | string, name: string, session
   if (/\.pdf$/i.test(name)) {
     checkFileSize({ name, size: blob.size }, 'pdf');
     const [{ readPdfText }, { importPdfDossier }] = await Promise.all([import('./pdfText'), import('../import/pdfDossier')]);
-    const { items, pages } = await readPdfText(blob);
-    const { project, warnings, backgrounds } = importPdfDossier(items, pages, name);
+    const { items, pages, shapes } = await readPdfText(blob);
+    const { project, warnings, backgrounds } = importPdfDossier(items, pages, name, shapes);
     // Pages de plan du PDF : rendues en image (fond de plan), puis rangées comme tout fond de plan
     const { pdfPageImage } = await import('./background');
     for (const b of backgrounds) {

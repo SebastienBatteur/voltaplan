@@ -11,7 +11,12 @@
 - Plans : chaque page de plan du PDF (« Plan de position – Rez », « Plan · Toiture », « Plan de situation »…) devient
   une page avec le plan en fond de plan, à l'échelle quand elle est écrite (« 1:75 »), sinon à mettre à l'échelle ;
   chaque point est posé à côté de son repère (A1, A2…), par tableau quand la page en nomme un.
-- Mettre à l'échelle une page sans murs agit sur toute la page (fond et points ensemble).
+- Murs, portes (sens d'ouverture et charnière) et fenêtres lus dans le DESSIN du PDF, sans IA : traits épais
+  (Draadwijs, Amperio), surfaces de murs (Condui), ouvertures « effacées » en blanc ou trous dans le mur, battant
+  reconnu à son arc. Échelle estimée d'après les portes (85 cm) quand le plan ne l'indique pas.
+- Une lampe et son interrupteur portent souvent le même repère : la lampe prend celui qui est le plus loin des murs,
+  une prise ou un interrupteur celui qui est contre un mur.
+- Mettre à l'échelle un plan repris d'un PDF agit sur toute la page (fond, murs et points ensemble).
 - Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).
 - Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français, néerlandais, anglais et allemand.

@@ -175,6 +175,8 @@ export interface PlanPage {
     background?: boolean;
     /** Fond redressé : rectangle connu (façades) sur la page, en mm. */
     frame?: { x: number; y: number; w: number; h: number };
+    /** Murs et points relevés sur ce fond (plan d'un dossier PDF) : la mise à l'échelle déplace toute la page. */
+    linked?: boolean;
   }[];
   /** Mobilier (pictogrammes vectoriels, voir src/plan/furniture.tsx). Absent dans les anciens fichiers. */
   furniture?: Furniture[];
