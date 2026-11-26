@@ -27,12 +27,21 @@ function canvasToBlob(c: HTMLCanvasElement): Promise<Blob> {
 }
 
 async function pdfFirstPage(data: Blob): Promise<HTMLCanvasElement> {
+  return pdfPageCanvas(data, 1);
+}
+
+/** Page `n` (1…) d'un PDF, rendue en image (fond de plan d'une page de plan d'un dossier PDF repris). */
+export async function pdfPageImage(data: Blob, n: number): Promise<string> {
+  return (await pdfPageCanvas(data, n)).toDataURL('image/jpeg', 0.85);
+}
+
+async function pdfPageCanvas(data: Blob, n: number): Promise<HTMLCanvasElement> {
   const pdfjs = await import('pdfjs-dist');
   const worker = await import('pdfjs-dist/build/pdf.worker.min.mjs?url');
   pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
   const doc = await pdfjs.getDocument({ data: new Uint8Array(await data.arrayBuffer()) }).promise;
   try {
-    const page = await doc.getPage(1);
+    const page = await doc.getPage(n);
     const base = page.getViewport({ scale: 1 });
     const scale = MAX_PX / Math.max(base.width, base.height);
     const vp = page.getViewport({ scale });

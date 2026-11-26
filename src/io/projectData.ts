@@ -112,7 +112,20 @@ export async function openProjectData(data: Blob | string, name: string, session
     checkFileSize({ name, size: blob.size }, 'pdf');
     const [{ readPdfText }, { importPdfDossier }] = await Promise.all([import('./pdfText'), import('../import/pdfDossier')]);
     const { items, pages } = await readPdfText(blob);
-    const { project, warnings } = importPdfDossier(items, pages, name);
+    const { project, warnings, backgrounds } = importPdfDossier(items, pages, name);
+    // Pages de plan du PDF : rendues en image (fond de plan), puis rangées comme tout fond de plan
+    const { pdfPageImage } = await import('./background');
+    for (const b of backgrounds) {
+      const pg = project.plan.pages[b.pageIndex];
+      const bg = pg.images.find((im) => im.background);
+      try {
+        if (bg) bg.href = await pdfPageImage(blob, b.pdfPage);
+      } catch {
+        pg.images = pg.images.filter((im) => im !== bg);
+        warnings.push(`Page ${b.pdfPage} du PDF : image du plan non rendue.`);
+      }
+    }
+    await extractEmbeddedImages(project, async (b, n) => (await session.store.add(b, { name: n })).sha256);
     return { project, format: 'pdf', warnings, needsNewFile: true };
   }
   // Export Condui (.zip : manifest « project-with-assets » + project.json) ; une archive Voltaplan n'en a pas

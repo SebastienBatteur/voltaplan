@@ -9,8 +9,8 @@
  * (texte dessiné en traits, document scanné) ne peut pas être lu ainsi.
  */
 import { interpretLabel } from '../assist/labels';
-import { createNode, emptyProject } from '../model/tree';
-import type { ElNode, NodeKind, Project, PropValue } from '../model/types';
+import { createNode, emptyPage, emptyProject } from '../model/tree';
+import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/types';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -39,18 +39,18 @@ const fold = (s: string) =>
 
 /** En-têtes de colonnes du tableau des circuits (FR, NL, EN, DE), comparés sans accents ni majuscules. */
 const HEADERS: [Col, RegExp][] = [
-  ['code', /^(lettre|repere|code|circuit|kring|stroomkring|kringcode|letter|aanduiding|ref|reference|nr|n°|stromkreis|kreis|bezeichner|kennzeichen)$/],
-  ['protection', /(disjoncteur|protection|dispositif|automaat|beveiliging|zekering|breaker|protective|schutz|sicherung|absicherung)/],
-  ['cable', /^(cable|kabel|leitung|leiding|geleider|conductor|wire)s?$/],
+  ['code', /^(lettre|repere|code|circuit|kring|stroomkring|kringcode|letter|aanduiding|ref|reference|nr|n°|stromkreis|kreis|bezeichner|kennzeichen|buchstabe)$/],
+  ['protection', /(disjoncteur|protection|dispositif|automaat|beveiliging|zekering|breaker|protective|schutz|sicherung|absicherung|sicherheitsger)/],
+  ['cable', /^(cable|kabel|leitung|leiding|geleider|conductor|wire|canalisation|leidingen)s?$/],
   ['diff', /^(diff|differentiel|differentieel|rcd|fi|fehlerstrom|aardlek|verliesstroom)/],
   ['points', /^(points|punten|punkte|pts|aantal punten|nombre de points)$/],
   ['rooms', /^(pieces|locaux|ruimtes|lokalen|rooms|raume|zimmer)$/],
   ['board', /^(tableau|bord|board|verteiler|verdeelbord|panel)$/],
   ['type', /^(type|soort|typ|art)$/],
-  ['name', /^(nom|designation|description|naam|benaming|omschrijving|name|bezeichnung|beschreibung|notes?|opmerkingen?|bemerkung|usage|gebruik|verwendung)$/],
+  ['name', /^(nom|designation|description|naam|benaming|omschrijving|name|bezeichnung|beschreibung|notes?|opmerkingen?|bemerkung|hinweise?|usage|gebruik|verwendung)$/],
 ];
 const colOf = (s: string): Col | null => {
-  const f = fold(s);
+  const f = fold(s).replace(/[.:]$/, '');
   for (const [c, re] of HEADERS) if (re.test(f)) return c;
   return null;
 };
@@ -234,6 +234,66 @@ export interface PdfDossierResult {
   project: Project;
   warnings: string[];
   circuits: number;
+  /** Fonds de plan à rendre : page Voltaplan (index) ← page du PDF (1…). L'image de fond y est déjà, sans contenu. */
+  backgrounds: { pageIndex: number; pdfPage: number }[];
+}
+
+/** Page de plan du PDF : nom de l'étage, tableau dont elle montre les points (Condui : « Beneden - Tuinhuis »), échelle. */
+export interface PdfPlanPage {
+  pdfPage: number;
+  name: string;
+  board?: string;
+  /** mm (réels) par point PDF : échelle écrite sur le plan (« 1:75 »), sinon plan de 12 m de large, à mettre à l'échelle. */
+  mmPerPt: number;
+  scaled: boolean;
+}
+
+/** Largeur supposée d'un plan sans échelle (comme un fond de plan importé, voir PlanView). */
+const DEFAULT_PLAN_WIDTH_MM = 12000;
+const PT_MM = 25.4 / 72;
+const PLAN_TITLE =
+  /^(plan de position|plan de situation|situation plan|site plan|floor plan|position plan|situatieschema|situatieplan|liggingsplan|grondplan|lageplan|installationsplan|grundriss|plan)(?:\s*[-–·:]\s*(.+))?$/;
+const LEGEND = /(legende|legend|legenda|zeichenerklarung)/;
+/** Repère d'un point : « A1 », « AB12 », « E-A3 ». */
+const POINT_LABEL = /^((?:[A-Z]{1,3}-)?[A-Z]{1,3})(\d{1,2})$/;
+
+/** Pages de plan du PDF (titre « Plan de position – Rez », « Plan · Toiture », « Plan de situation »…). */
+export function findPlanPages(items: PdfText[], pages: PdfPageSize[]): PdfPlanPage[] {
+  const out: PdfPlanPage[] = [];
+  pages.forEach((size, i) => {
+    const page = i + 1;
+    const list = items.filter((it) => it.page === page);
+    let name: string | undefined;
+    let found = false;
+    for (const it of list) {
+      const m = PLAN_TITLE.exec(fold(it.str));
+      if (!m) continue;
+      // Sommaire : numéro de page sur la même ligne, à droite
+      if (list.some((q) => q !== it && Math.abs(q.y - it.y) <= 3 && q.x > it.x + 150 && /^\d{1,3}$/.test(q.str.trim()))) continue;
+      if (m[2] && LEGEND.test(m[2])) {
+        found = false;
+        name = undefined;
+        break;
+      }
+      found = true;
+      if (m[2]) name = it.str.trim().replace(/^[^-–·:]*[-–·:]\s*/, '');
+    }
+    if (!found) return;
+    // Sans nom dans le titre (Condui) : grand titre en haut de page « Étage - Tableau »
+    let board: string | undefined;
+    if (!name) {
+      const top = list.filter((it) => it.y < size.height * 0.12 && it.str.trim().length > 1).sort((a, b) => b.size - a.size)[0];
+      if (top) {
+        const parts = top.str.split(/\s+[-–]\s+/);
+        name = parts[0].trim();
+        board = parts[1]?.trim();
+      }
+    }
+    const sc = list.map((it) => /(?:echelle|schaal|scale|massstab|maßstab)\s*1\s*[:/]\s*(\d{1,4})/i.exec(fold(it.str))).find(Boolean);
+    const scaled = !!sc;
+    out.push({ pdfPage: page, name: name || `Plan ${out.length + 1}`, board, mmPerPt: sc ? PT_MM * Number(sc[1]) : DEFAULT_PLAN_WIDTH_MM / size.width, scaled });
+  });
+  return out;
 }
 
 /** Projet Voltaplan à partir du texte d'un dossier PDF. */
@@ -270,6 +330,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   const nodesByCode = new Map<string, ElNode>();
   let lastRcd: { board: ElNode; ma: number; node: ElNode } | null = null;
   let unknown = 0;
+  const pointsOf: { row: DossierCircuit; points: ElNode[] }[] = [];
   // Même repère dans plusieurs tableaux (« A » du principal et du sous-tableau) : repères des points ambigus
   const shared = new Set(rows.filter((r, i) => rows.findIndex((q) => q.code === r.code) !== i).map((r) => r.code));
   for (const r of rows) {
@@ -292,6 +353,8 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
     for (const k of ['cableType', 'section', 'conductors', 'inConduit', 'method'] as const) if (!(k in parseCable(r.cable))) delete cable.props[k];
     mcb.children.push(cable);
     nodesByCode.set(r.code, mcb);
+    const points: ElNode[] = [];
+    pointsOf.push({ row: r, points });
     // Points : nombre (colonne « points » ou repères A1, A2… des autres pages), type d'après le nom du circuit
     const n = r.points ?? countPoints(items, r.code);
     if (r.points === undefined && shared.has(r.code) && n > 0) warnings.add(`Repère ${r.code} utilisé dans plusieurs tableaux : nombre de points à vérifier.`);
@@ -307,6 +370,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
         const p = createNode(kind, usage.kind === 'appliance' ? { applianceType: usage.applianceType } : {});
         if (room) p.location = room;
         cable.children.push(p);
+        points.push(p);
       }
       if (usage.kind === 'appliance' && n > 1) warnings.add(`Circuit ${r.code} : ${n} points pour un appareil, un seul repris ; complétez les autres.`);
     } else if (!isSpare && !SUBBOARD.test(fold(label)) && n > 0) unknown++;
@@ -343,6 +407,76 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   }
   mainBoard.children.push(...otherKids);
   if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
-  warnings.add('Le type exact des points, leurs commandes (interrupteurs) et leur position sur le plan ne sont pas dans le texte du PDF : à compléter. Le plan peut être importé comme fond de plan (onglet Plan).');
-  return { project, warnings: [...warnings], circuits: rows.length };
+  const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings);
+  warnings.add(
+    backgrounds.length
+      ? 'Le type exact des points et leurs commandes (interrupteurs) ne sont pas dans le texte du PDF : à compléter.'
+      : 'Le type exact des points, leurs commandes (interrupteurs) et leur position sur le plan ne sont pas dans le texte du PDF : à compléter. Le plan peut être importé comme fond de plan (onglet Plan).',
+  );
+  return { project, warnings: [...warnings], circuits: rows.length, backgrounds };
+}
+
+/** Éléments posés contre un mur (trait de raccordement tourné vers le mur le plus proche). */
+const WALL_KINDS = new Set(['socket', 'switch', 'pushButton']);
+
+/**
+ * Plans : une page Voltaplan par étage (pages du PDF de même nom regroupées), avec le fond de plan à rendre, et
+ * chaque point posé à côté de son repère (« A1 » : point n° 1 du circuit A). Les repères d'une page « Étage -
+ * Tableau » appartiennent à ce tableau (un « A » de sous-tableau n'est pas le « A » du tableau principal).
+ */
+function placeOnPlans(
+  project: Project,
+  items: PdfText[],
+  pages: PdfPageSize[],
+  pointsOf: { row: DossierCircuit; points: ElNode[] }[],
+  mainBoard: string,
+  warnings: Set<string>,
+): { pageIndex: number; pdfPage: number }[] {
+  const plans = findPlanPages(items, pages);
+  if (!plans.length) return [];
+  const backgrounds: { pageIndex: number; pdfPage: number }[] = [];
+  const byName = new Map<string, { page: PlanPage; mmPerPt: number }>();
+  project.plan.pages = [];
+  for (const pl of plans) {
+    if (byName.has(pl.name)) continue;
+    const size = pages[pl.pdfPage - 1];
+    const page = emptyPage(pl.name);
+    const w = Math.round(size.width * pl.mmPerPt);
+    const h = Math.round(size.height * pl.mmPerPt);
+    page.images.push({ center: { x: Math.round(w / 2), y: Math.round(h / 2) }, w, h, angle: 0, href: '', background: true });
+    byName.set(pl.name, { page, mmPerPt: pl.mmPerPt });
+    backgrounds.push({ pageIndex: project.plan.pages.length, pdfPage: pl.pdfPage });
+    project.plan.pages.push(page);
+    project.plan.width = Math.max(project.plan.width, w + 1000);
+    project.plan.height = Math.max(project.plan.height, h + 1000);
+  }
+  // Repères des points sur chaque page de plan
+  const labels = plans.flatMap((pl) =>
+    items
+      .filter((it) => it.page === pl.pdfPage && POINT_LABEL.test(it.str.trim()))
+      .map((it) => ({ it, pl, code: POINT_LABEL.exec(it.str.trim())![1], n: Number(POINT_LABEL.exec(it.str.trim())![2]) })),
+  );
+  const boardOf = (pl: PdfPlanPage) => (pl.board && pl.board !== mainBoard ? pl.board : mainBoard);
+  let placed = 0;
+  let missing = 0;
+  for (const { row, points } of pointsOf) {
+    points.forEach((node, i) => {
+      const l = labels.find((x) => x.code === row.code && x.n === i + 1 && boardOf(x.pl) === (row.board || mainBoard)) ?? labels.find((x) => x.code === row.code && x.n === i + 1 && !x.pl.board);
+      if (!l) {
+        missing++;
+        return;
+      }
+      const target = byName.get(l.pl.name)!;
+      // Le repère est écrit à côté du symbole : point posé juste à sa gauche
+      const k = l.pl.mmPerPt;
+      target.page.symbols.push({ nodeId: node.id, pos: { x: Math.round((l.it.x - l.it.size) * k), y: Math.round((l.it.y - l.it.size * 0.4) * k) }, rotation: 0, autoRotate: WALL_KINDS.has(node.kind) || undefined });
+      placed++;
+    });
+  }
+  const unscaled = plans.filter((pl) => !pl.scaled).map((pl) => pl.name);
+  warnings.add(
+    `Plans du PDF repris en fond de plan (${[...byName.keys()].join(', ')})${placed ? ` ; ${placed} point(s) posé(s) à côté de leur repère, position à vérifier` : ''}${missing ? ` ; ${missing} sans repère trouvé (à placer)` : ''}.`,
+  );
+  if (unscaled.length) warnings.add(`Échelle non indiquée sur le plan (${[...new Set(unscaled)].join(', ')}) : utilisez « Mettre à l'échelle » (onglet Plan) sur une cote connue.`);
+  return backgrounds;
 }

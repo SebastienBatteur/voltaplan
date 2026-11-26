@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { countPoints, detectSupply, importPdfDossier, parseCable, parseProtection, readCircuitTables, residualMa, type PdfText } from '../src/import/pdfDossier';
+import { countPoints, detectSupply, findPlanPages, importPdfDossier, parseCable, parseProtection, readCircuitTables, residualMa, type PdfText } from '../src/import/pdfDossier';
 import { interpretLabel } from '../src/assist/labels';
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import { computeNumbering, walk } from '../src/model/tree';
@@ -122,6 +122,53 @@ describe('reprise d’un dossier PDF (texte)', () => {
     expect(readCircuitTables(items, A4)).toHaveLength(1);
     expect(() => importPdfDossier([], A4)).toThrow(/pas de texte/);
     expect(() => importPdfDossier([{ page: 1, x: 0, y: 0, str: 'Bonjour', size: 9 }], A4)).toThrow(/tableau des circuits/);
+  });
+
+  it('plans : pages reconnues (sommaire et légende écartés), échelle lue, points posés à leur repère par tableau', () => {
+    const A4L = { width: 842, height: 595 };
+    const pages = [A4L, A4L, A4L, A4L, A4L];
+    const t = (page: number, x: number, y: number, str: string, size = 8): PdfText => ({ page, x, y, str, size });
+    const items: PdfText[] = [
+      // p1 : sommaire (numéro de page sur la ligne) et tableau des circuits
+      t(1, 100, 40, 'Plan de position - Rez'),
+      t(1, 600, 40, '2'),
+      ...table(['Circuit', 'Description', 'Protection'], [['A', 'Prises séjour', 'C20'], ['B', 'Éclairage', 'C16']], [50, 100, 300]),
+      // p2 : plan à l'échelle 1:50, repères A1, A2 (le calibre « C16 » n'est pas un repère)
+      t(2, 400, 440, 'PLAN DE POSITION – Rez'),
+      t(2, 60, 560, 'échelle 1:50'),
+      t(2, 110, 100, 'A1'),
+      t(2, 210, 100, 'A2'),
+      t(2, 300, 200, 'B1'),
+      // p3 : légende du même plan, écartée
+      t(3, 400, 440, 'PLAN DE POSITION – Rez – Légende'),
+      t(3, 10, 10, 'A1'),
+      // p4 : plan sans nom dans le titre (Condui) : « Étage - Tableau » en haut ; repères d'un autre tableau
+      t(4, 40, 30, 'Étage - Garage', 14),
+      t(4, 476, 560, 'Plan de situation', 5),
+      t(4, 100, 100, 'A1'),
+    ];
+    const plans = findPlanPages(items, pages);
+    expect(plans.map((p) => [p.pdfPage, p.name, p.board ?? null, p.scaled])).toEqual([
+      [2, 'Rez', null, true],
+      [4, 'Étage', 'Garage', false],
+    ]);
+    expect(plans[0].mmPerPt).toBeCloseTo((25.4 / 72) * 50, 5);
+    const { project, backgrounds, warnings } = importPdfDossier(items, pages, 'p.pdf');
+    expect(project.plan.pages.map((p) => p.name)).toEqual(['Rez', 'Étage']);
+    expect(backgrounds).toEqual([
+      { pageIndex: 0, pdfPage: 2 },
+      { pageIndex: 1, pdfPage: 4 },
+    ]);
+    // Fond de plan à la taille réelle (1:50) : 842 pt × 0,3528 × 50
+    expect(project.plan.pages[0].images[0]).toMatchObject({ background: true, w: Math.round(842 * (25.4 / 72) * 50) });
+    // Les repères du tableau principal sont sur le plan « Rez » ; le A1 de la page « Garage » n'est pas le A1 principal
+    const rez = project.plan.pages[0];
+    expect(rez.symbols).toHaveLength(3);
+    expect(project.plan.pages[1].symbols).toHaveLength(0);
+    const a1 = rez.symbols[0];
+    expect(a1.autoRotate).toBe(true);
+    expect(a1.pos.x).toBeLessThan(Math.round(110 * plans[0].mmPerPt));
+    expect(warnings.some((w) => /Échelle non indiquée sur le plan \(Étage\)/.test(w))).toBe(true);
   });
 
   // Texte extrait de vrais dossiers PDF (jamais dans le dépôt) : PDF_TEXT_SAMPLES=chemin1;chemin2 (format « x,y r= s= | texte »)

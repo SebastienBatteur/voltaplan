@@ -8,10 +8,13 @@
   tableau des circuits (repère, nom, protection, câble, différentiel, nombre de points), en français,
   néerlandais, anglais ou allemand ; sous-tableaux ; points comptés par leurs repères (A1, A2…) et typés d'après le
   nom du circuit ; réseau et code EAN.
-- Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, position sur le plan,
-  différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
+- Plans : chaque page de plan du PDF (« Plan de position – Rez », « Plan · Toiture », « Plan de situation »…) devient
+  une page avec le plan en fond de plan, à l'échelle quand elle est écrite (« 1:75 »), sinon à mettre à l'échelle ;
+  chaque point est posé à côté de son repère (A1, A2…), par tableau quand la page en nomme un.
+- Mettre à l'échelle une page sans murs agit sur toute la page (fond et points ensemble).
+- Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).
-- Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français et en néerlandais.
+- Testé sur les dossiers PDF de Volter, Condui, Draadwijs et Amperio, en français, néerlandais, anglais et allemand.
 
 ### Import Condui (2026-11-26)
 

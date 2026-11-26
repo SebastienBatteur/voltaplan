@@ -410,7 +410,8 @@ export function PlanView() {
         return;
       }
       case 'scale': {
-        // Avec un fond de plan : on met le fond à l'échelle. Sans fond : toute la page (ex. plan Trikker hors échelle).
+        // Avec un fond de plan et des murs déjà dessinés : on met le fond à l'échelle. Sans mur : toute la page, fond
+        // compris (plan Trikker hors échelle, plan d'un dossier PDF repris avec ses points posés sur le fond).
         const hasBg = page.images.some((i) => i.background);
         if (!hasBg && !page.walls.length) {
           alert(t('plan.noBackground'));
@@ -425,12 +426,13 @@ export function PlanView() {
         const answer = prompt(t('plan.scalePrompt'));
         const mm = answer ? parseLength(answer) : null;
         if (mm) {
-          if (hasBg) {
+          if (hasBg && page.walls.length) {
             editPage((pg) => scaleBackground(pg, pts[0], pts[1], mm));
             chooseTool('wall');
           } else {
             editPage((pg) => scalePage(pg, pts[0], pts[1], mm));
-            chooseTool('select');
+            // Fond de plan à l'échelle : on enchaîne sur le dessin des murs
+            chooseTool(hasBg ? 'wall' : 'select');
           }
         }
         return;
