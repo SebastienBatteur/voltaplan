@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
+import { moduleWidth } from '../src/board/model';
 import { importVolter, VOLTER_TYPES, volterSupply } from '../src/import/volter';
 import { walk } from '../src/model/tree';
 import { ALLOWED_CHILDREN } from '../src/model/schema';
@@ -249,5 +250,18 @@ describe('import Volter (.vschema)', () => {
       console.log(p, { nodes, symbols, loose: project.loose.length, pages: project.plan.pages.length }, warnings);
       expect(warnings.join('\n')).not.toMatch(/non reconnu/);
     }
+  });
+
+  it('face avant : rangée et ordre de chaque appareil, colonnes en modules', () => {
+    const { project } = importVolter(JSON.stringify(sample()));
+    const board = [...walk(project.roots)].find((x) => x.node.kind === 'board')!.node;
+    const slots = project.boards![board.id].slots;
+    const w = (id: string) => moduleWidth(byId(project, id)!.node);
+    expect(slots['main']).toEqual({ row: 0, col: 0 });
+    expect(slots['c-hob']).toEqual({ row: 0, col: w('main') });
+    expect(slots['c-pv']).toEqual({ row: 0, col: w('main') + w('c-hob') });
+    expect(slots['r30']).toEqual({ row: 1, col: 0 });
+    expect(slots['c-light']).toEqual({ row: 1, col: w('r30') });
+    expect(slots['c-sock']).toEqual({ row: 1, col: w('r30') + w('c-light') });
   });
 });

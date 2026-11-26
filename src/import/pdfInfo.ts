@@ -229,6 +229,87 @@ export function applyPdfInfo(project: Project, info: PdfInfo): string[] {
   return got;
 }
 
+// ————— Différentiel général, mesures, longueurs des câbles, date de l'installation —————
+
+const MAIN_LABEL = /^(principal|general|generale|hoofd|hoofdschakelaar|algemeen|main|main rcd|haupt|hauptschalter|differentiel principal|differentiel general|hoofddifferentieel|algemene differentieel|main switch)$/;
+
+/**
+ * Différentiel général d'après le schéma ou la face avant : le libellé (« Général », « Hoofd », « Principal »,
+ * « Différentiel principal ») et ses caractéristiques écrites autour (« 40/0,3A », « Type A 300mA », « 2P C40 »).
+ */
+export function readMainProtection(items: PdfText[], parse: (s: string) => Record<string, string | number | boolean | undefined>): Record<string, string | number | boolean | undefined> | null {
+  for (const l of items) {
+    if (!MAIN_LABEL.test(fold(l.str))) continue;
+    // Textes voisins, du plus proche au plus éloigné : on s'arrête dès que calibre et sensibilité sont trouvés (un autre
+    // différentiel peut être écrit un peu plus loin)
+    const near = items
+      .filter((q) => q.page === l.page && q !== l && Math.abs(q.y - l.y) <= 70 && Math.abs(q.x - l.x) <= 70)
+      .sort((p, q) => Math.hypot(p.x - l.x, p.y - l.y) - Math.hypot(q.x - l.x, q.y - l.y));
+    let text = '';
+    for (const q of near) {
+      text += ' ' + q.str;
+      // « 40/0,3A » (Draadwijs) : calibre / sensibilité
+      const slash = /\b(\d{2,3})\s?\/\s?0[.,](\d{1,3})\s?A\b/.exec(text);
+      const props = parse(slash ? text.replace(slash[0], `${slash[1]}A ${Math.round(Number('0.' + slash[2]) * 1000)}mA`) : text);
+      if (props.residualCurrent !== undefined && props.ratedCurrent !== undefined) return props;
+    }
+  }
+  return null;
+}
+
+const EARTH = /^(mise a la terre|prise de terre|resistance de (la )?(prise de )?terre|aarding|aardingsweerstand|aardverspreidingsweerstand|earthing|earth electrode|earth resistance|ground resistance|erdung|erdungswiderstand|erderwiderstand)$/;
+const INSULATION = /^(isolement|resistance d'isolement|isolatie|isolatieweerstand|insulation|insulation resistance|isolation|isolationswiderstand)$/;
+
+/** Mesures du dossier : résistance de terre (Ω) et isolement (MΩ), valeur seule sur la ligne du libellé. */
+export function readMeasurements(items: PdfText[]): { earthResistanceOhm?: number; insulationMOhm?: number; measuredOn?: string } {
+  const out: { earthResistanceOhm?: number; insulationMOhm?: number; measuredOn?: string } = {};
+  for (const l of items) {
+    const f = fold(l.str);
+    const kind = EARTH.test(f) ? 'earth' : INSULATION.test(f) ? 'insulation' : null;
+    if (!kind) continue;
+    const row = items.filter((q) => q.page === l.page && q !== l && Math.abs(q.y - l.y) <= 3 && q.x > l.x);
+    // Valeur seule dans sa case (« 12 Ω », « 2.5 MΩ ») : pas l'exigence (« moins de 100 Ω ; … »)
+    const v = row.map((q) => (kind === 'earth' ? /^(\d+(?:[.,]\d+)?)\s?(?:Ω|ohm)$/i : /^(\d+(?:[.,]\d+)?)\s?(?:MΩ|Mohm|MOhm)$/).exec(q.str.trim())).find(Boolean);
+    if (!v) continue;
+    const n = Number(v[1].replace(',', '.'));
+    if (kind === 'earth') out.earthResistanceOhm ??= n;
+    else out.insulationMOhm ??= n;
+    const d = row.map((q) => parseDate(q.str)).find(Boolean);
+    if (d) out.measuredOn ??= d;
+  }
+  return out;
+}
+
+/** Date (ou période) de réalisation de l'installation : « du 01/10/1981 au 01/06/2020 », « 01.10.1981 bis 01.06.2020 ». */
+export function readInstallationPeriod(items: PdfText[]): { from?: string; to?: string } | null {
+  for (const it of items) {
+    const f = fold(it.str);
+    if (!/^(date de l'installation|date d'installation|datum installatie|installatiedatum|installation date|datum der installation|installationsdatum)\b/.test(f)) continue;
+    // Jour/mois/année (une installation peut dater des années 1900)
+    const dates = [...it.str.matchAll(/\b(\d{1,2})[/.](\d{1,2})[/.]((?:19|20)\d{2})\b/g)]
+      .filter((m) => Number(m[2]) >= 1 && Number(m[2]) <= 12 && Number(m[1]) >= 1 && Number(m[1]) <= 31)
+      .map((m) => `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`);
+    if (dates.length) return { from: dates[0], to: dates[dates.length - 1] };
+  }
+  return null;
+}
+
+const LENGTH_HEAD = /^(longueur|lengte|length|lange|laenge|leitungslange)$/;
+/** Longueur de chaque circuit (m) dans une liste des câbles : colonnes « circuit » et « longueur ». */
+export function readCableLengths(items: PdfText[]): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const head of items.filter((i) => LENGTH_HEAD.test(fold(i.str)))) {
+    const list = items.filter((i) => i.page === head.page);
+    const codeHead = list.find((i) => Math.abs(i.y - head.y) <= 3 && i.x < head.x && /^(circuit|kring|stromkreis|code|lettre|letter|repere|ref)$/.test(fold(i.str)));
+    if (!codeHead) continue;
+    for (const c of list.filter((i) => i.y > head.y + 3 && Math.abs(i.x - codeHead.x) < 8 && /^([A-Z]{1,3}-)?[A-Z]{1,3}$/.test(i.str.trim()))) {
+      const len = list.find((i) => Math.abs(i.y - c.y) <= 3 && i.x >= head.x - 10 && i.x < head.x + 80 && /^\d+(?:[.,]\d+)?\s?m$/.test(i.str.trim()));
+      if (len && !out.has(c.str.trim())) out.set(c.str.trim(), Number(len.str.trim().replace(/\s?m$/, '').replace(',', '.')));
+    }
+  }
+  return out;
+}
+
 // ————— Cartouche et légende : zones sans mur —————
 
 /** Libellés d'un cartouche (et mentions du logiciel) : ancres de la zone du cartouche. */

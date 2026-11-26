@@ -14,7 +14,7 @@ import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/ty
 import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
 import { roomBounds } from '../plan/roomKit';
 import { enclosures, moduleWidth } from '../board/model';
-import { applyPdfInfo, checkBom, inZone, noWallZones, readBom, readPdfInfo, type Rect } from './pdfInfo';
+import { applyPdfInfo, checkBom, inZone, noWallZones, readBom, readCableLengths, readInstallationPeriod, readMainProtection, readMeasurements, readPdfInfo, type Rect } from './pdfInfo';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
 export interface PdfText {
@@ -416,6 +416,39 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
   const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings, shapes);
   readBoardFronts(project, items, pages, nodesByCode, shared, warnings);
+  // Différentiel général : caractéristiques écrites sur le schéma ou la face avant
+  const main = readMainProtection(items, parseProtection);
+  if (main) {
+    const device = main.curve ? 'rcbo' : 'rcd';
+    mainRcd.props = { ...mainRcd.props, ...main, device };
+    if (device === 'rcd') delete mainRcd.props.curve;
+    if (main.breakingCapacity === undefined) delete mainRcd.props.breakingCapacity;
+    warnings.delete('Différentiel général et compteur : valeurs par défaut de Voltaplan, à vérifier sur le schéma du PDF.');
+    warnings.add(`Différentiel général repris du PDF : ${main.ratedCurrent} A, ${main.residualCurrent} mA${main.rcdType ? `, type ${main.rcdType}` : ''} ; compteur à vérifier.`);
+  }
+  // Mesures (terre, isolement) et longueurs des câbles
+  const meas = readMeasurements(items);
+  if (meas.earthResistanceOhm !== undefined || meas.insulationMOhm !== undefined) {
+    project.measurements = { ...project.measurements, ...meas };
+    warnings.add(`Mesures reprises du PDF : ${[meas.earthResistanceOhm !== undefined ? `terre ${meas.earthResistanceOhm} Ω` : '', meas.insulationMOhm !== undefined ? `isolement ${meas.insulationMOhm} MΩ` : ''].filter(Boolean).join(', ')}.`);
+  }
+  const lengths = readCableLengths(items);
+  let withLength = 0;
+  for (const [code, m] of lengths) {
+    const cable = shared.has(code) ? undefined : nodesByCode.get(code)?.children.find((c) => c.kind === 'cable');
+    if (cable && m > 0) {
+      cable.props.length = m;
+      withLength++;
+    }
+  }
+  if (withLength) warnings.add(`Longueur des câbles reprise du PDF pour ${withLength} circuit(s).`);
+  // Date (ou période) de réalisation : elle décide des règles du RGIE applicables
+  const period = readInstallationPeriod(items);
+  if (period?.to) {
+    project.meta.installationDate = period.to;
+    if (period.from && period.from < '1981-10-01') warnings.add("Installation commencée avant le 1/10/1981 : marquez les parties anciennes (« partie ancienne », RGIE 3.1.2.1).");
+    warnings.add(`Période d'installation reprise du PDF : ${period.from === period.to ? period.to : `du ${period.from} au ${period.to}`} ; date retenue pour le contrôle : ${period.to}.`);
+  }
   // Contrôle par la liste du matériel du PDF (points lumineux, prises, commandes)
   const bom = readBom(items);
   if (bom) warnings.add(checkBom(project, bom));

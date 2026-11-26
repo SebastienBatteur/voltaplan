@@ -4,6 +4,7 @@
  * Lecture seule et tolérante : un élément inconnu devient « autre » (nom Volter conservé) avec un avertissement.
  * Les données d'origine de chaque élément sont gardées dans `node.source`.
  */
+import { moduleWidth } from '../board/model';
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
 import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
@@ -452,6 +453,41 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     } else mainBoard.children.splice(mainBoard.children.length - 1, 0, board);
   }
   if (!mainBoard) warnings.add('Aucun tableau dans la sauvegarde Volter.');
+  // Face avant : rangée (rijIndex) et ordre (kolom, sinon position) de chaque appareil ; colonnes en modules d'après la
+  // largeur des appareils (l'unité de « kolom » n'est pas celle des modules)
+  const byId = new Map<string, ElNode>();
+  const index = (ns: ElNode[]) => {
+    for (const n of ns) {
+      byId.set(n.id, n);
+      index(n.children);
+    }
+  };
+  index(meter.children);
+  project.boards = { ...(project.boards ?? {}) };
+  for (const b of boardsIn) {
+    const node = boardNode.get(str(b.id) ?? '');
+    if (!node) continue;
+    const rowsOf = new Map<number, Obj[]>();
+    for (const m of arr(b.modules)) rowsOf.set(num(m.rijIndex) ?? 0, [...(rowsOf.get(num(m.rijIndex) ?? 0) ?? []), m]);
+    const slots: Record<string, { row: number; col: number }> = {};
+    let perRow = 0;
+    [...rowsOf.keys()].sort((x, y) => x - y).forEach((r, row) => {
+      let col = 0;
+      const ms = rowsOf.get(r)!.sort((x, y) => (num(x.kolom) ?? num(x.position) ?? -1) - (num(y.kolom) ?? num(y.position) ?? -1));
+      for (const m of ms) {
+        const n = byId.get(str(m.id) ?? '');
+        if (!n) continue;
+        slots[n.id] = { row, col };
+        col += moduleWidth(n);
+      }
+      perRow = Math.max(perRow, col);
+    });
+    if (Object.keys(slots).length) {
+      project.boards[node.id] = { slots };
+      if (rowsOf.size > (Number(node.props.rows) || 2)) node.props.rows = rowsOf.size;
+      if (perRow > (Number(node.props.modulesPerRow) || 13)) node.props.modulesPerRow = perRow;
+    }
+  }
   for (const id of fed) {
     const sub = boardNode.get(id);
     if (!sub) continue;

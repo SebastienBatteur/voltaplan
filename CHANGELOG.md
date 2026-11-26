@@ -28,6 +28,11 @@
   comparés au schéma importé ; les écarts sont signalés à l'ouverture.
 - Cartouche et légende repérés avant l'analyse du plan (libellés du cartouche, titre « Légende ») : ces zones, où il n'y
   a jamais de mur, sont retirées de la lecture des murs, des pièces et des repères.
+- Repris aussi du PDF : différentiel général (calibre, sensibilité, type, pôles), mesures (résistance de terre,
+  isolement, date), longueur des câbles par circuit (liste des câbles) et période de réalisation de l'installation
+  (date retenue pour les règles applicables).
+- Face avant exacte des tableaux depuis les exports Volter (rangée et ordre de chaque appareil) et Condui (rangée et
+  colonne en modules, général compris).
 - Import Condui : le code postal des adresses est maintenant repris.
 - Ce que le texte ne dit pas est signalé à l'ouverture : type exact des points, commandes, différentiel général. Un PDF sans texte (PlanElec : texte dessiné ; document scanné) est refusé avec explication.
 - Les noms de circuits en allemand sont reconnus (Steckdosen, Beleuchtung, Waschmaschine, Küche, Bad…).

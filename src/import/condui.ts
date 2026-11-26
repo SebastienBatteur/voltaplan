@@ -413,9 +413,12 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
     };
     for (const p of prots) if (!child.has(p)) b.children.push(build(p));
     for (const s of subs.values()) b.children.push(board(s, `${str(s.name) ?? ''}-`));
+    if (isObj(pn.gridView)) grids.push({ b, gv: pn.gridView });
     return b;
   };
 
+  /** Face avant de chaque tableau (`gridView`), appliquée une fois l'arbre complet (général compris). */
+  const grids: { b: ElNode; gv: Obj }[] = [];
   const origin = project.roots[0];
   const meter = origin.children[0];
   meter.children = [];
@@ -492,6 +495,22 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
           id: str(e.id),
         },
       ]);
+  // Face avant exacte : rangée et colonne (en modules) de chaque appareil, telles que dans Condui
+  project.boards = { ...(project.boards ?? {}) };
+  for (const { b, gv } of grids) {
+    const slots: Record<string, { row: number; col: number }> = {};
+    for (const sl of arr(gv.slots)) {
+      const m = isObj(sl.module) ? sl.module : {};
+      const n = nodeOf.get(str(m.id) ?? '');
+      const row = num(sl.row);
+      const col = num(sl.col);
+      if (n && row !== undefined && col !== undefined) slots[n.id] = { row, col };
+    }
+    if (!Object.keys(slots).length) continue;
+    project.boards[b.id] = { slots };
+    if (num(gv.rows)) b.props.rows = num(gv.rows);
+    if (num(gv.columns)) b.props.modulesPerRow = num(gv.columns);
+  }
   for (const [bid, ep] of panelPose) {
     const b = nodeOf.get(bid);
     if (b) pose(b, ep);

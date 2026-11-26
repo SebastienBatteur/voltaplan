@@ -478,4 +478,28 @@ describe('import Condui', () => {
       expect(project.plan.pages.length).toBeGreaterThan(0);
     }
   });
+
+  it('face avant exacte du tableau (gridView) : rangée et colonne de chaque appareil, général compris', () => {
+    const s = sample() as ReturnType<typeof sample> & { disciplines: { electrical: { panels: Record<string, unknown>[] } } };
+    s.disciplines.electrical.panels[0].gridView = {
+      rows: 3,
+      columns: 18,
+      slots: [
+        { row: 2, col: 0, module: { kind: 'trunkDevice', id: 'main', scope: 'supply' } },
+        { row: 2, col: 2, module: { kind: 'protection', id: 'a' } },
+        { row: 1, col: 0, module: { kind: 'protection', id: 'rcd' } },
+        { row: 1, col: 2, module: { kind: 'protection', id: 'd' } },
+        { row: 0, col: 8, module: { kind: 'domotica', endpointId: 'x' } },
+      ],
+    };
+    const { project } = importCondui(JSON.stringify(s));
+    const board = all(project.roots).find((n) => n.kind === 'board' && n.props.name === 'Hoofdbord')!;
+    expect(board.props).toMatchObject({ rows: 3, modulesPerRow: 18 });
+    const slots = project.boards![board.id].slots;
+    expect(slots['main']).toEqual({ row: 2, col: 0 });
+    expect(slots['a']).toEqual({ row: 2, col: 2 });
+    expect(slots['rcd']).toEqual({ row: 1, col: 0 });
+    expect(slots['d']).toEqual({ row: 1, col: 2 });
+    expect(Object.keys(slots)).toHaveLength(4);
+  });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { applyPdfInfo, checkBom, parseDate, parseParty, readBom, readPdfInfo } from '../src/import/pdfInfo';
+import { applyPdfInfo, checkBom, parseDate, parseParty, readBom, readCableLengths, readInstallationPeriod, readMainProtection, readMeasurements, readPdfInfo } from '../src/import/pdfInfo';
 import type { PdfText } from '../src/import/pdfDossier';
 import { createNode, emptyProject } from '../src/model/tree';
 
@@ -90,5 +90,35 @@ describe('informations d’un dossier PDF repris', () => {
     expect(msg).toMatch(/socles en comptant les prises doubles/);
     expect(msg).toMatch(/2 interrupteur/);
     expect(readBom([t(1, 10, 10, 'Rien', 9)])).toBeNull();
+  });
+
+  it('différentiel général, mesures, période d’installation, longueurs des câbles', () => {
+    const parse = (txt: string) => {
+      const ma = /(\d+)\s?mA/.exec(txt);
+      const a = /\b(\d{2,3})\s?A\b/.exec(txt);
+      return { ratedCurrent: a ? Number(a[1]) : undefined, residualCurrent: ma ? Number(ma[1]) : undefined };
+    };
+    // Amperio : caractéristiques au-dessus du libellé ; Draadwijs : « 40/0,3A », un autre différentiel un peu plus loin
+    expect(readMainProtection([t(7, 58, 489, 'Principal', 10), t(7, 81, 444, '63A', 7), t(7, 81, 435, '30mA', 7)], parse)).toMatchObject({ ratedCurrent: 63, residualCurrent: 30 });
+    expect(readMainProtection([t(1, 103, 370, 'Général', 4), t(1, 103, 360, '40/0,3A', 5), t(1, 103, 327, '40/0,03A', 5)], parse)).toMatchObject({ ratedCurrent: 40, residualCurrent: 300 });
+    expect(readMainProtection([t(1, 10, 10, 'Général')], parse)).toBeNull();
+    // Mesures : la valeur seule de la ligne, pas l'exigence
+    const m = readMeasurements([
+      t(3, 72, 523, 'Mise à la terre', 9),
+      t(3, 258, 523, 'Moins de 100 Ω ; au-delà de 30 Ω,', 9),
+      t(3, 529, 523, 'Conforme', 9),
+      t(3, 653, 523, '12 Ω', 9),
+      t(3, 762, 523, '26/11/2026', 9),
+      t(3, 72, 577, 'Isolatieweerstand', 9),
+      t(3, 653, 577, '2.5 MΩ', 9),
+    ]);
+    expect(m).toEqual({ earthResistanceOhm: 12, insulationMOhm: 2.5, measuredOn: '2026-11-26' });
+    expect(readInstallationPeriod([t(1, 223, 577, "Date de l'installation: du 01/10/1981 au 01/06/2020")])).toEqual({ from: '1981-10-01', to: '2020-06-01' });
+    expect(readInstallationPeriod([t(1, 223, 577, 'Datum der Installation: 01.10.1981 bis 01.06.2020')])).toEqual({ from: '1981-10-01', to: '2020-06-01' });
+    const lengths = readCableLengths([t(6, 40, 50, 'Circuit', 9), t(6, 60, 50, 'Câble', 9), t(6, 300, 50, 'Longueur', 9), t(6, 40, 70, 'C', 9), t(6, 300, 70, '45 m', 9), t(6, 40, 90, 'D', 9), t(6, 300, 90, '7 m', 9)]);
+    expect([...lengths]).toEqual([
+      ['C', 45],
+      ['D', 7],
+    ]);
   });
 });
