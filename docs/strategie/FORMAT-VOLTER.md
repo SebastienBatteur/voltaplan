@@ -111,3 +111,11 @@ disjoncteur différentiel 30 mA, liste d'attente (`wachtlijst`), codes EAN.
 - `crossFloorConnections[] {id, fromId, fromFloorId, toId, toFloorId}` : liaison de commande entre deux étages
   (bouton-poussoir de l'étage → télérupteur du rez). Import : traitée comme une liaison ordinaire.
 - Les modules d'un sous-tableau peuvent n'avoir ni `kolom` ni `position`.
+
+## Relevé du 4e projet d'essai (réseau à l'étage)
+
+- Surface extérieure en cercle : `vorm {soort: "cirkel", midden {x, y}, straal}` (et `labelOffset`). Import : carré
+  englobant et nom.
+- Repères des circuits : Volter ne les enregistre pas ; il les calcule à l'affichage (disjoncteurs sans différentiel
+  d'abord, puis groupes des différentiels, par rangée et colonne, circuits vides compris ; « E-A » dans un
+  sous-tableau de code E). L'import refait ce calcul et fixe ces repères (ceux des étiquettes du tableau).

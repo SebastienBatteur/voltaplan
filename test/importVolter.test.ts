@@ -97,6 +97,7 @@ function sample() {
               vorm: { soort: 'veelhoek', punten: [{ x: 0, y: 0 }, { x: 100, y: 0 }, { x: 100, y: 50 }, { x: 0, y: 50 }] },
               id: 'bv',
             },
+            { soort: 'oprit', naam: 'Rond-point', vorm: { soort: 'cirkel', midden: { x: 500, y: 500 }, straal: 100 }, id: 'bc' },
           ],
         },
         { id: 'f1', name: 'Étage', level: 1, walls: [], doors: [], windows: [], rooms: [], components: [], connections: [], labels: [], architecturalElements: [], meubels: [], buitenvlakken: [] },
@@ -177,7 +178,8 @@ describe('import Volter (.vschema)', () => {
     expect(pg.openings[0]).toMatchObject({ kind: 'door', a: { x: 4600, y: 0 }, b: { x: 5400, y: 0 } });
     expect(pg.symbols).toHaveLength(15);
     expect(pg.furniture?.map((f) => f.kind).sort()).toEqual(['stairs', 'wc']);
-    expect(pg.labels.map((l) => l.text).sort()).toEqual(['Séjour', 'Terrasse']);
+    expect(pg.labels.map((l) => l.text).sort()).toEqual(['Rond-point', 'Séjour', 'Terrasse']);
+    expect(pg.rects).toContainEqual({ center: { x: 5000, y: 5000 }, w: 2000, h: 2000, angle: 0 });
     expect(project.loose.map((n) => n.props.name)).toEqual(['unknownThing']);
     expect(warnings.join('\n')).toMatch(/unknownThing/);
     expect(warnings.join('\n')).toMatch(/lift/);

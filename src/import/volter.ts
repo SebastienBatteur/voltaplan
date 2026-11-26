@@ -524,8 +524,20 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     // Surfaces extérieures (jardin, terrasse, allée) : contour rectangulaire et nom
     for (const v of arr(f.buitenvlakken)) {
       const vorm = isObj(v.vorm) ? v.vorm : {};
-      const pts = arr(vorm.punten).map(pt);
-      if (pts.length < 2) continue;
+      // Polygone (« veelhoek », points) ou cercle (« cirkel », centre et rayon)
+      const radius = (num(vorm.straal) ?? 0) * CM;
+      const mid = pt(vorm.midden);
+      const pts =
+        vorm.soort === 'cirkel' && radius > 0
+          ? [
+              { x: mid.x - radius, y: mid.y - radius },
+              { x: mid.x + radius, y: mid.y + radius },
+            ]
+          : arr(vorm.punten).map(pt);
+      if (pts.length < 2) {
+        warnings.add(`Surface extérieure Volter de forme inconnue ignorée : ${String(vorm.soort)}.`);
+        continue;
+      }
       const xs = pts.map((p) => p.x);
       const ys = pts.map((p) => p.y);
       const x0 = Math.min(...xs);
@@ -534,7 +546,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       page.rects.push({ center: round(center), w: Math.round(Math.max(...xs) - x0), h: Math.round(Math.max(...ys) - y0), angle: 0 });
       const name = str(v.naam);
       if (name) page.labels.push({ id: uid(), text: name, pos: round(center), size: 3 });
-      if (pts.length !== 4 || vorm.soort !== 'veelhoek') warnings.add('Surface extérieure Volter non rectangulaire : reprise comme rectangle englobant.');
+      if (vorm.soort !== 'veelhoek' || pts.length !== 4) warnings.add('Surface extérieure Volter non rectangulaire (cercle, forme libre) : reprise comme rectangle englobant.');
     }
     for (const l of arr(f.labels)) {
       const t = str(l.text);
