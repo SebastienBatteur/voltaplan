@@ -240,7 +240,11 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
     }
     throw new Error(`L'archive « ${name} » ne contient aucun fichier de schéma reconnu (projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF).`);
   }
-  if (!fmt) throw await unknownFileError(blob, name);
+  if (!fmt) {
+    // Fichier non reconnu : même plafond que les imports texte, puis seul le début est lu
+    checkFileSize({ name, size: blob.size }, 'trik');
+    throw await unknownFileError(blob, name);
+  }
   // Dossier PDF d'un autre logiciel : lecture du texte (tableau des circuits), voir src/import/pdfDossier.ts
   if (fmt === 'pdf') {
     checkFileSize({ name, size: blob.size }, 'pdf');
