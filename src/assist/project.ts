@@ -11,7 +11,7 @@ export function newExistingProject(title: string): Project {
   const p = emptyProject();
   const meter = p.roots[0].children[0];
   const board = [...walk(p.roots)].find((x) => x.node.kind === 'board')!.node;
-  meter.children = [{ ...board, props: { name: board.props.name } }];
+  meter.children = [{ ...board, props: { name: board.props.name }, children: [] }];
   return {
     ...p,
     meta: { ...p.meta, title, installationKind: 'existing', rgieVersion: 'old' },

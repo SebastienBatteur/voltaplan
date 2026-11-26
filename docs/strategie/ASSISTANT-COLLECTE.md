@@ -25,7 +25,7 @@ observations, propositions, questions. Rien n'est appliqué à l'arbre sans l'ac
 | Fichier Eendraadschema | Export seulement aujourd'hui ; import à écrire (format déjà connu par l'export) | Certaine |
 | DXF | Traits (fait). **Murs** : calques nommés (MUR, WALL, MUUR…) ou paires de lignes parallèles proches. **Ouvertures** : blocs nommés (PORTE, DOOR, DEUR, FENETRE…) ou arcs d'un quart de tour. **Symboles électriques** : blocs (INSERT) dont le nom ou le dessin correspond à une bibliothèque connue. **Pièces** : textes TEXT/MTEXT | Bonne si le dessinateur a utilisé des calques et des blocs (cas courant en DAO) ; faible sinon |
 | PDF de plan **vectoriel** | Texte (pièces, surfaces, échelle « 1/50 ») via pdf.js. Traits via la liste des opérations de dessin de pdf.js : **murs** (traits épais ou paires parallèles, hachures), **portes** (arcs d'un quart de tour à côté d'une interruption de mur). **Symboles** : comparaison des formes dessinées avec les symboles du tableau 2.23 (cercle barré, cercle avec croix…) | Moyenne : aucune structure (ni calques ni blocs), tout est déduit des formes ; à confirmer |
-| PDF scanné / photo de plan | Murs et portes (`src/plan/trace.ts`, existant) ; pas de symboles | Partielle |
+| PDF scanné / photo de plan | Murs et portes (`src/plan/trace.ts`, existant) ; **OCR** : noms de pièces, surfaces, échelle ; pas de symboles | Partielle |
 | PDF d'un autre logiciel (unifilaire exporté) | Texte : repères de circuits, calibres, sections, si le PDF est vectoriel | Moyenne |
 | Photo de tableau | Rangées et séparations entre appareils (existant), donc nombre et largeur des modules ; texte imprimé par OCR (C16, C20, 30 mA…) | Moyenne |
 | Photo du compteur | **OCR local** (§ 3) : plaque signalétique (3 × 230/400 V, 10(60) A, nombre de phases), numéro du compteur | Moyenne ; à confirmer d'un clic |
@@ -33,7 +33,12 @@ observations, propositions, questions. Rien n'est appliqué à l'arbre sans l'ac
 Avec l'IA configurée, dans la même étape : ce que l'OCR ou les formes n'ont pas pu lire, l'interprétation des
 libellés (« PRISES CUIS. » → prises, cuisine), les symboles d'un plan scanné.
 
-## 3. OCR local pour le compteur (et les étiquettes)
+## 3. OCR local : compteur, tableau, plans
+
+Le même moteur sert aux trois : plaque du compteur, inscriptions et étiquettes des appareils du tableau (C16,
+30 mA, « PRISES CUISINE »), textes des plans scannés ou photographiés (pièces, surfaces, échelle). Les PDF
+vectoriels et les DXF n'en ont pas besoin (texte déjà lisible).
+
 
 - Moteur : **Tesseract** compilé pour le navigateur (tesseract.js, licence Apache 2.0, compatible AGPL), exécuté
   sur l'appareil, sans serveur ni envoi de données. Les fichiers de langue (≈ 2 à 4 Mo en version « fast »)

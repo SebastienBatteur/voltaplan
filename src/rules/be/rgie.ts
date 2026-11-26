@@ -81,6 +81,26 @@ function meta_supply(p: Project): string {
   return String(p.meta.supply ?? '');
 }
 
+/** Date d'entrée en vigueur des modifications du Livre 1 (prises et éclairage sous 30 mA, 8 circuits par 30 mA). */
+export const RCD30_2023 = '2023-06-01';
+
+/**
+ * RGIE 4.2.4.3 b, 5e et 6e alinéas (modifications du 1/6/2023) applicables à cette partie : exécution commencée le
+ * 1/6/2023 ou après (date de la partie, sinon du projet). Sans date : installation neuve → oui ; existante → non
+ * (dérogation de la partie 6 présumée pour une installation antérieure ; à préciser par la date).
+ */
+function since2023(project: Project, chain: ElNode[]): boolean {
+  const ctx = partContext(project, belgium, chain);
+  if (!ctx.current) return false;
+  let d: string | undefined;
+  for (const x of [...chain].reverse()) {
+    d = normDate(x.props.installedOn);
+    if (d) break;
+  }
+  d ??= normDate(project.meta.installationDate);
+  return d ? d >= RCD30_2023 : ctx.isNew;
+}
+
 /** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
 type Raw = Omit<Finding, 'severity'>;
 type Extra = { status?: FindingStatus; inferred?: boolean; knowledge?: Knowledge; fact?: SurveyFact };
@@ -263,8 +283,13 @@ function checkRgie(project: Project): Finding[] {
     const wetByName = !wet && nodes.some((c) => c.props.wetRoom !== 'no' && WET_ROOM.test(c === circuit ? label + ' ' + text(c) : text(c)));
     const wetAppliance = appliances.find((a) => RCD30_APPLIANCES.has(String(a.props.applianceType)));
     const rcd30Stated = surveyStatement(project, 'rcd30');
-    if ((wet || wetAppliance) && !(minRcd <= 30)) {
-      const reason = wet ? 'wetRoom' : String(wetAppliance!.props.applianceType);
+    // Depuis le 1/6/2023 : aussi les prises non destinées à un appareil fixe et l'éclairage (RGIE 4.2.4.3 b, 5e al.).
+    // Une prise dont le seul enfant est un appareil (prise dédiée) suit la règle de cet appareil.
+    const generalSocket = sockets.some((sk) => !(sk.children.length === 1 && sk.children[0].kind === 'appliance'));
+    const lighting = content.some((c) => c.kind === 'light');
+    const rule2023 = (generalSocket || lighting) && since2023(project, [...ancestors, circuit]);
+    if ((wet || wetAppliance || rule2023) && !(minRcd <= 30)) {
+      const reason = wet ? 'wetRoom' : wetAppliance ? String(wetAppliance.props.applianceType) : generalSocket ? 'sockets' : 'lighting';
       if (unknownSens) add('R-RCD30', nc, circuit.id, { reason }, { knowledge: 'unknown' });
       else {
         const k = presence(false, rcd30Stated, design);
@@ -276,6 +301,13 @@ function checkRgie(project: Project): Finding[] {
       const rcd30 = rcds.find((r) => (n(r.props.residualCurrent) ?? Infinity) <= 30);
       if (rcd30 && rcd30.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, rcd30.id);
     }
+  }
+
+  // Au maximum 8 circuits terminaux par différentiel 30 mA (RGIE 4.2.4.3 b, 6e al., depuis le 1/6/2023)
+  for (const { node: rcd, ancestors } of infos) {
+    if (!isRcd(rcd) || !((n(rcd.props.residualCurrent) ?? Infinity) <= 30)) continue;
+    const count = collect(rcd.children).filter((i) => isCircuit(i.node)).length;
+    if (count > 8 && since2023(project, [...ancestors, rcd])) add('R-RCD30-MAX', nc, rcd.id, { count });
   }
 
   // Photovoltaïque : panneaux ou onduleur DC → AC (un redresseur/onduleur AC ↔ DC seul est celui d'une batterie)

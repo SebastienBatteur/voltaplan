@@ -20,8 +20,12 @@ import { translate } from '../src/i18n';
 /** Nœud avec ses enfants. */
 const createNode = (kind: NodeKind, props: ElNode['props'] = {}, children: ElNode[] = []): ElNode => ({ ...baseNode(kind, props), children });
 
-/** Projet complet et conforme : documents, terre, mesures, un circuit de prises et un circuit d'éclairage. */
-function compliant(): { p: Project; board: ElNode; sockets: ElNode; lights: ElNode } {
+/**
+ * Projet complet et conforme : documents, terre, mesures, un circuit de prises et un circuit d'éclairage derrière
+ * le 30 mA du projet vide (RGIE 4.2.4.3 b depuis le 1/6/2023). `pre2023` : installation commencée avant le
+ * 1/6/2023 (dérogation), prises et éclairage directement sous le différentiel général, sans 30 mA.
+ */
+function compliant(opts: { pre2023?: boolean } = {}): { p: Project; board: ElNode; sockets: ElNode; lights: ElNode } {
   const p = emptyProject();
   p.meta.installer = { name: 'Installateur', quality: 'Installateur électricien', address: {} };
   p.meta.docNumber = '2026-001';
@@ -36,7 +40,15 @@ function compliant(): { p: Project; board: ElNode; sockets: ElNode; lights: ElNo
     { device: 'mcb', ratedCurrent: 16, curve: 'C', poles: '1P+N', circuitName: 'Éclairage', breakingCapacity: 6 },
     [createNode('cable', { section: 1.5 }, [createNode('light')])],
   );
-  board.children.push(sockets, lights);
+  const rcd30 = board.children.find((c) => c.kind === 'protection')!;
+  if (opts.pre2023) {
+    board.children.splice(board.children.indexOf(rcd30), 1);
+    board.children.push(sockets, lights);
+    p.meta.installationDate = '2023-05-01';
+  } else {
+    rcd30.children[0].children.push(sockets, lights);
+    p.measurements.rcdTests = { [rcd30.id]: { tripMs: 20, ok: true } };
+  }
   return { p, board, sockets, lights };
 }
 
@@ -61,7 +73,7 @@ describe('matrice RGIE — cas conformes', () => {
   });
 
   it('salle de bain indiquée et protégée par un 30 mA : conforme', () => {
-    const { p, board, sockets } = compliant();
+    const { p, board, sockets } = compliant({ pre2023: true });
     const rcd30 = createNode('protection', { device: 'rcd', residualCurrent: 30, rcdType: 'A', ratedCurrent: 40, poles: '2P' }, [createNode('board')]);
     board.children.splice(board.children.indexOf(sockets), 1);
     rcd30.children[0].children.push(sockets);
@@ -96,7 +108,7 @@ describe('matrice RGIE — non conformités (installation neuve)', () => {
   });
 
   it('salle de bain indiquée sans 30 mA : non conforme', () => {
-    const { p, sockets } = compliant();
+    const { p, sockets } = compliant({ pre2023: true });
     sockets.props.wetRoom = 'yes';
     expect(get(p, 'R-RCD30')).toMatchObject({ status: 'nonCompliant', blocking: true });
   });
@@ -104,7 +116,7 @@ describe('matrice RGIE — non conformités (installation neuve)', () => {
 
 describe('matrice RGIE — locaux humides', () => {
   it('nom évocateur sans indication : anomalie potentielle (information déduite), pas une non-conformité', () => {
-    const { p, sockets } = compliant();
+    const { p, sockets } = compliant({ pre2023: true });
     sockets.props.circuitName = 'Prises salle de bain';
     expect(ids(p)).not.toContain('R-RCD30');
     // ADR-0007 : un local humide déduit du nom est une information déduite → « Anomalie potentielle » (avant : « À vérifier »)
@@ -112,7 +124,7 @@ describe('matrice RGIE — locaux humides', () => {
   });
 
   it('nom évocateur mais « non » indiqué : plus de constat', () => {
-    const { p, sockets } = compliant();
+    const { p, sockets } = compliant({ pre2023: true });
     sockets.props.circuitName = 'Prises salle de bain';
     sockets.props.wetRoom = 'no';
     expect(ids(p)).not.toContain('R-WETROOM-NAME');
@@ -233,7 +245,7 @@ describe('matrice RGIE — dérogations', () => {
 
 describe('matrice RGIE — réseaux', () => {
   it('3 × 230 V : disjoncteur 1P+N non conforme, 2P conforme', () => {
-    const { p, sockets } = compliant();
+    const { p, sockets } = compliant({ pre2023: true });
     p.meta.supply = '3 x 230V ~ 50Hz';
     expect(get(p, 'R-POLES-NO-NEUTRAL')).toMatchObject({ status: 'nonCompliant', blocking: true });
     for (const c of p.roots[0].children[0].children[0].children[0].children) if (c.kind === 'protection') c.props.poles = '2P';
@@ -273,7 +285,7 @@ describe('matrice RGIE — installations particulières', () => {
 
 /** Projet existant (relevé) complet ; sans terre dessinée si `noEarth`. */
 function existing(noEarth = false) {
-  const c = compliant();
+  const c = compliant({ pre2023: true });
   c.p.meta.installationKind = 'existing';
   if (noEarth) c.board.children = c.board.children.filter((x) => x.kind !== 'earthBar');
   return c;
@@ -352,7 +364,7 @@ describe('matrice RGIE — terre : inconnu ≠ absent', () => {
 
 describe('matrice RGIE — différentiels : inconnu ≠ absent', () => {
   it('neuf, aucun différentiel dessiné : absent du projet → non-conformité bloquante (inchangé)', () => {
-    const { p, board, sockets } = compliant();
+    const { p, board, sockets } = compliant({ pre2023: true });
     withoutRcd(p, board);
     expect(checkProject(p).find((x) => x.ruleId === 'R-RCD-MAIN' && x.nodeId === sockets.id)).toMatchObject({ status: 'nonCompliant', blocking: true, knowledge: 'absent' });
   });
@@ -392,7 +404,7 @@ describe('matrice RGIE — différentiels : inconnu ≠ absent', () => {
   });
 
   it('sensibilité inconnue : information insuffisante (avant : non conforme), bloquante seulement en neuf', () => {
-    const { p } = compliant();
+    const { p } = compliant({ pre2023: true });
     delete mainRcd(p).props.residualCurrent;
     const f = checkProject(p).filter((x) => x.ruleId === 'R-RCD-MAIN');
     expect(f.length).toBeGreaterThan(0);
@@ -415,7 +427,7 @@ describe('matrice RGIE — différentiels : inconnu ≠ absent', () => {
 
   /** Circuit de salle de bain protégé par un disjoncteur différentiel (RCBO) de 300 mA. */
   const bathroom = () => {
-    const c = compliant();
+    const c = compliant({ pre2023: true });
     c.board.children.splice(c.board.children.indexOf(c.sockets), 1);
     const rcbo = createNode(
       'protection',
@@ -446,7 +458,7 @@ describe('matrice RGIE — différentiels : inconnu ≠ absent', () => {
   it('essai du différentiel non noté : mesure nécessaire ; essai noté : plus de constat', () => {
     const { p } = compliant();
     expect(checkProject(p).find((x) => x.ruleId === 'R-RCD-TEST' && x.nodeId === mainRcd(p).id)).toMatchObject({ status: 'manualCheck', knowledge: 'measureNeeded', blocking: false });
-    p.measurements.rcdTests = { [mainRcd(p).id]: { tripMs: 25, ok: true } };
+    p.measurements.rcdTests = { ...p.measurements.rcdTests, [mainRcd(p).id]: { tripMs: 25, ok: true } };
     expect(ids(p)).not.toContain('R-RCD-TEST');
   });
 
@@ -500,7 +512,7 @@ describe('matrice RGIE — exigences documentaires / physiques et mention du dos
   /** Projet neuf sans aucun point à traiter (essai du différentiel noté). */
   const clean = () => {
     const c = compliant();
-    c.p.measurements.rcdTests = { [mainRcd(c.p).id]: { tripMs: 25, ok: true } };
+    c.p.measurements.rcdTests = { ...c.p.measurements.rcdTests, [mainRcd(c.p).id]: { tripMs: 25, ok: true } };
     return c;
   };
 
@@ -529,7 +541,7 @@ describe('matrice RGIE — exigences documentaires / physiques et mention du dos
 
   it('mention : relevé avec terre inconnue → « VÉRIFICATIONS À FAIRE », pas « non conforme »', () => {
     const { p } = existing(true);
-    p.measurements.rcdTests = { [mainRcd(p).id]: { tripMs: 25, ok: true } };
+    p.measurements.rcdTests = { ...p.measurements.rcdTests, [mainRcd(p).id]: { tripMs: 25, ok: true } };
     expect(draftLevel(checkProject(p), 'reception')).toBe('pending');
     expect(translate('fr', DRAFT_KEYS.pending)).toBe('PROJET — VÉRIFICATIONS À FAIRE');
     expect(translate('fr', DRAFT_KEYS.pending)).not.toMatch(/NON CONFORME|NON-CONFORMIT/);
@@ -546,5 +558,63 @@ describe('matrice RGIE — exigences documentaires / physiques et mention du dos
     expect(translate('fr', 'status.contradictory')).toBe('Informations contradictoires');
     expect(translate('fr', 'check.okN', { n: 40 })).toBe('Aucune anomalie détectée parmi les 40 règles vérifiées.');
     expect(translate('fr', 'check.liability')).toMatch(/ni une certification/);
+  });
+});
+
+describe('matrice RGIE — 30 mA depuis le 1/6/2023 (4.2.4.3 b, 5e et 6e alinéas)', () => {
+  const onMain = () => {
+    const c = compliant();
+    const rcd30 = c.board.children.find((x) => x.kind === 'protection')!;
+    rcd30.children[0].children = [];
+    c.board.children.push(c.sockets, c.lights);
+    return c;
+  };
+
+  it('neuf : prises et éclairage sous le 300 mA seul → non conforme, raison indiquée', () => {
+    const { p, sockets, lights } = onMain();
+    const f = checkProject(p).filter((x) => x.ruleId === 'R-RCD30');
+    expect(f.find((x) => x.nodeId === sockets.id)).toMatchObject({ status: 'nonCompliant', blocking: true, params: { reason: 'sockets' } });
+    expect(f.find((x) => x.nodeId === lights.id)).toMatchObject({ status: 'nonCompliant', params: { reason: 'lighting' } });
+  });
+
+  it('dérogation : installation commencée avant le 1/6/2023 → pas de constat', () => {
+    const { p } = onMain();
+    p.meta.installationDate = '2023-05-31';
+    expect(ids(p)).not.toContain('R-RCD30');
+    p.meta.installationDate = '2023-06-01';
+    expect(ids(p)).toContain('R-RCD30');
+  });
+
+  it('existant sans date : dérogation présumée ; existant daté après le 1/6/2023 : règle appliquée', () => {
+    const { p } = onMain();
+    p.meta.installationKind = 'existing';
+    expect(ids(p)).not.toContain('R-RCD30');
+    p.meta.installationDate = '2024-03-01';
+    expect(ids(p)).toContain('R-RCD30');
+  });
+
+  it('prise dédiée à un appareil fixe (frigo) : peut rester sous le différentiel général', () => {
+    const { p, board } = onMain();
+    board.children = board.children.filter((x) => x.kind !== 'protection' || x.props.device === 'rcd');
+    const fridge = createNode('protection', { device: 'mcb', ratedCurrent: 16, curve: 'C', poles: '1P+N', circuitName: 'Frigo', breakingCapacity: 6 }, [
+      createNode('cable', { section: 2.5 }, [createNode('socket', {}, [createNode('appliance', { applianceType: 'fridge' })])]),
+    ]);
+    board.children.push(fridge);
+    expect(checkProject(p).find((x) => x.ruleId === 'R-RCD30' && x.nodeId === fridge.id)).toBeUndefined();
+  });
+
+  it('au plus 8 circuits par 30 mA : 8 acceptés, 9 refusés ; dérogation avant le 1/6/2023', () => {
+    const { p, board } = compliant();
+    const group = board.children.find((x) => x.kind === 'protection')!.children[0];
+    const circuit = (i: number) =>
+      createNode('protection', { device: 'mcb', ratedCurrent: 16, curve: 'C', poles: '1P+N', circuitName: 'C' + i, breakingCapacity: 6 }, [
+        createNode('cable', { section: 1.5 }, [createNode('light')]),
+      ]);
+    group.children = Array.from({ length: 8 }, (_, i) => circuit(i));
+    expect(ids(p)).not.toContain('R-RCD30-MAX');
+    group.children.push(circuit(9));
+    expect(get(p, 'R-RCD30-MAX')).toMatchObject({ status: 'nonCompliant', blocking: true, params: { count: 9 } });
+    p.meta.installationDate = '2022-01-10';
+    expect(ids(p)).not.toContain('R-RCD30-MAX');
   });
 });

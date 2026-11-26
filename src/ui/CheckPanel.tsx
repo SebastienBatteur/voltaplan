@@ -31,7 +31,7 @@ export function paramsText(f: Finding, t: (k: string) => string): Record<string,
       .join(', ');
   if (typeof p.appliance === 'string') p.appliance = t('enum.applianceType.' + p.appliance);
   if (typeof p.reason === 'string') {
-    const k = p.reason === 'wetRoom' ? 'reason.wetRoom' : 'enum.applianceType.' + p.reason;
+    const k = ['wetRoom', 'sockets', 'lighting'].includes(p.reason) ? 'reason.' + p.reason : 'enum.applianceType.' + p.reason;
     p.reason = t(k);
   }
   return p;

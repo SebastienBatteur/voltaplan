@@ -235,6 +235,11 @@ export function emptyProject(): Project {
   const meter = createNode('meter');
   const main = createNode('protection', { device: 'rcd', ratedCurrent: 40, residualCurrent: 300, poles: '2P', rcdType: 'A' });
   const board = createNode('board', { name: 'Tableau principal' });
+  // RGIE 4.2.4.3 b (depuis le 1/6/2023) : prises et éclairage derrière un différentiel 30 mA ; un premier 30 mA
+  // est donc prévu, avec son groupe de circuits (même tableau).
+  const rcd30 = createNode('protection', { device: 'rcd', ratedCurrent: 40, residualCurrent: 30, poles: '2P', rcdType: 'A' });
+  rcd30.children.push(createNode('board', { name: '30 mA' }));
+  board.children.push(rcd30);
   main.children.push(board);
   meter.children.push(main);
   origin.children.push(meter);
