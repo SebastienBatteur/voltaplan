@@ -17,7 +17,7 @@
   "faq": [
     { "q": "Une prise double compte-t-elle pour un ou deux points ?", "a": "Pour un seul point. Une prise multiple (double, triple) dans une même boîte compte pour un point dans la limite de 8 points par circuit, comme l’indique aussi la vérification de Voltaplan." },
     { "q": "Peut-on brancher une prise en repiquage sur une autre prise ?", "a": "Oui, c’est courant : la seconde prise est alimentée depuis les bornes de la première. Les bornes doivent accepter deux conducteurs (beaucoup de prises ont des bornes doubles prévues pour cela) et être bien serrées, car elles transportent le courant de toutes les prises suivantes." },
-    { "q": "Peut-on encore installer une prise sans terre ?", "a": "Non. Une prise sans contact de terre est un défaut relevé lors du contrôle. Si une ancienne prise n’a pas de terre, il faut amener un conducteur de protection vert-jaune jusqu’à elle, ou la supprimer." },
+    { "q": "Peut-on encore installer une prise sans terre ?", "a": "Non : dans une installation domestique, chaque prise nouvelle a un contact de terre relié au conducteur de protection (RGIE, 5.3.5.2 b), sauf les prises à très basse tension de sécurité et celles alimentées par un transformateur de séparation individuel. Dans une ancienne installation (exécutée avant le 1er octobre 1981), le RGIE permet de laisser en service des prises sans contact de terre lorsque la canalisation n’a pas de conducteur de protection, à condition qu’elles soient protégées par un différentiel à haute ou très haute sensibilité (30 mA au plus) (RGIE, 8.2.1). Une prise qui a une broche de terre non reliée à la terre est, elle, toujours interdite." },
     { "q": "Combien d’appareils peut-on brancher sur un circuit de prises ?", "a": "C’est la puissance totale qui compte : un circuit protégé par 20 A supporte au plus environ 4 600 W en même temps (20 A × 230 V). Une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W y passent ; ajoutez un four de 2 500 W et le disjoncteur déclenchera." }
   ],
   "sources": [
@@ -31,7 +31,7 @@
 
 <h2 id="principe">Le principe</h2>
 <p>Une prise met à disposition la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a> : l’appareil branché se trouve entre les deux et reçoit 230 V. La prise belge (type E) a en plus une <strong>broche de terre</strong> qui entre dans la fiche de l’appareil. Elle relie la carcasse métallique des appareils (lave-linge, grille-pain, ordinateur fixe…) au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a>.</p>
-<p>Si un fil se détache à l’intérieur d’un appareil et touche sa carcasse, le courant de défaut part à la terre et le <a href="differentiel.html">différentiel</a> coupe le circuit. Sans terre, la carcasse resterait sous tension, jusqu’à ce que quelqu’un la touche. C’est pourquoi toute prise doit avoir un contact de terre raccordé.</p>
+<p>Si un fil se détache à l’intérieur d’un appareil et touche sa carcasse, le courant de défaut part à la terre et le <a href="differentiel.html">différentiel</a> coupe le circuit. Sans terre, la carcasse resterait sous tension, jusqu’à ce que quelqu’un la touche. C’est pourquoi, dans une installation domestique, toute nouvelle prise a un contact de terre raccordé ; une broche de terre qui n’est reliée à rien est interdite, car elle donne une fausse impression de sécurité. Les anciennes installations (avant le 1er octobre 1981) bénéficient de dérogations, sous conditions : voir la question en bas de page.</p>
 
 <h2 id="fils">Les trois fils</h2>
 <table>
@@ -120,4 +120,4 @@
   <li><strong>Trop de points sur un circuit</strong> : plus de 8, une prise double comptant pour un.</li>
   <li><strong>Fil mal serré</strong> dans une borne de repiquage : il chauffe et peut faire fondre la prise ; toutes les prises suivantes s’arrêtent si le contact se rompt.</li>
 </ul>
-<p>Une installation neuve ou modifiée doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>
+<p>Une installation neuve, comme toute modification ou extension importante, doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>

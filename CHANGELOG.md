@@ -2,6 +2,16 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Apprendre : précisions réglementaires (2026-11-27)
+
+Vérifiées dans le texte officiel du RGIE, Livre 1, version 07 (15/09/2026), à la suite d'une relecture externe :
+- contrôle par un organisme agréé : installation neuve, ou modification / extension **importante** (6.4.7.3 ; ex. ajout
+  d'un circuit), et non toute modification ; visites tous les 25 ans (6.5.2) ; vente d'une ancienne installation (8.4.2) ;
+- prises sans contact de terre : dérogation pour les installations d'avant le 1/10/1981 sous 30 mA (8.2.1) ; broche
+  de terre non raccordée toujours interdite ;
+- différentiels : la sélectivité 300 mA / 30 mA n'est pas garantie lors d'une fuite franche ; appareils fixes
+  dispensés du 30 mA ; règles au-delà de 30 Ω (deux 30 mA, 16 prises chacun, 100 mA) ; terre < 100 Ω exigée.
+
 ### Apprendre l'électricité : cours, exercices de câblage et lexique (2026-11-27)
 
 - Nouvelle section du site `apprendre/` (en français) : 54 articles en 8 rubriques (bases, câbles, protections,

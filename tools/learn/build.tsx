@@ -168,7 +168,7 @@ const crumbs = (items: { name: string; url: string }[]) => ({
   itemListElement: items.map((x, i) => ({ '@type': 'ListItem', position: i + 1, name: x.name, item: x.url })),
 });
 const DISCLAIMER =
-  '<p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>';
+  '<p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler par un organisme agréé toute installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple).</p>';
 
 function articlePage(a: Article, all: Article[], rubs: Rubrique[], ex: Map<string, ExerciseModule>): string {
   const rub = rubs.find((r) => r.id === a.rubrique)!;

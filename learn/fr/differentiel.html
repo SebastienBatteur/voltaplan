@@ -73,13 +73,15 @@
 <ul>
   <li>tous les circuits sont derrière un différentiel de <strong>300 mA au plus</strong> ;</li>
   <li>sont derrière un <strong>30 mA</strong> : les circuits d’un local avec baignoire ou douche, et ceux qui alimentent le lave-linge, le sèche-linge et le lave-vaisselle ;</li>
-  <li>dans une installation (ou une partie d’installation) dont l’exécution a commencé le 1<sup>er</sup> juin 2023 ou après, sont aussi derrière un 30 mA les circuits de <strong>prises de courant</strong> et d’<strong>éclairage</strong> ;</li>
-  <li>depuis la même date, un différentiel 30 mA protège <strong>8 circuits au plus</strong> (RGIE, 4.2.4.3 b). Au-delà, on ajoute un second 30 mA et on répartit les circuits.</li>
+  <li>peuvent en revanche rester directement derrière un différentiel placé à l’origine de l’installation (300 mA au plus) : les <strong>appareils fixes</strong> ou à poste fixe comme les appareils de réfrigération, la cuisinière ou le chauffage électrique, les prises alimentées par un transformateur de séparation individuel, et les autres circuits non cités ici. Le chauffage par résistances noyées dans une paroi, alimenté au-delà de la très basse tension, a son propre différentiel de <strong>100 mA au plus</strong> ;</li>
+  <li>dans une installation (ou une partie d’installation) dont l’exécution a commencé le 1<sup>er</sup> juin 2023 ou après, sont aussi derrière un 30 mA les circuits de <strong>prises de courant</strong> (sauf celles destinées à un appareil fixe) et d’<strong>éclairage</strong> ;</li>
+  <li>depuis la même date, un différentiel 30 mA protège <strong>8 circuits au plus</strong> (RGIE, 4.2.4.3 b). Au-delà, on ajoute un second 30 mA et on répartit les circuits ;</li>
+  <li>si la résistance de terre dépasse <strong>30 Ω</strong>, des règles plus strictes s’appliquent : voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</li>
 </ul>
 <p>Répartir les circuits sur plusieurs 30 mA a un avantage pratique : quand l’un déclenche, il ne plonge pas toute la maison dans le noir.</p>
 
 <h2 id="selectivite">Sélectivité</h2>
-<p>Si un différentiel de 300 mA alimente un 30 mA, une fuite sur un circuit aval fera normalement déclencher le 30 mA seul. Mais deux différentiels de même sensibilité l’un derrière l’autre risquent de déclencher ensemble : il n’y a pas de sélectivité, et Voltaplan le signale. Pour garantir que seul l’appareil aval coupe, on peut aussi utiliser en amont un différentiel <strong>sélectif</strong> (marqué « S »), légèrement temporisé.</p>
+<p>Quand un différentiel de 300 mA alimente un 30 mA, une petite fuite sur un circuit aval ne fait déclencher que le 30 mA. Mais la différence de sensibilité <strong>ne garantit pas</strong> une sélectivité totale : une fuite franche, de plusieurs centaines de milliampères, peut faire déclencher les deux en même temps, car aucun des deux n’attend l’autre. Deux différentiels de même sensibilité l’un derrière l’autre ne sont pas sélectifs du tout, et Voltaplan le signale. Pour garantir que seul l’appareil aval coupe, on peut aussi utiliser en amont un différentiel <strong>sélectif</strong> (marqué « S »), légèrement temporisé.</p>
 
 <h2 id="types">Les types AC, A, F et B</h2>
 <p>Le type d’un différentiel indique les <strong>formes de courant de fuite</strong> qu’il sait détecter. Les appareils électroniques modernes peuvent produire des fuites qui ne sont pas purement sinusoïdales, et qu’un différentiel trop simple pourrait mal voir.</p>

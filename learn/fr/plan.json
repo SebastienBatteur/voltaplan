@@ -72,5 +72,5 @@
     "surcharge", "tableau-electrique", "tbts", "telerupteur", "tension", "terre", "triphase", "variateur", "va-et-vient", "volet-roulant", "volt",
     "watt", "zigbee", "detecteur-de-mouvement", "boucle-de-terre"
   ],
-  "rgieRefs": ["3.1.2", "3.1.2.1", "4.2.4.3 b", "5.3.5.2 a"]
+  "rgieRefs": ["3.1.2", "3.1.2.1", "4.2.4.3 b", "5.3.5.2 a", "5.3.5.2 b", "6.4.7.3", "6.5.2", "8.2.1", "8.4.2"]
 }
