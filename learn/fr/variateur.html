@@ -92,7 +92,7 @@
     <tr><td>Petites charges LED</td><td>Risque de clignotement ou de lueur résiduelle</td><td>En général plus stable</td></tr>
   </tbody>
 </table>
-<p>Dans une boîte d’interrupteur classique, on ne trouve souvent que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a> : le <a href="lexique.html#neutre">neutre</a> va directement de la boîte de dérivation à la lampe. Un variateur à 3 fils demande alors de tirer un fil bleu supplémentaire jusqu’à l’interrupteur. Si vous préparez une rénovation, amener le neutre dans chaque boîte de commande facilite le choix plus tard (variateur, module connecté, détecteur). Voir <a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a>.</p>
+<p>Dans une boîte d’interrupteur classique, on ne trouve souvent que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a> : le <a href="lexique.html#neutre">neutre</a> va directement de la boîte de dérivation à la lampe. Un variateur à 3 fils demande alors d’amener jusqu’à l’interrupteur le neutre <strong>du même circuit</strong> (un fil bleu de plus dans le tube, ou un nouveau câble), jamais celui d’un autre circuit : il resterait sous tension quand on coupe ce circuit, et le différentiel risquerait de déclencher sans raison apparente. Si vous préparez une rénovation, amener le neutre dans chaque boîte de commande facilite le choix plus tard (variateur, module connecté, détecteur). Voir <a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a>.</p>
 
 <h2 id="led">La compatibilité avec les LED</h2>
 <p>Une ampoule à incandescence de 60 W se comportait comme une simple résistance : n’importe quel variateur la faisait varier. Une lampe LED de 6 W contient une petite alimentation électronique qui n’aime pas forcément voir sa tension découpée. Trois vérifications évitent la plupart des ennuis :</p>
@@ -105,7 +105,7 @@
 
 <h2 id="cablage">Câbler un variateur pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher sa remise en service pendant le travail et vérifier l’absence de tension sur chaque fil avec un détecteur de tension adapté.</li>
   <li>Repérer les fils de l’ancien interrupteur : l’arrivée de la <a href="lexique.html#phase">phase</a> et le départ vers la lampe. Notez-les avant de les débrancher.</li>
   <li>Raccorder la phase à la borne d’arrivée du variateur (souvent marquée L) et le retour lampe à la borne de départ (souvent marquée d’une flèche ou d’un symbole de lampe).</li>
   <li>Pour un modèle à 3 fils, raccorder le neutre (bleu) à la borne N.</li>
@@ -120,7 +120,7 @@
   <li>utiliser un variateur avec <strong>postes secondaires</strong> (des commandes supplémentaires reliées au variateur principal) ;</li>
   <li>placer un variateur modulaire dans le tableau, commandé par des <a href="lexique.html#bouton-poussoir">boutons-poussoirs</a>, sur le même principe qu’un <a href="telerupteur.html">télérupteur</a>.</li>
 </ul>
-<p>Chaque fabricant a son schéma : suivez la notice, et ne mélangez pas des marques qui ne sont pas prévues pour fonctionner ensemble.</p>
+<p>Chaque fabricant a son schéma : suivez la notice, et ne mélangez pas des marques qui ne sont pas prévues pour fonctionner ensemble. Comme tout appareil de commande, le variateur doit être conforme à la norme qui le concerne (RGIE, 5.3.5.4 a) : préférez un modèle d’une marque reconnue, vendu avec une notice complète.</p>
 
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>

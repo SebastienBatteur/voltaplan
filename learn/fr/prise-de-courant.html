@@ -9,16 +9,16 @@
   "related": ["prise-commandee", "section-des-cables", "differentiel", "mise-a-la-terre"],
   "retenir": [
     "Chaque prise reçoit la <strong>phase</strong>, le <strong>neutre</strong> et la <strong>terre</strong> ; la terre (vert-jaune) n’est jamais facultative.",
-    "Un circuit de prises est en <strong>2,5 mm²</strong> au moins, protégé par un disjoncteur de <strong>20 A</strong> au plus.",
+    "Un circuit de prises est en <strong>2,5 mm²</strong> au moins, protégé par un disjoncteur de <strong>20 A</strong> au plus (ou un fusible de 16 A au plus).",
     "Au plus <strong>8 points de prise</strong> par circuit ; une prise double ou triple compte pour un seul point.",
-    "En neuf, les circuits de prises sont derrière un différentiel de <strong>30 mA</strong>, et les prises de 16 A ont des obturateurs (IPXX-D) depuis le 1<sup>er</sup> mars 2025.",
+    "En neuf, les circuits de prises sont derrière un différentiel de <strong>30 mA</strong>, et les prises de 16 A au plus ont des obturateurs (protection IPXX-D).",
     "Les prises se branchent en parallèle : par repiquage d’une prise à l’autre, ou depuis une boîte de dérivation."
   ],
   "faq": [
-    { "q": "Une prise double compte-t-elle pour un ou deux points ?", "a": "Pour un seul point. Une prise multiple (double, triple) dans une même boîte compte pour un point dans la limite de 8 points par circuit, comme l’indique aussi la vérification de Voltaplan." },
+    { "q": "Une prise double compte-t-elle pour un ou deux points ?", "a": "Pour un seul point. Le RGIE limite à huit par circuit le nombre de « socles de prise de courant simples ou multiples » (RGIE, 5.3.5.2 b) : une prise double ou triple, qui forme un seul socle multiple, compte donc pour un point." },
     { "q": "Peut-on brancher une prise en repiquage sur une autre prise ?", "a": "Oui, c’est courant : la seconde prise est alimentée depuis les bornes de la première. Les bornes doivent accepter deux conducteurs (beaucoup de prises ont des bornes doubles prévues pour cela) et être bien serrées, car elles transportent le courant de toutes les prises suivantes." },
-    { "q": "Peut-on encore installer une prise sans terre ?", "a": "Non : dans une installation domestique, chaque prise nouvelle a un contact de terre relié au conducteur de protection (RGIE, 5.3.5.2 b), sauf les prises à très basse tension de sécurité et celles alimentées par un transformateur de séparation individuel. Dans une ancienne installation (exécutée avant le 1er octobre 1981), le RGIE permet de laisser en service des prises sans contact de terre lorsque la canalisation n’a pas de conducteur de protection, à condition qu’elles soient protégées par un différentiel à haute ou très haute sensibilité (30 mA au plus) (RGIE, 8.2.1). Une prise qui a une broche de terre non reliée à la terre est, elle, toujours interdite." },
-    { "q": "Combien d’appareils peut-on brancher sur un circuit de prises ?", "a": "C’est la puissance totale qui compte : un circuit protégé par 20 A supporte au plus environ 4 600 W en même temps (20 A × 230 V). Une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W y passent ; ajoutez un four de 2 500 W et le disjoncteur déclenchera." }
+    { "q": "Peut-on encore installer une prise sans terre ?", "a": "Non : dans une installation domestique, chaque prise nouvelle a un contact de terre relié au conducteur de protection (RGIE, 5.3.5.2 b), sauf les prises à très basse tension de sécurité et celles alimentées par un transformateur de séparation individuel. Dans une ancienne installation (exécutée avant le 1er octobre 1981), le RGIE permet de laisser en service des prises sans contact de terre lorsque la canalisation n’a pas de conducteur de protection, à condition qu’elles soient protégées par un différentiel à haute ou très haute sensibilité (30 mA au plus) (RGIE, 8.2.1). Ces dérogations permettent de garder l’existant, pas d’en poser de nouvelles. Une prise qui a une broche de terre non reliée à la terre est, elle, toujours interdite." },
+    { "q": "Combien d’appareils peut-on brancher sur un circuit de prises ?", "a": "C’est la puissance totale qui compte : un circuit protégé par 20 A supporte au plus environ 4 600 W en même temps (20 A × 230 V). Une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W y passent ; ajoutez un aspirateur de 1 000 W et le disjoncteur finira par déclencher. Les gros appareils comme le four ou le lave-linge ont de toute façon leur propre circuit." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
@@ -31,7 +31,8 @@
 
 <h2 id="principe">Le principe</h2>
 <p>Une prise met à disposition la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a> : l’appareil branché se trouve entre les deux et reçoit 230 V. La prise belge (type E) a en plus une <strong>broche de terre</strong> qui entre dans la fiche de l’appareil. Elle relie la carcasse métallique des appareils (lave-linge, grille-pain, ordinateur fixe…) au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a>.</p>
-<p>Si un fil se détache à l’intérieur d’un appareil et touche sa carcasse, le courant de défaut part à la terre et le <a href="differentiel.html">différentiel</a> coupe le circuit. Sans terre, la carcasse resterait sous tension, jusqu’à ce que quelqu’un la touche. C’est pourquoi, dans une installation domestique, toute nouvelle prise a un contact de terre raccordé ; une broche de terre qui n’est reliée à rien est interdite, car elle donne une fausse impression de sécurité. Les anciennes installations (avant le 1er octobre 1981) bénéficient de dérogations, sous conditions : voir la question en bas de page.</p>
+<p>Sur un réseau 3 × 230 V sans neutre, encore courant en Belgique, la prise ne reçoit pas un neutre mais deux phases, avec toujours 230 V entre elles : les deux bornes de la prise sont alors sous tension par rapport à la terre.</p>
+<p>Si un fil se détache à l’intérieur d’un appareil et touche sa carcasse, le courant de défaut part à la terre et le <a href="differentiel.html">différentiel</a> coupe le circuit. Terre et différentiel réduisent fortement le risque, sans le supprimer complètement. Sans terre, la carcasse resterait sous tension, jusqu’à ce que quelqu’un la touche. C’est pourquoi, dans une installation domestique, toute nouvelle prise a un contact de terre raccordé ; une broche de terre qui n’est reliée à rien est interdite, car elle donne une fausse impression de sécurité. Les anciennes installations (avant le 1er octobre 1981) bénéficient de dérogations, sous conditions : voir la question en bas de page.</p>
 
 <h2 id="fils">Les trois fils</h2>
 <table>
@@ -42,19 +43,20 @@
     <tr><td>Terre</td><td>Borne de terre (symbole ⏚), reliée à la broche</td><td>Vert-jaune, uniquement</td></tr>
   </tbody>
 </table>
-<p>Pour une prise ordinaire, l’ordre phase / neutre n’empêche pas l’appareil de fonctionner, mais respectez le marquage du fabricant et gardez la même habitude dans toute l’installation : c’est plus clair pour la personne qui interviendra ensuite. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+<p>Pour une prise ordinaire, l’ordre phase / neutre n’empêche pas l’appareil de fonctionner, mais respectez le marquage du fabricant et gardez la même habitude dans toute l’installation : c’est plus clair pour la personne qui interviendra ensuite. La couleur d’un fil indique sa fonction prévue, elle ne la prouve pas : une erreur ancienne est toujours possible, et seule une vérification avec un appareil adapté renseigne sur la présence de tension. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
 
 <h2 id="circuit">Le circuit de prises : section, calibre, nombre de points</h2>
 <ul>
-  <li><strong>Section</strong> : un circuit de prises est câblé en <a href="lexique.html#section">section</a> de 2,5 mm² au moins (par exemple un câble XVB 3G2,5).</li>
-  <li><strong>Protection</strong> : un disjoncteur de 20 A au plus pour du 2,5 mm². Le calibre protège le câble : un câble trop fin derrière un disjoncteur trop gros pourrait chauffer sans que rien ne coupe. Voir <a href="section-des-cables.html">La section des câbles</a>.</li>
-  <li><strong>Nombre de points</strong> : au plus <strong>8 points de prise</strong> par circuit. Une prise double ou triple, dans une même boîte, compte pour <strong>un</strong> point. Une cuisine avec six prises doubles et deux simples atteint donc déjà la limite.</li>
+  <li><strong>Section</strong> : un circuit qui comporte des prises est câblé en <a href="lexique.html#section">section</a> de 2,5 mm² au moins (par exemple un câble XVB 3G2,5) ; le 1,5 mm² est réservé aux circuits sans prise (RGIE, 5.2.1.2).</li>
+  <li><strong>Protection</strong> : dans une installation domestique, un disjoncteur de 20 A au plus (ou un fusible de 16 A au plus) pour du 2,5 mm² (RGIE, 4.4.1.4, tableau 4.11). C’est un maximum : selon la façon dont le câble est posé (isolant thermique, nombreux câbles groupés), un calibre plus faible peut être nécessaire. Le calibre protège le câble : un câble trop fin derrière un disjoncteur trop gros pourrait chauffer sans que rien ne coupe. Voir <a href="section-des-cables.html">La section des câbles</a>.</li>
+  <li><strong>Nombre de points</strong> : au plus <strong>8 points de prise</strong> par circuit (RGIE, 5.3.5.2 b). Une prise double ou triple (un socle multiple) compte pour <strong>un</strong> point. Une cuisine avec six prises doubles et deux simples atteint donc déjà la limite.</li>
 </ul>
-<p>Le nombre de points ne dit rien de la puissance. Sur 20 A, on peut tirer environ 4 600 W en même temps. Les gros appareils (lave-linge, sèche-linge, lave-vaisselle, four) sont en pratique placés chacun sur un circuit qui leur est réservé, pour ne pas faire déclencher le circuit de la cuisine dès que tout tourne.</p>
+<p>Un même circuit peut alimenter à la fois des prises et des points d’éclairage (circuit mixte). Tout le circuit suit alors les règles des prises (2,5 mm², 20 A au plus), et chaque appareil fixe, ou groupe d’appareils fixes commandé par un même interrupteur, compte comme une prise dans la limite de 8 (RGIE, 5.3.5.2 b).</p>
+<p>Le nombre de points ne dit rien de la puissance. Sur 20 A, on peut tirer environ 4 600 W en même temps. C’est pourquoi, dans une installation domestique, le RGIE impose un <strong>circuit dédié</strong> (un circuit pour lui seul) au lave-linge, au sèche-linge, au lave-vaisselle, à la cuisinière, à la taque de cuisson et au four électriques, ainsi qu’à tout appareil à poste fixe de 2 600 W ou plus ; le chauffage électrique fixe a aussi un ou plusieurs circuits dédiés (RGIE, 5.2.1.2).</p>
 
 <h2 id="protections">Différentiel 30 mA et obturateurs</h2>
-<p>Dans une installation neuve en Belgique, les circuits de prises sont placés derrière un différentiel de 30 mA depuis le 1<sup>er</sup> juin 2023, avec au plus 8 circuits par différentiel 30 mA (RGIE, 4.2.4.3 b).</p>
-<p>Depuis le 1<sup>er</sup> mars 2025, les prises de 16 A au plus doivent offrir une protection <strong>IPXX-D</strong> : des obturateurs (la « sécurité enfant ») ferment les alvéoles tant qu’une fiche n’est pas enfoncée (RGIE, 5.3.5.2 a). Une exception existe pour une prise réservée à un appareil précis. En pratique, les prises vendues aujourd’hui en ont presque toutes ; vérifiez-le si vous réutilisez du vieux matériel. Voir aussi l’<a href="lexique.html#indice-de-protection">indice de protection</a>.</p>
+<p>Dans une installation neuve en Belgique, les circuits de prises d’usage général (celles qui ne sont pas destinées à un appareil fixe) sont placés derrière un différentiel de 30 mA depuis le 1<sup>er</sup> juin 2023, avec au plus 8 circuits par différentiel 30 mA (RGIE, 4.2.4.3 b). Le lave-linge, le sèche-linge et le lave-vaisselle sont aussi derrière un 30 mA.</p>
+<p>Les prises de 16 A et 250 V au plus doivent offrir une protection <strong>IPXX-D</strong> : des obturateurs (la « sécurité enfant ») ferment les alvéoles tant qu’une fiche n’est pas enfoncée. Toute prise est au moins IPXX-B, et les prises domestiques doivent être conformes à la norme belge NBN C 61-112-1 (RGIE, 5.3.5.2 a, dans sa version applicable depuis le 1<sup>er</sup> mars 2025). Des exceptions existent, par exemple pour une prise réservée exclusivement à un appareil d’usage spécifique. Les prises posées avant le 1<sup>er</sup> mars 2025 selon les règles d’alors peuvent rester en service. En pratique, les prises vendues aujourd’hui ont presque toutes des obturateurs ; vérifiez-le si vous réutilisez du vieux matériel. Voir aussi l’<a href="lexique.html#indice-de-protection">indice de protection</a>.</p>
 
 <h2 id="cablage">Repiquage ou boîte de dérivation</h2>
 <p>Les prises d’un même circuit sont branchées <a href="serie-et-parallele.html">en parallèle</a> : chacune reçoit la phase, le neutre et la terre. Deux façons de faire :</p>
@@ -105,19 +107,20 @@
 
 <h2 id="etapes">Câbler une prise pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté, sur chaque fil.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette en service pendant le travail (étiquette, cadenas de disjoncteur si possible), puis vérifier l’absence de tension sur chaque fil avec un détecteur de tension adapté (bipolaire, pas un tournevis testeur).</li>
   <li>Dénuder les conducteurs sur la longueur indiquée par le fabricant (souvent marquée au dos de la prise).</li>
   <li>Raccorder d’abord la <strong>terre</strong> (vert-jaune), puis le neutre (bleu) et la phase (brun).</li>
   <li>Pour un repiquage, insérer le second conducteur de chaque couleur dans la même borne ou dans la borne double prévue.</li>
   <li>Tirer légèrement sur chaque fil pour vérifier qu’il tient, ranger les fils sans les plier brutalement, fixer la prise.</li>
-  <li>Remettre le courant et vérifier la prise avec un testeur de prise ou un appareil.</li>
+  <li>Remettre le courant et vérifier la prise avec un testeur de prise ou un appareil. Ce test montre que la prise fonctionne ; il ne prouve ni la qualité de la terre ni la conformité, qui se mesurent avec des appareils adaptés.</li>
 </ol>
 
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
   <li><strong>Terre non raccordée</strong>, ou fil vert-jaune utilisé comme phase : un danger invisible à l’usage.</li>
-  <li><strong>Prises ajoutées sur un circuit d’éclairage en 1,5 mm²</strong> : le câble est trop fin pour une prise protégée par 20 A.</li>
+  <li><strong>Prises ajoutées sur un circuit d’éclairage en 1,5 mm²</strong> : interdit, même si ce circuit est protégé par 16 A ; un circuit qui comporte une prise est en 2,5 mm² au moins.</li>
   <li><strong>Trop de points sur un circuit</strong> : plus de 8, une prise double comptant pour un.</li>
+  <li><strong>Gros appareil sur le circuit des prises</strong> : le lave-linge, le four ou la taque de cuisson doivent avoir leur circuit dédié.</li>
   <li><strong>Fil mal serré</strong> dans une borne de repiquage : il chauffe et peut faire fondre la prise ; toutes les prises suivantes s’arrêtent si le contact se rompt.</li>
 </ul>
 <p>Une installation neuve, comme toute modification ou extension importante, doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>

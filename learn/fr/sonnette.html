@@ -8,9 +8,9 @@
   "related": ["telerupteur", "tension", "types-de-cables", "symboles-electriques"],
   "retenir": [
     "La sonnette classique fonctionne en <strong>très basse tension</strong> : un transformateur abaisse le 230 V à quelques volts.",
-    "Le transformateur de <strong>sécurité</strong> sépare le circuit de sonnette du réseau : le bouton à l’extérieur ne porte pas de 230 V.",
+    "Le transformateur de <strong>sécurité</strong> sépare le circuit de sonnette du réseau : en fonctionnement normal, le bouton à l’extérieur ne porte pas de 230 V.",
     "Le bouton-poussoir est en <strong>série</strong> avec la sonnerie, sur le secondaire du transformateur.",
-    "Le côté 230 V du transformateur est un circuit comme un autre : protégé au tableau, câblé avec les couleurs habituelles.",
+    "Le côté 230 V du transformateur est un circuit comme un autre : protégé au tableau, câblé avec les couleurs habituelles. Les fils de sonnette restent séparés des fils à 230 V.",
     "Choisissez la tension du transformateur selon la sonnerie (indiquée par le fabricant)."
   ],
   "faq": [
@@ -71,8 +71,8 @@
 </figure>
 
 <h2 id="tbts">La très basse tension de sécurité</h2>
-<p>On parle de très basse tension en dessous de 50 V en courant alternatif. Une sonnette fonctionne bien en dessous, avec quelques volts. La tension seule ne suffit pourtant pas : il faut aussi que ce circuit ne puisse pas recevoir le 230 V par accident.</p>
-<p>C’est le rôle du <strong>transformateur de sécurité</strong>. Ses deux enroulements sont séparés par une isolation renforcée : même en cas de défaut à l’intérieur, le 230 V ne passe pas vers le côté sonnette. Le circuit alimenté de cette façon, séparé du réseau et de la terre, est appelé <a href="lexique.html#tbts">TBTS</a> (très basse tension de sécurité). C’est ce qui permet d’utiliser un bouton simple à l’extérieur et du fil fin pour la sonnette.</p>
+<p>Le RGIE parle de très basse tension jusqu’à 50 V en courant alternatif. Une sonnette fonctionne bien en dessous, avec quelques volts. La tension seule ne suffit pourtant pas : il faut aussi que ce circuit ne puisse pas recevoir le 230 V par accident.</p>
+<p>C’est le rôle du <strong>transformateur de sécurité</strong>. Ses deux enroulements sont séparés par une isolation renforcée : même en cas de défaut à l’intérieur, le 230 V ne passe pas vers le côté sonnette. Le circuit alimenté de cette façon, séparé du réseau et de la terre, est appelé <a href="lexique.html#tbts">TBTS</a> (très basse tension de sécurité). Ses parties actives ne sont reliées ni à la terre, ni à un autre circuit. Avec une tension de quelques volts (au plus 25 V en alternatif sur peau sèche, 12 V sur peau mouillée), le RGIE ne demande pas de protection supplémentaire contre le contact direct (RGIE, 4.2.2.2) : c’est ce qui permet d’utiliser un bouton simple à l’extérieur et du fil fin pour la sonnette.</p>
 <p>Un transformateur de sécurité porte un symbole spécifique sur son boîtier. N’utilisez pas un vieux chargeur ou une alimentation quelconque à la place : rien ne garantit la même séparation.</p>
 
 <h2 id="deux-cotes">Les deux côtés du transformateur</h2>
@@ -85,11 +85,11 @@
     <tr><td>Intervention</td><td>Circuit coupé au tableau, absence de tension vérifiée</td><td>Sans danger électrique notable, mais coupez quand même</td></tr>
   </tbody>
 </table>
-<p>Le primaire est alimenté par un circuit protégé par un disjoncteur et un différentiel, comme n’importe quel appareil. En pratique, on ne fait pas passer les fils de sonnette dans le même tube que les conducteurs à 230 V, sauf si leur isolation est prévue pour la tension la plus élevée : on garde les deux circuits séparés.</p>
+<p>Le primaire est alimenté par un circuit protégé par un disjoncteur et un différentiel, comme n’importe quel appareil. Les fils de sonnette doivent rester séparés des conducteurs à 230 V. Le RGIE admet trois façons de le faire (RGIE, 4.2.5.3 c) : au moins 10 mm d’écart entre les deux, une isolation supplémentaire autour des fils de sonnette (gaine, tube séparé), ou des fils de sonnette isolés pour la tension la plus élevée présente s’ils partagent un câble ou un tube avec le 230 V. Un fil de sonnette ordinaire n’est en général pas prévu pour cela : ne le glissez pas dans un tube qui contient du 230 V.</p>
 
 <h2 id="cablage">Câbler une sonnette pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> qui alimentera le transformateur et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> qui alimentera le transformateur, empêcher sa remise en service pendant le travail et vérifier l’absence de tension avec un détecteur adapté.</li>
   <li>Raccorder le <strong>primaire</strong> du transformateur à la <a href="lexique.html#phase">phase</a> et au <a href="lexique.html#neutre">neutre</a> (bornes marquées sur le boîtier, souvent 230 V ou L et N).</li>
   <li>Choisir la <strong>sortie du secondaire</strong> qui correspond à la tension de la sonnerie (indiquée sur la sonnerie ou dans sa notice).</li>
   <li>Relier une borne du secondaire à une borne de la sonnerie.</li>

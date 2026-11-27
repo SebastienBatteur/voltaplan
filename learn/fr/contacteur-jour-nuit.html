@@ -9,7 +9,7 @@
   "retenir": [
     "Le contacteur est un <strong>interrupteur commandé</strong> : une petite bobine actionne des contacts capables de couper un gros appareil.",
     "Le signal qui commande la bobine vient du <strong>compteur</strong> (ou d’un récepteur séparé), selon le compteur et le tarif.",
-    "Le chauffe-eau est sur un <strong>circuit dédié</strong>, avec un disjoncteur et une section adaptés à sa puissance.",
+    "Le chauffe-eau est sur son <strong>propre circuit</strong>, avec un disjoncteur et une section adaptés à sa puissance ; à partir de 2 600 W, le circuit dédié est imposé par le RGIE.",
     "Beaucoup de contacteurs ont une position <strong>auto</strong>, une <strong>marche forcée</strong> et un <strong>arrêt</strong>.",
     "Le raccordement côté compteur dépend du gestionnaire de réseau : laissez-le à un professionnel."
   ],
@@ -100,10 +100,10 @@
 <p>Sur certains modèles, la marche forcée revient seule en position auto ; sur d’autres, il faut y penser. Une marche forcée oubliée fait chauffer l’eau au tarif plein. Les positions exactes dépendent du fabricant : la notice et le marquage en façade font foi.</p>
 
 <h2 id="circuit">Le circuit du chauffe-eau</h2>
-<p>Le chauffe-eau a son <strong>propre circuit</strong> au tableau, qui passe par les contacts du contacteur :</p>
+<p>Le chauffe-eau a son <strong>propre circuit</strong> au tableau, qui passe par les contacts du contacteur. Dans une installation domestique, le RGIE impose un circuit dédié à tout appareil à poste fixe de 2 600 W ou plus (RGIE, 5.2.1.2) ; en dessous, c’est la pratique habituelle, et de toute façon nécessaire pour que le contacteur ne commande que le chauffe-eau :</p>
 <ul>
-  <li>un <a href="disjoncteur.html">disjoncteur</a> dont le calibre correspond à la section du câble et à la puissance de l’appareil (par exemple 2,5 mm² et 20 A au plus, ou 1,5 mm² et 16 A au plus, selon la puissance et la notice) ;</li>
-  <li>un différentiel en amont, comme pour tout circuit ;</li>
+  <li>un <a href="disjoncteur.html">disjoncteur</a> dont le calibre correspond à la section du câble et à la puissance de l’appareil : dans une installation domestique, 20 A au plus pour du 2,5 mm², 16 A au plus pour du 1,5 mm² (RGIE, 4.4.1.4, tableau 4.11), un calibre plus faible pouvant être nécessaire selon la pose et la notice ;</li>
+  <li>un différentiel en amont : au moins le différentiel général de l’installation (300 mA au plus). Le 30 mA n’est pas imposé pour un appareil fixe comme le chauffe-eau, sauf si son circuit dessert une salle de bain ou une douche (RGIE, 4.2.4.3 b) ; suivez aussi la notice ;</li>
   <li>un conducteur de protection vert-jaune raccordé à la cuve, qui est métallique ;</li>
   <li>le contacteur, avec un courant nominal suffisant pour le chauffe-eau.</li>
 </ul>
@@ -111,10 +111,11 @@
 
 <h2 id="securite">Précautions</h2>
 <ul>
-  <li><strong>Couper le bon circuit</strong> et vérifier l’absence de tension avant toute intervention sur le chauffe-eau : la bobine du contacteur et le chauffe-eau peuvent être alimentés par des circuits différents.</li>
+  <li><strong>Couper le bon circuit</strong>, empêcher sa remise en service et vérifier l’absence de tension avec un détecteur adapté avant toute intervention sur le chauffe-eau : la bobine du contacteur et le chauffe-eau peuvent être alimentés par des circuits différents.</li>
   <li><strong>Un chauffe-eau qui ne chauffe pas n’est pas forcément hors tension</strong> : le contacteur peut se fermer à tout moment quand le signal arrive.</li>
   <li><strong>Repérer le contacteur</strong> dans le tableau, avec une étiquette claire. Voir <a href="organiser-tableau.html">Organiser le tableau électrique</a>.</li>
 </ul>
+<p>Si le chauffe-eau est alimenté par un compteur séparé à tarif différent (par exemple « exclusif nuit »), le RGIE demande de grouper les protections de ce circuit sur un panneau distinct, à 10 cm au moins des autres, ou dans un tableau séparé, sauf autorisation ou prescriptions du gestionnaire de réseau (RGIE, 5.3.5.1 c).</p>
 <p>Une installation neuve, comme toute modification ou extension importante, doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>
 
 <h2 id="autres-usages">D’autres façons de piloter le chauffe-eau</h2>

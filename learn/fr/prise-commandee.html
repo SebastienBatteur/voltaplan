@@ -15,7 +15,7 @@
     "Repérez-la (couvercle, étiquette, plan) pour qu’on n’y branche pas un congélateur."
   ],
   "faq": [
-    { "q": "Peut-on commander une prise depuis le circuit d’éclairage ?", "a": "Ce n’est pas une bonne idée si le circuit d’éclairage est en 1,5 mm² protégé par 16 A : une prise accepte des appareils de 16 A, et le câble serait trop juste. La prise commandée se place sur un circuit de prises en 2,5 mm², avec un fil de commande lui aussi en 2,5 mm²." },
+    { "q": "Peut-on commander une prise depuis le circuit d’éclairage ?", "a": "Pas si ce circuit est en 1,5 mm² : le RGIE réserve le 1,5 mm² aux circuits qui ne comportent aucune prise (RGIE, 5.2.1.2), même protégés par 16 A. Un circuit mixte prises et éclairage est permis, mais il suit alors entièrement les règles des prises : 2,5 mm² partout, 20 A au plus, 8 points au plus (RGIE, 5.3.5.2 b). Le plus simple reste de placer la prise commandée sur un circuit de prises en 2,5 mm², avec un fil de commande lui aussi en 2,5 mm²." },
     { "q": "Peut-on commander une prise depuis deux endroits ?", "a": "Oui : on remplace l’interrupteur simple par deux interrupteurs de va-et-vient, ou on utilise un télérupteur commandé par des boutons-poussoirs. Le principe reste le même : seule la phase est commandée." },
     { "q": "Existe-t-il une solution sans tirer de nouveau câble ?", "a": "Oui : une prise connectée ou un module radio commandé par un interrupteur sans fil. C’est pratique en location ou en rénovation légère, mais cela dépend d’une pile ou d’une application. Voir l’article sur les relais et modules connectés." }
   ],
@@ -30,7 +30,7 @@
 
 <h2 id="principe">Le principe</h2>
 <p>L’<a href="lexique.html#interrupteur">interrupteur</a> est placé sur la <a href="lexique.html#phase">phase</a>, entre le tableau et la prise. Quand il est ouvert, la prise n’est plus alimentée et la lampe qui y est branchée s’éteint. Quand il est fermé, la prise reçoit la phase et la lampe s’allume, à condition que son propre interrupteur soit resté en position « marche ».</p>
-<p>Le <a href="lexique.html#neutre">neutre</a> (bleu) et le conducteur de protection (vert-jaune) ne passent pas par l’interrupteur : ils vont directement à la prise. On ne coupe jamais le neutre seul : la prise « éteinte » resterait reliée à la phase.</p>
+<p>Le <a href="lexique.html#neutre">neutre</a> (bleu) et le conducteur de protection (vert-jaune) ne passent pas par l’interrupteur : ils vont directement à la prise. On ne coupe jamais le neutre seul : le RGIE interdit de placer un appareil de commande unipolaire sur le neutre (RGIE, 5.3.3.2 c), car la prise « éteinte » resterait reliée à la phase.</p>
 <p>Souvent, la pièce compte aussi des prises <strong>permanentes</strong>, toujours sous tension, sur le même circuit. C’est ce que représente l’exercice : une prise commandée et une prise permanente.</p>
 <figure class="illu">
   <svg viewBox="0 0 640 320" role="img" aria-label="Schéma de câblage : la phase brune part du tableau vers l’interrupteur et, par une dérivation, directement vers la prise permanente. Le retour noir ou gris va de l’interrupteur à la prise commandée. Le neutre bleu et la terre vert-jaune vont du tableau aux deux prises sans passer par l’interrupteur.">
@@ -87,19 +87,19 @@
 <p>C’est le point qu’on oublie le plus souvent. Même si vous pensez n’y brancher qu’une lampe de 10 W, quelqu’un pourra un jour y brancher un radiateur d’appoint de 2 000 W. La prise commandée doit donc respecter les règles d’un circuit de prises :</p>
 <ul>
   <li><strong>section de 2,5 mm²</strong> sur tout le trajet, y compris le câble qui monte à l’interrupteur et redescend vers la prise ;</li>
-  <li><strong>disjoncteur de 20 A au plus</strong>, et différentiel de 30 mA dans une installation neuve ;</li>
+  <li><strong>disjoncteur de 20 A au plus</strong> (RGIE, 4.4.1.4, tableau 4.11), et différentiel de 30 mA dans une installation neuve ;</li>
   <li><strong>terre</strong> raccordée et prise avec obturateurs, comme toute prise de 16 A ;</li>
   <li><strong>un point de prise</strong> de plus dans la limite de 8 points du circuit.</li>
 </ul>
-<p>Raccorder la prise commandée sur le circuit d’éclairage, câblé en 1,5 mm² et protégé par 16 A, est une erreur classique : le câble serait trop fin pour une prise. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
+<p>Raccorder la prise commandée sur le circuit d’éclairage, câblé en 1,5 mm² et protégé par 16 A, est une erreur classique, et elle est interdite : un circuit qui comporte une prise est en 2,5 mm² au moins (RGIE, 5.2.1.2). Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
 
 <h2 id="interrupteur">Choisir l’interrupteur</h2>
-<p>Le contact de l’interrupteur laisse passer tout le courant de l’appareil branché. Le courant nominal est marqué sur l’interrupteur (par exemple 10 A ou 16 A, parfois suivi de la lettre X pour les charges difficiles). Choisissez un modèle qui convient à ce qui pourra être branché sur la prise, et pas seulement à la lampe prévue. En cas de doute, la notice du fabricant fait foi.</p>
+<p>Le contact de l’interrupteur laisse passer tout le courant de l’appareil branché. Le courant nominal est marqué sur l’interrupteur (souvent 10 A ou 16 A ; la notice précise les charges admises, par exemple pour les lampes LED ou les moteurs). Le RGIE demande que les appareils de manœuvre soient conformes à leur norme et prévus pour l’usage auquel on les destine (RGIE, 5.3.5.4 a). Une prise peut alimenter un appareil de 16 A : un interrupteur de 16 A est donc le choix le plus sûr. Choisissez un modèle qui convient à ce qui pourra être branché sur la prise, et pas seulement à la lampe prévue. En cas de doute, la notice du fabricant fait foi.</p>
 <p>Il existe aussi des <strong>prises avec interrupteur intégré</strong> : l’interrupteur est sur la prise elle-même, et coupe souvent les deux pôles. Elles servent plutôt à couper un appareil sur place qu’à allumer une lampe depuis la porte.</p>
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher sa remise en service pendant le travail, puis vérifier l’absence de tension sur chaque fil avec un détecteur de tension adapté.</li>
   <li>Amener la <strong>phase</strong> (brun) à la borne L de l’interrupteur. Si une prise permanente est alimentée au même endroit, la phase y continue aussi.</li>
   <li>Relier la borne 1 de l’interrupteur à la borne L de la prise commandée : c’est le <strong>retour</strong> (noir ou gris).</li>
   <li>Amener le <strong>neutre</strong> (bleu) et la <strong>terre</strong> (vert-jaune) à chaque prise, en repiquage ou depuis une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a>.</li>
@@ -123,7 +123,7 @@
 
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
-  <li><strong>Fil de commande en 1,5 mm²</strong> sur un circuit protégé par 20 A.</li>
+  <li><strong>Fil de commande en 1,5 mm²</strong> : interdit sur un circuit de prises, quel que soit le calibre du disjoncteur.</li>
   <li><strong>Interrupteur sur le neutre</strong> : la prise semble éteinte mais reste reliée à la phase.</li>
   <li><strong>Interrupteur trop faible</strong> pour l’appareil qu’on y branche : il chauffe.</li>
   <li><strong>Fil bleu utilisé comme retour</strong> : la personne suivante le prendra pour un neutre.</li>
