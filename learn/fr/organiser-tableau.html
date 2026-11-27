@@ -14,7 +14,7 @@
     "Gardez des modules libres en réserve pour les ajouts futurs."
   ],
   "faq": [
-    { "q": "Combien de circuits peut-on mettre derrière un différentiel 30 mA ?", "a": "Huit circuits terminaux au plus par différentiel 30 mA (RGIE, 4.2.4.3 b). Cette limite ne s’impose pas aux installations dont l’exécution a commencé avant le 1er juin 2023, ni à leurs modifications non importantes. Moins de circuits par différentiel, c’est aussi moins de circuits coupés quand il déclenche." },
+    { "q": "Combien de circuits peut-on mettre derrière un différentiel 30 mA ?", "a": "Huit circuits terminaux au plus par différentiel 30 mA (RGIE, 4.2.4.3 b). Une installation dont l’exécution a commencé avant le 1er juin 2023 peut garder en service plus de huit circuits par 30 mA (RGIE, 6.5.8.1 ; pour les installations plus anciennes, 8.2.1 et 8.2.2). Moins de circuits par différentiel, c’est aussi moins de circuits coupés quand il déclenche." },
     { "q": "Peut-on mettre un différentiel 30 mA derrière un autre 30 mA ?", "a": "Ce n’est pas utile : en cas de défaut, les deux risquent de déclencher ensemble. En aval d’un différentiel, on place un différentiel plus sensible (30 mA derrière 300 mA), ou on utilise un différentiel sélectif (type S) en amont." },
     { "q": "Faut-il laisser de la place libre dans le tableau ?", "a": "C’est vivement conseillé : une borne de recharge, une pompe à chaleur ou des panneaux solaires demandent souvent de nouveaux circuits. Sans réserve, il faut ajouter un coffret ou refaire une partie du tableau." }
   ],
@@ -81,7 +81,7 @@
 <h2 id="differentiels">Quels circuits derrière un 30 mA ?</h2>
 <p>Dans une installation neuve, les circuits suivants sont placés derrière un <a href="differentiel.html">différentiel</a> de 30 mA :</p>
 <ul>
-  <li>les <strong>prises de courant</strong> et l’<strong>éclairage</strong> (pour les installations commencées depuis le 1<sup>er</sup> juin 2023) ;</li>
+  <li>les <strong>prises de courant</strong> (sauf celles réservées à un appareil fixe ou à poste fixe) et l’<strong>éclairage</strong> (pour les installations commencées depuis le 1<sup>er</sup> juin 2023) ;</li>
   <li>les circuits d’une <strong>salle de bain</strong> ou d’un local avec douche ;</li>
   <li>le <strong>lave-linge</strong>, le <strong>sèche-linge</strong> et le <strong>lave-vaisselle</strong>.</li>
 </ul>
@@ -96,7 +96,7 @@
   <li>le <strong>congélateur</strong> ou le frigo de façon à ne pas le couper avec un circuit à risque de défaut (extérieur, buanderie) ;</li>
   <li>les <strong>circuits extérieurs</strong> (jardin, terrasse), plus exposés à l’humidité, sur un différentiel qui ne coupe pas l’essentiel de la maison.</li>
 </ul>
-<p>Certains appareils doivent avoir leur <strong>circuit dédié</strong> : tout appareil fixe de 2 600 W ou plus, le lave-linge, le lave-vaisselle, le sèche-linge, la cuisinière, la taque et le four, ainsi que le chauffage électrique fixe (RGIE, 5.2.1.2) ; chaque point de connexion d’une borne de recharge a aussi son circuit dédié (RGIE, 7.22.3). Un circuit séparé pour un chauffe-eau plus petit, une chaudière ou une pompe à chaleur est une bonne pratique, souvent demandée par le fabricant. En <a href="alternatif-mono-tri.html">triphasé</a>, on répartit aussi les circuits entre les trois phases pour équilibrer la charge.</p>
+<p>Certains appareils doivent avoir leur <strong>circuit dédié</strong> : dans une habitation, tout appareil à poste fixe de 2 600 W ou plus, le lave-linge, le lave-vaisselle, le sèche-linge, la cuisinière, la taque et le four ; les appareils de chauffage électrique à poste fixe ont un ou plusieurs circuits dédiés (RGIE, 5.2.1.2) ; chaque point de connexion d’une borne de recharge a aussi son circuit dédié (RGIE, 7.22.3). Un circuit séparé pour un chauffe-eau plus petit, une chaudière ou une pompe à chaleur est une bonne pratique, souvent demandée par le fabricant. En <a href="alternatif-mono-tri.html">triphasé</a>, on répartit aussi les circuits entre les trois phases pour équilibrer la charge.</p>
 <p>Dans une installation domestique, chaque circuit monophasé a une détection de surintensité sur ses <strong>deux</strong> conducteurs, sauf si un différentiel au même niveau détecte la surintensité sur la phase et coupe les deux conducteurs (RGIE, 4.4.4.2). Sur un réseau 3 × 230 V (sans neutre), c’est d’autant plus important : les deux conducteurs du circuit sont des phases, d’où des disjoncteurs bipolaires qui protègent et coupent les deux.</p>
 
 <h2 id="ordre">Un ordre lisible</h2>
