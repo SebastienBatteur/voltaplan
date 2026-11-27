@@ -102,14 +102,19 @@ tant que les charges ne dépassent pas les puissances saisies).
 
 ## 5. Court-circuit minimal et longueur maximale protégée
 
-    Icc min = 0,8 · U / (b · (R amont + R circuit))        R = Σ ρ·L/S (par conducteur)
+    Icc min = 0,8 · 230 / (2 · (R amont + R circuit))        R = Σ ρ·L/S (par conducteur)
+
+Le défaut retenu est le plus faible du circuit : phase-neutre (230 V, boucle de deux conducteurs) en monophasé et en
+3N × 400 V, phase-phase (230 V entre phases) en 3 × 230 V sans neutre ; dans tous ces cas U = 230 V et b = 2. Jusqu'au
+27/11/2026, le calcul triphasé prenait U = 400 V et b = √3 (défaut triphasé symétrique), ce qui surestimait Icc min et
+Lmax d'un facteur 2 (2/√3 sans neutre). Le neutre est supposé de même section que les phases.
 
 Le disjoncteur (mcb, rcbo, courbe B/C/D) doit déclencher magnétiquement : Icc min ≥ Ia = k · In
 (k = 5, 10, 20). Sinon `R-ICC-LMAX` (comparaison sur la valeur brute).
 
-    Lmax = (S/ρ) · (0,8 · U / (b · Ia) − R amont)
+    Lmax = (S/ρ) · (0,8 · 230 / (2 · Ia) − R amont)
 
-avec le ρ/S le plus défavorable du circuit ; sans amont : Lmax = 0,8·U·S / (b·ρ·Ia).
+avec le ρ/S le plus défavorable du circuit ; sans amont : Lmax = 0,8·230·S / (2·ρ·Ia).
 
 Exemples (2,5 mm² Cu, 20 A, monophasé) : courbe C (Ia = 200 A) Lmax = 0,8 × 230 × 2,5 / (2 × 0,0225 ×
 200) = 51,1 m ; courbe B (Ia = 100 A) 102,2 m. Avec 10 mm² 25 m en amont (R = 0,05625 Ω) : courbe C

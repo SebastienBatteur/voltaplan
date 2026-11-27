@@ -342,8 +342,14 @@ export function calcCircuit(circuit: ElNode, project: Project): CircuitCalc {
     const rUp = up.missing ? 0 : up.r;
     res.magnetic = MAGNETIC[curve] * I;
     const rTot = rUp + worst.rl;
-    res.iccMin = rTot > 0 ? (0.8 * voltage) / (b * rTot) : undefined;
-    res.lmax = Math.max(0, (0.8 * voltage) / (b * res.magnetic) - rUp) / worstRhoS;
+    // Courant de court-circuit minimal = défaut le plus faible du circuit : phase-neutre (230 V, boucle de deux
+    // conducteurs) en monophasé et en 3N × 400 V ; phase-phase (230 V entre phases, deux conducteurs) en 3 × 230 V sans
+    // neutre. Dans tous ces cas U = 230 V et la boucle compte deux conducteurs (b = 2). Le défaut triphasé symétrique
+    // (400 V / √3) n'est pas le minimal : l'utiliser surestimait Lmax d'un facteur 2 (2/√3 sans neutre).
+    const uFault = 230;
+    const bFault = 2;
+    res.iccMin = rTot > 0 ? (0.8 * uFault) / (bFault * rTot) : undefined;
+    res.lmax = Math.max(0, (0.8 * uFault) / (bFault * res.magnetic) - rUp) / worstRhoS;
   }
   return finish();
 }

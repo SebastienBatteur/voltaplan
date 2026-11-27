@@ -54,9 +54,20 @@ describe('chute de tension et court-circuit (méthode conventionnelle)', () => {
     expect(r.threePhase).toBe(true);
     expect(r.voltage).toBe(400);
     expect(r.dropPct).toBeCloseTo((100 * Math.sqrt(3) * 6) / 400, 6);
-    // Icc min = 0,8·400 / (√3·0,0225·50/6) = 985,4 A ; Lmax = 0,8·400·6 / (√3·0,0225·320) = 153,96 m
-    expect(r.iccMin).toBeCloseTo(320 / (Math.sqrt(3) * 0.1875), 6);
-    expect(r.lmax).toBeCloseTo(1920 / (Math.sqrt(3) * 0.0225 * 320), 6);
+    // Icc min : défaut phase-neutre (le plus faible), 0,8·230 / (2·0,0225·50/6) = 490,7 A
+    // (et non le défaut triphasé 0,8·400/(√3·R), qui surestimait Lmax d'un facteur 2) ;
+    // Lmax = 0,8·230·6 / (2·0,0225·320) = 76,67 m
+    expect(r.iccMin).toBeCloseTo(184 / (2 * 0.1875), 6);
+    expect(r.lmax).toBeCloseTo(1104 / (2 * 0.0225 * 320), 6);
+  });
+
+  it('triphasé 3 × 230 V sans neutre : défaut phase-phase à 230 V, boucle de deux conducteurs', () => {
+    const p3 = emptyProject();
+    p3.meta.supply = '3 x 230V ~ 50Hz';
+    const r = calcCircuit(circuit(50, 6, 32, 'C', {}, '3P'), p3);
+    expect(r.threePhase).toBe(true);
+    expect(r.iccMin).toBeCloseTo(184 / (2 * 0.1875), 6);
+    expect(r.lmax).toBeCloseTo(1104 / (2 * 0.0225 * 320), 6);
   });
   it('trop long : Icc min sous le seuil magnétique', () => {
     const r = calcCircuit(circuit(80, 2.5, 20), project);
