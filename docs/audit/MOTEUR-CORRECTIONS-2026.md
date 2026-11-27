@@ -4,7 +4,8 @@ Branche `rgie-engine-corrections`, créée à partir de `rgie-precisions`. Sourc
 15/09/2026, d'application au 01/11/2026 (texte officiel du SPF Économie), relu indépendamment pour chaque anomalie.
 Méthode : pour chaque anomalie de `docs/audit/APPRENDRE-RGIE-AUDIT-2026.md`, un test qui la reproduit a d'abord été
 écrit (`test/rules.rgie2026.test.ts` : 18 tests en échec avant correction), puis la correction, puis des tests aux
-valeurs limites et pour les exceptions du texte. Résultat : 30 tests de la nouvelle série, 1 147 tests au total, verts.
+valeurs limites et pour les exceptions du texte. Résultat : 34 tests de la nouvelle série et 6 de cohérence
+(`test/regulatory-consistency.test.ts`), 1 157 tests au total, verts.
 
 Rien de ce qui suit ne fait de Voltaplan un outil certifié : toutes les règles restent `needsReview` dans le catalogue
 tant qu'un spécialiste ne les a pas validées.
@@ -14,13 +15,13 @@ tant qu'un spécialiste ne les a pas validées.
 | M1 | R-CABLE-PROT, colonne des fusibles | **Corrigé** |
 | M2 | R-CABLE-PROT, valeurs des disjoncteurs ≥ 6 mm² | **Corrigé** |
 | M3 | R-RCD-TYPE-A, tous les différentiels | **Corrigé** (existant : non bloquant, à vérifier) |
-| M4 | Différentiel de tête ≥ 40 A (nouvelle règle R-RCD-HEAD-RATING) | **Corrigé** (existant : non bloquant) |
+| M4 | Différentiel de tête ≥ 40 A (nouvelle règle R-RCD-HEAD-RATING) | **Corrigé** (dérogations 8.2.1 / 8.2.2 appliquées) |
 | M5 | R-SOCKET-MAX, circuits mixtes | **Corrigé** |
 | M6 | R-DEDICATED-CIRCUIT, liste et seuil de 2 600 W | **Corrigé** (puissance inconnue : vérification) |
 | M7 | R-CABLE-MIN, circuits de commande | **À vérifier** (non modifié) |
 | M8 | R-EARTH-VALUE, 100 Ω pile | **Corrigé** |
-| M9 | Détection sur les deux conducteurs (4.4.4.2), disjoncteurs 1P+N | **À vérifier** par un spécialiste (non modifié) |
-| M10 | R-RCD-TRIP, 300 ms / 500 ms | **À vérifier** (non modifié) |
+| M9 | Détection sur les deux conducteurs (4.4.4.2), disjoncteurs 1P+N | **À vérifier** ; disjoncteur différentiel 1P+N en 3 × 230 V ramené à « vérification » |
+| M10 | R-RCD-TRIP, 300 ms / 500 ms | **Non bloquant** (avertissement) en attendant une source |
 | M11 | Équivalence « VFVB = H05VV-F » (nomenclature) | **Corrigé** (retirée) |
 | M12 | Éditions du catalogue (versions de 2025 et 2026 non listées) | **Ouvert** (documentaire) |
 
@@ -71,9 +72,12 @@ tant qu'un spécialiste ne les a pas validées.
   < 40 A. Calibre inconnu : rien (déjà signalé par R-PROT-RATING-MISSING). Textes dans les 4 langues.
 - **Hypothèse** : « en tête » = premier différentiel de la chaîne. Un différentiel placé directement à l'origine mais
   derrière un autre dispositif de protection non différentiel reste considéré « en tête ».
-- **Installations existantes** : recommandation (non bloquante).
-- **Tests** : 25 A → non conforme ; 40 et 63 A → rien ; 30 mA en aval de 25 A → rien ; calibre inconnu → rien ; catalogue
-  et textes.
+- **Dérogations** : 8.2.1 (parties d'avant le 1/10/1981) et 8.2.2 (« installations électriques dont l'exécution sur
+  place a été entamée avant le 16 septembre 1991 ») laissent en service un différentiel de moins de 40 A (p. 272 et
+  277). La règle ne signale donc rien pour une partie exécutée avant le 16/9/1991 ; date inconnue d'une partie
+  existante → vérification non bloquante ; après cette date, dans l'existant → recommandation (catalogue).
+- **Tests** : 25 A → non conforme ; 40 et 63 A → rien ; 30 mA en aval de 25 A → rien ; calibre inconnu → rien ;
+  exécution 1975 et 15/9/1991 → rien ; 16/9/1991 → signalé ; date inconnue → vérification ; catalogue et textes.
 
 ## M5 — 8 points par circuit, circuits mixtes
 
@@ -139,12 +143,17 @@ tant qu'un spécialiste ne les a pas validées.
 - **État** : seul le réseau 3 × 230 V est contrôlé (R-POLES-NO-NEUTRAL). Une lecture littérale rendrait non conformes
   les disjoncteurs 1P+N courants (une seule détection) derrière un simple différentiel : conséquence trop large pour
   être appliquée sans avis. **Aucune règle bloquante ajoutée** ; point n° 1 du dossier de validation externe.
+- **Ajustement** : sur un réseau 3 × 230 V, R-POLES-NO-NEUTRAL déclarait non conforme un disjoncteur différentiel 1P+N,
+  alors que 4.4.4.2 admet une détection sur un seul conducteur de ligne pour un tel dispositif qui coupe les deux
+  conducteurs. Ce cas devient une vérification non bloquante (le disjoncteur 1P+N simple reste non conforme en
+  3 × 230 V). Test ajouté.
 
 ## M10 — Temps de déclenchement des différentiels (à vérifier)
 
 - **État** : 300 ms (500 ms pour un sélectif « S ») proviennent des normes de produit (EN 61008 / 61009, non
   consultées) ; le RGIE (tableau 4.9) ne fixe des temps de retard que pour des lieux à risque d'incendie (BE2, BE3,
-  CA2). Règle inchangée ; à sourcer ou à libeller comme exigence normative.
+  CA2). La règle ne transforme plus cette valeur en non-conformité bloquante : un temps mesuré au-delà donne un
+  avertissement ; un essai déclaré « non conforme » par l'installateur (R-RCD-TEST) reste bloquant. Tests ajoutés.
 
 ## M11 — Équivalence de désignation VFVB
 

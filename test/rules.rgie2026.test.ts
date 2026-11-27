@@ -136,6 +136,22 @@ describe('M4 — différentiel placé en tête : au moins 40 A (RGIE 5.3.5.3 a)'
     expect(has(p, 'R-RCD-HEAD-RATING')).toBe(false);
   });
 
+  it('dérogations 8.2.1 / 8.2.2 : exécution avant le 16/9/1991 → rien ; à partir de cette date → signalé ; date inconnue → vérification', () => {
+    const at = (date?: string) => {
+      const x = project(circuit('mcb', 20, 2.5));
+      x.p.meta.installationKind = 'existing';
+      if (date) x.p.meta.installationDate = date;
+      else delete x.p.meta.installationDate;
+      x.main.props.ratedCurrent = 25;
+      return findings(x.p, 'R-RCD-HEAD-RATING');
+    };
+    expect(at('1975-01-01')).toEqual([]);
+    expect(at('1991-09-15')).toEqual([]);
+    expect(at('1991-09-16')).toHaveLength(1);
+    expect(at('2005-01-01')[0]).toMatchObject({ blocking: false });
+    expect(at(undefined)[0]).toMatchObject({ status: 'manualCheck', blocking: false });
+  });
+
   it('calibre inconnu : pas de constat (déjà signalé comme donnée manquante)', () => {
     const { p, main } = project(circuit('mcb', 20, 2.5));
     delete main.props.ratedCurrent;
@@ -229,6 +245,29 @@ describe('M8 — résistance de terre « inférieure à 100 Ω » (RGIE 4.2.3.2)
     b.p.measurements.earthResistanceOhm = 99.9;
     expect(has(b.p, 'R-EARTH-VALUE')).toBe(false);
     expect(has(b.p, 'R-EARTH-30')).toBe(true);
+  });
+});
+
+describe('Interprétations incertaines : jamais bloquantes (dossier de validation externe)', () => {
+  it('M10 — temps de déclenchement au-delà de 300 ms : avertissement, pas une non-conformité (valeur normative, non RGIE)', () => {
+    const { p, rcd30 } = project(circuit('mcb', 20, 2.5));
+    p.measurements.rcdTests = { ...p.measurements.rcdTests, [rcd30.id]: { tripMs: 350, ok: true } };
+    expect(findings(p, 'R-RCD-TRIP')[0]).toMatchObject({ status: 'warning', blocking: false });
+  });
+
+  it('essai déclaré non conforme par l’installateur : reste bloquant', () => {
+    const { p, rcd30 } = project(circuit('mcb', 20, 2.5));
+    p.measurements.rcdTests = { ...p.measurements.rcdTests, [rcd30.id]: { ok: false } };
+    expect(findings(p, 'R-RCD-TEST')[0]).toMatchObject({ status: 'nonCompliant', blocking: true });
+  });
+
+  it('M9 — 3 × 230 V : disjoncteur 1P+N bloquant ; disjoncteur différentiel 1P+N à vérifier (4.4.4.2)', () => {
+    const mcb = project(circuit('mcb', 20, 2.5));
+    mcb.p.meta.supply = '3 x 230V ~ 50Hz';
+    expect(findings(mcb.p, 'R-POLES-NO-NEUTRAL')[0]).toMatchObject({ status: 'nonCompliant', blocking: true });
+    const rcbo = project(circuit('rcbo', 20, 2.5));
+    rcbo.p.meta.supply = '3 x 230V ~ 50Hz';
+    expect(findings(rcbo.p, 'R-POLES-NO-NEUTRAL')[0]).toMatchObject({ status: 'manualCheck', blocking: false });
   });
 });
 

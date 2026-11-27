@@ -179,6 +179,26 @@ function fixedPoints(circuit: ElNode, content: ElNode[]): Set<string> {
   return keys;
 }
 
+/** Différentiel de tête d'au moins 40 A : exigé pour les parties dont l'exécution a commencé le 16/9/1991 ou après (8.2.2). */
+const RCD_40A_FROM = '1991-09-16';
+
+/**
+ * Exécution de la partie commencée à la date `date` ou après ? Date de la partie (`installedOn`, du plus proche au plus
+ * lointain), puis du projet ; partie d'avant le 1/10/1981 → non ; sans date : installation neuve → oui, existante →
+ * inconnu. Contrairement à `sinceDate`, une partie réalisée sous une édition antérieure n'est pas exclue d'office.
+ */
+function executedSince(project: Project, chain: ElNode[], date: string): 'yes' | 'no' | 'unknown' {
+  const ctx = partContext(project, belgium, chain);
+  if (ctx.edition === 'pre1981') return 'no';
+  for (const x of [...chain].reverse()) {
+    const d = normDate(x.props.installedOn);
+    if (d) return d >= date ? 'yes' : 'no';
+  }
+  const d = normDate(project.meta.installationDate);
+  if (d) return d >= date ? 'yes' : 'no';
+  return ctx.isNew ? 'yes' : 'unknown';
+}
+
 /** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
 type Raw = Omit<Finding, 'severity'>;
 type Extra = { status?: FindingStatus; inferred?: boolean; knowledge?: Knowledge; fact?: SurveyFact };
@@ -240,7 +260,9 @@ function checkRgie(project: Project): Finding[] {
     if (!node) continue;
     const max = String(node.props.rcdType ?? '').toUpperCase().includes('S') ? 500 : 300;
     if (test.ok === false) add('R-RCD-TEST', nc, id);
-    else if (test.tripMs !== undefined && test.tripMs > max) add('R-RCD-TRIP', nc, id, { value: test.tripMs, max });
+    // 300 / 500 ms : valeurs des normes de produit (EN 61008 / 61009, non consultées), pas du RGIE → avertissement non
+    // bloquant tant qu'un spécialiste ne l'a pas confirmé (dossier de validation, question 13).
+    else if (test.tripMs !== undefined && test.tripMs > max) add('R-RCD-TRIP', nc, id, { value: test.tripMs, max }, { status: 'warning' });
   }
   // Différentiel dessiné sans essai noté : l'essai reste à faire (vérification, jamais bloquant).
   const tests = project.measurements.rcdTests ?? {};
@@ -254,8 +276,12 @@ function checkRgie(project: Project): Finding[] {
       // Réseau 3 × 230 V (sans neutre distribué) : les deux conducteurs d'un circuit sont des phases,
       // les deux doivent être protégés et coupés → disjoncteur bipolaire (2P), pas 1P+N ni 1P.
       const poles = String(node.props.poles ?? '');
-      if (noNeutral && OVERCURRENT.has(String(node.props.device ?? 'mcb')) && (poles === '1P+N' || poles === '1P'))
-        add('R-POLES-NO-NEUTRAL', nc, node.id, { poles });
+      // Disjoncteur différentiel 1P+N : 4.4.4.2 admet une détection sur un seul conducteur de ligne si le dispositif
+      // coupe les deux ; son emploi en 3 × 230 V reste à confirmer (dossier de validation, question 1) → vérification.
+      if (noNeutral && OVERCURRENT.has(String(node.props.device ?? 'mcb')) && (poles === '1P+N' || poles === '1P')) {
+        if (node.props.device === 'rcbo' && poles === '1P+N') add('R-POLES-NO-NEUTRAL', nc, node.id, { poles }, { status: 'manualCheck' });
+        else add('R-POLES-NO-NEUTRAL', nc, node.id, { poles });
+      }
       if (node.props.device !== 'rcd' && node.props.device !== 'switch' && n(node.props.breakingCapacity) === undefined) add('R-PROT-KA-MISSING', 'info', node.id);
       if (isRcd(node)) {
         const rc = n(node.props.residualCurrent);
@@ -268,8 +294,14 @@ function checkRgie(project: Project): Finding[] {
         // éventuelle dérogation pour l'existant restant à confirmer.
         if (node.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, node.id);
         // RGIE 5.3.5.3 a : le différentiel placé en tête de l'installation a une intensité nominale d'au moins 40 A.
+        // Dérogations : 8.2.1 (parties d'avant le 1/10/1981) et 8.2.2 (exécution entamée avant le 16/9/1991) laissent en
+        // service un différentiel de moins de 40 A. Date inconnue d'une partie existante : vérification, non bloquante.
         const rating = n(node.props.ratedCurrent);
-        if (!upRcd && rating !== undefined && rating < 40) add('R-RCD-HEAD-RATING', nc, node.id, { value: rating });
+        if (!upRcd && rating !== undefined && rating < 40) {
+          const when = executedSince(project, [...ancestors, node], RCD_40A_FROM);
+          if (when === 'yes') add('R-RCD-HEAD-RATING', nc, node.id, { value: rating });
+          else if (when === 'unknown') add('R-RCD-HEAD-RATING', nc, node.id, { value: rating }, { status: 'manualCheck' });
+        }
       }
     }
 
