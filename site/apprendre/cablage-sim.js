@@ -41,7 +41,19 @@
     // Boîte de dérivation : bornes de connexion (chaque borne relie les fils qui y arrivent)
     box: { terms: ['a', 'b', 'c', 'd', 'e', 'f'] },
   };
-  var SWITCHING = { switch: 1, double: 1, twoway: 1, intermediate: 1, push: 1, shutterSwitch: 1 };
+  // Bornes de commande unipolaire qui ne doivent jamais se trouver sur le neutre (RGIE 5.3.3.2 c) : tous les contacts
+  // des interrupteurs, et seulement le contact du télérupteur (sa bobine A2 va au neutre) et l'entrée / la sortie
+  // commutée du détecteur (son alimentation N va au neutre).
+  var SWITCHING = {
+    switch: ['L', '1'],
+    double: ['L', '1', '2'],
+    twoway: ['C', '1', '2'],
+    intermediate: ['1', '2', '3', '4'],
+    push: ['1', '2'],
+    shutterSwitch: ['L', 'up', 'down'],
+    relay: ['1', '2'],
+    detector: ['L', 'out'],
+  };
   var COLORS = ['brown', 'blue', 'gy', 'black', 'grey'];
 
   function key(dev, term) {
@@ -200,7 +212,7 @@
       // Un interrupteur ne coupe jamais le neutre (la lampe éteinte resterait sous tension)
       ex.devices.forEach(function (d) {
         if (!SWITCHING[d.type]) return;
-        TYPES[d.type].terms.forEach(function (t) {
+        SWITCHING[d.type].forEach(function (t) {
           if (r.find(key(d.id, t)) === r.N && r.N !== r.L) add(errors, 'switchOnNeutral', d.id);
         });
       });
@@ -211,7 +223,8 @@
       if (d.type === 'supply') return;
       if (TYPES[d.type].terms.indexOf('PE') >= 0 && r0.find(key(d.id, 'PE')) !== r0.find(key(src.id, 'PE'))) add(errors, 'noEarth', d.id);
     });
-    // Couleurs : vert-jaune pour la terre et seulement pour elle ; bleu pour le neutre
+    // Couleurs (RGIE 5.1.6.2 et 5.4.3.3) : vert-jaune pour la terre et seulement pour elle ; le bleu est réservé au
+    // neutre dans un circuit qui en comporte (erreur) ; un neutre d'une autre couleur n'est qu'une mauvaise pratique.
     wires.forEach(function (w) {
       var net = r0.find(w.a);
       var isPE = net === r0.find(key(src.id, 'PE'));
@@ -219,7 +232,7 @@
       if (isPE && w.color !== 'gy') add(errors, 'peColor');
       if (!isPE && w.color === 'gy') add(errors, 'gyMisuse');
       if (isN && w.color !== 'blue') add(warnings, 'neutralColor');
-      if (!isN && !isPE && w.color === 'blue') add(warnings, 'blueMisuse');
+      if (!isN && !isPE && w.color === 'blue') add(errors, 'blueMisuse');
     });
     // Fonctionnement attendu
     var ok = true;
@@ -267,7 +280,7 @@
     } else ok = false;
     if (!ok) add(errors, 'behaviour');
     // Les défauts les plus graves d'abord
-    var rank = ['short', 'earthFault', 'neutralEarth', 'bothDirections', 'switchOnNeutral', 'noEarth', 'behaviour', 'peColor', 'gyMisuse'];
+    var rank = ['short', 'earthFault', 'neutralEarth', 'bothDirections', 'switchOnNeutral', 'noEarth', 'behaviour', 'peColor', 'gyMisuse', 'blueMisuse'];
     errors.sort(function (x, y) { return rank.indexOf(x.code) - rank.indexOf(y.code); });
     return { ok: errors.length === 0, errors: errors, warnings: warnings };
   }

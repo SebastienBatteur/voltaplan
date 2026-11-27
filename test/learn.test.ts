@@ -104,6 +104,15 @@ describe('Apprendre : simulateur de câblage', () => {
     expect(codes(w)).toContain('switchOnNeutral');
   });
 
+  it('bleu hors neutre refusé (RGIE 5.1.6.2), neutre d’une autre couleur seulement signalé', () => {
+    const blueReturn = ex.solution.map((x) => (x.color === 'grey' ? { ...x, color: 'blue' as const } : x));
+    expect(codes(blueReturn)).toContain('blueMisuse');
+    const blackNeutral = ex.solution.map((x) => (x.color === 'blue' ? { ...x, color: 'black' as const } : x));
+    const r = sim.check(ex, blackNeutral);
+    expect(r.ok).toBe(true);
+    expect(r.warnings.map((w) => w.code)).toEqual(['neutralColor']);
+  });
+
   it('terre absente et vert-jaune détourné refusés', () => {
     const w = ex.solution.filter((x) => x.color !== 'gy').map((x) => (x.color === 'grey' ? { ...x, color: 'gy' as const } : x));
     expect(codes(w)).toEqual(expect.arrayContaining(['noEarth', 'gyMisuse']));
@@ -135,6 +144,19 @@ describe('Apprendre : simulateur de câblage', () => {
     expect(sim.evaluate(tex, tex.solution, s).on.lamp).toBe(true);
     s = sim.press(tex, tex.solution, s, 'p1').after;
     expect(sim.evaluate(tex, tex.solution, s).on.lamp).toBe(false);
+    // Bobine A2 au neutre : normal. Contact du télérupteur sur le neutre : refusé (RGIE 5.3.3.2 c)
+    tex.sequence = [{ press: 'p1', expect: { lamp: true } }];
+    expect(sim.check(tex, tex.solution).errors.map((e) => e.code)).not.toContain('switchOnNeutral');
+    const contactOnNeutral: ExoWire[] = [
+      { a: 'src.L', b: 'p1.1', color: 'brown' },
+      { a: 'p1.2', b: 'k.A1', color: 'black' },
+      { a: 'k.A2', b: 'src.N', color: 'blue' },
+      { a: 'src.L', b: 'lamp.L', color: 'brown' },
+      { a: 'lamp.N', b: 'k.1', color: 'blue' },
+      { a: 'k.2', b: 'src.N', color: 'blue' },
+      { a: 'lamp.PE', b: 'src.PE', color: 'gy' },
+    ];
+    expect(sim.check(tex, contactOnNeutral).errors.map((e) => e.code)).toContain('switchOnNeutral');
   });
 
   it('volet : montée et descente en même temps signalées', () => {
