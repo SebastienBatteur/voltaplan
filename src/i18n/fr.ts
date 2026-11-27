@@ -1238,7 +1238,7 @@ export const fr = {
   'advice.R-EARTH-MISSING': 'Ajoutez une barrette de terre et une prise de terre (boucle de terre ou piquet) dans le tableau principal.',
   'rule.R-EARTH-VALUE': 'Résistance de terre trop élevée : {value} Ω (le RGIE exige moins de 100 Ω, 4.2.3.2).',
   'advice.R-EARTH-VALUE': 'Améliorer la prise de terre (piquets supplémentaires) avant le contrôle.',
-  'rule.R-EARTH-30': 'Résistance de terre de {value} Ω (> 30 Ω) : mesures complémentaires de 4.2.4.3 b non réunies ({rcd30} différentiel(s) haute sensibilité, au moins 2 ; jusqu’à {maxSockets} socles sur un même, au plus 16 ; {without100} circuit(s) sans différentiel de 100 mA au plus).',
+  'rule.R-EARTH-30': 'Résistance de terre de {value} Ω (> 30 Ω) : mesures complémentaires de 4.2.4.3 b non réunies ({rcd30} différentiel(s) haute sensibilité, au moins 2 ; jusqu’à {maxSockets} points (socles ou appareils fixes) sur un même, au plus 16 ; {without100} circuit(s) sans différentiel de 100 mA au plus).',
   'advice.R-EARTH-30': 'Améliorer la prise de terre, ou réunir les mesures du RGIE 4.2.4.3 b : au moins deux différentiels 30 mA de 16 socles au plus chacun, et un différentiel de 100 mA au plus pour les autres circuits.',
   'rule.R-INSULATION': "Résistance d'isolement insuffisante : {value} MΩ.",
   'advice.R-INSULATION': "Recherchez le défaut d'isolement (circuit par circuit) avant le contrôle.",

@@ -45,7 +45,6 @@ const withoutEarth = (b: Built) => {
 
 const DOC_NEW = { status: 'insufficientData', blocking: true } as const;
 const DOC_EXISTING = { status: 'insufficientData', blocking: false } as const;
-const PRE1981 = 'Partie 8.2.1 point 7 (p. 275) : schéma simplifié des parties d’avant le 1/10/1981';
 
 export const CASES: RuleCase[] = [
   // ---------------------------------------------------------------- R-RULESET-UNKNOWN
@@ -320,7 +319,6 @@ export const CASES: RuleCase[] = [
     title: 'installation d’avant le 1/10/1981 : le schéma simplifié n’exige pas le nom du responsable',
     build: () => tweak(existing(base(), '1975'), (x) => (x.meta.installer!.name = '')),
     expect: 'silent',
-    knownIssue: `${PRE1981} sans le nom du responsable ; le moteur le demande encore (insufficientData non bloquant)`,
   },
   {
     rule: 'R-DOC-INSTALLER',
@@ -391,7 +389,6 @@ export const CASES: RuleCase[] = [
     title: 'installation d’avant le 1/10/1981 : le schéma simplifié n’exige pas la qualité',
     build: () => tweak(existing(base(), '1975'), (x) => (x.meta.installer!.quality = '')),
     expect: 'silent',
-    knownIssue: `${PRE1981} sans la qualité du responsable ; le moteur la demande encore (insufficientData non bloquant)`,
   },
 
   // ---------------------------------------------------------------- R-DOC-ADDRESS
@@ -644,7 +641,6 @@ export const CASES: RuleCase[] = [
     title: 'nom fait d’espaces : traité comme absent',
     build: () => p(project(circuit('mcb', 16, 2.5, [node('socket')], '   '))),
     expect: { status: 'recommendation', blocking: false },
-    knownIssue: 'pas de trim() : un nom fait d’espaces est accepté (audit g1, R-CIRCUIT-NAME 8 et verdict)',
   },
 
   // ---------------------------------------------------------------- R-MEAS-MISSING

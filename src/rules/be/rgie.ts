@@ -40,6 +40,7 @@ import {
   SOCKETS_PER_CIRCUIT_MAX,
   EARTH_EXTRA_RCD_MAX,
   EARTH_EXTRA_SOCKETS_PER_RCD,
+  PV_7112_MAX,
   TABLE_4_11 as TABLE_4_11_PARAM,
 } from '../../regulations/be/values';
 
@@ -269,13 +270,15 @@ function checkRgie(project: Project): Finding[] {
 
   // --- Mentions obligatoires sur les schémas et plans (RGIE 3.1.2.1) ---
   const meta = project.meta;
-  if (!meta.installer?.name?.trim()) add('R-DOC-INSTALLER', nc);
+  // 8.2.1 point 7 (p. 275) : le schéma simplifié d'une installation d'avant le 1/10/1981 n'exige pas le responsable.
+  const pre1981Docs = regimeOf(project, []) === 'pre1981';
+  if (!pre1981Docs && !meta.installer?.name?.trim()) add('R-DOC-INSTALLER', nc);
   const site = meta.site ?? {};
   if (!site.street?.trim() || !site.city?.trim()) add('R-DOC-ADDRESS', nc);
   if (!meta.supply?.trim()) add('R-DOC-SUPPLY', nc);
   // RGIE 3.1.2 : « numéro, version et date de la version » ; 3.1.2.1 : « nom, qualité » du responsable
   if (!meta.docNumber?.trim()) add('R-DOC-NUMBER', nc);
-  if (meta.installer?.name?.trim() && !meta.installer.quality?.trim()) add('R-DOC-QUALITY', nc);
+  if (!pre1981Docs && meta.installer?.name?.trim() && !meta.installer.quality?.trim()) add('R-DOC-QUALITY', nc);
 
   // --- Terre ---
   // Installation neuve (conception) : terre non dessinée = absente du projet → non-conformité.
@@ -294,7 +297,16 @@ function checkRgie(project: Project): Finding[] {
       // par circuit ou groupe de circuits pour les circuits raccordés à l'origine sans 30 mA.
       const all = collect(project.roots);
       const hs = all.filter((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= RCD_HIGH_SENSITIVITY.value);
-      const maxSockets = Math.max(0, ...hs.map((i) => collect(i.node.children).filter((x) => x.node.kind === 'socket').length));
+      // Points par différentiel : socles, plus chaque appareil fixe ou ensemble commandé en commun (fixedPoints).
+      const points = (rcd: ElNode) =>
+        collect(rcd.children)
+          .filter((x) => isCircuit(x.node))
+          .reduce((s, x) => {
+            const content = circuitContent(x.node);
+            return s + content.filter((c) => c.kind === 'socket').length + fixedPoints(x.node, content).size;
+          }, 0);
+      const maxSockets = Math.max(0, ...hs.map((i) => points(i.node)));
+      const unknownSensitivity = all.some((i) => isRcd(i.node) && n(i.node.props.residualCurrent) === undefined);
       const without100 = all.filter(
         (i) => isCircuit(i.node) && ![...i.ancestors, i.node].some((a) => isRcd(a) && (n(a.props.residualCurrent) ?? Infinity) <= EARTH_EXTRA_RCD_MAX.value),
       ).length;
@@ -303,7 +315,9 @@ function checkRgie(project: Project): Finding[] {
         const params = { value: re, rcd30: hs.length, maxSockets, without100 };
         // Variante pour les installations entamées avant le 1/6/2023 (6.5.8.1, 8.2.1 16, 8.2.2 10) : non détaillée → vérification.
         const when = sinceDate(project, [], RCD30_2023);
-        add('R-EARTH-30', nc, undefined, params, when === 'yes' ? undefined : { status: 'manualCheck' });
+        // Un différentiel de sensibilité inconnue peut être celui qui manque : on ne conclut pas (ADR-0007).
+        if (unknownSensitivity) add('R-EARTH-30', nc, undefined, params, { knowledge: 'unknown' });
+        else add('R-EARTH-30', nc, undefined, params, when === 'yes' ? undefined : { status: 'manualCheck' });
       }
     }
   }
@@ -337,6 +351,7 @@ function checkRgie(project: Project): Finding[] {
       const poles = String(node.props.poles ?? '');
       // Disjoncteur différentiel 1P+N : 4.4.4.2 admet une détection sur un seul conducteur de ligne si le dispositif
       // coupe les deux ; son emploi en 3 × 230 V reste à confirmer (dossier de validation, question 1) → vérification.
+      if (noNeutral && OVERCURRENT.has(String(node.props.device ?? 'mcb')) && !poles) add('R-POLES-NO-NEUTRAL', nc, node.id, { poles: '?' }, { knowledge: 'unknown' });
       if (noNeutral && OVERCURRENT.has(String(node.props.device ?? 'mcb')) && (poles === '1P+N' || poles === '1P')) {
         if (node.props.device === 'rcbo' && poles === '1P+N') add('R-POLES-NO-NEUTRAL', nc, node.id, { poles }, { status: 'manualCheck' });
         else add('R-POLES-NO-NEUTRAL', nc, node.id, { poles });
@@ -387,7 +402,12 @@ function checkRgie(project: Project): Finding[] {
       const feedsLoads = circuitContent(node).some((c) => LOAD_KINDS.has(c.kind)) || [...node.children].some((c) => LOAD_KINDS.has(c.kind));
       if (section === undefined) {
         if (isStart && !dcSide) add(node.props.cableType || node.props.conductors ? 'R-CABLE-SECTION-MISSING' : 'R-CABLE-DATA-MISSING', nc, node.id);
-      } else if (!dcSide) {
+      } else if (isStart && !dcSide && (!node.props.cableType || (!n(node.props.conductors) && regimeOf(project, [...ancestors, node]) !== 'pre1981'))) {
+        // 3.1.2.2 a : type, section et nombre des conducteurs sur le schéma unifilaire (8.2.1 point 7 : le schéma
+        // simplifié d'une partie d'avant 1981 n'exige que le type et la section).
+        add('R-CABLE-DATA-MISSING', nc, node.id);
+      }
+      if (section !== undefined && !dcSide) {
         const rating = prot ? n(prot.props.ratedCurrent) : undefined;
         if (section < SECTION_MIN_NO_SOCKET.value) {
           const chain = [...ancestors, node];
@@ -399,11 +419,19 @@ function checkRgie(project: Project): Finding[] {
             // 8.2.1 point 5 : au moins 1 mm² ; 1 mm² protégé par un fusible de 6 A ou un disjoncteur de 10 A au plus.
             const dev = String(prot?.props.device ?? '');
             const met = section >= 1 ? (rating === undefined ? undefined : rating <= (dev === 'fuse' ? 6 : 10)) : false;
-            add('R-CABLE-MIN', nc, node.id, { section }, derogationExtra('R-CABLE-MIN', regimeOf(project, chain), regimeOf(project, chain) === 'old' && section >= 0.75 ? undefined : met));
+            // 8.2.2 point 5 : 1 mm² ou 0,75 mm² selon le type, circuit sans socle, exécution entamée avant le 17/5/1986.
+            const regime = regimeOf(project, chain);
+            const before1986 = sinceDate(project, chain, DATES.value.oldSection1986);
+            const noSocket = !circuitContent(node).some((c) => c.kind === 'socket') && !node.children.some((c) => c.kind === 'socket');
+            const metOld = section < 0.75 || !noSocket || before1986 === 'yes' ? false : undefined;
+            add('R-CABLE-MIN', nc, node.id, { section }, derogationExtra('R-CABLE-MIN', regime, regime === 'old' ? metOld : met));
           }
         }
         const max = prot ? maxProtectionFor(section, String(prot.props.device)) : undefined;
-        if (rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
+        // En aval d'un transformateur (sonnerie, TBT) : la protection du primaire ne protège pas ce câble au sens du
+        // tableau 4.11 ; sa protection propre n'est pas modélisée (comparer au calibre du primaire serait un faux constat).
+        const belowTransformer = prot !== undefined && ancestors.slice(ancestors.indexOf(prot)).some((a) => a.kind === 'transformer');
+        if (!belowTransformer && rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
         // Hors du tableau 4.11 (au-delà de 35 mm²) : pas de maximum réglementaire tabulé → courant admissible à vérifier.
         if (prot && rating !== undefined && max === undefined) add('R-CABLE-IZ', nc, node.id, { section, rating });
       }
@@ -422,13 +450,18 @@ function checkRgie(project: Project): Finding[] {
     }
 
     // --- Installations particulières : points à vérifier à la main (non automatisés) ---
-    if (node.kind === 'appliance' && node.props.applianceType === 'evCharger') add('R-EV-MANUAL', 'info', node.id);
+    // Chapitre 7.22 : bornes dont la réalisation ou le remplacement est entamé à partir du 1/11/2022 (7.22.1).
+    if (node.kind === 'appliance' && node.props.applianceType === 'evCharger') {
+      const when = sinceDate(project, [...ancestors, node], DATES.value.evCharger722);
+      if (when !== 'no') add('R-EV-MANUAL', 'info', node.id);
+    }
 
     // --- Prises ---
     if (node.kind === 'socket') {
       // Valeur non renseignée = symbole par défaut (prise avec terre et sécurité enfant) : présent dans le dessin.
       // « false » = absence déclarée (saisie, ou reprise par l'assistant : « déduite » tant que non confirmée).
-      if (node.props.earth === false) {
+      // 5.3.5.2 b : sauf socle alimenté par un transformateur de séparation des circuits individuel (prise « rasoir »).
+      if (node.props.earth === false && node.props.socketKind !== 'shaver') {
         // 8.2.1 point 6 b : partie d'avant 1981, canalisation sans conducteur de protection et différentiel ≤ 30 mA. Sans
         // 30 mA en amont la dérogation ne s'applique pas ; avec, la canalisation reste à vérifier sur place.
         const chain = [...ancestors, node];
@@ -438,7 +471,9 @@ function checkRgie(project: Project): Finding[] {
       // Depuis le 1/3/2025 (RGIE 5.3.5.2 a) : socles ≤ 16 A / 250 V au moins IPXX-D (obturateurs), sauf socle réservé à
       // un ou plusieurs appareils d'un usage spécifique (prise d'un appareil dessiné sous elle). Avant cette date, la
       // vérification de Voltaplan reste celle d'avant (prise sans sécurité enfant signalée).
-      const reserved = node.children.some((c) => c.kind === 'appliance');
+      // Dérogations de 5.3.5.2 a : socle réservé à des appareils d'un usage spécifique, placé dans ou sur un tableau, ou
+      // muni d'un verrouillage qui met le socle hors tension après le retrait de la fiche.
+      const reserved = node.children.some((c) => c.kind === 'appliance') || node.props.inBoard === true || node.props.socketKind === 'switchedLocked';
       if (node.props.childSafety === false && !node.props.threePhase) {
         const when = sinceDate(project, [...ancestors, node], RGIE_2025);
         if (when !== 'yes') add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge: 'absent' });
@@ -463,7 +498,7 @@ function checkRgie(project: Project): Finding[] {
     const loads = content.filter((c) => LOAD_KINDS.has(c.kind));
     const rcds = ancestors.filter(isRcd).concat(isRcd(circuit) ? [circuit] : []);
     const minRcd = Math.min(...rcds.map((r) => n(r.props.residualCurrent) ?? Infinity));
-    const label = String(circuit.props.circuitName ?? '');
+    const label = String(circuit.props.circuitName ?? '').trim();
 
     if (!label) add('R-CIRCUIT-NAME', 'info', circuit.id);
 
@@ -478,7 +513,9 @@ function checkRgie(project: Project): Finding[] {
     }
     if (sockets.length) {
       const minSection = Math.min(...cables.map((c) => n(c.props.section) ?? Infinity));
-      if (Number.isFinite(minSection) && minSection < SECTION_MIN_GENERAL.value) {
+      // Tableau 5.1 : 0,75 mm² admis pour un circuit intégré dans un tableau qui alimente un socle simple.
+      const boardSocket = sockets.length === 1 && sockets[0].props.inBoard === true && n(sockets[0].props.count) !== 2 && minSection >= 0.75;
+      if (Number.isFinite(minSection) && minSection < SECTION_MIN_GENERAL.value && !boardSocket) {
         // 8.2.1 point 5 : au moins 1 mm² (1 mm² : fusible ≤ 6 A ou disjoncteur ≤ 10 A).
         const r0 = n(circuit.props.ratedCurrent);
         const dev = String(circuit.props.device ?? '');
@@ -488,7 +525,8 @@ function checkRgie(project: Project): Finding[] {
     }
 
     // Appareils devant avoir un circuit spécialisé
-    const appliances = content.filter((c) => c.kind === 'appliance');
+    // 5.2.1.2 : « chaque appareil ou machine […] à poste fixe » ≥ 2 600 W : les moteurs de puissance connue aussi.
+    const appliances = content.filter((c) => c.kind === 'appliance' || (c.kind === 'motor' && (n(c.props.power) ?? 0) >= DEDICATED_POWER_W));
     for (const ap of appliances) {
       const type = String(ap.props.applianceType);
       const need = dedicatedNeed(ap);
@@ -559,7 +597,8 @@ function checkRgie(project: Project): Finding[] {
 
   // Photovoltaïque : panneaux ou onduleur DC → AC (un redresseur/onduleur AC ↔ DC seul est celui d'une batterie)
   const pv = infos.find((i) => i.node.kind === 'solarPanel' || (i.node.kind === 'inverter' && (i.node.props.inverterType ?? 'dcAc') === 'dcAc'));
-  if (pv) add('R-PV-MANUAL', 'info', pv.node.id);
+  const pvPower = Math.max(0, ...infos.filter((i) => i.node.kind === 'inverter').map((i) => n(i.node.props.power) ?? 0));
+  if (pv && !(pvPower > PV_7112_MAX.value)) add('R-PV-MANUAL', 'info', pv.node.id);
 
   // Équipements confirmés présents mais non dessinés : le schéma est incomplet (exigence documentaire).
   for (const fact of notDrawn) add('R-DOC-NOT-DRAWN', nc, undefined, { fact }, { fact });

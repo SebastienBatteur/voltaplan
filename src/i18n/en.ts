@@ -1232,7 +1232,7 @@ export const en: Partial<Dict> = {
   'advice.R-EARTH-MISSING': 'Add an earth bar and an earth electrode in the main board.',
   'rule.R-EARTH-VALUE': 'Earth resistance too high: {value} Ω (the RGIE requires less than 100 Ω, 4.2.3.2).',
   'advice.R-EARTH-VALUE': 'Improve the earth electrode before the inspection.',
-  'rule.R-EARTH-30': 'Earth resistance {value} Ω (> 30 Ω): additional measures of 4.2.4.3 b not met ({rcd30} high-sensitivity RCD(s), at least 2; up to {maxSockets} sockets on one, at most 16; {without100} circuit(s) without an RCD of at most 100 mA).',
+  'rule.R-EARTH-30': 'Earth resistance {value} Ω (> 30 Ω): additional measures of 4.2.4.3 b not met ({rcd30} high-sensitivity RCD(s), at least 2; up to {maxSockets} points (sockets or fixed appliances) on one, at most 16; {without100} circuit(s) without an RCD of at most 100 mA).',
   'advice.R-EARTH-30': 'Improve the earth electrode, or meet the measures of RGIE 4.2.4.3 b: at least two 30 mA RCDs with at most 16 sockets each, and an RCD of at most 100 mA for the other circuits.',
   'rule.R-INSULATION': 'Insufficient insulation resistance: {value} MΩ.',
   'advice.R-INSULATION': 'Find the insulation fault (circuit by circuit) before the inspection.',

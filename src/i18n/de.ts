@@ -1126,7 +1126,7 @@ export const de: Partial<Dict> = {
   "advice.R-EARTH-MISSING": "Fügen Sie im Hauptverteiler eine Erdungsschiene und einen Erder (Banderder oder Staberder) hinzu.",
   "rule.R-EARTH-VALUE": "Erdungswiderstand zu hoch: {value} Ω (die AREI verlangt weniger als 100 Ω, 4.2.3.2).",
   "advice.R-EARTH-VALUE": "Verbessern Sie den Erder (zusätzliche Staberder) vor der Prüfung.",
-  "rule.R-EARTH-30": "Erdungswiderstand {value} Ω (> 30 Ω): Zusatzmaßnahmen nach 4.2.4.3 b nicht erfüllt ({rcd30} FI mit hoher Empfindlichkeit, mindestens 2; bis zu {maxSockets} Steckdosen an einem, höchstens 16; {without100} Stromkreis(e) ohne FI von höchstens 100 mA).",
+  "rule.R-EARTH-30": "Erdungswiderstand {value} Ω (> 30 Ω): Zusatzmaßnahmen nach 4.2.4.3 b nicht erfüllt ({rcd30} FI mit hoher Empfindlichkeit, mindestens 2; bis zu {maxSockets} Punkte (Steckdosen oder fest angeschlossene Geräte) an einem, höchstens 16; {without100} Stromkreis(e) ohne FI von höchstens 100 mA).",
   "advice.R-EARTH-30": "Erder verbessern oder die Maßnahmen nach AREI 4.2.4.3 b erfüllen: mindestens zwei 30-mA-FI mit je höchstens 16 Steckdosen und ein FI von höchstens 100 mA für die übrigen Stromkreise.",
   "rule.R-INSULATION": "Isolationswiderstand unzureichend: {value} MΩ.",
   "advice.R-INSULATION": "Suchen Sie vor der Prüfung den Isolationsfehler (Stromkreis für Stromkreis).",

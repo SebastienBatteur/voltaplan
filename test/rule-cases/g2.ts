@@ -274,7 +274,6 @@ export const CASES: RuleCase[] = [
     title: '50 Ω, 15 socles + 2 points lumineux (appareils fixes assimilés à des socles) sous un 30 mA : 17 → non conforme',
     build: () => earth30(50, [sockets(8), sockets(7), circuit('mcb', 10, 1.5, [node('light'), node('light')], 'Éclairage')]).p,
     expect: { status: 'nonCompliant', blocking: true },
-    knownIssue: 'seuls les socles sont comptés ; 4.2.4.3 b 10e al. assimile un appareil fixe (ou un ensemble sous une même commande) à un socle',
   },
   {
     rule: 'R-EARTH-30',
@@ -373,7 +372,6 @@ export const CASES: RuleCase[] = [
       return b.p;
     },
     expect: { status: 'insufficientData' },
-    knownIssue: 'une sensibilité inconnue est comptée comme « pas haute sensibilité » → non conforme au lieu d’informations insuffisantes',
   },
   {
     rule: 'R-EARTH-30',
@@ -763,7 +761,6 @@ export const CASES: RuleCase[] = [
     title: 'borne réalisée le 31/10/2022 (veille) : chapitre 7.22 non applicable (7.22.1) → pas de rappel 7.22',
     build: () => existing(evProject(), '2022-10-31').p,
     expect: 'silent',
-    knownIssue: 'le rappel 7.22 est émis sans regarder la date de la borne (7.22.1 : réalisation ou remplacement à partir du 1/11/2022)',
   },
   {
     rule: 'R-EV-MANUAL',
@@ -771,7 +768,6 @@ export const CASES: RuleCase[] = [
     title: 'borne de 2015 : règles générales, pas le chapitre 7.22',
     build: () => existing(evProject(), '2015-01-01').p,
     expect: 'silent',
-    knownIssue: 'borne antérieure au 1/11/2022 : même rappel 7.22 qu’une borne récente',
   },
   {
     rule: 'R-EV-MANUAL',
@@ -779,6 +775,35 @@ export const CASES: RuleCase[] = [
     title: 'existant sans date (date de la borne inconnue) → vérification manuelle',
     build: () => existing(evProject()).p,
     expect: { status: 'manualCheck', blocking: false },
+  },
+
+  {
+    rule: 'R-EV-MANUAL',
+    kind: 'boundary',
+    title: 'borne réalisée le 1/11/2022 (jour même) : chapitre 7.22 applicable → rappel',
+    build: () => existing(evProject(), '2022-11-01').p,
+    expect: { status: 'manualCheck', blocking: false },
+  },
+  {
+    rule: 'R-EV-MANUAL',
+    kind: 'boundary',
+    title: 'borne réalisée le 31/10/2022 (veille) : pas de rappel 7.22',
+    build: () => existing(evProject(), '2022-10-31').p,
+    expect: 'silent',
+  },
+  {
+    rule: 'R-PV-MANUAL',
+    kind: 'boundary',
+    title: 'onduleur de 10 kVA pile : chapitre 7.112 applicable (≤ 10 kVA) → rappel',
+    build: () => project(circuit('mcb', 20, 4, [node('inverter', { inverterType: 'dcAc', power: 10000 })], 'PV')).p,
+    expect: { status: 'manualCheck', blocking: false },
+  },
+  {
+    rule: 'R-PV-MANUAL',
+    kind: 'boundary',
+    title: 'onduleur de 10,001 kVA : hors chapitre 7.112 → pas de rappel',
+    build: () => project(circuit('mcb', 20, 4, [node('inverter', { inverterType: 'dcAc', power: 10001 })], 'PV')).p,
+    expect: 'silent',
   },
 
   // ===================== R-PV-MANUAL (7.112) =====================
@@ -828,7 +853,6 @@ export const CASES: RuleCase[] = [
     title: 'onduleur de 15 kVA : chapitre 7.112 limité aux installations ≤ 10 kVA → pas de rappel 7.112',
     build: () => project(circuit('mcb', 32, 6, [node('inverter', { inverterType: 'dcAc', power: 15000 })], 'PV')).p,
     expect: 'silent',
-    knownIssue: 'la puissance de l’onduleur n’est pas exploitée : rappel 7.112 au-delà de 10 kVA (7.112.1)',
   },
 
   // ===================== R-RCD30-DATE (6.5.8.1, 1 ; 4.2.4.3 b dernier al. ; 1/6/2023) =====================

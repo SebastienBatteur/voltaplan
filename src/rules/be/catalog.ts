@@ -21,12 +21,12 @@ const LIVRE1 = 'RGIE Livre 1 — AR du 8 septembre 2019 (SPF Économie)';
 export const BE_EDITIONS: Edition[] = [
   {
     id: 'pre1981',
-    until: '1981-10-01',
+    until: DATES.value.pre1981Until,
     label: { fr: 'Partie ancienne (avant le 1/10/1981)', nl: 'Oud gedeelte (vóór 1/10/1981)', en: 'Old part (before 1/10/1981)', de: 'Altteil (vor dem 1.10.1981)' },
   },
   {
     id: '1981',
-    from: '1981-10-01',
+    from: DATES.value.pre1981Until,
     until: '2020-06-01',
     legal: 'AR du 10 mars 1981',
     label: { fr: 'Ancien RGIE (1981–2020)', nl: 'Oud AREI (1981–2020)', en: 'Former RGIE (1981–2020)', de: 'Alte AREI (1981–2020)' },

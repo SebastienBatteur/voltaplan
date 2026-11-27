@@ -1232,7 +1232,7 @@ export const nl: Partial<Dict> = {
   'advice.R-EARTH-MISSING': 'Voeg een aardingsstrip en een aarding (aardlus of aardpen) toe in het hoofdbord.',
   'rule.R-EARTH-VALUE': 'Spreidingsweerstand te hoog: {value} Ω (het AREI eist minder dan 100 Ω, 4.2.3.2).',
   'advice.R-EARTH-VALUE': 'Verbeter de aarding (extra aardpennen) vóór de keuring.',
-  'rule.R-EARTH-30': 'Spreidingsweerstand {value} Ω (> 30 Ω): aanvullende maatregelen van 4.2.4.3 b niet vervuld ({rcd30} differentieel(en) met hoge gevoeligheid, minstens 2; tot {maxSockets} contactdozen op één, maximaal 16; {without100} kring(en) zonder differentieel van hoogstens 100 mA).',
+  'rule.R-EARTH-30': 'Spreidingsweerstand {value} Ω (> 30 Ω): aanvullende maatregelen van 4.2.4.3 b niet vervuld ({rcd30} differentieel(en) met hoge gevoeligheid, minstens 2; tot {maxSockets} punten (contactdozen of vaste toestellen) op één, maximaal 16; {without100} kring(en) zonder differentieel van hoogstens 100 mA).',
   'advice.R-EARTH-30': 'Verbeter de aardverbinding, of vervul de maatregelen van AREI 4.2.4.3 b: minstens twee differentiëlen van 30 mA met elk hoogstens 16 contactdozen, en een differentieel van hoogstens 100 mA voor de andere kringen.',
   'rule.R-INSULATION': 'Isolatieweerstand onvoldoende: {value} MΩ.',
   'advice.R-INSULATION': 'Zoek het isolatiedefect (kring per kring) vóór de keuring.',

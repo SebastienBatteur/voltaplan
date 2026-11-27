@@ -150,7 +150,6 @@ export const CASES: RuleCase[] = [
       return prj(c);
     },
     expect: { status: 'insufficientData', blocking: true },
-    knownIssue: 'ne se déclenche que si la section manque ; le type est exigé par 3.1.2.2 a (p. 64)',
   },
   {
     rule: DATA_MISSING,
@@ -162,7 +161,6 @@ export const CASES: RuleCase[] = [
       return prj(c);
     },
     expect: { status: 'insufficientData', blocking: true },
-    knownIssue: 'ne se déclenche que si la section manque ; le nombre de conducteurs est exigé par 3.1.2.2 a (p. 64)',
   },
   {
     rule: DATA_MISSING,
@@ -253,7 +251,6 @@ export const CASES: RuleCase[] = [
     title: 'ancien RGIE, exécution du 17/5/1986 (jour de la limite) : 0,75 mm² hors dérogation → non conforme',
     build: () => old('1986-05-17', circuit('mcb', 6, 0.75, [light()])),
     expect: { status: 'nonCompliant', blocking: true },
-    knownIssue: '8.2.2 point 5 (p. 277-278) ne vaut que pour une exécution entamée avant le 17/5/1986 ; la date n’est pas lue',
   },
   {
     rule: 'R-CABLE-MIN',
@@ -268,7 +265,6 @@ export const CASES: RuleCase[] = [
     title: 'ancien RGIE (1985) : 1 mm² dans un circuit de prises → hors 8.2.2 point 5 (circuits sans socle)',
     build: () => old('1985-01-01', circuit('mcb', 10, 1, [node('socket', {})])),
     expect: { status: 'nonCompliant', blocking: true },
-    knownIssue: '8.2.2 point 5 (p. 277-278) exige un circuit sans socle ; le moteur donne « à vérifier »',
   },
   {
     rule: 'R-CABLE-MIN',
@@ -403,7 +399,6 @@ export const CASES: RuleCase[] = [
     build: () =>
       prj(circuit('mcb', 16, 1.5, [node('transformer', {}, [node('cable', { section: 0.5, length: 5 }, [node('bell', {})])])], 'Sonnerie')),
     expect: 'silent',
-    knownIssue: 'câble TBT sous un transformateur comparé au calibre du primaire (16 A > 4 A) : faux positif bloquant',
   },
   {
     rule: 'R-CABLE-PROT',
@@ -582,7 +577,6 @@ export const CASES: RuleCase[] = [
     title: 'prise rasoir à transformateur de séparation individuel, sans terre : admise (5.3.5.2 b)',
     build: () => prj(circuit('mcb', 16, 2.5, [node('socket', { earth: false, socketKind: 'shaver' })])),
     expect: 'silent',
-    knownIssue: 'l’exception du transformateur de séparation individuel (5.3.5.2 b, p. 167) n’est pas appliquée (socketKind shaver)',
   },
   {
     rule: 'R-SOCKET-EARTH',
@@ -749,7 +743,6 @@ export const CASES: RuleCase[] = [
     title: 'socle placé dans un tableau de répartition : dispensé (5.3.5.2 a)',
     build: () => prj(circuit('mcb', 16, 2.5, [node('socket', { childSafety: false, inBoard: true })])),
     expect: 'silent',
-    knownIssue: 'l’exception des socles dans ou sur un tableau (5.3.5.2 a, p. 167) n’est pas appliquée (inBoard)',
   },
   {
     rule: 'R-SOCKET-IPXXD',
@@ -911,7 +904,6 @@ export const CASES: RuleCase[] = [
     title: 'socle simple dans un tableau, circuit intégré au tableau en 1,5 mm² sous 16 A : admis (tableau 5.1)',
     build: () => prj(circuit('mcb', 16, 1.5, [node('socket', { inBoard: true })])),
     expect: 'silent',
-    knownIssue: 'tableau 5.1 (p. 129) : 0,75 mm² admis pour un circuit intégré dans un tableau alimentant un socle simple ; non appliqué',
   },
   {
     rule: 'R-SOCKET-SECTION',
@@ -991,7 +983,6 @@ export const CASES: RuleCase[] = [
     title: 'moteur de 3 000 W partageant son circuit : machine à poste fixe ≥ 2 600 W → non conforme',
     build: () => prj(circuit('mcb', 20, 2.5, [node('motor', { power: 3000 }), node('socket', {})])),
     expect: { status: 'nonCompliant', blocking: true },
-    knownIssue: 'seuls les éléments « appliance » sont examinés ; 5.2.1.2 (p. 129) vise « chaque appareil ou machine » ≥ 2 600 W',
   },
   {
     rule: 'R-DEDICATED-CIRCUIT',

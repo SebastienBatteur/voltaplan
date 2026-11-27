@@ -57,6 +57,9 @@ export const CIRCUITS_PER_RCD30_MAX = p(8, 'circuits', 'RGIE 4.2.4.3 b, p. 101')
 /** Différentiel placé en tête : intensité nominale minimale (5.3.5.3 a, p. 168). */
 export const RCD_HEAD_MIN_RATING = p(40, 'A', 'RGIE 5.3.5.3 a, p. 168');
 
+/** Chapitre 7.112 : installations photovoltaïques domestiques à basse tension d'au plus 10 kVA (7.112.1, p. 270). */
+export const PV_7112_MAX = p(10000, 'VA', 'RGIE 7.112.1, p. 270');
+
 /** Temps de déclenchement maximal utilisé pour les essais (normes de produit EN 61008/61009, non consultées). */
 export const RCD_TRIP_MAX = p({ general: 300, selective: 500 }, 'ms', 'Normes de produit (non consultées) — choix Voltaplan, non bloquant');
 
@@ -75,6 +78,10 @@ export const DATES = p(
     rgie2025: '2025-03-01',
     /** Version 07 du Livre 1. */
     v07: '2026-11-01',
+    /** Bornes de charge : chapitre 7.22 pour une réalisation ou un remplacement entamé à partir de cette date (7.22.1). */
+    evCharger722: '2022-11-01',
+    /** 8.2.2 point 5 : câbles de 1 mm² (EMCB, EMCVB) ou 0,75 mm² (CTLB, VTLB) d'une exécution entamée avant cette date. */
+    oldSection1986: '1986-05-17',
   },
   'date',
   'RGIE 8.2.1, 8.2.2, 4.2.4.3 b, 5.3.5.2 c, 6.5.8.1 ; version 07',

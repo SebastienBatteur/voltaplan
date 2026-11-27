@@ -175,7 +175,6 @@ export const CASES: RuleCase[] = [
     title: '3 × 230 V : pôles du disjoncteur non renseignés → informations insuffisantes (on ne peut pas conclure)',
     build: () => threePhase230(withCircuit((c) => delete c.props.poles)).p,
     expect: { status: 'insufficientData' },
-    knownIssue: 'pôles absents sur 3 × 230 V : la règle se tait (audit g3, verdict b : données insuffisantes)',
   },
   {
     rule: 'R-POLES-NO-NEUTRAL',
