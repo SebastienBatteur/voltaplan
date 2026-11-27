@@ -124,7 +124,7 @@ le contre-audit de 2026.
 | R-INSULATION | à renseigner | **aucun** | — | needsReview |
 | R-MEAS-MISSING | à renseigner | rules.matrix.test.ts, rules.test.ts | — | needsReview |
 | R-OLD-RGIE | à renseigner | rules.matrix.test.ts | — | needsReview |
-| R-POLES-NO-NEUTRAL | à renseigner | rules.matrix.test.ts | — | needsReview |
+| R-POLES-NO-NEUTRAL | à renseigner | rules.matrix.test.ts, rules.rgie2026.test.ts | — | needsReview |
 | R-PROT-KA-MISSING | à renseigner | rules.matrix.test.ts | — | needsReview |
 | R-PROT-RATING-MISSING | à renseigner | assist.test.ts, rules.matrix.test.ts | — | needsReview |
 | R-PV-MANUAL | à renseigner | rules.matrix.test.ts | — | needsReview |
@@ -132,8 +132,8 @@ le contre-audit de 2026.
 | R-RCD-MAIN | à renseigner | rules.matrix.test.ts | — | needsReview |
 | R-RCD-SELECTIVITY | à renseigner | **aucun** | — | needsReview |
 | R-RCD-SENS-MISSING | à renseigner | rules.matrix.test.ts | — | needsReview |
-| R-RCD-TEST | à renseigner | rules.matrix.test.ts | — | needsReview |
-| R-RCD-TRIP | à renseigner | rules.test.ts | — | needsReview |
+| R-RCD-TEST | à renseigner | rules.matrix.test.ts, rules.rgie2026.test.ts | — | needsReview |
+| R-RCD-TRIP | à renseigner | rules.rgie2026.test.ts, rules.test.ts | — | needsReview |
 | R-RCD-TYPE-A | 5.3.5.3 a | rules.rgie2026.test.ts | differentiel, organiser-tableau | needsReview |
 | R-RCD30 | à renseigner | rules.matrix.test.ts | — | needsReview |
 | R-RCD30-DATE | à renseigner | rules.matrix.test.ts | — | needsReview |
