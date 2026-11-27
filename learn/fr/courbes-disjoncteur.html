@@ -10,7 +10,7 @@
     "La lettre (B, C ou D) indique à partir de quel courant le <strong>déclencheur magnétique</strong> coupe instantanément.",
     "Ordres de grandeur : B entre 3 et 5 fois le calibre, C entre 5 et 10 fois, D entre 10 et 20 fois.",
     "La courbe ne change pas la protection contre les surcharges : un C16 et un B16 laissent passer le même courant en permanence.",
-    "En habitation, la courbe <strong>C</strong> est la plus courante ; la D est réservée aux appareils à fort courant de démarrage."
+    "En habitation, la courbe <strong>C</strong> est la plus courante ; la D s’emploie surtout pour des appareils à fort courant de démarrage. Le RGIE n’impose pas de courbe : il impose que le court-circuit soit coupé assez vite pour protéger le câble."
   ],
   "faq": [
     { "q": "Un disjoncteur C est-il moins sûr qu’un B ?", "a": "Non. Les deux protègent le câble de la même façon contre les surcharges. Le B réagit plus tôt aux courts-circuits, ce qui peut être utile sur une ligne très longue, mais il déclenche aussi plus facilement à l’allumage de certains appareils. L’installateur choisit selon le circuit." },
@@ -18,8 +18,8 @@
     { "q": "Où lire la courbe d’un disjoncteur ?", "a": "Sur sa face avant : la lettre précède le calibre, par exemple « C16 » ou « B20 ». Sur le schéma unifilaire, la courbe figure parmi les caractéristiques de la protection." }
   ],
   "sources": [
-    { "label": "Documentation des fabricants de disjoncteurs modulaires pour usage domestique (courbes de déclenchement)." },
-    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+    { "label": "Documentation des fabricants de disjoncteurs modulaires pour usage domestique (courbes de déclenchement, établies selon la norme produit des disjoncteurs)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie (notamment 4.4.2.1, temps de coupure d’un court-circuit)." }
   ],
   "updated": "2026-11-27"
 }
@@ -54,7 +54,7 @@
   </svg>
   <figcaption>La partie thermique est la même pour B, C et D ; seule la zone où le magnétique coupe instantanément se déplace. Dans chaque zone colorée, le déclenchement peut se produire ou non ; au-delà de son bord droit, il est certain.</figcaption>
 </figure>
-<p>Les seuils s’expriment en multiples du <a href="lexique.html#calibre">calibre</a> In. En dessous du seuil bas, seul le thermique peut agir ; au-dessus du seuil haut, le magnétique coupe à coup sûr, quasi instantanément. Entre les deux, le déclenchement magnétique peut se produire ou non selon l’appareil. Les ordres de grandeur usuels pour les disjoncteurs domestiques sont les suivants :</p>
+<p>Les seuils s’expriment en multiples du <a href="lexique.html#calibre">calibre</a> In. En dessous du seuil bas, seul le thermique peut agir ; au-dessus du seuil haut, le magnétique coupe à coup sûr, quasi instantanément. Entre les deux, le déclenchement magnétique peut se produire ou non selon l’appareil. Ces plages sont fixées par la norme de fabrication des disjoncteurs, pas par le RGIE. Les ordres de grandeur usuels pour les disjoncteurs domestiques sont les suivants :</p>
 <table>
   <thead><tr><th>Courbe</th><th>Seuil magnétique (ordre de grandeur)</th><th>Pour un calibre de 16 A</th></tr></thead>
   <tbody>
@@ -77,7 +77,7 @@
 </ul>
 
 <h2 id="choisir">Comment choisir en pratique ?</h2>
-<p>Le choix revient à l’installateur, qui tient compte du type d’appareils et de la longueur du circuit. Il doit s’assurer que, même au bout de la ligne, un court-circuit produira un courant suffisant pour atteindre le seuil magnétique. Plus le seuil est haut, plus cette condition est exigeante. C’est pourquoi on ne remplace pas un disjoncteur C par un D « pour qu’il arrête de sauter » sans vérification : sur une ligne longue ou de petite section, le courant de court-circuit pourrait ne pas suffire à faire réagir le magnétique, et le défaut ne serait coupé que tardivement par le thermique.</p>
+<p>Le choix revient à l’installateur, qui tient compte du type d’appareils et de la longueur du circuit. Il doit s’assurer que, même au bout de la ligne, un court-circuit produira un courant suffisant pour atteindre le seuil magnétique. Plus le seuil est haut, plus cette condition est exigeante. C’est pourquoi on ne remplace pas un disjoncteur C par un D « pour qu’il arrête de sauter » sans vérification : sur une ligne longue ou de petite section, le courant de court-circuit pourrait ne pas suffire à faire réagir le magnétique, et le défaut ne serait coupé que tardivement par le thermique. Or le RGIE exige qu’un court-circuit franc, où qu’il se produise sur le circuit, soit coupé avant que les conducteurs n’atteignent leur température limite (RGIE, 4.4.2.1).</p>
 <p>Quelques repères courants dans une maison :</p>
 <ul>
   <li>éclairage et prises : courbe C, parfois B ;</li>
@@ -87,4 +87,4 @@
 
 <h2 id="lire">Lire la courbe sur le schéma</h2>
 <p>Sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, chaque protection porte ses caractéristiques : type d’appareil, nombre de pôles, calibre, courbe et <a href="lexique.html#pouvoir-de-coupure">pouvoir de coupure</a>. Quand vous relevez un tableau existant, notez la lettre en même temps que le calibre : elle est utile si un disjoncteur doit un jour être remplacé à l’identique.</p>
-<p>Avant de démonter ou de remplacer un disjoncteur, coupez l’alimentation du tableau et vérifiez l’absence de tension. Remplacer un disjoncteur par un modèle identique est un simple entretien ; une modification importante du tableau (remplacement non identique, circuit ajouté…) est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en usage.</p>
+<p>Avant de démonter ou de remplacer un disjoncteur, coupez l’alimentation du tableau et vérifiez l’absence de tension. Remplacer un disjoncteur par un modèle identique est un simple entretien. Une modification importante, par exemple l’ajout d’un circuit ou le remplacement non identique d’un tableau (deux exemples cités par le RGIE), est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en usage ; pour un changement de courbe ou de calibre, demandez à l’installateur s’il s’agit d’une modification importante.</p>

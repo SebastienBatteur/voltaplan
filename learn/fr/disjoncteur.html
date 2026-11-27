@@ -8,10 +8,10 @@
   "related": ["courbes-disjoncteur", "surcharge-court-circuit", "section-des-cables", "disjoncteur-qui-saute"],
   "retenir": [
     "Le disjoncteur protège <strong>le câble</strong> contre les surintensités : surcharge (déclencheur thermique) et court-circuit (déclencheur magnétique).",
-    "Son <strong>calibre</strong> se choisit d’après la section du câble : par exemple 16 A au plus pour du 1,5 mm², 20 A au plus pour du 2,5 mm².",
-    "Le <strong>pouvoir de coupure</strong> (en kA) est le plus grand courant de court-circuit qu’il sait interrompre sans être détruit.",
+    "Son <strong>calibre</strong> se choisit d’après la section du câble : en habitation, le RGIE fixe par exemple 16 A au plus pour du 1,5 mm² et 20 A au plus pour du 2,5 mm² (RGIE, 4.4.1.4).",
+    "Le <strong>pouvoir de coupure</strong> (en kA) est le plus grand courant de court-circuit qu’il sait interrompre sans être détruit ; en habitation, il vaut au moins 3 kA (RGIE, 5.3.5.5 e).",
     "Un fusible remplit le même rôle mais se détruit en fonctionnant ; on ne le remplace jamais par un calibre plus élevé.",
-    "Le disjoncteur ne protège pas les personnes contre l’électrisation : c’est le rôle du différentiel."
+    "Le disjoncteur ne protège pas les personnes contre l’électrisation par une fuite de courant : c’est le rôle du différentiel, associé à la terre."
   ],
   "faq": [
     { "q": "Peut-on remplacer un disjoncteur de 16 A par un 20 A parce qu’il saute trop souvent ?", "a": "Non, pas sans vérifier la section du câble. Si le circuit est en 1,5 mm², un 20 A laisserait le câble chauffer au-delà de ce qu’il supporte. Il faut d’abord comprendre pourquoi le disjoncteur déclenche : trop d’appareils sur le circuit, appareil défectueux ou défaut de câblage." },
@@ -21,7 +21,7 @@
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
     { "label": "Documentation des fabricants de disjoncteurs modulaires (marquages, courbes, pouvoir de coupure)." },
-    { "label": "Voltaplan : correspondance section ↔ calibre maximal utilisée par l’aide au contrôle (src/rules/be/rgie.ts)." }
+    { "label": "RGIE, Livre 1 : sous-section 4.4.1.4 et tableau 4.11 (calibre maximal selon la section), 4.4.4.2 (circuits monophasés ou biphasés), 5.3.5.5 e (pouvoir de coupure)." }
   ],
   "updated": "2026-11-27"
 }
@@ -61,35 +61,36 @@
 </figure>
 <p>Un disjoncteur modulaire contient deux mécanismes, chacun adapté à un type de défaut (voir <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a>) :</p>
 <ul>
-  <li><strong>Le déclencheur thermique</strong> réagit aux <a href="lexique.html#surcharge">surcharges</a> : un courant un peu trop élevé, mais qui dure. Une lame bimétallique s’échauffe et se courbe, puis libère le mécanisme. Plus la surcharge est forte, plus il déclenche vite : quelques minutes pour un léger dépassement, quelques secondes pour un dépassement important.</li>
+  <li><strong>Le déclencheur thermique</strong> réagit aux <a href="lexique.html#surcharge">surcharges</a> : un courant un peu trop élevé, mais qui dure. Une lame bimétallique s’échauffe et se courbe, puis libère le mécanisme. Plus la surcharge est forte, plus il déclenche vite : de plusieurs minutes à plus d’une heure pour un léger dépassement, quelques secondes pour un dépassement important.</li>
   <li><strong>Le déclencheur magnétique</strong> réagit aux <a href="lexique.html#court-circuit">courts-circuits</a> : un courant très élevé, qui apparaît brusquement. Une bobine attire un noyau et ouvre le contact en quelques millisecondes. Le seuil de ce déclencheur dépend de la <a href="courbes-disjoncteur.html">courbe</a> du disjoncteur (B, C ou D).</li>
 </ul>
 
 <h2 id="calibre">Le calibre</h2>
-<p>Le <a href="lexique.html#calibre">calibre</a>, noté In et inscrit sur la face avant (par exemple « C16 » : courbe C, 16 A), est le courant que le disjoncteur laisse passer en permanence sans déclencher. On le choisit d’après la <a href="section-des-cables.html">section du câble</a>, jamais d’après les appareils qu’on souhaite brancher. Voltaplan utilise les correspondances prudentes suivantes, pour du cuivre en pose courante encastrée :</p>
+<p>Le <a href="lexique.html#calibre">calibre</a>, noté In et inscrit sur la face avant (par exemple « C16 » : courbe C, 16 A), est le courant que le disjoncteur laisse passer en permanence sans déclencher. On le choisit d’après la <a href="section-des-cables.html">section du câble</a>, jamais d’après les appareils qu’on souhaite brancher. Pour les installations domestiques, le RGIE fixe le calibre maximal selon la section des conducteurs (RGIE, 4.4.1.4, tableau 4.11) :</p>
 <table>
-  <thead><tr><th>Section du câble</th><th>Calibre maximal</th><th>Usage courant</th></tr></thead>
+  <thead><tr><th>Section du câble</th><th>Disjoncteur : calibre maximal</th><th>Fusible : calibre maximal</th><th>Usage courant</th></tr></thead>
   <tbody>
-    <tr><td>1,5 mm²</td><td>16 A</td><td>Éclairage</td></tr>
-    <tr><td>2,5 mm²</td><td>20 A</td><td>Prises de courant, lave-linge</td></tr>
-    <tr><td>4 mm²</td><td>25 A</td><td>Appareils puissants</td></tr>
-    <tr><td>6 mm²</td><td>32 A</td><td>Cuisinière électrique, sous-tableau</td></tr>
-    <tr><td>10 mm²</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
+    <tr><td>1,5 mm²</td><td>16 A</td><td>10 A</td><td>Éclairage (circuit sans prise)</td></tr>
+    <tr><td>2,5 mm²</td><td>20 A</td><td>16 A</td><td>Prises de courant, lave-linge</td></tr>
+    <tr><td>4 mm²</td><td>25 A</td><td>20 A</td><td>Appareils puissants</td></tr>
+    <tr><td>6 mm²</td><td>40 A</td><td>32 A</td><td>Cuisinière électrique, sous-tableau</td></tr>
+    <tr><td>10 mm²</td><td>63 A</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
   </tbody>
 </table>
-<p>Exemple : sur un circuit de prises en 2,5 mm² protégé en 20 A, vous pouvez utiliser en même temps une bouilloire de 2 000 W (environ 9 A sous 230 V) et un aspirateur de 1 000 W (environ 4 A). Ajoutez un radiateur d’appoint de 2 000 W et vous dépassez 20 A : après un moment, le thermique déclenche. Il fait son travail.</p>
+<p>Ce sont des <strong>maxima</strong>. Le calibre doit aussi rester inférieur au courant que le câble supporte réellement, qui dépend de son mode de pose, de son groupement avec d’autres câbles et de la température (RGIE, 4.4.3.2) : l’installateur peut donc devoir choisir plus bas. Par ailleurs, un circuit qui comporte des prises de courant est en 2,5 mm² au moins ; le 1,5 mm² est réservé aux circuits sans prise, comme l’éclairage (RGIE, 5.2.1.2).</p>
+<p>Exemple : sur un circuit de prises en 2,5 mm² protégé en 20 A, vous pouvez utiliser en même temps une bouilloire de 2 000 W (environ 9 A sous 230 V) et un aspirateur de 1 000 W (environ 4 A). Ajoutez un radiateur d’appoint de 2 000 W et vous atteignez environ 22 A, un peu plus que 20 A. Pour un dépassement aussi faible, le thermique peut laisser passer longtemps, parfois plus d’une heure : c’est prévu, le câble étant choisi pour le supporter. Plus le dépassement est fort, plus il coupe vite. Il fait son travail.</p>
 
 <h2 id="pouvoir-de-coupure">Le pouvoir de coupure</h2>
 <p>Lors d’un court-circuit franc, le courant peut atteindre plusieurs milliers d’ampères pendant un très court instant. Le disjoncteur doit être capable de l’interrompre sans se souder ni exploser. Cette capacité s’appelle le <a href="lexique.html#pouvoir-de-coupure">pouvoir de coupure</a> et s’exprime en kiloampères (kA) : 3 kA, 4,5 kA, 6 kA, 10 kA sont des valeurs courantes, inscrites sur l’appareil.</p>
-<p>Le pouvoir de coupure nécessaire dépend du courant de court-circuit possible à l’endroit du tableau : il est plus élevé près du compteur et sur un réseau puissant. C’est à l’installateur de le vérifier. Retenez simplement qu’un disjoncteur au pouvoir de coupure insuffisant peut être détruit par le défaut qu’il est censé couper. Le schéma unifilaire mentionne cette valeur, et Voltaplan signale quand elle n’est pas renseignée.</p>
+<p>Le pouvoir de coupure nécessaire dépend du courant de court-circuit possible à l’endroit du tableau : il est plus élevé près du compteur et sur un réseau puissant. C’est à l’installateur de le vérifier : le pouvoir de coupure doit être au moins égal au courant de court-circuit possible à l’endroit où l’appareil est placé (RGIE, 4.4.2.1). Dans une installation domestique, les disjoncteurs ont un pouvoir de coupure d’au moins 3 000 A (marqué « 3000 » dans un rectangle) et ceux de première ligne, juste après la protection du gestionnaire de réseau, doivent aussi porter le marquage de la classe de limitation d’énergie 3 (RGIE, 5.3.5.5 e). Retenez simplement qu’un disjoncteur au pouvoir de coupure insuffisant peut être détruit par le défaut qu’il est censé couper. Le schéma unifilaire mentionne cette valeur, et Voltaplan signale quand elle n’est pas renseignée.</p>
 
 <h2 id="poles">Unipolaire, bipolaire, tétrapolaire</h2>
-<p>En monophasé, on utilise couramment des disjoncteurs « 1P+N » (une phase protégée, neutre coupé) ou bipolaires (2P). Sur un réseau 3 × 230 V sans neutre, fréquent à Bruxelles et dans certains réseaux anciens, les deux conducteurs d’un circuit sont des phases : ils doivent être protégés tous les deux, d’où l’usage de disjoncteurs bipolaires. En triphasé avec neutre (3 N 400 V), on rencontre des disjoncteurs tripolaires ou tétrapolaires. Voir <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>.</p>
+<p>Dans les circuits monophasés (phase et neutre) ou biphasés (deux phases) d’une installation domestique, le RGIE demande que les surintensités soient détectées sur <strong>les deux conducteurs</strong> du circuit (RGIE, 4.4.4.2) : on utilise donc des disjoncteurs bipolaires dont les deux pôles sont protégés. La seule exception est un disjoncteur différentiel qui détecte la surintensité sur la phase et coupe les deux conducteurs. Un modèle « 1P+N », qui ne surveille que la phase, ne répond pas à cette règle s’il est utilisé seul. Sur un réseau 3 × 230 V sans neutre, fréquent à Bruxelles et dans certains réseaux anciens, les deux conducteurs d’un circuit sont des phases : ils sont protégés et coupés tous les deux, et les disjoncteurs doivent pouvoir couper seuls, sur un pôle, la tension entre phases (RGIE, 5.3.5.5 h). En triphasé avec neutre (3 N 400 V), on rencontre des disjoncteurs tripolaires ou tétrapolaires. Voir <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>.</p>
 
 <h2 id="fusibles">Les fusibles des anciennes installations</h2>
 <p>Avant la généralisation des disjoncteurs, chaque circuit était protégé par un <a href="lexique.html#fusible">fusible</a> : un fil calibré, enfermé dans une cartouche, qui fond quand le courant est trop élevé. Le principe de protection est le même ; la différence est pratique :</p>
 <ul>
-  <li>un fusible fondu doit être <strong>remplacé</strong> par un fusible <strong>du même calibre</strong> ;</li>
+  <li>un fusible fondu doit être <strong>remplacé</strong> par un fusible <strong>du même calibre</strong> ; dans une installation domestique, les socles sont d’ailleurs conçus pour empêcher de placer un calibre plus élevé sur les câbles de moins de 10 mm² (RGIE, 5.3.5.5 a) ;</li>
   <li>il ne permet pas de couper un circuit commodément pour travailler dessus (il faut le retirer) ;</li>
   <li>la tentation de mettre un calibre plus fort, ou pire un morceau de fil, existe. C’est très dangereux : le câble n’est alors plus protégé du tout.</li>
 </ul>

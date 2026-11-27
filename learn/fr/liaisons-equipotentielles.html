@@ -8,17 +8,18 @@
   "related": ["mise-a-la-terre", "differentiel", "continuite", "controle-organisme-agree"],
   "retenir": [
     "Une liaison équipotentielle relie entre elles des parties métalliques pour qu’aucune tension dangereuse ne puisse apparaître entre elles.",
-    "La liaison <strong>principale</strong> relie à la barrette de terre les conduites métalliques qui entrent dans le bâtiment (eau, gaz, chauffage) et les structures métalliques.",
-    "La liaison <strong>supplémentaire</strong> relie, dans un local à risque comme la salle de bain, les éléments métalliques accessibles au conducteur de protection.",
-    "Les conducteurs de liaison sont en vert-jaune, et leur continuité est vérifiée lors du contrôle."
+    "La liaison <strong>principale</strong>, obligatoire dans chaque bâtiment, relie à la barrette de terre les conduites métalliques qui entrent dans le bâtiment (eau, gaz), les colonnes du chauffage central et de la climatisation et les structures métalliques.",
+    "La liaison <strong>supplémentaire</strong> relie entre elles, dans un local à risque comme la salle de bain, les masses et les éléments métalliques simultanément accessibles, ainsi que les conducteurs de protection.",
+    "Les conducteurs de liaison sont en vert-jaune, avec une section minimale fixée par le RGIE (6 mm² au moins pour la principale, 2,5 ou 4 mm² au moins pour la supplémentaire), et leur continuité est vérifiée lors du contrôle."
   ],
   "faq": [
-    { "q": "Ma baignoire est en acrylique : faut-il quand même une liaison ?", "a": "Une baignoire en matière synthétique n’est pas un élément conducteur à relier. Mais les conduites métalliques, le vidage métallique ou un radiateur de la pièce peuvent l’être. L’installateur détermine ce qui doit être relié dans votre salle de bain." },
-    { "q": "Les tuyaux en multicouche ou en PER doivent-ils être reliés ?", "a": "Une canalisation en matière synthétique ne conduit pas le courant et ne se relie pas. Les raccords ou tronçons métalliques accessibles peuvent cependant devoir l’être selon le cas. Dans le doute, demandez à l’installateur." },
-    { "q": "Le compteur de gaz doit-il être relié ?", "a": "La liaison principale porte sur la conduite de gaz métallique à son entrée dans le bâtiment, en aval du compteur. Les modalités de raccordement doivent respecter les règles du gestionnaire et du RGIE : faites-le réaliser par un professionnel." }
+    { "q": "Ma baignoire est en acrylique : faut-il quand même une liaison ?", "a": "Une baignoire en matière synthétique n’est pas un élément conducteur à relier. Mais les conduites métalliques, le vidage métallique, un radiateur alimenté par des conduites métalliques ou une huisserie métallique de la pièce peuvent l’être. L’installateur détermine ce qui doit être relié dans votre salle de bain." },
+    { "q": "Les tuyaux en multicouche ou en PER doivent-ils être reliés ?", "a": "Une canalisation en matière synthétique ne conduit pas le courant et ne se relie pas ; le RGIE l’exclut d’ailleurs de la liaison supplémentaire de la salle de bain, de même qu’un radiateur alimenté uniquement par de telles canalisations (RGIE, 7.1.4.4). Les raccords ou tronçons métalliques accessibles peuvent cependant devoir l’être selon le cas. Dans le doute, demandez à l’installateur." },
+    { "q": "Le compteur de gaz doit-il être relié ?", "a": "La liaison principale porte sur la canalisation principale de gaz métallique à son entrée dans le bâtiment. L’endroit exact du raccordement (en pratique, généralement du côté de l’installation intérieure, après le compteur) dépend aussi des règles du gestionnaire du réseau de gaz : faites-le réaliser par un professionnel." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "RGIE, Livre 1 : 4.2.3.2 et 4.2.3.4 a.4 (liaison principale obligatoire, éléments à relier), 5.4.4 (sections), 7.1.4.4 (salle de bain), 8.2.1 (anciennes installations)." },
     { "label": "Voltaplan : règle R-BONDING de l’aide au contrôle (liaisons équipotentielles notées dans les mesures)." }
   ],
   "updated": "2026-11-27"
@@ -27,7 +28,7 @@
 <p class="lead">La terre protège les appareils électriques. Mais d’autres pièces métalliques d’une maison, qui ne font pas partie de l’installation, peuvent aussi se retrouver sous tension en cas de défaut : conduites d’eau, de gaz, de chauffage, structures métalliques. Les <strong>liaisons équipotentielles</strong> les relient pour que, en cas de défaut, aucune tension dangereuse ne puisse apparaître entre deux éléments qu’on touche en même temps.</p>
 
 <h2 id="principe">Le principe : tout au même potentiel</h2>
-<p>Une électrisation se produit quand le corps se trouve entre deux points à des tensions différentes : une main sur un robinet, l’autre sur un radiateur, ou les pieds sur un sol humide. Si ces deux éléments sont reliés par un conducteur de très faible résistance, ils restent au même <strong>potentiel</strong> électrique, même lors d’un défaut. Aucun courant ne cherche alors à passer par le corps.</p>
+<p>Une électrisation se produit quand le corps se trouve entre deux points à des tensions différentes : une main sur un robinet, l’autre sur un radiateur, ou les pieds sur un sol humide. Si ces deux éléments sont reliés par un conducteur de très faible résistance, ils restent pratiquement au même <strong>potentiel</strong> électrique, même lors d’un défaut. La tension entre eux reste trop faible pour faire passer un courant dangereux par le corps.</p>
 <p>C’est le sens du mot « équipotentiel » : à potentiel égal. La <a href="lexique.html#liaison-equipotentielle">liaison équipotentielle</a> ne remplace ni la <a href="mise-a-la-terre.html">mise à la terre</a> ni le <a href="differentiel.html">différentiel</a> : elle les complète.</p>
 
 <h2 id="principale">La liaison équipotentielle principale</h2>
@@ -55,40 +56,48 @@
   </svg>
   <figcaption>Chaque conduite métallique qui entre dans le bâtiment est reliée à la barrette de terre : en cas de défaut, elles restent toutes au même potentiel que la terre.</figcaption>
 </figure>
-<p>Elle se fait près de l’entrée des réseaux dans le bâtiment et aboutit à la <strong>barrette de terre</strong> du tableau principal. On y relie, quand ils sont métalliques :</p>
+<p>Le RGIE l’impose dans chaque bâtiment, habitation comprise (RGIE, 4.2.3.4 a.4). Elle aboutit à la <strong>borne principale de terre</strong> (la barrette de terre), soit par un conducteur unique qui passe d’un élément à l’autre sans être interrompu, soit par un conducteur pour chaque élément. On y relie, quand ils sont métalliques (RGIE, 4.2.3.2) :</p>
 <ul>
-  <li>la conduite d’eau, à son entrée dans le bâtiment ;</li>
-  <li>la conduite de gaz, à son entrée dans le bâtiment ;</li>
-  <li>les canalisations du chauffage central ;</li>
-  <li>les éléments métalliques de la structure du bâtiment accessibles (poutrelles, armatures accessibles, etc.), selon le cas.</li>
+  <li>la canalisation principale d’eau, à son entrée dans le bâtiment ;</li>
+  <li>la canalisation principale de gaz (gaz naturel ou en bouteille), à son entrée dans le bâtiment ;</li>
+  <li>les colonnes principales du chauffage central et de la climatisation ;</li>
+  <li>les éléments métalliques fixes et accessibles de la structure du bâtiment qui peuvent propager un potentiel (poutrelles, par exemple) ;</li>
+  <li>les éléments métalliques principaux d’autres canalisations qui peuvent propager un potentiel.</li>
 </ul>
 <p>Pourquoi ces conduites ? Parce qu’elles viennent de l’extérieur et parcourent toute la maison. Un défaut sur un appareil raccordé à l’une d’elles (un chauffe-eau, une chaudière) pourrait mettre sous tension un robinet à l’autre bout du bâtiment. Reliées à la terre, elles ne le peuvent plus.</p>
 
 <h2 id="supplementaire">Les liaisons supplémentaires : la salle de bain</h2>
-<p>Dans une salle de bain ou une douche, le risque est plus grand : peau mouillée, pieds nus, contact fréquent avec l’eau et les éléments métalliques. La résistance du corps baisse et un courant plus faible devient dangereux. On y réalise donc une <strong>liaison équipotentielle supplémentaire</strong> (ou locale) : les éléments conducteurs accessibles de la pièce sont reliés entre eux et au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a>.</p>
+<p>Dans une salle de bain ou une douche, le risque est plus grand : peau mouillée, pieds nus, contact fréquent avec l’eau et les éléments métalliques. La résistance du corps baisse et un courant plus faible devient dangereux. Le RGIE y impose donc une <strong>liaison équipotentielle supplémentaire</strong> (ou locale) : toutes les masses du matériel électrique et tous les éléments conducteurs étrangers simultanément accessibles de la pièce sont reliés entre eux et au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> (RGIE, 7.1.4.4). En sont exclus le matériel alimenté en très basse tension de sécurité, les canalisations en matière synthétique, les radiateurs alimentés uniquement par de telles canalisations et les enveloppes métalliques du matériel de classe II.</p>
 <p>Sont typiquement concernés, quand ils sont métalliques :</p>
 <ul>
   <li>la baignoire ou le receveur de douche ;</li>
   <li>les conduites d’eau froide, d’eau chaude et d’évacuation accessibles ;</li>
   <li>le radiateur ou le sèche-serviettes, et ses conduites ;</li>
-  <li>les autres éléments métalliques fixes de la pièce, selon le cas.</li>
+  <li>les huisseries de porte métalliques et les autres éléments métalliques fixes de la pièce, selon le cas ;</li>
+  <li>les masses du matériel électrique de classe I (prises, luminaires, appareils), par leur conducteur de protection.</li>
 </ul>
-<p>Les liaisons se font avec un conducteur vert-jaune, fixé sur chaque élément par un collier ou une borne prévue pour cet usage, de façon durable et accessible pour la vérification. Les circuits de la salle de bain sont en outre protégés par un différentiel de 30 mA.</p>
+<p>Les liaisons se font avec un conducteur vert-jaune, fixé sur chaque élément par un collier ou une borne prévue pour cet usage, de façon durable et accessible pour la vérification. Les circuits de la salle de bain sont en outre protégés par un différentiel de 30 mA au plus.</p>
 
 <h2 id="exemple">Un exemple concret</h2>
 <p>Prenez un chauffe-eau électrique dont la résistance chauffante est percée : la cuve métallique, et avec elle l’eau et les tuyaux qui en partent, peuvent être mis en contact avec la phase. Si le chauffe-eau est relié à la terre et que les conduites métalliques le sont aussi par la liaison principale, le courant de défaut s’écoule par la terre et le différentiel coupe. Sans liaison, le robinet de la cuisine, au bout d’une conduite métallique, pourrait rester sous tension par rapport à l’évier ou au sol pendant le temps du défaut.</p>
 
 <h2 id="section">Section et réalisation</h2>
-<p>Les conducteurs de liaison ont une section minimale fixée par le RGIE, différente pour la liaison principale et pour les liaisons supplémentaires. L’installateur la détermine selon le cas. En pratique, quelques règles de bon sens s’appliquent :</p>
+<p>Les conducteurs de liaison ont une section minimale fixée par le RGIE (RGIE, 5.4.4.1 et 5.4.4.2) :</p>
 <ul>
-  <li>le conducteur est toujours en vert-jaune ;</li>
-  <li>les colliers sont posés sur un métal propre, sans peinture ni corrosion ;</li>
+  <li><strong>liaison principale</strong> : au moins la moitié de la section du plus gros conducteur de protection de l’installation (le conducteur de terre n’est pas compté), avec un minimum de 6 mm² en cuivre ; il n’est pas nécessaire de dépasser 25 mm² en cuivre ;</li>
+  <li><strong>liaison supplémentaire</strong> : selon les conducteurs de protection concernés, avec au moins 2,5 mm² si le conducteur est protégé mécaniquement (sous conduit, par exemple) et 4 mm² sinon.</li>
+</ul>
+<p>L’installateur détermine la section exacte selon le cas. En pratique, quelques règles s’appliquent :</p>
+<ul>
+  <li>le conducteur est isolé en vert-jaune (RGIE, 5.4.4.1 b) ;</li>
+  <li>les colliers sont posés sur un métal propre, sans peinture ni corrosion (bonne pratique) ;</li>
   <li>chaque connexion reste accessible pour le contrôle ;</li>
   <li>lors d’une rénovation de plomberie (remplacement d’un tronçon métallique par du synthétique), on vérifie que la liaison n’a pas été interrompue.</li>
 </ul>
 
 <h2 id="controle">La vérification</h2>
 <p>Lors du contrôle de l’installation, l’<a href="lexique.html#organisme-agree">organisme agréé</a> vérifie la présence et la <a href="lexique.html#continuite">continuité</a> des liaisons équipotentielles : il mesure que chaque élément est bien relié à la terre par une faible résistance. Voir <a href="continuite.html">Mesurer la continuité</a> et <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>
+<p>Dans une ancienne installation domestique (réalisée avant le 1<sup>er</sup> octobre 1981), le RGIE admet que la liaison principale soit absente, et que la liaison supplémentaire de la salle de bain manque à condition de porter à 1 m la distance du volume 2 (RGIE, 8.2.1, points 13 et 15). Ces dérogations ne s’appliquent pas à une installation neuve ni aux parties nouvelles.</p>
 <p>Dans Voltaplan, les liaisons équipotentielles se notent dans les mesures du projet. Tant que rien n’est indiqué, l’aide au contrôle rappelle qu’une vérification sur place est nécessaire ; si elles sont notées non conformes, elle signale qu’il faut relier les éléments conducteurs (eau, gaz, chauffage, structure) à la barrette de terre.</p>
 
 <h2 id="securite">Sécurité</h2>

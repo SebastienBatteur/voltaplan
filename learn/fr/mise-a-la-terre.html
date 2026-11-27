@@ -9,17 +9,18 @@
   "retenir": [
     "La terre offre au courant de défaut un chemin sûr, pour qu’il ne passe pas par une personne qui touche un appareil en défaut.",
     "Elle fonctionne <strong>avec le différentiel</strong> : le courant de fuite s’écoule par la terre et le différentiel coupe.",
-    "La prise de terre est une <strong>boucle de terre</strong> dans les fondations (construction neuve) ou un ou plusieurs <strong>piquets</strong>.",
+    "La prise de terre est une <strong>boucle de terre</strong> à fond de fouille, obligatoire dans un nouveau bâtiment dont les fouilles atteignent au moins 60 cm, complétée si nécessaire, ou remplacée quand elle est impossible, par des <strong>piquets</strong> ou un conducteur enfoui.",
     "Le sectionneur de terre permet de séparer la prise de terre de l’installation pour mesurer sa résistance.",
-    "Repères utilisés par Voltaplan : au-delà de 30 Ω, des mesures complémentaires sont exigées ; au-delà de 100 Ω, la terre est à améliorer."
+    "En habitation, le RGIE exige une résistance de terre <strong>inférieure à 100 Ω</strong> ; au-delà de 30 Ω, il exige en plus des différentiels supplémentaires (RGIE, 4.2.4.3 b)."
   ],
   "faq": [
     { "q": "Ma maison ancienne n’a pas de terre : est-ce dangereux ?", "a": "Sans terre, une carcasse métallique en défaut peut rester sous tension jusqu’à ce que quelqu’un la touche ; un différentiel 30 mA réduit fortement ce risque mais ne remplace pas la terre. Faire réaliser une prise de terre par un électricien est une amélioration importante. Le contrôle par un organisme agréé dira ce qui est exigé dans votre cas." },
     { "q": "Peut-on relier la terre à une conduite d’eau ?", "a": "Une conduite d’eau ne doit pas servir de prise de terre : elle peut être en plastique sur une partie de son trajet, ou remplacée un jour. En revanche, les conduites métalliques qui entrent dans le bâtiment sont reliées à la terre par les liaisons équipotentielles." },
-    { "q": "Pourquoi la terre est-elle toujours en vert-jaune ?", "a": "Pour que personne ne la confonde avec un autre conducteur. En Belgique, le vert-jaune est réservé exclusivement au conducteur de protection, et le conducteur de protection est toujours vert-jaune." }
+    { "q": "Pourquoi la terre est-elle toujours en vert-jaune ?", "a": "Pour que personne ne la confonde avec un autre conducteur : dans une installation conforme, le vert-jaune est réservé au conducteur de protection, et le conducteur de protection isolé est vert-jaune, à quelques exceptions près prévues par le RGIE (certains câbles souples ou préassemblés). Une installation ancienne peut aussi comporter une terre d’une autre couleur, voire un fil vert-jaune mal utilisé. La couleur ne prouve donc jamais la fonction d’un fil : seule une vérification avec un appareil adapté le permet." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "RGIE, Livre 1 : 4.2.3.2 (résistance de dispersion inférieure à 100 Ω), 4.2.4.3 b (au-delà de 30 Ω), 5.4.2.1 (boucle de terre et prises de terre complémentaires), 5.4.3 (conducteurs de protection, sectionneur de terre)." },
     { "label": "Voltaplan : règles R-EARTH-MISSING, R-EARTH-30 et R-EARTH-VALUE de l’aide au contrôle (src/rules/be/rgie.ts)." }
   ],
   "updated": "2026-11-27"
@@ -33,7 +34,7 @@
 
 <h2 id="elements">Les éléments d’une installation de terre</h2>
 <figure class="illu">
-  <svg viewBox="0 0 640 320" role="img" aria-label="Maison en coupe. Sous les fondations, la boucle de terre (la prise de terre). Le conducteur de terre remonte jusqu’à la barrette de terre du tableau, en passant par le sectionneur de terre. Depuis la barrette, les conducteurs de protection vert-jaune vont au point lumineux, à la prise, et par la prise à la carcasse du lave-linge.">
+  <svg viewBox="0 0 640 320" role="img" aria-label="Maison en coupe. À fond de fouille, sous les murs extérieurs, la boucle de terre (la prise de terre). Le conducteur de terre remonte jusqu’à la barrette de terre du tableau, en passant par le sectionneur de terre. Depuis la barrette, les conducteurs de protection vert-jaune vont au point lumineux, à la prise, et par la prise à la carcasse du lave-linge.">
     <rect class="f-warn" x="15" y="230" width="610" height="75"/>
     <path class="thin" d="M60 230 V70 L320 20 L580 70 V230"/>
     <path d="M15 230 H625"/>
@@ -66,7 +67,7 @@
     <text class="m" x="140" y="262">conducteur de terre</text>
     <text class="m" x="320" y="302" text-anchor="middle">boucle de terre (prise de terre)</text>
   </svg>
-  <figcaption>Tout le réseau de terre aboutit à la barrette du tableau : d’un côté la boucle de terre sous les fondations, par le sectionneur ; de l’autre les conducteurs de protection vert-jaune de chaque circuit.</figcaption>
+  <figcaption>Tout le réseau de terre aboutit à la barrette du tableau : d’un côté la boucle de terre posée à fond de fouille, par le sectionneur ; de l’autre les conducteurs de protection vert-jaune de chaque circuit.</figcaption>
 </figure>
 <ul>
   <li><strong>La prise de terre</strong> : la partie enterrée, en contact avec le sol.</li>
@@ -76,30 +77,30 @@
 </ul>
 
 <h2 id="boucle-piquet">Boucle de terre ou piquet</h2>
-<p>La <a href="lexique.html#boucle-de-terre">boucle de terre</a> est un conducteur en cuivre nu posé à fond de fouille, sous les fondations, qui fait le tour du bâtiment. Dans une construction neuve, c’est la solution couramment réalisée : elle est placée au début du chantier, avant le coulage des fondations, et elle offre une grande surface de contact avec le sol. Ce n’est donc pas l’électricien qui arrive en fin de chantier qui peut la poser : il faut y penser dès le gros œuvre.</p>
-<p>Le <a href="lexique.html#piquet-de-terre">piquet de terre</a> est une tige métallique enfoncée verticalement dans le sol. On l’utilise surtout dans les bâtiments existants, où une boucle n’est plus possible. Si un seul piquet ne donne pas une valeur suffisante, on en ajoute d’autres, espacés et reliés entre eux.</p>
+<p>La <a href="lexique.html#boucle-de-terre">boucle de terre</a> est un conducteur en cuivre nu (ou plombé en terrain corrosif) d’au moins 35 mm², posé à fond de fouille à la verticale des murs extérieurs, qui fait le tour du bâtiment. Il est recouvert de bonne terre et ne touche ni le béton ni les armatures des fondations, et ses extrémités restent visitables. Pour tout nouveau bâtiment dont les fouilles atteignent au moins 60 cm, elle est <strong>obligatoire</strong> (RGIE, 5.4.2.1 b) : elle est placée au début du chantier, avant le coulage des fondations, et elle offre une grande surface de contact avec le sol. Ce n’est donc pas l’électricien qui arrive en fin de chantier qui peut la poser : il faut y penser dès le gros œuvre.</p>
+<p>Le <a href="lexique.html#piquet-de-terre">piquet de terre</a> est une tige métallique enfoncée verticalement dans le sol, sur au moins 1,50 m. Le RGIE le classe parmi les « prises de terre complémentaires », avec le conducteur enfoui horizontalement : on y recourt quand une boucle ne peut pas être posée, par exemple dans un bâtiment existant, ou quand la boucle ne donne pas une valeur assez basse. Si un seul piquet ne suffit pas, on en ajoute d’autres, espacés et reliés entre eux.</p>
 <p>La qualité de la prise de terre dépend beaucoup du sol : un sol humide et argileux conduit mieux qu’un sol sec, sableux ou rocheux.</p>
 
 <h2 id="sectionneur">Le sectionneur de terre</h2>
-<p>Le sectionneur de terre est un dispositif démontable placé sur le conducteur de terre, entre la prise de terre et la barrette. En l’ouvrant (à l’aide d’un outil), on sépare la prise de terre du reste de l’installation : c’est indispensable pour mesurer correctement sa résistance. Il doit rester accessible ; son emplacement est d’ailleurs une des informations du projet dans Voltaplan. En service normal, il reste évidemment fermé.</p>
+<p>Le sectionneur de terre est un dispositif démontable placé sur le conducteur de terre, entre la prise de terre et la barrette. En l’ouvrant, ce qui n’est possible qu’à l’aide d’un outil (RGIE, 5.4.3.5), on sépare la prise de terre du reste de l’installation : c’est indispensable pour mesurer correctement sa résistance. Il faut qu’il reste accessible ; son emplacement est d’ailleurs une des informations du projet dans Voltaplan. En service normal, il reste évidemment fermé.</p>
 
 <h2 id="valeurs">Quelle résistance de terre viser ?</h2>
-<p>La <a href="lexique.html#resistance-de-terre">résistance de terre</a> (ou résistance de dispersion), en <a href="lexique.html#ohm">ohms</a>, indique la facilité avec laquelle le courant passe de la prise de terre au sol. Plus elle est basse, mieux c’est. L’aide au contrôle de Voltaplan utilise ces repères :</p>
+<p>La <a href="lexique.html#resistance-de-terre">résistance de terre</a> (ou résistance de dispersion), en <a href="lexique.html#ohm">ohms</a>, indique la facilité avec laquelle le courant passe de la prise de terre au sol. Le RGIE demande qu’elle soit « aussi faible que possible » et, dans une installation domestique, <strong>inférieure à 100 Ω</strong> (RGIE, 4.2.3.2). Voici ce que cela implique :</p>
 <table>
-  <thead><tr><th>Résistance mesurée</th><th>Ce que signale Voltaplan</th></tr></thead>
+  <thead><tr><th>Résistance mesurée</th><th>Ce que demande le RGIE (installation domestique)</th></tr></thead>
   <tbody>
-    <tr><td>30 Ω ou moins</td><td>Rien à signaler sur ce point.</td></tr>
-    <tr><td>Plus de 30 Ω, jusqu’à 100 Ω</td><td>Au moins <strong>deux</strong> différentiels 30 mA pour les circuits qui doivent en avoir un, chacun avec <strong>16 prises au plus</strong> (un appareil fixe, ou un groupe d’appareils fixes sous une même commande, compte comme une prise) ; et, pour les circuits raccordés directement derrière le différentiel général (appareils fixes…), un différentiel de <strong>100 mA au plus</strong> par circuit ou groupe de circuits (RGIE, 4.2.4.3 b).</td></tr>
-    <tr><td>Plus de 100 Ω</td><td>Non conforme : pour une installation domestique, le RGIE exige une résistance de dispersion <strong>inférieure à 100 Ω</strong>. La prise de terre est à améliorer avant le contrôle.</td></tr>
+    <tr><td>30 Ω ou moins</td><td>Pas d’exigence supplémentaire sur ce point.</td></tr>
+    <tr><td>Plus de 30 Ω, mais moins de 100 Ω</td><td>Au moins <strong>deux</strong> différentiels 30 mA pour les circuits qui doivent en avoir un, chacun avec <strong>16 prises au plus</strong> (un appareil fixe, ou un groupe d’appareils fixes sous une même commande, compte comme une prise) ; et, pour les circuits raccordés directement derrière le différentiel général (appareils fixes…), un différentiel de <strong>100 mA au plus</strong> par circuit ou groupe de circuits (RGIE, 4.2.4.3 b).</td></tr>
+    <tr><td>100 Ω ou plus</td><td>Non conforme : pour une installation domestique, le RGIE exige une résistance de dispersion <strong>inférieure à 100 Ω</strong> (RGIE, 4.2.3.2). La prise de terre est à améliorer avant le contrôle.</td></tr>
   </tbody>
 </table>
-<p>La mesure se fait avec un appareil adapté, lors du contrôle par l’<a href="lexique.html#organisme-agree">organisme agréé</a> ou par l’installateur. Voir <a href="resistance-de-terre.html">Mesurer la résistance de terre</a>.</p>
+<p>Voltaplan signale une valeur de plus de 30 Ω comme un avertissement à vérifier et une valeur de plus de 100 Ω comme non conforme. La mesure se fait avec un appareil adapté, lors du contrôle par l’<a href="lexique.html#organisme-agree">organisme agréé</a> ou par l’installateur. Voir <a href="resistance-de-terre.html">Mesurer la résistance de terre</a>.</p>
 
 <h2 id="erreurs">Les erreurs à éviter</h2>
 <ul>
   <li><strong>Utiliser le vert-jaune pour autre chose</strong> que la terre, ou un fil d’une autre couleur pour la terre. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</li>
-  <li><strong>Relier la terre au neutre</strong> dans une prise ou un appareil : le différentiel déclencherait, et la sécurité serait compromise.</li>
-  <li><strong>Oublier la terre</strong> sur un point lumineux « parce que la lampe actuelle n’en a pas besoin » : un futur luminaire métallique en aura besoin.</li>
-  <li><strong>Interrompre le conducteur de protection</strong> par un interrupteur ou un fusible : la terre ne se coupe jamais.</li>
+  <li><strong>Relier la terre au neutre</strong> dans une prise ou un appareil : c’est interdit en aval du différentiel (RGIE, 5.3.5.3 g) ; le différentiel déclencherait, ou risquerait de ne plus jouer son rôle, et un neutre coupé pourrait mettre les carcasses sous tension.</li>
+  <li><strong>Oublier la terre</strong> sur un point lumineux « parce que la lampe actuelle n’en a pas besoin » : dans une installation domestique, toutes les canalisations comportent un conducteur de protection, sauf celles qui aboutissent aux interrupteurs, celles en très basse tension de sécurité et celles en amont du différentiel général (RGIE, 5.4.3.6). Un futur luminaire métallique en aura besoin.</li>
+  <li><strong>Interrompre le conducteur de protection</strong> par un interrupteur ou un fusible : c’est interdit, la seule exception étant le sectionneur de terre prévu pour la mesure (RGIE, 5.4.3.5).</li>
 </ul>
 <p>Comme toujours, avant d’intervenir sur un circuit, coupez le courant et vérifiez l’absence de tension. Les travaux sur la prise de terre et sur la barrette se font installation hors tension.</p>
