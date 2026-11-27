@@ -15,6 +15,7 @@ import { makeLabelFn } from '../../src/ui/labels';
 import { translate } from '../../src/i18n';
 import type { ElNode } from '../../src/model/types';
 import type { ArticleMeta, ExerciseModule, LexEntry, MakeNode, Rubrique } from './types';
+import { TRANSPARENCY_FILE, transparencyBody } from './transparency';
 
 export const BASE = 'https://voltaplan.org/apprendre/';
 const LANG = 'fr';
@@ -153,7 +154,7 @@ ${ld}
   </nav>
 </div></header>
 ${o.body}
-<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="regles-rgie.html">Ce que Voltaplan vérifie du RGIE</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="../site.js"></script>
 ${(o.scripts ?? []).map((s) => `<script src="${s}"></script>`).join('\n')}
 </body>
@@ -338,6 +339,24 @@ ${groups}
   });
 }
 
+/** Page de transparence réglementaire, produite à partir du registre (tools/learn/transparency.ts). */
+function transparencyPage(all: Article[]): string {
+  const bySlug = new Map(all.map((a) => [a.slug, plain(a.title)]));
+  return page({
+    file: TRANSPARENCY_FILE,
+    title: 'Ce que Voltaplan vérifie du RGIE — Voltaplan',
+    description: 'Version du RGIE, méthode, exigences contrôlées et leurs références, limites et validations en attente. Voltaplan aide à vérifier, il ne certifie pas.',
+    body: transparencyBody((slug) => bySlug.get(slug)),
+    ld: [
+      crumbs([
+        { name: 'Accueil', url: 'https://voltaplan.org/' },
+        { name: 'Apprendre', url: BASE },
+        { name: 'Ce que Voltaplan vérifie du RGIE', url: BASE + TRANSPARENCY_FILE },
+      ]),
+    ],
+  });
+}
+
 /** Toutes les pages de la section : chemin dans site/apprendre → contenu. */
 export async function build(root: string): Promise<Map<string, string>> {
   const all = readArticles(root);
@@ -354,5 +373,6 @@ export async function build(root: string): Promise<Map<string, string>> {
   out.set('index.html', hubPage(all, rubs, lex));
   out.set('lexique.html', lexiquePage(lex, all));
   for (const a of all) out.set(a.slug + '.html', articlePage(a, all, rubs, ex));
+  out.set(TRANSPARENCY_FILE, transparencyPage(all));
   return out;
 }
