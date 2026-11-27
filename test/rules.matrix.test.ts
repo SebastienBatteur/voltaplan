@@ -565,7 +565,8 @@ describe('matrice RGIE — exigences documentaires / physiques et mention du dos
     expect(translate('fr', 'status.insufficientData')).toBe('Informations insuffisantes');
     expect(translate('fr', 'status.notEvaluated')).toBe('Règle non évaluée');
     expect(translate('fr', 'status.contradictory')).toBe('Informations contradictoires');
-    expect(translate('fr', 'check.okN', { n: 40 })).toBe('Aucune anomalie détectée parmi les 40 règles vérifiées.');
+    // Le résumé ne compte plus des « règles vérifiées » : il distingue satisfaites, non applicables, sans données
+    expect(translate('fr', 'check.requirements', { ok: 3, nok: 1, na: 2, pending: 4, rec: 0 })).toMatch(/non applicable.*jamais comptée satisfaite/);
     expect(translate('fr', 'check.liability')).toMatch(/ni une certification/);
   });
 });

@@ -1247,7 +1247,7 @@ export const de: Partial<Dict> = {
   "survey.question.earth": "Gibt es vor Ort einen Erder?",
   "survey.question.rcd": "Schützt ein Haupt-FI (höchstens 300 mA) die Anlage?",
   "survey.question.rcd30": "Schützt ein 30-mA-FI die Stromkreise, die ihn erfordern (Badezimmer, Waschmaschine …)?",
-  "check.okN": "Keine Anomalie unter den {n} geprüften Regeln festgestellt.",
+  "check.requirements": "Anforderungen des Registers: {ok} erfüllt, {nok} nicht erfüllt, {na} nicht anwendbar, {pending} zu ergänzen oder zu prüfen, {rec} Empfehlung(en). Eine nicht anwendbare Anforderung oder eine ohne Daten zählt nie als erfüllt.",
   "check.counts": "{nc} Nichtkonformität(en) festgestellt · {verify} Prüfung(en) ausstehend · {doc} dokumentarische Anforderung(en)",
   "check.liability": "Richtwert, erzeugt von einer Hilfssoftware. Er stellt weder eine Zertifizierung noch eine Konformitätsprüfung im Sinne des RGIE dar.",
   "print.draftPending": "ENTWURF — PRÜFUNGEN AUSSTEHEND",

@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import { evaluateProject, summarize } from '../regulations';
 import { useStore } from '../store';
 import { useDerived } from './derived';
 import {
-  checkedRuleCount,
   findRulePack,
   isDocumentary,
   isPhysicalNonCompliance,
@@ -281,6 +281,8 @@ export function CheckPanel() {
   const pack = findRulePack(project.meta.ruleset);
   const edition = pack?.editions?.find((e) => e.id === projectContext(project, pack).edition);
   const derogations = project.meta.derogations ?? [];
+  const counts = summarize(evaluateProject(project, findings));
+  const reqSummary = { ok: counts.satisfied, nok: counts.notSatisfied, na: counts.notApplicable, pending: counts.insufficientData + counts.toVerify, rec: counts.recommendation };
   return (
     <div className="page-panel">
       <p className="muted small">{t('check.disclaimer')}</p>
@@ -289,7 +291,9 @@ export function CheckPanel() {
         {edition && <> — {t('check.edition', { edition: edition.label[lang] ?? edition.label.en ?? edition.id })}</>}
       </p>
       {blocking > 0 && <div className="banner error">{t('check.blocking', { n: blocking })}</div>}
-      {findings.length === 0 && <div className="banner ok">{t('check.okN', { n: checkedRuleCount(project) })}</div>}
+      {findings.length === 0 && <div className="banner ok">{t('check.ok')}</div>}
+      {/* Résultat par exigence du registre : une exigence non applicable ou sans données n'est jamais comptée satisfaite */}
+      <p className="muted small">{t('check.requirements', reqSummary)}</p>
       {findings.length > 0 && (
         <p className="muted small">
           {t('check.summary', { blocking, nc, other: findings.length - nc })}

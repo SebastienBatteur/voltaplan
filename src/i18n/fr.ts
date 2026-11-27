@@ -1362,7 +1362,7 @@ export const fr = {
   'survey.question.earth': 'Une prise de terre existe-t-elle sur place ?',
   'survey.question.rcd': 'Un différentiel général (300 mA maximum) protège-t-il l’installation ?',
   'survey.question.rcd30': 'Un différentiel 30 mA protège-t-il les circuits qui l’exigent (salle de bain, lave-linge…) ?',
-  'check.okN': 'Aucune anomalie détectée parmi les {n} règles vérifiées.',
+  'check.requirements': 'Exigences du registre : {ok} satisfaite(s), {nok} non satisfaite(s), {na} non applicable(s), {pending} à compléter ou à vérifier, {rec} recommandation(s). Une exigence non applicable ou sans données n’est jamais comptée satisfaite.',
   'check.counts': '{nc} non-conformité(s) détectée(s) · {verify} vérification(s) à faire · {doc} exigence(s) documentaire(s)',
   'check.liability': 'Résultat indicatif produit par un logiciel d’aide. Il ne constitue ni une certification ni un contrôle de conformité au sens du RGIE.',
   'print.draftPending': 'PROJET — VÉRIFICATIONS À FAIRE',

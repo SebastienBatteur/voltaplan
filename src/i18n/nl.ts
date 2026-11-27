@@ -1356,7 +1356,7 @@ export const nl: Partial<Dict> = {
   'survey.question.earth': 'Is er ter plaatse een aardverbinding?',
   'survey.question.rcd': 'Beveiligt een hoofddifferentieel (maximaal 300 mA) de installatie?',
   'survey.question.rcd30': 'Beveiligt een differentieel van 30 mA de kringen die het vereisen (badkamer, wasmachine…)?',
-  'check.okN': 'Geen anomalie gevonden bij de {n} gecontroleerde regels.',
+  'check.requirements': 'Vereisten van het register: {ok} vervuld, {nok} niet vervuld, {na} niet van toepassing, {pending} aan te vullen of te controleren, {rec} aanbeveling(en). Een vereiste die niet van toepassing is of zonder gegevens telt nooit als vervuld.',
   'check.counts': '{nc} non-conformiteit(en) vastgesteld · {verify} controle(s) te doen · {doc} documentaire eis(en)',
   'check.liability': 'Indicatief resultaat van een hulpprogramma. Het is geen certificering en geen gelijkvormigheidskeuring in de zin van het AREI.',
   'print.draftPending': 'ONTWERP — CONTROLES TE DOEN',

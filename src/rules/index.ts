@@ -15,16 +15,6 @@ export type { Derogation, Edition, Finding, FindingStatus, Hazard, Knowledge, Re
 export { severityOf } from './context';
 export { DRAFT_KEYS, draftLevel, isDocumentary, isPhysicalNonCompliance, needsVerification, presence, surveyStatement, SURVEY_FACTS, type DraftLevel } from './knowledge';
 
-/**
- * Nombre de règles vérifiées par le référentiel du projet (résumé « Aucune anomalie détectée parmi les N règles
- * vérifiées ») : règles du catalogue, hors simples informations. Référentiel inconnu : 0.
- */
-export function checkedRuleCount(project: Project): number {
-  const pack = findRulePack(project.meta.ruleset);
-  if (!pack) return 0;
-  return Object.values(pack.rules ?? {}).filter((r) => r.kind !== 'info' && r.id !== 'R-RULESET-UNKNOWN').length;
-}
-
 export const RULE_PACKS: RulePack[] = [belgium];
 export const DEFAULT_RULE_PACK = belgium.id;
 

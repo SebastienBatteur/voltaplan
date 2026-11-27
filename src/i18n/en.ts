@@ -1356,7 +1356,7 @@ export const en: Partial<Dict> = {
   'survey.question.earth': 'Is there an earth electrode on site?',
   'survey.question.rcd': 'Is the installation protected by a main RCD (300 mA maximum)?',
   'survey.question.rcd30': 'Are the circuits that require it (bathroom, washing machine…) protected by a 30 mA RCD?',
-  'check.okN': 'No anomaly detected among the {n} rules checked.',
+  'check.requirements': 'Registry requirements: {ok} met, {nok} not met, {na} not applicable, {pending} to complete or to check, {rec} recommendation(s). A requirement that does not apply or lacks data is never counted as met.',
   'check.counts': '{nc} non-compliance(s) detected · {verify} check(s) to do · {doc} documentary requirement(s)',
   'check.liability': 'Indicative result produced by an assistance tool. It is neither a certification nor a compliance inspection within the meaning of the RGIE.',
   'print.draftPending': 'DRAFT — CHECKS TO DO',
