@@ -16,7 +16,7 @@
   "faq": [
     { "q": "Le schéma doit-il obligatoirement être dessiné de bas en haut ?", "a": "Le RGIE impose le contenu du schéma et ses symboles, pas explicitement le sens du dessin. Mais son exemple officiel (figure 3.1) est dessiné de bas en haut, et c’est la pratique belge courante. Voltaplan le dessine ainsi par défaut, avec une option pour le sens inverse." },
     { "q": "Que signifie un petit trait oblique avec un chiffre sur un circuit ?", "a": "Il indique le nombre de conducteurs de la canalisation. Comme l’unifilaire dessine un seul trait par circuit, ce repère dit combien de fils passent réellement dans le câble." },
-    { "q": "Où trouver le schéma unifilaire de ma maison ?", "a": "Il fait partie du dossier de l’installation, remis lors du contrôle par l’organisme agréé et à conserver avec les documents de la maison. S’il est perdu ou ne correspond plus à la réalité, un électricien peut le refaire après un relevé de l’installation." }
+    { "q": "Où trouver le schéma unifilaire de ma maison ?", "a": "Il fait partie du dossier de l’installation : signé par l’installateur et l’organisme agréé, il est remis au propriétaire avec le rapport de contrôle. L’organisme agréé en garde une copie pendant cinq ans et peut en délivrer un duplicata (RGIE, 3.1.2.1). S’il est perdu ou ne correspond plus à la réalité, un électricien peut le refaire après un relevé de l’installation." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie (sous-section 3.1.2.1, figure 3.1, tableau 2.23)." }
@@ -24,10 +24,10 @@
   "updated": "2026-11-27"
 }
 -->
-<p class="lead">Le <a href="lexique.html#schema-unifilaire">schéma unifilaire</a> est la carte d’identité électrique d’une maison : il montre, depuis le compteur, chaque protection du tableau, chaque circuit et chaque point qu’il alimente. C’est le premier document que regarde l’organisme agréé lors du contrôle, et le plus utile pour comprendre une installation sans ouvrir les murs.</p>
+<p class="lead">Le <a href="lexique.html#schema-unifilaire">schéma unifilaire</a> est la carte d’identité électrique d’une maison : il montre, depuis le compteur, chaque protection du tableau, chaque circuit et chaque point qu’il alimente. L’organisme agréé le compare à l’installation lors du contrôle, et c’est le document le plus utile pour comprendre une installation sans ouvrir les murs.</p>
 
 <h2 id="un-seul-trait">Un seul trait par circuit</h2>
-<p>Un circuit réel contient trois fils ou plus : phase, neutre, terre, parfois des retours. Les dessiner tous rendrait le schéma illisible. L’unifilaire représente donc chaque canalisation par <strong>un seul trait</strong>. Un petit repère sur le trait (une barre oblique suivie d’un chiffre) indique le nombre de conducteurs.</p>
+<p>Un circuit réel contient trois fils ou plus : phase, neutre, terre, parfois des retours. Les dessiner tous rendrait le schéma illisible. L’unifilaire représente donc chaque canalisation par <strong>un seul trait</strong>. Un petit repère sur le trait (une barre oblique suivie d’un chiffre, ou trois petites barres obliques pour trois conducteurs) indique le nombre total de conducteurs.</p>
 <p>Ce schéma ne montre donc pas <em>comment</em> câbler un interrupteur, mais <em>ce qui</em> est raccordé à quoi : quelle protection alimente quel câble, et quels points se trouvent sur ce câble. Le câblage détaillé de chaque montage fait l’objet de la rubrique consacrée aux câblages.</p>
 
 <h2 id="sens">Le sens de lecture : de bas en haut</h2>
@@ -40,7 +40,7 @@
 </ol>
 <p>La <a href="lexique.html#terre">terre</a> figure aussi : la prise de terre, le sectionneur de terre et la barre de terre du tableau.</p>
 <figure class="illu">
-  <svg viewBox="0 0 640 415" role="img" aria-label="Unifilaire simplifié, lu de bas en haut : le compteur, le différentiel général de 300 mA, un différentiel 30 mA, puis deux disjoncteurs. Au-dessus du disjoncteur C20, un câble XVB 3G2,5 dessert cinq prises numérotées C1 à C5. Au-dessus du disjoncteur de 16 A, un câble de 1,5 mm² dessert l’interrupteur D1 puis le point lumineux D1.">
+  <svg viewBox="0 0 640 415" role="img" aria-label="Unifilaire simplifié, lu de bas en haut : le compteur, le différentiel général de 300 mA, un différentiel 30 mA, puis deux disjoncteurs. Au-dessus du disjoncteur C20, un câble XVB 3G2,5 dessert cinq socles de prise avec terre numérotés C1 à C5. Au-dessus du disjoncteur de 16 A, un câble de 1,5 mm² dessert l’interrupteur D1 puis le point lumineux D1, une croix au bout du trait.">
     <path class="acc" d="M48 395 V40 M48 40 l-6 10 M48 40 l6 10"/>
     <text class="m t-acc" x="30" y="218" text-anchor="middle" transform="rotate(-90 30 218)">on lit de bas en haut</text>
     <rect class="box" x="120" y="350" width="200" height="50" rx="10"/>
@@ -59,25 +59,24 @@
     <text class="b" x="420" y="195" text-anchor="middle">16 A</text>
     <line x1="180" y1="175" x2="180" y2="55"/>
     <text class="m" x="170" y="113" text-anchor="end">XVB 3G2,5</text>
-    <circle class="f-acc" cx="180" cy="155" r="5"/>
-    <circle class="f-acc" cx="180" cy="130" r="5"/>
-    <circle class="f-acc" cx="180" cy="105" r="5"/>
-    <circle class="f-acc" cx="180" cy="80" r="5"/>
-    <circle class="f-acc" cx="180" cy="55" r="5"/>
-    <text class="b" x="194" y="159">C1</text>
-    <text class="b" x="194" y="134">C2</text>
-    <text class="b" x="194" y="109">C3</text>
-    <text class="b" x="194" y="84">C4</text>
-    <text class="b" x="194" y="59">C5</text>
+    <path class="acc" d="M180 155 H190 M190 149 V161 M196 149 A6 6 0 0 0 196 161"/>
+    <path class="acc" d="M180 130 H190 M190 124 V136 M196 124 A6 6 0 0 0 196 136"/>
+    <path class="acc" d="M180 105 H190 M190 99 V111 M196 99 A6 6 0 0 0 196 111"/>
+    <path class="acc" d="M180 80 H190 M190 74 V86 M196 74 A6 6 0 0 0 196 86"/>
+    <path class="acc" d="M180 55 H190 M190 49 V61 M196 49 A6 6 0 0 0 196 61"/>
+    <text class="b" x="208" y="159">C1</text>
+    <text class="b" x="208" y="134">C2</text>
+    <text class="b" x="208" y="109">C3</text>
+    <text class="b" x="208" y="84">C4</text>
+    <text class="b" x="208" y="59">C5</text>
     <text class="m" x="180" y="32" text-anchor="middle">circuit C : prises</text>
-    <path d="M420 175 V134 M420 126 V80"/>
+    <path d="M420 175 V134 M420 126 V70"/>
     <text class="m" x="410" y="160" text-anchor="end">1,5 mm²</text>
     <circle cx="420" cy="130" r="4"/>
     <path d="M422 126.5 L427 114 M427 114 H432"/>
     <text class="b" x="440" y="134">D1</text>
     <text class="m" x="462" y="134">interrupteur</text>
-    <circle cx="420" cy="70" r="10"/>
-    <path d="M413 63 L427 77 M413 77 L427 63"/>
+    <path d="M411 61 L429 79 M411 79 L429 61"/>
     <text class="b" x="438" y="74">D1</text>
     <text class="m" x="460" y="74">point lumineux</text>
     <text class="m" x="420" y="32" text-anchor="middle">circuit D : éclairage</text>
@@ -91,15 +90,15 @@
 
 <h2 id="numerotation">Lettres et numéros : A1, A2…</h2>
 <p>Le RGIE demande un repérage précis (3.1.2.1). Chaque <strong>circuit</strong> reçoit une <strong>lettre</strong> : A, B, C… Chaque point lumineux, socle de prise et unité de commande de ce circuit reçoit un <strong>numéro d’ordre</strong>, en partant de la protection : A1, A2, A3…</p>
-<p>Un <strong>interrupteur</strong> ne reçoit pas de numéro propre : il porte la lettre du circuit et le <strong>numéro du point qu’il commande</strong>. Si l’interrupteur de la cuisine allume le point lumineux B3, il est marqué B3 lui aussi. Ce repérage est repris tel quel sur le <a href="plan-de-position.html">plan de position</a> : on retrouve ainsi sur le plan chaque point vu sur l’unifilaire, et inversement.</p>
+<p>Un <strong>interrupteur</strong> ne reçoit pas de numéro propre : il porte la lettre du circuit et le <strong>numéro du point qu’il commande</strong>. Le RGIE l’écrit pour le plan de position, et sa figure 3.1 applique la même règle sur l’unifilaire. Si l’interrupteur de la cuisine allume le point lumineux B3, il est marqué B3 lui aussi. Ce repérage est repris tel quel sur le <a href="plan-de-position.html">plan de position</a> : on retrouve ainsi sur le plan chaque point vu sur l’unifilaire, et inversement.</p>
 
 <h2 id="etiquettes">Les étiquettes</h2>
-<p>À côté des symboles, des étiquettes donnent les caractéristiques exigées :</p>
+<p>Le RGIE fixe le contenu minimal de l’unifilaire d’une installation domestique (RGIE, 3.1.2.2 a) : les canalisations (type, section, nombre de conducteurs) et leur mode de pose, le type et les caractéristiques des différentiels et des protections contre les surintensités, les interrupteurs, les boîtes de connexion et de dérivation, les socles de prise, les points lumineux, les machines et appareils fixes, et les sources (onduleur, panneaux, batterie…). À côté des symboles, des étiquettes donnent ces caractéristiques :</p>
 <table>
   <thead><tr><th>Élément</th><th>Exemple d’étiquette</th><th>Ce qu’elle dit</th></tr></thead>
   <tbody>
     <tr><td>Différentiel</td><td>40 A · 2P / 300 mA type A</td><td>Courant nominal, nombre de pôles, sensibilité, type</td></tr>
-    <tr><td>Disjoncteur</td><td>C20</td><td>Courbe C, calibre 20 A</td></tr>
+    <tr><td>Disjoncteur</td><td>C20</td><td>Courbe C (le type), calibre 20 A</td></tr>
     <tr><td>Canalisation</td><td>XVB 3G2,5</td><td>Type de câble, 3 conducteurs dont la terre, 2,5 mm²</td></tr>
     <tr><td>Mode de pose</td><td>Symbole sur le trait</td><td>Encastré, apparent, enterré, dans un conduit…</td></tr>
   </tbody>
@@ -111,7 +110,7 @@
 <p>Un autre circuit, D, porte un disjoncteur de 16 A, un câble en 1,5 mm², un point lumineux D1 et un interrupteur marqué D1 : c’est un <a href="simple-allumage.html">simple allumage</a>.</p>
 
 <h2 id="limites">Ce que l’unifilaire ne montre pas</h2>
-<p>L’unifilaire ne dit pas où se trouvent les éléments dans la maison : c’est le rôle du plan de position. Il ne montre pas non plus le trajet des câbles dans les murs ni la façon de raccorder chaque borne. Enfin, il ne garantit rien à lui seul : un schéma peut être faux ou ne plus correspondre à la réalité après des travaux. Avant toute intervention, coupez le circuit au tableau et vérifiez l’absence de tension, même si le schéma indique que le point est sur un autre circuit.</p>
+<p>L’unifilaire ne dit pas où se trouvent les éléments dans la maison : c’est le rôle du plan de position. Il ne montre pas non plus le trajet des câbles dans les murs ni la façon de raccorder chaque borne. Enfin, il ne garantit rien à lui seul : un schéma peut être faux ou ne plus correspondre à la réalité après des travaux. Avant toute intervention, coupez le circuit au tableau, empêchez sa remise en service et vérifiez l’absence de tension sur place, même si le schéma indique que le point est sur un autre circuit.</p>
 
 <h2 id="voltaplan">Dessiner un unifilaire avec Voltaplan</h2>
 <p>Dans <a href="../app/">Voltaplan</a>, vous décrivez l’installation comme un arbre (tableau, différentiels, disjoncteurs, câbles, points) et l’unifilaire se dessine automatiquement, de bas en haut par défaut, avec les symboles du tableau 2.23. La numérotation A, B, C et A1, A2… est calculée selon les règles ci-dessus, et les étiquettes reprennent les propriétés saisies. Le contrôle signale les données manquantes (calibre, section, sensibilité) et les incohérences, par exemple un câble de 1,5 mm² derrière un disjoncteur de 20 A.</p>
