@@ -41,6 +41,8 @@ jobs:
       pages: read # configure-pages lit la configuration du site
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # dates de dernière modification des pages dans sitemap.xml
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -63,6 +65,9 @@ jobs:
           cp -r dist _site/app
           mkdir -p _site/schemas
           cp -r schemas/oss-provenance _site/schemas/
+          # Plan du site : pages indexables et leurs versions dans les autres langues (robots.txt y renvoie)
+          npm run site:sitemap -- _site site
+          test -s _site/sitemap.xml
       - name: Provenance (manifeste .well-known, cohérence avec la version servie)
         # Écrit /.well-known/oss-provenance.json d'après app/build-info.json de CETTE compilation, puis vérifie
         # l'ensemble : empreintes, bandeaux, commit de cette exécution, fichiers à point bien présents.

@@ -2,6 +2,20 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Référencement du site, lot 1 : bases techniques (2026-11-27)
+
+- Plus de redirection automatique de l'accueil selon la langue du navigateur (les moteurs voyaient l'accueil
+  français redirigé) : un bandeau propose la version dans la langue du navigateur, refermable, choix mémorisé.
+- Titres d'accueil descriptifs dans les 4 langues, descriptions de 160 caractères au plus, un H1 sur chaque page
+  (guide compris), titres de section de l'accueil lisibles par les lecteurs d'écran.
+- Adresse canonique, Open Graph sur toutes les pages ; données structurées `SoftwareApplication` (gratuite,
+  licence, langues) sur les accueils, sans note ni avis.
+- `robots.txt` (tout autorisé), `sitemap.xml` produit à la publication avec les versions linguistiques et la date
+  de dernière modification de chaque page, page 404 en 4 langues. Application : adresse canonique et `noscript`.
+- Test `test/site.test.ts` (titres, descriptions, H1, canonical, hreflang réciproques, plan du site, liens et
+  ancres) ; la CI tourne aussi quand seul le site change.
+- README : aucun installateur de bureau n'est encore publié (la version web s'installe depuis le navigateur).
+
 ### FAQ et guide plus faciles à parcourir (2026-11-27)
 
 - FAQ : questions repliées (un clic ouvre la réponse), tuiles des groupes, « questions les plus utiles », bouton

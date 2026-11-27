@@ -12,13 +12,11 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
-      - 'site/**'
       - 'LICENSE'
   pull_request:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
-      - 'site/**'
       - 'LICENSE'
   schedule:
     # Chaque semaine : nouvelles vulnérabilités publiées (npm audit) même sans modification du code.
