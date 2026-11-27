@@ -795,7 +795,7 @@ export function parseEdsJson(json: string, version: number, fileName = 'Eendraad
   const meta = metaFrom(props, ctx);
   // Titre : nom du fichier ouvert ; à défaut, celui gardé dans le fichier par Eendraadschema
   const title = (fileName !== 'Eendraadschema' ? fileName : (str(props.filename) ?? fileName)).replace(/\.eds$/i, '');
-  project.meta = { ...project.meta, ...meta, title, installationKind: 'existing', rgieVersion: 'old' } as Project['meta'];
+  project.meta = { ...project.meta, ...meta, title, installationKind: 'existing' } as Project['meta'];
 
   const sit = doc.sitplanjson as Raw | undefined;
   if (sit && Array.isArray(sit.elements) && sit.elements.length) ctx.warnings.push({ key: 'eds.warn.sitplan', params: { n: sit.elements.length } });

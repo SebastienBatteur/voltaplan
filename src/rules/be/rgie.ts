@@ -19,7 +19,7 @@ import type { ElNode, Project } from '../../model/types';
 import { DEDICATED_CIRCUIT_APPLIANCES, DEDICATED_IF_POWERFUL, RCD30_APPLIANCES } from '../../model/schema';
 import { circuitContent, isCircuit, isRcd } from '../../model/tree';
 import type { Finding, FindingStatus, Knowledge, RulePack, Severity, SurveyFact } from '../types';
-import { classify, normDate, partContext, projectContext } from '../context';
+import { classify, normDate, onOrAfter, partContext, projectContext } from '../context';
 import { presence, surveyStatement } from '../knowledge';
 import { BE_EDITIONS, BE_RULES } from './catalog';
 import { calcProject, roundTo } from '../../calc/electrical';
@@ -118,16 +118,22 @@ export const RGIE_2025 = DATES.value.rgie2025;
  * « tableau fait avant / après le 1/6/2023 » ne tranche que ce qu'elle permet de déduire (avant 2023 ⇒ avant 2025).
  */
 function sinceDate(project: Project, chain: ElNode[], date: string): 'yes' | 'no' | 'unknown' {
-  const ctx = partContext(project, belgium, chain);
-  if (!ctx.current) return 'no';
+  // Du plus proche au plus lointain : date de la partie, réponse « tableau fait avant / après le 1/6/2023 », puis date
+  // du projet. Une date partielle à cheval sur la limite reste « inconnu ». La réponse du tableau passe avant toute
+  // édition supposée (elle était ignorée quand le projet portait l'ancien modèle « old »).
   for (const x of [...chain].reverse()) {
-    const d = normDate(x.props.installedOn);
-    if (d) return d >= date ? 'yes' : 'no';
+    if (x.props.oldPart === true) return 'no';
+    const v = onOrAfter(x.props.installedOn, date);
+    if (v) return v;
     if (x.props.rgie2023 === 'before' && date >= RCD30_2023) return 'no';
     if (x.props.rgie2023 === 'after' && date <= RCD30_2023) return 'yes';
   }
-  const d = normDate(project.meta.installationDate);
-  if (d) return d >= date ? 'yes' : 'no';
+  const v = onOrAfter(project.meta.installationDate, date);
+  if (v) return v;
+  const ctx = partContext(project, belgium, chain);
+  // Sans date : l'ancien modèle « ancien RGIE » (rgieVersion « old ») n'est qu'une hypothèse → inconnu, pas une dérogation.
+  if (project.meta.rgieVersion === 'old') return 'unknown';
+  if (!ctx.current) return 'no';
   return ctx.isNew ? 'yes' : 'unknown';
 }
 
@@ -192,14 +198,14 @@ const RCD_40A_FROM = DATES.value.rcdHead40aFrom;
  * inconnu. Contrairement à `sinceDate`, une partie réalisée sous une édition antérieure n'est pas exclue d'office.
  */
 function executedSince(project: Project, chain: ElNode[], date: string): 'yes' | 'no' | 'unknown' {
-  const ctx = partContext(project, belgium, chain);
-  if (ctx.edition === 'pre1981') return 'no';
   for (const x of [...chain].reverse()) {
-    const d = normDate(x.props.installedOn);
-    if (d) return d >= date ? 'yes' : 'no';
+    if (x.props.oldPart === true) return 'no';
+    const v = onOrAfter(x.props.installedOn, date);
+    if (v) return v;
   }
-  const d = normDate(project.meta.installationDate);
-  if (d) return d >= date ? 'yes' : 'no';
+  const v = onOrAfter(project.meta.installationDate, date);
+  if (v) return v;
+  const ctx = partContext(project, belgium, chain);
   return ctx.isNew ? 'yes' : 'unknown';
 }
 

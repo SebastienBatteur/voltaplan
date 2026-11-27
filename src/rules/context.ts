@@ -34,6 +34,41 @@ export function normDate(v: unknown): string | undefined {
   return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
 }
 
+/**
+ * Plage d'une date éventuellement partielle : « 2023 » = du 1/1 au 31/12/2023 ; « 2023-06 » = juin 2023. Une date
+ * partielle n'est jamais lue comme le premier jour de la période (elle pouvait faire passer une partie sous une
+ * dérogation qu'elle ne mérite pas).
+ */
+export function dateRange(v: unknown): { from: string; to: string } | undefined {
+  const s = String(v ?? '').trim();
+  const m = /^(\d{4})(?:-(\d{1,2}))?(?:-(\d{1,2}))?$/.exec(s);
+  if (!m) return undefined;
+  const y = m[1];
+  const pad = (x: string) => x.padStart(2, '0');
+  if (m[3]) return { from: `${y}-${pad(m[2]!)}-${pad(m[3])}`, to: `${y}-${pad(m[2]!)}-${pad(m[3])}` };
+  if (m[2]) {
+    const last = new Date(Date.UTC(Number(y), Number(m[2]), 0)).getUTCDate();
+    return { from: `${y}-${pad(m[2])}-01`, to: `${y}-${pad(m[2])}-${pad(String(last))}` };
+  }
+  return { from: `${y}-01-01`, to: `${y}-12-31` };
+}
+
+/** Date (éventuellement partielle) à partir de `boundary` ? `unknown` si la période chevauche la limite. */
+export function onOrAfter(v: unknown, boundary: string): 'yes' | 'no' | 'unknown' | undefined {
+  const r = dateRange(v);
+  if (!r) return undefined;
+  if (r.from >= boundary) return 'yes';
+  if (r.to < boundary) return 'no';
+  return 'unknown';
+}
+
+/** Édition d'une date éventuellement partielle : à cheval sur deux éditions, la plus récente (règles en vigueur). */
+function editionOf(editions: Edition[], v: unknown): Edition | undefined {
+  const r = dateRange(v);
+  if (!r) return undefined;
+  return editionAt(editions, r.to) ?? editionAt(editions, r.from);
+}
+
 /** Édition en vigueur à une date. */
 export function editionAt(editions: Edition[], date: string): Edition | undefined {
   return editions.find((e) => (!e.from || date >= e.from) && (!e.until || date < e.until));
@@ -62,16 +97,12 @@ export function partContext(project: Project, pack: RulePack, chain: ElNode[]): 
     if (edition === undefined) {
       if (n.props.oldPart === true && editions.length) edition = editions[0].id;
       else {
-        const d = normDate(n.props.installedOn);
-        if (d) edition = editionAt(editions, d)?.id;
+        edition = editionOf(editions, n.props.installedOn)?.id;
       }
     }
     if (kind === undefined && (n.props.installationKind === 'new' || n.props.installationKind === 'existing')) kind = n.props.installationKind;
   }
-  if (edition === undefined) {
-    const d = normDate(meta.installationDate);
-    if (d) edition = editionAt(editions, d)?.id;
-  }
+  if (edition === undefined) edition = editionOf(editions, meta.installationDate)?.id;
   if (edition === undefined) {
     // Ancien modèle : « new » = édition en vigueur, « old » = édition précédente.
     if (meta.rgieVersion === 'old' && editions.length >= 2) edition = editions[editions.length - 2].id;

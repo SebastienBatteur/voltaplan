@@ -14,7 +14,8 @@ export function newExistingProject(title: string): Project {
   meter.children = [{ ...board, props: { name: board.props.name }, children: [] }];
   return {
     ...p,
-    meta: { ...p.meta, title, installationKind: 'existing', rgieVersion: 'old' },
+    // Pas d'édition supposée : sans date, les règles qui en dépendent posent la question (jamais de dérogation silencieuse).
+    meta: { ...p.meta, title, installationKind: 'existing' },
     evidence: emptyEvidence(),
   };
 }

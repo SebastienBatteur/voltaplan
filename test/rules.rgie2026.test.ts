@@ -248,6 +248,58 @@ describe('M8 — résistance de terre « inférieure à 100 Ω » (RGIE 4.2.3.2)
   });
 });
 
+describe('Dates et éditions : jamais de dérogation silencieuse (audit 2026, points sensibles T3, dates partielles)', () => {
+  const socketsWithout30mA = () => {
+    const { p, main } = project();
+    const board = main.children[0];
+    board.children.push(circuit('mcb', 20, 2.5, [createNode('socket', {})], 'Prises'));
+    return { p, board };
+  };
+
+  it('projet existant de l’assistant ou de l’import, sans date : la question de la date est posée (avant : aucun constat)', () => {
+    const { p } = socketsWithout30mA();
+    p.meta.installationKind = 'existing';
+    delete p.meta.installationDate;
+    p.meta.rgieVersion = 'old';
+    expect(has(p, 'R-RCD30-DATE') || has(p, 'R-RCD30')).toBe(true);
+  });
+
+  it('réponse « tableau refait après le 1/6/2023 » : prise sans 30 mA signalée, même avec l’ancien modèle « old »', () => {
+    const { p, board } = socketsWithout30mA();
+    p.meta.installationKind = 'existing';
+    delete p.meta.installationDate;
+    p.meta.rgieVersion = 'old';
+    board.props.rgie2023 = 'after';
+    expect(has(p, 'R-RCD30')).toBe(true);
+  });
+
+  it('date partielle « 2023 » : à cheval sur le 1/6/2023 → inconnu (question), et non dérogation', () => {
+    const { p } = socketsWithout30mA();
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '2023';
+    expect(has(p, 'R-RCD30-DATE')).toBe(true);
+    expect(has(p, 'R-RCD30')).toBe(false);
+  });
+
+  it('dates partielles hors limite : « 2022 » → dérogation 2023 ; « 2024 » → règle de 2023', () => {
+    const a = socketsWithout30mA();
+    a.p.meta.installationKind = 'existing';
+    a.p.meta.installationDate = '2022';
+    expect(has(a.p, 'R-RCD30')).toBe(false);
+    const b = socketsWithout30mA();
+    b.p.meta.installationKind = 'existing';
+    b.p.meta.installationDate = '2024';
+    expect(has(b.p, 'R-RCD30')).toBe(true);
+  });
+
+  it('date partielle « 2020 » : pas de « ancien RGIE » supposé (édition la plus récente de la période)', () => {
+    const { p } = socketsWithout30mA();
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '2020';
+    expect(has(p, 'R-OLD-RGIE')).toBe(false);
+  });
+});
+
 describe('Interprétations incertaines : jamais bloquantes (dossier de validation externe)', () => {
   it('M10 — temps de déclenchement au-delà de 300 ms : avertissement, pas une non-conformité (valeur normative, non RGIE)', () => {
     const { p, rcd30 } = project(circuit('mcb', 20, 2.5));
