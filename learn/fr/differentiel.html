@@ -29,6 +29,34 @@
 <p class="lead">Le <strong>différentiel</strong> est la protection qui sauve des vies. Là où le disjoncteur surveille la quantité de courant pour protéger les câbles, le différentiel cherche le courant <strong>qui s’échappe</strong> du circuit, par exemple à travers le corps d’une personne. En Belgique, il est obligatoire dans toute installation domestique.</p>
 
 <h2 id="principe">Le principe : comparer ce qui part et ce qui revient</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 280" role="img" aria-label="Principe du différentiel : la phase et le neutre traversent le même tore. Le courant aller passe par la phase vers un appareil dont la carcasse est en défaut. Une personne touche la carcasse : une partie du courant traverse son corps et fuit vers la terre, sans repasser par le différentiel. Le courant de retour par le neutre est donc plus faible que le courant aller, et le tore détecte cette différence.">
+    <rect class="box" x="20" y="40" width="150" height="180" rx="10"/>
+    <text class="b" x="95" y="62" text-anchor="middle">Différentiel</text>
+    <text class="s" x="95" y="85" text-anchor="middle">tore</text>
+    <path class="ph" d="M20 115 H430 V125"/>
+    <path class="n" d="M430 155 V165 H20"/>
+    <ellipse class="acc" cx="95" cy="140" rx="35" ry="45"/>
+    <text class="m" x="95" y="207" text-anchor="middle">compare</text>
+    <text class="m" x="190" y="100">courant aller</text>
+    <path class="acc" d="M290 96 H330 M330 96 l-7 -4 M330 96 l-7 4"/>
+    <text class="m" x="190" y="184">retour plus faible</text>
+    <path class="acc" d="M360 180 H320 M320 180 l7 -4 M320 180 l7 4"/>
+    <rect class="box" x="400" y="70" width="130" height="130" rx="10"/>
+    <text class="b" x="465" y="92" text-anchor="middle">Appareil</text>
+    <rect class="box" x="420" y="125" width="20" height="30" rx="3"/>
+    <path class="bad" d="M430 115 H490 l6 6 l-10 6 l10 6 l-6 6 V150 H530"/>
+    <text class="s t-bad" x="485" y="190" text-anchor="middle">défaut</text>
+    <text class="m" x="575" y="100" text-anchor="middle">personne</text>
+    <circle cx="575" cy="120" r="10"/>
+    <path d="M575 130 V180 M575 145 L532 150 M575 180 L560 232 M575 180 L590 232"/>
+    <path d="M380 232 H625"/>
+    <path class="bad" d="M598 135 V195 M598 195 l-4 -8 M598 195 l4 -8"/>
+    <path class="bad" d="M600 248 H360 M360 248 l8 -4 M360 248 l8 4"/>
+    <text class="t-bad" x="480" y="268" text-anchor="middle">fuite vers la terre</text>
+  </svg>
+  <figcaption>Le courant qui fuit à travers la personne ne revient pas par le neutre : l’aller et le retour ne sont plus égaux, le tore le détecte et le différentiel coupe.</figcaption>
+</figure>
 <p>Dans un circuit sain, tout le courant qui part par la <a href="lexique.html#phase">phase</a> revient par le <a href="lexique.html#neutre">neutre</a>. Le différentiel fait passer ces deux conducteurs dans un même tore magnétique : tant que les deux courants sont égaux, leurs effets s’annulent. Si une partie du courant s’échappe vers la <a href="lexique.html#terre">terre</a>, par une carcasse métallique en défaut ou par une personne, le courant de retour est plus faible que le courant de départ. Le tore détecte cette différence et fait ouvrir le contact.</p>
 <p>La <strong>sensibilité</strong>, notée IΔn, est le courant de fuite à partir duquel il doit déclencher : 30 mA, 300 mA… Elle n’a rien à voir avec son calibre en ampères (40 A, 63 A), qui indique le courant qu’il peut laisser passer en service normal.</p>
 <p>Le différentiel réagit à une fuite, pas à une surcharge ni à un <a href="lexique.html#court-circuit">court-circuit</a> entre phase et neutre : dans ces deux cas, le courant qui part revient entièrement. D’où la complémentarité avec le <a href="disjoncteur.html">disjoncteur</a>.</p>

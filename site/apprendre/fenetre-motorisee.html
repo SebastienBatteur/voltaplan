@@ -48,6 +48,35 @@
 <p>Deux grandes familles d’alimentation coexistent. Certains moteurs fonctionnent en <strong>230 V</strong>, avec deux fils de sens, un neutre et une terre, comme un moteur de volet. D’autres fonctionnent en <a href="lexique.html#tbts">très basse tension</a> (souvent en courant continu) : le sens dépend alors de la polarité des deux fils, et le moteur se raccorde à l’alimentation ou au boîtier du fabricant. Cet article et son exercice traitent du premier cas.</p>
 
 <h2 id="principe">Le principe</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 285" role="img" aria-label="Schéma d’une fenêtre de toit motorisée : la phase arrive à la commande, qui l’envoie soit vers l’entrée ouvrir, soit vers l’entrée fermer du moteur ; le neutre et la terre vont directement au moteur. Le moteur entraîne l’ouvrant, dessiné fermé dans le plan du toit et ouvert en pointillé.">
+    <rect class="box" x="30" y="90" width="120" height="100" rx="10"/>
+    <text class="b" x="90" y="112" text-anchor="middle">Commande</text>
+    <rect class="box" x="250" y="100" width="90" height="80" rx="10"/>
+    <text class="b" x="295" y="145" text-anchor="middle">Moteur</text>
+    <path class="ph" d="M90 255 V190"/>
+    <path class="rt" d="M150 125 H250"/>
+    <path class="rt" d="M150 160 H250"/>
+    <path class="n" d="M280 255 V180"/>
+    <path class="pe" d="M310 255 V180"/>
+    <path class="pe2" d="M310 255 V180"/>
+    <text class="m" x="170" y="118">ouvrir</text>
+    <text class="m" x="170" y="153">fermer</text>
+    <text x="90" y="272" text-anchor="middle">L</text>
+    <text class="m" x="185" y="272" text-anchor="middle">depuis le tableau</text>
+    <text x="280" y="272" text-anchor="middle">N</text>
+    <text x="310" y="272" text-anchor="middle">PE</text>
+    <line class="thin dash" x1="340" y1="140" x2="480" y2="191"/>
+    <line x1="380" y1="250" x2="620" y2="110"/>
+    <path class="f-acc" d="M440 215 L560 145 L554 134.6 L434 204.6 Z"/>
+    <path class="dash acc" d="M560 145 L421 157 L420 145 L559 133 Z"/>
+    <path class="acc" d="M432 198 Q418 182 420 162 M420 162 l-5 8 M420 162 l6 7"/>
+    <text class="m" x="412" y="140" text-anchor="end">ouverte</text>
+    <text class="m" x="530" y="200" text-anchor="middle">fermée</text>
+    <text class="b" x="545" y="250" text-anchor="middle">Fenêtre de toit</text>
+  </svg>
+  <figcaption>Même câblage qu’un volet : la commande envoie la phase vers « ouvrir » ou vers « fermer », jamais vers les deux. Le neutre et la terre vont directement au moteur, qui s’arrête seul en position ouverte ou fermée.</figcaption>
+</figure>
 <p>Le moteur possède deux entrées : l’une le fait tourner dans le sens « ouvrir », l’autre dans le sens « fermer ». Il a un <a href="lexique.html#neutre">neutre</a> commun et un fil de terre. La commande reçoit la <a href="lexique.html#phase">phase</a> et l’envoie soit vers « ouvrir », soit vers « fermer », soit nulle part (arrêt). En fin de course, le moteur s’arrête de lui-même : arrivé en position ouverte ou fermée, son <a href="lexique.html#fin-de-course">fin de course</a> coupe l’enroulement correspondant.</p>
 <p>Dans l’exercice, le moteur porte les bornes « montée » et « descente » d’un moteur de volet : la montée correspond ici à « ouvrir », la descente à « fermer ». Sur un vrai moteur, le repérage dépend du fabricant : vérifiez la notice, et essayez avant de régler les fins de course.</p>
 

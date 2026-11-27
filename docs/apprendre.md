@@ -36,6 +36,13 @@ exercice de câblage interactif pour chaque montage, avec le schéma unifilaire 
   qu'une installation neuve ou modifiée se fait contrôler par un organisme agréé.
 - Pas de note, d'avis ni de statistique inventés ; liens externes seulement vers des pages existantes.
 
+## Illustrations
+
+Chaque article a 1 ou 2 schémas en SVG dans la page (`<figure class="illu">`, modèle dans `simple-allumage.html`).
+Couleurs et styles uniquement par les classes `.illu` de `site/style.css` (phase `ph`, neutre `n`, terre `pe` + `pe2`,
+retour `rt`, boîtes `box`, lampe allumée `f-lit`…) : le thème sombre suit automatiquement. `role="img"`, `aria-label`
+descriptif et `figcaption` obligatoires ; le validateur refuse couleurs en dur, styles, images et liens.
+
 ## Exercices de câblage
 
 On relie des bornes par des fils de couleur (deux touchers : marche au doigt), on manœuvre les commandes (la lampe

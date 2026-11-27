@@ -46,6 +46,37 @@
 <p>Ce calcul est approché (la résistance d’un filament change avec sa température), mais la conclusion est claire : des lampes en série ne fonctionnent pas normalement sur le réseau. Avec des lampes LED, le résultat est encore moins prévisible, car leur électronique ne se comporte pas comme une simple résistance.</p>
 
 <h2 id="parallele">Le montage en parallèle</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 300" role="img" aria-label="Comparaison côte à côte. En série : deux lampes sur un seul chemin, chacune ne reçoit que 115 volts, le courant est d’environ 0,13 ampère et elles éclairent faiblement. En parallèle : chaque lampe est reliée aux deux conducteurs, reçoit 230 volts et éclaire normalement.">
+    <rect class="box" x="20" y="15" width="285" height="270" rx="10"/>
+    <rect class="box" x="335" y="15" width="285" height="270" rx="10"/>
+    <text class="b" x="162" y="42" text-anchor="middle">En série</text>
+    <text class="b" x="477" y="42" text-anchor="middle">En parallèle</text>
+    <rect class="box" x="122" y="220" width="80" height="36" rx="8"/>
+    <text x="162" y="243" text-anchor="middle">230 V</text>
+    <path d="M122 238 H50 V100 H95 M135 100 H190 M230 100 H275 V238 H202"/>
+    <circle class="f-warn" cx="115" cy="100" r="20"/>
+    <path d="M101 86 L129 114 M101 114 L129 86"/>
+    <circle class="f-warn" cx="210" cy="100" r="20"/>
+    <path d="M196 86 L224 114 M196 114 L224 86"/>
+    <text class="m" x="115" y="140" text-anchor="middle">115 V</text>
+    <text class="m" x="210" y="140" text-anchor="middle">115 V</text>
+    <path class="acc" d="M50 165 l-6 10 M50 165 l6 10"/>
+    <text class="m" x="60" y="175">0,13 A</text>
+    <text class="m" x="162" y="192" text-anchor="middle">éclairent faiblement</text>
+    <rect class="box" x="437" y="220" width="80" height="36" rx="8"/>
+    <text x="477" y="243" text-anchor="middle">230 V</text>
+    <path d="M437 238 H375 V75 H540 M440 75 V110 M440 150 V185 M540 75 V110 M540 150 V185 M440 185 H600 V238 H517"/>
+    <circle class="f-lit" cx="440" cy="130" r="20"/>
+    <path d="M426 116 L454 144 M426 144 L454 116"/>
+    <circle class="f-lit" cx="540" cy="130" r="20"/>
+    <path d="M526 116 L554 144 M526 144 L554 116"/>
+    <text class="m" x="468" y="135">230 V</text>
+    <text class="m" x="568" y="135">230 V</text>
+    <text class="m" x="477" y="208" text-anchor="middle">éclairent normalement</text>
+  </svg>
+  <figcaption>En série, les deux lampes se partagent les 230 V et éclairent faiblement. En parallèle, chacune reçoit toute la tension et fonctionne normalement : c’est ainsi qu’est câblée la maison.</figcaption>
+</figure>
 <p>En parallèle, chaque élément est relié directement aux deux conducteurs d’alimentation. Il y a <strong>plusieurs chemins</strong> :</p>
 <ul>
   <li>chaque branche reçoit <strong>toute la tension</strong> (230 V) ;</li>

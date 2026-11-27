@@ -33,6 +33,32 @@
 <p>Il ne protège pas les personnes contre une <a href="lexique.html#electrisation">électrisation</a> : quelques dizaines de milliampères suffisent à blesser, bien en dessous de ce qui fait réagir un disjoncteur de 16 A. Cette protection-là est assurée par le <a href="differentiel.html">différentiel</a>.</p>
 
 <h2 id="deux-declencheurs">Deux déclencheurs dans un même boîtier</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 225" role="img" aria-label="Intérieur d’un disjoncteur en blocs : la phase entre, traverse le contact, le déclencheur thermique (une lame bimétallique qui chauffe, pour les surcharges, en secondes ou minutes) puis le déclencheur magnétique (une bobine, pour les courts-circuits, en millisecondes), et repart vers le circuit. Les deux déclencheurs ouvrent le même contact.">
+    <rect class="box" x="130" y="30" width="380" height="180" rx="10"/>
+    <text class="b" x="320" y="52" text-anchor="middle">Disjoncteur</text>
+    <path class="dash thin" d="M435 90 V72 H183 V110 M295 90 V72"/>
+    <text class="s" x="380" y="64">ouvre le contact</text>
+    <path class="ph" d="M20 120 H160 M205 120 H240 M350 120 H380 M490 120 H620"/>
+    <circle cx="160" cy="120" r="3"/>
+    <circle cx="205" cy="120" r="3"/>
+    <line x1="160" y1="120" x2="205" y2="120"/>
+    <text class="m" x="183" y="148" text-anchor="middle">contact</text>
+    <rect class="f-warn" x="240" y="90" width="110" height="60" rx="10"/>
+    <text class="b" x="295" y="112" text-anchor="middle">thermique</text>
+    <path d="M260 138 Q295 122 330 138 M260 144 Q295 128 330 144"/>
+    <rect class="f-acc" x="380" y="90" width="110" height="60" rx="10"/>
+    <text class="b" x="435" y="112" text-anchor="middle">magnétique</text>
+    <path d="M405 140 c0 -12 15 -12 15 0 c0 -12 15 -12 15 0 c0 -12 15 -12 15 0 c0 -12 15 -12 15 0"/>
+    <text class="m" x="22" y="108">arrivée</text>
+    <text class="m" x="620" y="108" text-anchor="end">vers le circuit</text>
+    <text x="295" y="172" text-anchor="middle">surcharge</text>
+    <text class="m" x="295" y="190" text-anchor="middle">en secondes ou minutes</text>
+    <text x="435" y="172" text-anchor="middle">court-circuit</text>
+    <text class="m" x="435" y="190" text-anchor="middle">en millisecondes</text>
+  </svg>
+  <figcaption>Le courant traverse les deux déclencheurs l’un après l’autre. Le thermique (lame bimétallique) réagit lentement aux surcharges, le magnétique (bobine) instantanément aux courts-circuits ; tous deux ouvrent le même contact.</figcaption>
+</figure>
 <p>Un disjoncteur modulaire contient deux mécanismes, chacun adapté à un type de défaut (voir <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a>) :</p>
 <ul>
   <li><strong>Le déclencheur thermique</strong> réagit aux <a href="lexique.html#surcharge">surcharges</a> : un courant un peu trop élevé, mais qui dure. Une lame bimétallique s’échauffe et se courbe, puis libère le mécanisme. Plus la surcharge est forte, plus il déclenche vite : quelques minutes pour un léger dépassement, quelques secondes pour un dépassement important.</li>

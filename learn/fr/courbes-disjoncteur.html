@@ -30,6 +30,30 @@
 <p>Un <a href="disjoncteur.html">disjoncteur</a> contient un déclencheur <strong>thermique</strong>, lent, qui réagit aux <a href="lexique.html#surcharge">surcharges</a>, et un déclencheur <strong>magnétique</strong>, instantané, qui réagit aux courants très élevés comme un <a href="lexique.html#court-circuit">court-circuit</a>. La <a href="lexique.html#courbe-de-declenchement">courbe de déclenchement</a> décrit, pour chaque niveau de courant, le temps que met le disjoncteur à couper. Ce que la lettre fait varier, c’est surtout le <strong>seuil du déclencheur magnétique</strong>.</p>
 
 <h2 id="seuils">Les seuils, en multiples du calibre</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 305" role="img" aria-label="Graphique simplifié temps de coupure en fonction du courant, en multiples du calibre In. Une seule courbe thermique, commune à toutes les courbes, descend lentement de In jusqu’à 3 In. Ensuite viennent les zones de déclenchement magnétique instantané : B entre 3 et 5 In, C entre 5 et 10 In, D entre 10 et 20 In.">
+    <path d="M80 250 H610 M610 250 l-8 -4 M610 250 l-8 4"/>
+    <path d="M80 250 V30 M80 30 l-4 8 M80 30 l4 8"/>
+    <text x="45" y="145" text-anchor="middle" transform="rotate(-90 45 145)">temps de coupure</text>
+    <rect class="f-good" x="286" y="150" width="82" height="96"/>
+    <rect class="f-acc" x="368" y="150" width="111" height="96"/>
+    <rect class="f-warn" x="479" y="150" width="111" height="96"/>
+    <path class="acc" d="M118 38 C150 110 210 140 286 150"/>
+    <text class="m" x="170" y="78">thermique (surcharge)</text>
+    <text class="m" x="438" y="138" text-anchor="middle">magnétique : coupure instantanée</text>
+    <text class="b" x="327" y="204" text-anchor="middle">B</text>
+    <text class="b" x="423" y="204" text-anchor="middle">C</text>
+    <text class="b" x="534" y="204" text-anchor="middle">D</text>
+    <path class="thin" d="M110 250 v6 M286 250 v6 M368 250 v6 M479 250 v6 M590 250 v6"/>
+    <text class="m" x="110" y="270" text-anchor="middle">In</text>
+    <text class="m" x="286" y="270" text-anchor="middle">3 In</text>
+    <text class="m" x="368" y="270" text-anchor="middle">5 In</text>
+    <text class="m" x="479" y="270" text-anchor="middle">10 In</text>
+    <text class="m" x="590" y="270" text-anchor="middle">20 In</text>
+    <text x="610" y="290" text-anchor="end">courant (multiples du calibre In)</text>
+  </svg>
+  <figcaption>La partie thermique est la même pour B, C et D ; seule la zone où le magnétique coupe instantanément se déplace. Dans chaque zone colorée, le déclenchement peut se produire ou non ; au-delà de son bord droit, il est certain.</figcaption>
+</figure>
 <p>Les seuils s’expriment en multiples du <a href="lexique.html#calibre">calibre</a> In. En dessous du seuil bas, seul le thermique peut agir ; au-dessus du seuil haut, le magnétique coupe à coup sûr, quasi instantanément. Entre les deux, le déclenchement magnétique peut se produire ou non selon l’appareil. Les ordres de grandeur usuels pour les disjoncteurs domestiques sont les suivants :</p>
 <table>
   <thead><tr><th>Courbe</th><th>Seuil magnétique (ordre de grandeur)</th><th>Pour un calibre de 16 A</th></tr></thead>

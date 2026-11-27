@@ -32,6 +32,38 @@
 <p>Tirez donc systématiquement un conducteur bleu jusqu’à chaque boîte de commande, même si l’interrupteur posé aujourd’hui n’en a pas besoin. Le neutre reste en attente dans un connecteur, isolé, prêt pour un futur module. Il doit appartenir au même circuit que la phase présente dans la boîte : mélanger le neutre d’un circuit et la phase d’un autre provoque des déclenchements de différentiel et rend la coupure incomplète.</p>
 
 <h2 id="etoile">Le câblage en étoile</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 280" role="img" aria-label="Comparaison de deux câblages. À gauche, câblage traditionnel : un câble va du tableau à l’interrupteur, puis à une première lampe, puis à la suivante. À droite, câblage en étoile : le bouton et chaque lampe ont leur propre câble jusqu’au tableau.">
+    <text class="b" x="160" y="24" text-anchor="middle">Câblage traditionnel</text>
+    <text class="b" x="480" y="24" text-anchor="middle">Câblage en étoile</text>
+    <path class="thin dash" d="M320 15 V270"/>
+    <path d="M95 125 H115 V63 H135 M185 63 H236 M250 77 V176"/>
+    <rect class="box" x="25" y="110" width="70" height="60" rx="10"/>
+    <text class="b" x="60" y="145" text-anchor="middle">Tableau</text>
+    <rect class="box" x="135" y="45" width="50" height="36" rx="10"/>
+    <text class="m" x="160" y="98" text-anchor="middle">interrupteur</text>
+    <circle cx="250" cy="63" r="14"/>
+    <path d="M240 53 L260 73 M240 73 L260 53"/>
+    <circle cx="250" cy="190" r="14"/>
+    <path d="M240 180 L260 200 M240 200 L260 180"/>
+    <text class="m" x="270" y="67">lampe</text>
+    <text class="m" x="270" y="194">lampe</text>
+    <text class="m" x="160" y="262" text-anchor="middle">le circuit passe de boîte en boîte</text>
+    <path class="acc" d="M415 120 H460 V58 H500 M415 140 H546 M415 160 H460 V215 H516"/>
+    <rect class="box" x="345" y="110" width="70" height="60" rx="10"/>
+    <text class="b" x="380" y="145" text-anchor="middle">Tableau</text>
+    <rect class="box" x="500" y="40" width="50" height="36" rx="10"/>
+    <text class="m" x="525" y="94" text-anchor="middle">bouton</text>
+    <circle cx="560" cy="140" r="14"/>
+    <path d="M550 130 L570 150 M550 150 L570 130"/>
+    <circle cx="530" cy="215" r="14"/>
+    <path d="M520 205 L540 225 M520 225 L540 205"/>
+    <text class="m" x="582" y="144">lampe</text>
+    <text class="m" x="552" y="219">lampe</text>
+    <text class="m" x="480" y="262" text-anchor="middle">un câble par point jusqu’au tableau</text>
+  </svg>
+  <figcaption>En câblage traditionnel, le circuit passe de l’interrupteur à la lampe, puis à la suivante. En étoile, chaque point lumineux et chaque bouton a son propre câble jusqu’au tableau, où se trouvent tous les organes de puissance.</figcaption>
+</figure>
 <p>Dans un câblage traditionnel, les circuits passent de boîte en boîte : la phase va de l’interrupteur à la lampe, puis à la lampe suivante. Dans un câblage <strong>en étoile</strong>, chaque point lumineux (ou chaque groupe de points commandés ensemble) a son propre câble jusqu’au <a href="lexique.html#tableau-electrique">tableau électrique</a>, et chaque bouton a ses propres conducteurs de commande vers le tableau.</p>
 <p>L’intérêt : tous les organes de puissance sont au tableau. Aujourd’hui, des <a href="telerupteur.html">télérupteurs</a> et des boutons-poussoirs ; demain, des modules sur rail DIN ou des actionneurs de <a href="bus-knx.html">bus</a>, sans toucher aux murs. Le dépannage est aussi plus simple : tout se mesure au tableau.</p>
 <p>Le câblage en étoile reste soumis aux règles habituelles : chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), et les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), avec au plus 8 circuits par différentiel de 30 mA. Les retours qui partent d’une même commande appartiennent au circuit de leur protection : ne mélangez pas des circuits différents dans un même câble sans y avoir réfléchi.</p>

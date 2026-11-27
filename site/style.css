@@ -1211,3 +1211,121 @@ mark {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
+/* Illustrations des articles (SVG dans la page, couleurs par classes : thème clair et sombre) */
+.illu {
+  margin: 20px 0;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.illu svg {
+  display: block;
+  width: 100%;
+  max-width: 640px;
+  height: auto;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+  font-size: 13px;
+}
+.illu figcaption {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.illu svg :is(line, path, circle, rect, ellipse, polyline, polygon) {
+  stroke: var(--text);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.illu svg text {
+  fill: var(--text);
+  stroke: none;
+}
+.illu svg text.m {
+  fill: var(--muted);
+  font-size: 12px;
+}
+.illu svg text.b {
+  font-weight: 700;
+}
+.illu svg text.s {
+  font-size: 11px;
+}
+.illu svg .thin {
+  stroke-width: 1.2;
+}
+.illu svg .dash {
+  stroke-dasharray: 5 4;
+}
+.illu svg .box {
+  fill: var(--bg);
+  stroke: var(--border);
+}
+.illu svg .ph {
+  stroke: #8b5a2b;
+  stroke-width: 3.5;
+}
+.illu svg .n {
+  stroke: #2f6fde;
+  stroke-width: 3.5;
+}
+.illu svg .pe {
+  stroke: #2e9d48;
+  stroke-width: 3.5;
+}
+.illu svg .pe2 {
+  stroke: #f2d21b;
+  stroke-width: 3.5;
+  stroke-dasharray: 6 6;
+}
+.illu svg .rt {
+  stroke: #707070;
+  stroke-width: 3.5;
+}
+.illu svg .acc {
+  stroke: var(--accent);
+}
+.illu svg .bad {
+  stroke: #d64534;
+}
+.illu svg .good {
+  stroke: #2e9d58;
+}
+.illu svg .f-acc {
+  fill: var(--accent);
+  fill-opacity: 0.18;
+}
+.illu svg .f-lit {
+  fill: #ffd84d;
+  stroke: #d39e00;
+}
+.illu svg .f-ink {
+  fill: var(--text);
+}
+.illu svg .f-bad {
+  fill: #d64534;
+  fill-opacity: 0.15;
+}
+.illu svg .f-good {
+  fill: #2e9d58;
+  fill-opacity: 0.15;
+}
+.illu svg .f-warn {
+  fill: #f0b44a;
+  fill-opacity: 0.25;
+}
+.illu svg text.t-acc {
+  fill: var(--accent);
+}
+.illu svg text.t-bad {
+  fill: #d64534;
+}
+.illu svg text.t-good {
+  fill: #2e9d58;
+}
+.illu svg text.on-lit {
+  fill: #1d2330;
+}

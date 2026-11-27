@@ -49,6 +49,44 @@
 <p>Le danger est immédiat : arc électrique, projection de métal fondu, échauffement brutal. Le <strong>déclencheur magnétique</strong> coupe en quelques millisecondes, dès que le courant dépasse son seuil (voir <a href="courbes-disjoncteur.html">Les courbes B, C et D</a>). Le disjoncteur doit aussi avoir un <a href="lexique.html#pouvoir-de-coupure">pouvoir de coupure</a> suffisant pour interrompre ce courant sans être détruit.</p>
 
 <h2 id="comparaison">Les deux défauts côte à côte</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 285" role="img" aria-label="Deux circuits côte à côte. À gauche, la surcharge : un disjoncteur de 20 A alimente trois appareils de 2 000 W, 1 200 W et 2 000 W, soit environ 23 A, un peu au-dessus du calibre ; le déclencheur thermique coupe en secondes ou minutes. À droite, le court-circuit : la phase touche directement le neutre avant l’appareil, le courant monte à des centaines ou des milliers d’ampères et le déclencheur magnétique coupe en quelques millisecondes.">
+    <rect class="box" x="15" y="15" width="295" height="255" rx="10"/>
+    <rect class="box" x="330" y="15" width="295" height="255" rx="10"/>
+    <text class="b" x="162" y="40" text-anchor="middle">Surcharge</text>
+    <text class="b" x="477" y="40" text-anchor="middle">Court-circuit</text>
+    <path class="ph" d="M90 90 H262"/>
+    <path class="n" d="M90 150 H262"/>
+    <path class="thin" d="M136 90 V105 M136 135 V150 M196 90 V105 M196 135 V150 M256 90 V105 M256 135 V150"/>
+    <rect class="f-warn" x="110" y="105" width="52" height="30" rx="6"/>
+    <rect class="f-warn" x="170" y="105" width="52" height="30" rx="6"/>
+    <rect class="f-warn" x="230" y="105" width="52" height="30" rx="6"/>
+    <text class="s" x="136" y="124" text-anchor="middle">2 000 W</text>
+    <text class="s" x="196" y="124" text-anchor="middle">1 200 W</text>
+    <text class="s" x="256" y="124" text-anchor="middle">2 000 W</text>
+    <rect class="box" x="30" y="70" width="60" height="100" rx="8"/>
+    <text class="s" x="60" y="105" text-anchor="middle">Disj.</text>
+    <text class="b" x="60" y="130" text-anchor="middle">20 A</text>
+    <text class="b t-bad" x="190" y="62" text-anchor="middle">environ 23 A</text>
+    <text class="m" x="162" y="195" text-anchor="middle">Courant un peu au-dessus du calibre</text>
+    <text x="162" y="220" text-anchor="middle">Coupe : déclencheur thermique</text>
+    <text class="m" x="162" y="240" text-anchor="middle">en secondes ou minutes</text>
+    <path class="ph" d="M405 90 H585 V105"/>
+    <path class="n" d="M585 135 V150 H405"/>
+    <rect class="f-warn" x="560" y="105" width="50" height="30" rx="6"/>
+    <text class="s" x="585" y="124" text-anchor="middle">appareil</text>
+    <path class="bad" d="M470 90 V150 M480 114 l10 -6 l-4 10 l10 -6"/>
+    <path class="acc" d="M410 99 H461 V141 H410 M410 141 l8 -5 M410 141 l8 5"/>
+    <rect class="box" x="345" y="70" width="60" height="100" rx="8"/>
+    <text class="s" x="375" y="125" text-anchor="middle">Disj.</text>
+    <text class="b t-bad" x="477" y="62" text-anchor="middle">centaines à milliers d’A</text>
+    <text class="m" x="470" y="170" text-anchor="middle">contact direct</text>
+    <text class="m" x="477" y="195" text-anchor="middle">Courant énorme, en un instant</text>
+    <text x="477" y="220" text-anchor="middle">Coupe : déclencheur magnétique</text>
+    <text class="m" x="477" y="240" text-anchor="middle">en quelques millisecondes</text>
+  </svg>
+  <figcaption>Surcharge : un courant un peu trop fort qui dure, coupé sans hâte par le thermique. Court-circuit : un contact direct qui fait exploser le courant, coupé en quelques millisecondes par le magnétique.</figcaption>
+</figure>
 <table>
   <thead><tr><th></th><th>Surcharge</th><th>Court-circuit</th></tr></thead>
   <tbody>

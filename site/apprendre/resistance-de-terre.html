@@ -42,6 +42,37 @@
 <p>Quand un appareil de <a href="lexique.html#classe-i">classe I</a> a un défaut (une phase qui touche sa carcasse métallique), le courant de défaut emprunte le <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> jusqu’à la barrette de terre, puis la prise de terre, puis le sol. Le sol n’est pas un conducteur parfait : il oppose une résistance au passage du courant. C’est cette résistance, entre la prise de terre et la « terre lointaine », qu’on appelle résistance de dispersion. Elle s’exprime en <a href="lexique.html#ohm">ohms</a>.</p>
 <p>Pendant le défaut, la carcasse de l’appareil prend une tension par rapport au sol. Selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, cette tension vaut à peu près la résistance de terre multipliée par le courant de fuite. Un exemple pour fixer les idées : une fuite de 0,3 A (le seuil d’un différentiel de 300 mA) donne environ 9 V sur une terre de 30 Ω, mais 30 V sur une terre de 100 Ω. Une terre faible garde donc les tensions de défaut basses, et le <a href="differentiel.html">différentiel</a> coupe avant que la situation ne devienne dangereuse.</p>
 
+<figure class="illu">
+  <svg viewBox="0 0 640 290" role="img" aria-label="Chemin du courant de défaut : dans un appareil de classe I, la phase touche la carcasse. Le courant suit le conducteur de protection jusqu’à la barrette de terre, puis le conducteur de terre jusqu’à la prise de terre enfoncée dans le sol, et se disperse dans le sol. La résistance de dispersion est celle que le sol oppose à ce courant ; la tension de la carcasse vaut à peu près la résistance de terre multipliée par le courant de fuite.">
+    <rect class="box" x="20" y="40" width="150" height="90" rx="10"/>
+    <text class="b" x="95" y="68" text-anchor="middle">Appareil</text>
+    <text class="m" x="95" y="88" text-anchor="middle">classe I</text>
+    <text class="s t-bad" x="95" y="112" text-anchor="middle">phase → carcasse</text>
+    <text class="m" x="235" y="58" text-anchor="middle">conducteur</text>
+    <text class="m" x="235" y="74" text-anchor="middle">de protection</text>
+    <path class="pe" d="M170 85 H300"/>
+    <path class="pe2" d="M170 85 H300"/>
+    <path class="acc thin" d="M205 100 H265 M265 100 l -7 -4 M265 100 l -7 4"/>
+    <rect class="box" x="300" y="55" width="120" height="60" rx="10"/>
+    <text class="b" x="360" y="80" text-anchor="middle">Barrette</text>
+    <text class="m" x="360" y="100" text-anchor="middle">de terre</text>
+    <text class="m" x="535" y="70" text-anchor="middle">tension de la carcasse</text>
+    <text class="m" x="535" y="88" text-anchor="middle">≈ R de terre × I de fuite</text>
+    <path class="pe" d="M360 115 V170"/>
+    <path class="pe2" d="M360 115 V170"/>
+    <path class="acc thin" d="M345 125 V160 M345 160 l -4 -7 M345 160 l 4 -7"/>
+    <text class="m" x="375" y="147">conducteur de terre</text>
+    <path class="thin" d="M15 170 H625"/>
+    <text class="m" x="30" y="192">sol</text>
+    <rect class="f-ink" x="355" y="170" width="10" height="70"/>
+    <text class="m" x="380" y="212">prise de terre</text>
+    <path class="acc thin" d="M370 238 L440 262 M440 262 l -9.2 2.1 M440 262 l -5.9 -7.3"/>
+    <path class="acc thin" d="M350 238 L280 262 M280 262 l 9.2 2.1 M280 262 l 5.9 -7.3"/>
+    <path class="acc thin" d="M360 244 V272 M360 272 l -5 -8 M360 272 l 5 -8"/>
+    <text class="m" x="455" y="266">résistance de dispersion</text>
+  </svg>
+  <figcaption>En cas de défaut, le courant passe par le conducteur de protection et la prise de terre, puis se disperse dans le sol. Plus la résistance de dispersion est faible, plus la tension prise par la carcasse reste basse.</figcaption>
+</figure>
 <h2 id="seuils">Les seuils utilisés par Voltaplan</h2>
 <p>Dans l’onglet Projet de Voltaplan, vous encodez la « résistance de dispersion de la terre » en ohms. L’application la juge ainsi :</p>
 <table>
@@ -52,6 +83,26 @@
     <tr><td>Plus de 100 Ω</td><td>Non-conformité : résistance de terre trop élevée. Il faut améliorer la prise de terre (piquets supplémentaires) avant le contrôle.</td></tr>
   </tbody>
 </table>
+<figure class="illu">
+  <svg viewBox="0 0 640 170" role="img" aria-label="Échelle des seuils de Voltaplan pour la résistance de dispersion de la terre : de 0 à 30 ohms, conforme (exigence inférieure ou égale à 30 ohms) ; de plus de 30 à 100 ohms, avertissement, des mesures complémentaires sont exigées (différentiels 30 mA) ; au-delà de 100 ohms, non conforme, il faut améliorer la prise de terre.">
+    <text class="m" x="320" y="36" text-anchor="middle">Résistance de dispersion de la terre : seuils de Voltaplan</text>
+    <rect class="f-good thin" x="40" y="50" width="180" height="36"/>
+    <rect class="f-warn thin" x="220" y="50" width="190" height="36"/>
+    <rect class="f-bad thin" x="410" y="50" width="190" height="36"/>
+    <text class="b t-good" x="130" y="73" text-anchor="middle">Conforme</text>
+    <text class="b" x="315" y="73" text-anchor="middle">Avertissement</text>
+    <text class="b t-bad" x="505" y="73" text-anchor="middle">Non conforme</text>
+    <path class="thin" d="M40 86 V94 M220 86 V94 M410 86 V94"/>
+    <text class="m" x="40" y="110" text-anchor="middle">0 Ω</text>
+    <text class="m" x="220" y="110" text-anchor="middle">30 Ω</text>
+    <text class="m" x="410" y="110" text-anchor="middle">100 Ω</text>
+    <text class="m" x="130" y="134" text-anchor="middle">exigence : ≤ 30 Ω</text>
+    <text class="m" x="315" y="134" text-anchor="middle">mesures complémentaires</text>
+    <text class="s" x="315" y="152" text-anchor="middle">(différentiels 30 mA)</text>
+    <text class="m" x="505" y="134" text-anchor="middle">améliorer la prise de terre</text>
+  </svg>
+  <figcaption>Les trois zones appliquées par Voltaplan (échelle non proportionnelle). Entre 30 et 100 Ω, c’est l’organisme agréé qui tranche selon les conditions du RGIE.</figcaption>
+</figure>
 <p>Ces seuils sont ceux qu’applique l’application pour vous aider à préparer le contrôle. Le cas intermédiaire, entre 30 et 100 Ω, dépend de conditions précises du RGIE : c’est l’organisme agréé qui tranche, au vu de l’ensemble de l’installation.</p>
 
 <h2 id="prise-de-terre">La prise de terre elle-même</h2>

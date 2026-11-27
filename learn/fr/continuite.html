@@ -41,6 +41,32 @@
 
 <h2 id="principe">Le principe de la mesure</h2>
 <p>La mesure se fait <strong>installation hors tension</strong>. L’appareil utilisé (un ohmmètre pour faibles résistances, souvent intégré aux testeurs d’installation) fait circuler un petit courant entre deux points, par exemple la barrette de terre et la borne de terre d’une prise, et en déduit la <a href="lexique.html#resistance">résistance</a> du chemin, selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 260" role="img" aria-label="Principe de la mesure de continuité, installation hors tension : le conducteur de protection vert-jaune relie la barrette de terre du tableau à la borne de terre d’une prise. L’ohmmètre est raccordé par deux cordons entre la barrette de terre et la borne de terre de la prise, et mesure la résistance de ce chemin, qui doit être très faible.">
+    <rect class="box" x="20" y="30" width="150" height="130" rx="10"/>
+    <text class="b" x="95" y="56" text-anchor="middle">Tableau</text>
+    <text class="s t-acc" x="95" y="78" text-anchor="middle">hors tension</text>
+    <text class="m" x="95" y="100" text-anchor="middle">barrette de terre</text>
+    <rect class="f-acc" x="40" y="110" width="110" height="12" rx="3"/>
+    <rect class="box" x="470" y="30" width="150" height="140" rx="10"/>
+    <text class="b" x="545" y="52" text-anchor="middle">Prise</text>
+    <circle cx="545" cy="92" r="22"/>
+    <circle class="f-ink" cx="535" cy="92" r="4"/>
+    <circle class="f-ink" cx="555" cy="92" r="4"/>
+    <path d="M545 72 V80"/>
+    <path class="pe" d="M150 116 H500 V140"/>
+    <path class="pe2" d="M150 116 H500 V140"/>
+    <circle class="f-ink" cx="500" cy="140" r="4"/>
+    <text class="m" x="512" y="144">borne de terre</text>
+    <text class="m" x="320" y="104" text-anchor="middle">conducteur de protection (vert-jaune)</text>
+    <rect class="box" x="250" y="180" width="140" height="64" rx="10"/>
+    <text class="b" x="320" y="205" text-anchor="middle">Ohmmètre</text>
+    <text class="m" x="320" y="228" text-anchor="middle">R très faible = bon</text>
+    <path class="acc dash" d="M250 212 H95 V122"/>
+    <path class="acc dash" d="M390 212 H500 V144"/>
+  </svg>
+  <figcaption>L’ohmmètre mesure, hors tension, la résistance du conducteur de protection entre la barrette de terre et la borne de terre d’une prise. Une valeur très faible confirme la liaison ; une coupure ou une valeur élevée signale un défaut.</figcaption>
+</figure>
 <p>Un bon conducteur de protection a une résistance très faible : quelques fractions d’<a href="lexique.html#ohm">ohm</a> pour un circuit domestique. La valeur dépend de la longueur et de la section du fil : un fil de 2,5 mm² sur 30 m présente une résistance plus faible qu’un fil de 1,5 mm² de même longueur. Le contrôleur juge le résultat selon l’installation ; ce qui compte surtout, c’est qu’il n’y ait <strong>ni coupure, ni valeur anormalement élevée</strong> par rapport aux autres points.</p>
 <p>Un multimètre ordinaire en position « bip » ne donne qu’une indication grossière : il peut sonner à travers une connexion médiocre. Les appareils de mesure d’installation sont conçus pour ce travail et compensent la résistance de leurs propres cordons.</p>
 

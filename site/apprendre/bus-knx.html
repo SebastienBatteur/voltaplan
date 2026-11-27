@@ -39,6 +39,37 @@
   <p class="lead">Dans une installation classique, chaque interrupteur est relié par des fils 230 V à la lampe qu’il commande. Avec un <a href="lexique.html#bus">bus</a> filaire, tous les boutons, capteurs et modules sont reliés par un <strong>seul câble de communication</strong>, et ce sont des messages qui circulent. Le plus répandu des bus ouverts est <a href="lexique.html#knx">KNX</a>, une norme internationale suivie par de nombreux fabricants.</p>
 
 <h2 id="principe">Le principe du bus</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 300" role="img" aria-label="Principe d’un bus filaire : un bouton, un détecteur et une sonde sont reliés à un même câble bus en très basse tension, qui va au tableau vers l’alimentation du bus et les actionneurs. Le bouton envoie le message allumer salon ; l’actionneur commute le 230 V et chaque lampe a son propre câble jusqu’au tableau.">
+    <rect class="box" x="40" y="30" width="110" height="40" rx="10"/>
+    <text x="95" y="55" text-anchor="middle">Bouton</text>
+    <rect class="box" x="190" y="30" width="110" height="40" rx="10"/>
+    <text x="245" y="55" text-anchor="middle">Détecteur</text>
+    <rect class="box" x="340" y="30" width="110" height="40" rx="10"/>
+    <text x="395" y="55" text-anchor="middle">Sonde</text>
+    <path class="acc" d="M40 110 H600 M95 70 V110 M245 70 V110 M395 70 V110 M125 110 V172 M415 110 V172"/>
+    <text class="s t-acc" x="105" y="95">« allumer salon »</text>
+    <text class="m" x="620" y="100" text-anchor="end">câble bus (très basse tension)</text>
+    <rect class="box" x="40" y="140" width="580" height="95" rx="10"/>
+    <text class="b" x="55" y="160">Tableau</text>
+    <rect class="box" x="60" y="172" width="130" height="50" rx="10"/>
+    <text class="b" x="125" y="193" text-anchor="middle">Alimentation</text>
+    <text class="m" x="125" y="210" text-anchor="middle">du bus</text>
+    <rect class="box" x="230" y="172" width="370" height="50" rx="10"/>
+    <text class="b" x="415" y="193" text-anchor="middle">Actionneurs (relais)</text>
+    <text class="m" x="415" y="210" text-anchor="middle">commutent le 230 V</text>
+    <path class="ph" d="M330 222 V256 M415 222 V256 M500 222 V256"/>
+    <circle class="f-lit" cx="330" cy="270" r="14"/>
+    <path d="M320 260 L340 280 M320 280 L340 260"/>
+    <circle cx="415" cy="270" r="14"/>
+    <path d="M405 260 L425 280 M405 280 L425 260"/>
+    <circle cx="500" cy="270" r="14"/>
+    <path d="M490 260 L510 280 M490 280 L510 260"/>
+    <text class="m" x="308" y="274" text-anchor="end">Salon</text>
+    <text class="m" x="60" y="274">circuits 230 V en étoile</text>
+  </svg>
+  <figcaption>Les boutons et les capteurs n’envoient que des messages sur le câble bus. Seuls les actionneurs du tableau commutent le 230 V, et chaque point lumineux a son propre câble jusqu’au tableau.</figcaption>
+</figure>
 <p>Imaginez une conversation sur une ligne partagée. Quand vous appuyez sur un bouton, celui-ci envoie sur le bus un court message : « allumer le groupe salon ». Tous les appareils l’entendent, mais seul l’actionneur concerné, au tableau, ferme le relais du circuit du salon. Le bouton ne transporte jamais le courant de la lampe.</p>
 <p>Deux familles d’appareils sont reliées au bus :</p>
 <ul>

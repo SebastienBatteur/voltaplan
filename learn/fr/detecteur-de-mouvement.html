@@ -41,6 +41,41 @@
     <tr><td>Sortie (souvent marquée d’une flèche, L’ ou R)</td><td>Phase commutée vers la lampe : c’est le retour lampe</td><td>Noir ou gris</td></tr>
   </tbody>
 </table>
+<figure class="illu">
+  <svg viewBox="0 0 640 280" role="img" aria-label="Schéma de câblage d’un détecteur de mouvement 3 fils : la phase va du tableau à la borne L du détecteur, le neutre à sa borne N et à la lampe ; la sortie du détecteur, marquée d’une flèche, part vers la lampe par le retour lampe ; la terre va du tableau à la lampe. Un mouvement est détecté : le contact interne relie L à la sortie et la lampe est allumée.">
+    <rect class="box" x="20" y="40" width="130" height="230" rx="10"/>
+    <text class="b" x="85" y="66" text-anchor="middle">Tableau</text>
+    <text x="132" y="135" text-anchor="end">L</text>
+    <text x="132" y="180" text-anchor="end">N</text>
+    <text x="132" y="240" text-anchor="end">PE</text>
+    <rect class="box" x="250" y="20" width="170" height="90" rx="10"/>
+    <text class="b" x="335" y="42" text-anchor="middle">Détecteur</text>
+    <circle cx="275" cy="90" r="3"/>
+    <circle cx="335" cy="90" r="3"/>
+    <circle cx="400" cy="70" r="3"/>
+    <path d="M275 87 V70 H397"/>
+    <text class="s" x="263" y="94" text-anchor="end">L</text>
+    <text class="s" x="347" y="94">N</text>
+    <text class="s" x="400" y="58" text-anchor="middle">→</text>
+    <text class="s" x="335" y="62" text-anchor="middle">contact fermé</text>
+    <rect class="box" x="480" y="150" width="140" height="110" rx="10"/>
+    <circle class="f-lit" cx="550" cy="205" r="22"/>
+    <path d="M533 188 L567 222 M533 222 L567 188"/>
+    <text class="b" x="550" y="250" text-anchor="middle">Lampe</text>
+    <path class="ph" d="M150 130 H275 V110"/>
+    <path class="n" d="M150 175 H480"/>
+    <path class="n" d="M335 175 V110"/>
+    <circle class="f-ink" cx="335" cy="175" r="4"/>
+    <path class="rt" d="M420 70 H590 V150"/>
+    <path class="pe" d="M150 235 H480"/>
+    <path class="pe2" d="M150 235 H480"/>
+    <text class="m" x="165" y="122">phase (brun)</text>
+    <text class="m" x="165" y="167">neutre (bleu)</text>
+    <text class="m" x="440" y="62">retour lampe</text>
+    <text class="m" x="165" y="227">terre (vert-jaune)</text>
+  </svg>
+  <figcaption>Le détecteur 3 fils reçoit la phase (L) et le neutre (N) pour alimenter son électronique ; quand il voit un mouvement, il relie L à sa sortie, qui alimente la lampe par le retour lampe.</figcaption>
+</figure>
 <p>La lampe reçoit le retour depuis la sortie du détecteur, le <a href="lexique.html#neutre">neutre</a> et la terre. Le détecteur coupe ainsi la <a href="lexique.html#phase">phase</a>, comme un interrupteur. Le point clé est qu’il faut un neutre à l’emplacement du détecteur : à prévoir dès le câblage, en amenant jusqu’à lui la phase, le neutre et le retour lampe (et la terre si son boîtier en demande une).</p>
 <p>Attention : le détecteur ne commute que s’il est alimenté. Sans neutre, il reste inerte. L’exercice le simule : tant que L et N ne sont pas correctement reliés, le mouvement n’allume rien.</p>
 

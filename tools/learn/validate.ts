@@ -53,6 +53,25 @@ export function checkArticle(a: Article, plan: Plan): string[] {
       if (!plan.articles.some((x) => x.slug + '.html' === file)) e.push(`lien vers un article non prévu : ${file}`);
     } else if (file) e.push(`lien non pris en charge : ${file}`);
   }
+  // Illustrations : 1 ou 2 schémas SVG dans la page, couleurs par classes (thème clair et sombre), accessibles
+  const figs = [...a.body.matchAll(/<figure class="illu">([\s\S]*?)<\/figure>/g)].map((m) => m[1]);
+  if (figs.length < 1 || figs.length > 2) e.push(`${figs.length} illustration(s) : 1 ou 2 attendues (<figure class="illu">)`);
+  for (const f of figs) {
+    const svg = /<svg ([^>]*)>([\s\S]*)<\/svg>/.exec(f);
+    if (!svg) {
+      e.push('illustration sans <svg>');
+      continue;
+    }
+    const vb = /viewBox="0 0 (\d+) (\d+)"/.exec(svg[1]);
+    if (!vb || +vb[1] > 640 || +vb[2] > 480) e.push('viewBox "0 0 L H" attendu, L ≤ 640 et H ≤ 480');
+    if (!/role="img"/.test(svg[1]) || !/aria-label="[^"]{20,}"/.test(svg[1])) e.push('svg : role="img" et aria-label descriptif attendus');
+    if (!/<figcaption>[^<]{10,}/.test(f)) e.push('illustration sans <figcaption>');
+    if (/<(image|script|foreignObject|style|a|use|defs|marker)\b/.test(svg[2])) e.push('svg : image, script, style, lien, use, defs ou marker interdits');
+    const bad = [...svg[2].matchAll(/\s(fill|stroke|style|font-size|font-family|font-weight|color|id|href|xlink:href|opacity|stroke-width|transform)="([^"]*)"/g)].filter(
+      (m) => !(m[1] === 'fill' && m[2] === 'none') && m[1] !== 'transform',
+    );
+    if (bad.length) e.push(`svg : attribut ${bad[0][1]}="${bad[0][2]}" interdit (couleurs et styles par classes, voir site/style.css « .illu »)`);
+  }
   // Références RGIE : seulement celles vérifiées dans le texte officiel. « RGIE, 4.2.4.3 b », « RGIE art. 3.1.2 »,
   // « article 5.3.5.2 a » ; les figures et tableaux (« figure 3.1 du RGIE ») ne sont pas des articles.
   const refs = [

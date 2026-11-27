@@ -35,6 +35,44 @@
 <p>On peut aussi prévoir des groupes intermédiaires : tous les volets d’une façade, tous ceux de l’étage. Le principe reste le même : la commande générale envoie un ordre, et chaque moteur est piloté par son propre organe de commande.</p>
 
 <h2 id="parallele">Pourquoi pas deux moteurs en parallèle</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 280" role="img" aria-label="Comparaison. À gauche, faux : une seule commande de volet dont les sorties montée et descente sont reliées aux deux moteurs en parallèle ; un moteur peut alimenter l’autre par son condensateur. À droite, juste : une commande générale envoie seulement des ordres à deux relais, et chaque relais alimente son propre moteur.">
+    <line class="thin dash" x1="320" y1="15" x2="320" y2="265"/>
+    <text class="b t-bad" x="162" y="28" text-anchor="middle">Faux : deux moteurs en parallèle</text>
+    <rect class="box" x="112" y="70" width="100" height="44" rx="10"/>
+    <text x="162" y="97" text-anchor="middle">Commande</text>
+    <path class="rt" d="M162 70 V50 M60 170 V50 H265 V170"/>
+    <path class="rt" d="M162 114 V135 M100 170 V135 H225 V170"/>
+    <circle class="f-ink" cx="162" cy="50" r="3"/>
+    <circle class="f-ink" cx="162" cy="135" r="3"/>
+    <text class="s" x="162" y="44" text-anchor="middle">montée</text>
+    <text class="s" x="162" y="152" text-anchor="middle">descente</text>
+    <rect class="box bad" x="50" y="170" width="60" height="50" rx="10"/>
+    <text class="b" x="80" y="201" text-anchor="middle">M</text>
+    <rect class="box bad" x="215" y="170" width="60" height="50" rx="10"/>
+    <text class="b" x="245" y="201" text-anchor="middle">M</text>
+    <text class="t-bad" x="162" y="245" text-anchor="middle">Un moteur alimente l’autre</text>
+    <text class="m" x="162" y="262" text-anchor="middle">par son condensateur</text>
+    <text class="b t-good" x="477" y="28" text-anchor="middle">Juste : un relais par moteur</text>
+    <rect class="box" x="402" y="45" width="150" height="40" rx="10"/>
+    <text x="477" y="70" text-anchor="middle">Commande générale</text>
+    <path class="thin" d="M477 85 V102 M400 120 V102 H555 V120"/>
+    <circle class="f-ink" cx="477" cy="102" r="3"/>
+    <text class="m" x="477" y="118" text-anchor="middle">ordres</text>
+    <rect class="box good" x="350" y="120" width="100" height="40" rx="10"/>
+    <text x="400" y="145" text-anchor="middle">Relais</text>
+    <rect class="box good" x="505" y="120" width="100" height="40" rx="10"/>
+    <text x="555" y="145" text-anchor="middle">Relais</text>
+    <path class="rt" d="M390 160 V195 M410 160 V195"/>
+    <path class="rt" d="M545 160 V195 M565 160 V195"/>
+    <rect class="box" x="370" y="195" width="60" height="45" rx="10"/>
+    <text class="b" x="400" y="222" text-anchor="middle">M</text>
+    <rect class="box" x="525" y="195" width="60" height="45" rx="10"/>
+    <text class="b" x="555" y="222" text-anchor="middle">M</text>
+    <text class="t-good" x="477" y="262" text-anchor="middle">Chaque moteur reste séparé</text>
+  </svg>
+  <figcaption>Deux moteurs sur la même commande se gênent par leurs condensateurs. Avec un relais par moteur, la commande générale ne transporte qu’un ordre, et chaque moteur s’arrête sur ses propres fins de course.</figcaption>
+</figure>
 <p>L’idée la plus simple serait de relier la sortie montée de la commande aux fils de montée des deux moteurs, et la sortie descente à leurs fils de descente. Avec la plupart des moteurs filaires, c’est une mauvaise idée, pour une raison qui tient à leur construction (voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>).</p>
 <p>Chaque moteur contient un <strong>condensateur raccordé entre ses deux fils de sens</strong>. Imaginons que les deux volets montent. Le premier arrive en haut : son <a href="lexique.html#fin-de-course">fin de course</a> coupe son enroulement de montée. Mais le second moteur tourne encore, et à travers son condensateur, une tension apparaît sur son fil de descente, donc aussi sur le fil de descente du premier moteur, qui lui est relié. Le premier moteur reçoit alors une tension sur sa descente alors qu’il devrait être arrêté : il peut repartir, vibrer ou chauffer, et les deux moteurs se gênent.</p>
 <p>Le résultat est le même qu’une commande qui alimenterait les <strong>deux sens à la fois</strong> : échauffement, usure, et à terme moteur ou condensateur détruit. Certains moteurs électroniques sont prévus pour le raccordement en parallèle ; dans ce cas, la notice le dit explicitement. Sans cette mention, comptez <strong>un moteur par contact de commande</strong>.</p>

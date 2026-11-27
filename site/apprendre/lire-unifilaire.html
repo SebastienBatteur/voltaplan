@@ -51,6 +51,55 @@
   <li>au-dessus de chaque disjoncteur, le <strong>câble</strong> du circuit, puis les <strong>points</strong> qu’il alimente, dans l’ordre où on les rencontre.</li>
 </ol>
 <p>La <a href="lexique.html#terre">terre</a> figure aussi : la prise de terre, le sectionneur de terre et la barre de terre du tableau.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 415" role="img" aria-label="Unifilaire simplifié, lu de bas en haut : le compteur, le différentiel général de 300 mA, un différentiel 30 mA, puis deux disjoncteurs. Au-dessus du disjoncteur C20, un câble XVB 3G2,5 dessert cinq prises numérotées C1 à C5. Au-dessus du disjoncteur de 16 A, un câble de 1,5 mm² dessert l’interrupteur D1 puis le point lumineux D1.">
+    <path class="acc" d="M48 395 V40 M48 40 l-6 10 M48 40 l6 10"/>
+    <text class="m t-acc" x="30" y="218" text-anchor="middle" transform="rotate(-90 30 218)">on lit de bas en haut</text>
+    <rect class="box" x="120" y="350" width="200" height="50" rx="10"/>
+    <text class="b" x="220" y="370" text-anchor="middle">Compteur</text>
+    <text class="m" x="220" y="388" text-anchor="middle">2 x 230V ~ 50Hz</text>
+    <line x1="220" y1="350" x2="220" y2="320"/>
+    <rect class="box" x="140" y="290" width="160" height="30" rx="10"/>
+    <text x="220" y="310" text-anchor="middle">Différentiel 300 mA</text>
+    <line x1="220" y1="290" x2="220" y2="260"/>
+    <rect class="box" x="140" y="230" width="160" height="30" rx="10"/>
+    <text x="220" y="250" text-anchor="middle">Différentiel 30 mA</text>
+    <path d="M220 230 V215 M180 215 H420 M180 215 V205 M420 215 V205"/>
+    <rect class="box" x="145" y="175" width="70" height="30" rx="10"/>
+    <text class="b" x="180" y="195" text-anchor="middle">C20</text>
+    <rect class="box" x="385" y="175" width="70" height="30" rx="10"/>
+    <text class="b" x="420" y="195" text-anchor="middle">16 A</text>
+    <line x1="180" y1="175" x2="180" y2="55"/>
+    <text class="m" x="170" y="113" text-anchor="end">XVB 3G2,5</text>
+    <circle class="f-acc" cx="180" cy="155" r="5"/>
+    <circle class="f-acc" cx="180" cy="130" r="5"/>
+    <circle class="f-acc" cx="180" cy="105" r="5"/>
+    <circle class="f-acc" cx="180" cy="80" r="5"/>
+    <circle class="f-acc" cx="180" cy="55" r="5"/>
+    <text class="b" x="194" y="159">C1</text>
+    <text class="b" x="194" y="134">C2</text>
+    <text class="b" x="194" y="109">C3</text>
+    <text class="b" x="194" y="84">C4</text>
+    <text class="b" x="194" y="59">C5</text>
+    <text class="m" x="180" y="32" text-anchor="middle">circuit C : prises</text>
+    <path d="M420 175 V134 M420 126 V80"/>
+    <text class="m" x="410" y="160" text-anchor="end">1,5 mm²</text>
+    <circle cx="420" cy="130" r="4"/>
+    <path d="M422 126.5 L427 114 M427 114 H432"/>
+    <text class="b" x="440" y="134">D1</text>
+    <text class="m" x="462" y="134">interrupteur</text>
+    <circle cx="420" cy="70" r="10"/>
+    <path d="M413 63 L427 77 M413 77 L427 63"/>
+    <text class="b" x="438" y="74">D1</text>
+    <text class="m" x="460" y="74">point lumineux</text>
+    <text class="m" x="420" y="32" text-anchor="middle">circuit D : éclairage</text>
+    <text class="b" x="480" y="196">Repères</text>
+    <text class="m" x="480" y="214">lettre = circuit</text>
+    <text class="m" x="480" y="230">chiffre = ordre depuis</text>
+    <text class="m" x="480" y="246">la protection</text>
+  </svg>
+  <figcaption>On part du bas : compteur, différentiel général, différentiel 30 mA, disjoncteurs, puis chaque câble et ses points dans l’ordre. Chaque point porte la lettre de son circuit et son numéro ; l’interrupteur reprend le numéro du point qu’il commande.</figcaption>
+</figure>
 
 <h2 id="numerotation">Lettres et numéros : A1, A2…</h2>
 <p>Le RGIE demande un repérage précis (3.1.2.1). Chaque <strong>circuit</strong> reçoit une <strong>lettre</strong> : A, B, C… Chaque point lumineux, socle de prise et unité de commande de ce circuit reçoit un <strong>numéro d’ordre</strong>, en partant de la protection : A1, A2, A3…</p>

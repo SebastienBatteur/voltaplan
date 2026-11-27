@@ -63,6 +63,32 @@
 <h2 id="exemples">Deux exemples chiffrés</h2>
 <p><strong>Une bouilloire de 2 000 W</strong> au bout d’un circuit de prises en 2,5 mm², à 30 mètres du tableau. Le courant vaut environ 2 000 ÷ 230 ≈ 8,7 A. La chute est de 2 × 0,0225 × 30 × 8,7 ÷ 2,5 ≈ 4,7 V, soit environ 2 % de 230 V.</p>
 <p><strong>Le même circuit, chargé jusqu’au calibre</strong> de son disjoncteur (20 A) : 2 × 0,0225 × 30 × 20 ÷ 2,5 = 10,8 V, soit 4,7 %. C’est le cas le plus défavorable : le circuit transporte tout ce que sa protection autorise.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 295" role="img" aria-label="Un câble de 2,5 mm² et 30 mètres relie le tableau à un appareil. Sous le câble, un graphique montre la tension qui baisse régulièrement avec la distance : il manque 4,7 volts au bout avec une bouilloire de 8,7 ampères, et 10,8 volts avec 20 ampères, le calibre du disjoncteur.">
+    <rect class="box" x="20" y="30" width="100" height="50" rx="10"/>
+    <text class="b" x="70" y="60" text-anchor="middle">Tableau</text>
+    <rect class="box" x="520" y="30" width="100" height="50" rx="10"/>
+    <text class="b" x="570" y="60" text-anchor="middle">Appareil</text>
+    <line class="ph" x1="120" y1="55" x2="520" y2="55"/>
+    <text class="m" x="320" y="45" text-anchor="middle">câble 2,5 mm², 30 m</text>
+    <line x1="120" y1="110" x2="120" y2="262"/>
+    <line x1="120" y1="262" x2="525" y2="262"/>
+    <text class="m" x="112" y="129" text-anchor="end">230 V</text>
+    <text class="m" x="112" y="200" text-anchor="end">tension</text>
+    <line class="thin dash" x1="120" y1="125" x2="520" y2="125"/>
+    <text class="m" x="530" y="129">sans courant</text>
+    <line class="acc" x1="120" y1="125" x2="520" y2="177"/>
+    <text class="b" x="530" y="175">−4,7 V</text>
+    <text class="m" x="530" y="190">8,7 A</text>
+    <line class="bad" x1="120" y1="125" x2="520" y2="245"/>
+    <text class="b t-bad" x="530" y="243">−10,8 V</text>
+    <text class="m" x="530" y="258">20 A</text>
+    <text class="m" x="120" y="279" text-anchor="middle">0 m</text>
+    <text class="m" x="320" y="279" text-anchor="middle">distance depuis le tableau</text>
+    <text class="m" x="520" y="279" text-anchor="middle">30 m</text>
+  </svg>
+  <figcaption>Le long du câble, la tension baisse régulièrement. Au bout de 30 m de 2,5 mm², il manque 4,7 V avec la bouilloire (8,7 A) et 10,8 V au calibre de 20 A. L’échelle verticale est agrandie.</figcaption>
+</figure>
 <p>Ces exemples montrent les deux leviers : la chute est <strong>proportionnelle à la longueur</strong> (60 mètres donneraient le double) et <strong>inversement proportionnelle à la section</strong> (du 4 mm² au lieu du 2,5 la réduirait de plus d’un tiers).</p>
 
 <h2 id="cumul">La chute s’additionne depuis le compteur</h2>

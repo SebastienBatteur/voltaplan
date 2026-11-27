@@ -31,6 +31,42 @@
 <p>La domotique moderne pousse cette logique plus loin. Le contact de puissance est piloté par un petit module électronique, qui obéit à des boutons, à des capteurs (température, luminosité, ouverture de fenêtre), à un horaire ou à une application. On peut alors combiner les informations : « si personne n’est à la maison et qu’il fait nuit, fermer les volets ».</p>
 
 <h2 id="commande-et-puissance">Commande et puissance</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 250" role="img" aria-label="Principe de la domotique : un bouton, un capteur ou un téléphone envoient une simple information à un module ou une centrale, qui commande un relais ; seul le relais, alimenté en 230 V, fait passer le courant vers la lampe ou le moteur.">
+    <text class="b" x="90" y="24" text-anchor="middle">Commande</text>
+    <text class="b" x="280" y="24" text-anchor="middle">Logique</text>
+    <text class="b" x="455" y="24" text-anchor="middle">Puissance</text>
+    <text class="b" x="585" y="24" text-anchor="middle">Appareil</text>
+    <rect class="box" x="20" y="50" width="140" height="40" rx="10"/>
+    <text x="90" y="75" text-anchor="middle">Bouton</text>
+    <rect class="box" x="20" y="110" width="140" height="40" rx="10"/>
+    <text x="90" y="135" text-anchor="middle">Capteur</text>
+    <rect class="box" x="20" y="170" width="140" height="40" rx="10"/>
+    <text x="90" y="195" text-anchor="middle">Téléphone</text>
+    <path class="dash acc" d="M160 70 H185 V190 H160 M160 130 H213"/>
+    <path class="acc" d="M213 130 l-8 -5 M213 130 l-8 5"/>
+    <rect class="box" x="215" y="90" width="130" height="80" rx="10"/>
+    <text class="b" x="280" y="125" text-anchor="middle">Module</text>
+    <text class="m" x="280" y="145" text-anchor="middle">ou centrale</text>
+    <path class="dash acc" d="M345 130 H398"/>
+    <path class="acc" d="M398 130 l-8 -5 M398 130 l-8 5"/>
+    <path class="ph" d="M455 38 V90"/>
+    <text class="m" x="463" y="62">230 V</text>
+    <rect class="box" x="400" y="90" width="110" height="80" rx="10"/>
+    <text class="b" x="455" y="125" text-anchor="middle">Relais</text>
+    <text class="m" x="455" y="145" text-anchor="middle">contact</text>
+    <path class="rt" d="M510 130 H563"/>
+    <circle class="f-lit" cx="585" cy="130" r="22"/>
+    <path d="M569 114 L601 146 M569 146 L601 114"/>
+    <text class="b" x="585" y="172" text-anchor="middle">Lampe</text>
+    <text class="m" x="585" y="188" text-anchor="middle">ou moteur</text>
+    <path class="dash acc" d="M20 228 H60"/>
+    <text class="m" x="70" y="232">information (fil, bus ou radio)</text>
+    <path class="ph" d="M330 228 H370"/>
+    <text class="m" x="380" y="232">courant de la lampe</text>
+  </svg>
+  <figcaption>Le bouton, le capteur ou le téléphone n’envoient qu’une information. C’est le relais, alimenté en permanence, qui fait passer le courant de la lampe.</figcaption>
+</figure>
 <p>Dans un <a href="simple-allumage.html">simple allumage</a>, l’interrupteur fait tout : il est à la fois l’organe de commande et l’organe de coupure, et le courant de la lampe le traverse. En domotique, ces deux rôles sont séparés :</p>
 <ul>
   <li>l’<strong>organe de commande</strong> : bouton-poussoir, interrupteur, capteur, horloge, téléphone. Il ne transporte qu’une information ;</li>

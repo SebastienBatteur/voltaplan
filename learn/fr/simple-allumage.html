@@ -31,6 +31,34 @@
 <p>On coupe la phase et non le neutre pour une raison de sécurité : si l’interrupteur coupait le neutre, la lampe éteinte resterait reliée à la phase. Toucher la douille en changeant l’ampoule pourrait alors provoquer une électrisation.</p>
 
 <h2 id="fils">Le rôle de chaque fil</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 290" role="img" aria-label="Schéma de câblage d’un simple allumage : la phase va du tableau à l’interrupteur, le retour lampe de l’interrupteur à la lampe, le neutre et la terre vont directement du tableau à la lampe.">
+    <rect class="box" x="20" y="40" width="130" height="210" rx="10"/>
+    <text class="b" x="85" y="66" text-anchor="middle">Tableau</text>
+    <text x="132" y="95" text-anchor="end">L</text>
+    <text x="132" y="155" text-anchor="end">N</text>
+    <text x="132" y="215" text-anchor="end">PE</text>
+    <rect class="box" x="290" y="20" width="110" height="62" rx="10"/>
+    <text class="b" x="345" y="42" text-anchor="middle">Interrupteur</text>
+    <circle cx="322" cy="64" r="3"/>
+    <circle cx="368" cy="64" r="3"/>
+    <line x1="322" y1="64" x2="368" y2="64"/>
+    <rect class="box" x="500" y="130" width="120" height="120" rx="10"/>
+    <circle class="f-lit" cx="575" cy="190" r="24"/>
+    <path d="M558 173 L592 207 M558 207 L592 173"/>
+    <text class="b" x="575" y="242" text-anchor="middle">Lampe</text>
+    <path class="ph" d="M150 90 H322 V82"/>
+    <path class="rt" d="M368 82 V112 H470 V160 H500"/>
+    <path class="n" d="M150 150 H450 V190 H500"/>
+    <path class="pe" d="M150 210 H430 V225 H500"/>
+    <path class="pe2" d="M150 210 H430 V225 H500"/>
+    <text class="m" x="200" y="82">phase (brun)</text>
+    <text class="m" x="378" y="128">retour lampe (noir ou gris)</text>
+    <text class="m" x="200" y="142">neutre (bleu)</text>
+    <text class="m" x="200" y="202">terre (vert-jaune)</text>
+  </svg>
+  <figcaption>Le simple allumage fil par fil : seule la phase passe par l’interrupteur. Le neutre et la terre vont directement du tableau à la lampe.</figcaption>
+</figure>
 <table>
   <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
   <tbody>

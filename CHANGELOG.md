@@ -13,6 +13,9 @@
 - Pages produites par `npm run learn:build` à partir de `learn/` ; `npm run learn:check` refuse toute référence au
   RGIE non vérifiée dans le texte officiel. Tests `test/learn.test.ts` ; documentation `docs/apprendre.md`.
 - Lien « Apprendre » dans le menu et le pied des pages françaises, encart sur l'accueil.
+- Illustrations : 58 schémas explicatifs dessinés en SVG dans les articles (câblages en couleurs, principes, graphiques,
+  arbres de dépannage), adaptés au thème clair et sombre, avec description pour les lecteurs d'écran ; le validateur
+  vérifie leur format (couleurs par classes, accessibilité).
 
 ### Référencement du site, lot 1 : bases techniques (2026-11-27)
 

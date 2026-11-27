@@ -47,6 +47,47 @@
 <p>Dans les trois cas, le moteur lui-même ne change pas : il a toujours deux sens, un neutre et une terre (voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>), et il ne doit jamais recevoir les deux sens en même temps. Les modules prévus pour les volets intègrent ce verrouillage.</p>
 
 <h2 id="module">Comment se raccorde un module</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 325" role="img" aria-label="Module connecté dans la boîte de la commande de volet : la commande murale est reliée aux deux entrées du module ; le module reçoit la phase et le neutre, présents dans la boîte avec la terre, et alimente lui-même les fils de montée et de descente du moteur ; le neutre et la terre continuent jusqu’au moteur. Le module communique par radio avec une passerelle ou une application, qui reçoit aussi les capteurs de vent et de soleil.">
+    <rect class="box" x="150" y="20" width="160" height="40" rx="10"/>
+    <text x="230" y="45" text-anchor="middle">Passerelle / appli</text>
+    <rect class="box" x="400" y="20" width="80" height="40" rx="10"/>
+    <text x="440" y="45" text-anchor="middle">Vent</text>
+    <rect class="box" x="500" y="20" width="90" height="40" rx="10"/>
+    <text x="545" y="45" text-anchor="middle">Soleil</text>
+    <path class="thin dash acc" d="M400 40 H310"/>
+    <path class="thin dash acc" d="M545 60 V80 H290 V60"/>
+    <path class="thin dash acc" d="M230 145 V60"/>
+    <text class="s t-acc" x="238" y="100">radio</text>
+    <rect class="thin dash" x="60" y="110" width="240" height="200" rx="10"/>
+    <text class="m" x="75" y="130">Boîte de la commande</text>
+    <rect class="box" x="75" y="145" width="80" height="45" rx="10"/>
+    <text class="s" x="115" y="172" text-anchor="middle">Commande</text>
+    <rect class="box" x="180" y="145" width="100" height="95" rx="10"/>
+    <text class="b" x="230" y="168" text-anchor="middle">Module</text>
+    <path class="thin" d="M155 160 H180 M155 175 H180"/>
+    <path class="ph" d="M55 220 H180"/>
+    <path class="n" d="M55 255 H420 M230 255 V240"/>
+    <circle class="f-ink" cx="230" cy="255" r="3"/>
+    <path class="pe" d="M55 285 H420"/>
+    <path class="pe2" d="M55 285 H420"/>
+    <text x="50" y="224" text-anchor="end">L</text>
+    <text x="50" y="259" text-anchor="end">N</text>
+    <text x="50" y="289" text-anchor="end">PE</text>
+    <text class="m" x="65" y="214">phase</text>
+    <text class="m" x="65" y="249">neutre</text>
+    <text class="m" x="65" y="279">terre</text>
+    <path class="rt" d="M280 180 H420"/>
+    <path class="rt" d="M280 205 H420"/>
+    <text class="m" x="308" y="174">montée</text>
+    <text class="m" x="308" y="199">descente</text>
+    <rect class="box" x="420" y="160" width="110" height="145" rx="10"/>
+    <text class="b" x="475" y="185" text-anchor="middle">Moteur</text>
+    <path class="acc" d="M462 270 V225 M462 225 l-5 8 M462 225 l5 8"/>
+    <path class="acc" d="M488 225 V270 M488 270 l-5 -8 M488 270 l5 -8"/>
+  </svg>
+  <figcaption>Le module se loge derrière la commande : il a besoin du neutre dans la boîte pour être alimenté, et il commande seul la montée et la descente. Les capteurs de vent et de soleil passent par la passerelle, qui envoie les ordres au module.</figcaption>
+</figure>
 <p>Un module volet typique a des bornes pour :</p>
 <ul>
   <li>l’alimentation : <a href="lexique.html#phase">phase</a> (L) et <a href="lexique.html#neutre">neutre</a> (N) ;</li>

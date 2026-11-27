@@ -46,6 +46,40 @@
   <li>une <strong>sonnerie</strong> ou un carillon, à l’intérieur.</li>
 </ul>
 <p>Le transformateur abaisse la <a href="lexique.html#tension">tension</a> du réseau (230 V) à quelques volts. Le bouton et la sonnerie sont branchés <a href="serie-et-parallele.html">en série</a> sur cette basse tension : tant que personne n’appuie, le circuit est ouvert ; un appui ferme le circuit et la sonnerie retentit. Contrairement au <a href="telerupteur.html">télérupteur</a>, rien ne reste en mémoire : la sonnerie ne fonctionne que pendant l’appui.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 270" role="img" aria-label="Schéma d’une sonnette. À gauche, côté réseau à 230 V : la phase et le neutre partent du tableau vers l’enroulement primaire du transformateur. Les deux enroulements sont séparés par une double barrière d’isolation. À droite, côté sonnette en très basse tension : l’enroulement secondaire, le bouton-poussoir et la sonnerie forment une boucle en série ; le bouton est ouvert tant que personne n’appuie.">
+    <text class="b" x="165" y="30" text-anchor="middle">Côté réseau : 230 V</text>
+    <text class="b t-acc" x="475" y="30" text-anchor="middle">Côté sonnette : très basse tension</text>
+    <line class="thin dash" x1="320" y1="40" x2="320" y2="70"/>
+    <line class="thin dash" x1="320" y1="210" x2="320" y2="260"/>
+    <rect class="box" x="20" y="70" width="100" height="140" rx="10"/>
+    <text class="b" x="70" y="95" text-anchor="middle">Tableau</text>
+    <text x="112" y="115" text-anchor="end">L</text>
+    <text x="112" y="179" text-anchor="end">N</text>
+    <rect class="box" x="255" y="70" width="130" height="140" rx="10"/>
+    <text class="b" x="320" y="92" text-anchor="middle">Transformateur</text>
+    <path d="M300 110 a8 8 0 0 0 0 16 a8 8 0 0 0 0 16 a8 8 0 0 0 0 16 a8 8 0 0 0 0 16"/>
+    <path d="M340 110 a8 8 0 0 1 0 16 a8 8 0 0 1 0 16 a8 8 0 0 1 0 16 a8 8 0 0 1 0 16"/>
+    <line x1="316" y1="105" x2="316" y2="185"/>
+    <line x1="324" y1="105" x2="324" y2="185"/>
+    <path class="ph" d="M120 110 H300"/>
+    <path class="n" d="M120 174 H300"/>
+    <text class="m" x="135" y="102">phase</text>
+    <text class="m" x="135" y="166">neutre</text>
+    <path d="M340 110 H430"/>
+    <circle cx="430" cy="110" r="3"/>
+    <circle cx="480" cy="110" r="3"/>
+    <path d="M425 98 H485 M455 98 V84 M447 84 H463"/>
+    <text class="m" x="455" y="72" text-anchor="middle">Bouton-poussoir</text>
+    <path d="M480 110 H575 V130"/>
+    <rect class="box" x="530" y="130" width="90" height="70" rx="10"/>
+    <text class="b" x="575" y="170" text-anchor="middle">Sonnerie</text>
+    <path d="M340 174 V230 H575 V200"/>
+    <text class="m" x="165" y="255" text-anchor="middle">circuit protégé au tableau</text>
+    <text class="m" x="480" y="255" text-anchor="middle">quelques volts, séparés du réseau</text>
+  </svg>
+  <figcaption>Le transformateur sépare deux mondes : le 230 V reste à gauche, dans le tableau ; le bouton de la porte et la sonnerie, en série, ne voient que quelques volts. La sonnerie retentit seulement quand on appuie sur le bouton.</figcaption>
+</figure>
 
 <h2 id="tbts">La très basse tension de sécurité</h2>
 <p>On parle de très basse tension en dessous de 50 V en courant alternatif. Une sonnette fonctionne bien en dessous, avec quelques volts. La tension seule ne suffit pourtant pas : il faut aussi que ce circuit ne puisse pas recevoir le 230 V par accident.</p>

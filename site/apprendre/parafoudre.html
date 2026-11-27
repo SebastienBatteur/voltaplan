@@ -47,6 +47,34 @@
 <p>Ce pic est trop bref pour faire réagir un <a href="disjoncteur.html">disjoncteur</a> ou un <a href="differentiel.html">différentiel</a>, qui surveillent le courant et non la tension. Il suffit pourtant à détruire les composants électroniques, de plus en plus nombreux dans une maison.</p>
 
 <h2 id="principe">Le principe du parafoudre</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 270" role="img" aria-label="Principe du parafoudre : une surtension arrive par le réseau sur la phase et le neutre. Le parafoudre, raccordé entre ces conducteurs et la terre, devient conducteur et dérive la surtension vers la terre. Les appareils ne reçoivent plus qu’une tension limitée.">
+    <path class="bad" d="M25 60 H60 L68 25 L76 60 H110"/>
+    <text class="m t-bad" x="120" y="45">surtension</text>
+    <path class="bad" d="M140 68 H220 M220 68 l-7 -4 M220 68 l-7 4"/>
+    <path class="ph" d="M15 80 H520"/>
+    <path class="n" d="M15 120 H520"/>
+    <text class="m" x="20" y="98">phase</text>
+    <text class="m" x="20" y="138">neutre</text>
+    <path class="ph" d="M275 80 V112 a8 8 0 0 1 0 16 V150"/>
+    <path class="n" d="M325 120 V150"/>
+    <circle class="f-ink" cx="275" cy="80" r="4"/>
+    <circle class="f-ink" cx="325" cy="120" r="4"/>
+    <rect class="box" x="250" y="150" width="100" height="50" rx="10"/>
+    <text class="b" x="300" y="180" text-anchor="middle">Parafoudre</text>
+    <path class="pe" d="M300 200 V232"/>
+    <path class="pe2" d="M300 200 V232"/>
+    <path d="M280 236 H320 M286 243 H314 M293 250 H307"/>
+    <text class="m" x="330" y="248">terre</text>
+    <path class="bad" d="M235 135 V225 M235 225 l-4 -8 M235 225 l4 -8"/>
+    <text class="m t-bad" x="245" y="248" text-anchor="end">pic dérivé vers la terre</text>
+    <path class="good" d="M420 60 H455 L463 45 L471 60 H505"/>
+    <text class="m t-good" x="463" y="35" text-anchor="middle">limitée</text>
+    <rect class="box" x="520" y="60" width="100" height="80" rx="10"/>
+    <text class="b" x="570" y="104" text-anchor="middle">Appareils</text>
+  </svg>
+  <figcaption>En temps normal, le parafoudre ne laisse rien passer. Lors d’une surtension, il devient conducteur et dérive le pic vers la terre : les appareils ne reçoivent qu’une tension limitée.</figcaption>
+</figure>
 <p>Le <a href="lexique.html#parafoudre">parafoudre</a> est raccordé entre les conducteurs actifs (phases et neutre) et la <a href="lexique.html#terre">terre</a>. En temps normal, il se comporte comme un circuit ouvert : il ne laisse passer aucun courant et ne consomme rien. Dès que la tension dépasse un certain seuil, il devient conducteur en une fraction de microseconde et dérive la surtension vers la terre. La tension qui arrive aux appareils reste ainsi limitée à un niveau qu’ils supportent. Une fois le pic passé, il redevient isolant.</p>
 <p>Conséquence directe : <strong>un parafoudre sans bonne terre ne sert à rien</strong>, puisque c’est par elle qu’il évacue l’énergie. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
 

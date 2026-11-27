@@ -36,6 +36,30 @@
 </ul>
 <p>L’appareil mesure le courant de fuite et en déduit une résistance, selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>. Le résultat s’exprime en <strong>mégohms</strong> (MΩ) : 1 MΩ = 1 000 000 Ω. Une installation récente et sèche affiche couramment des valeurs bien plus élevées que le minimum exigé.</p>
 
+<figure class="illu">
+  <svg viewBox="0 0 640 230" role="img" aria-label="Principe de la mesure d’isolement sur un câble hors tension : le mesureur d’isolement applique une tension d’essai continue entre la phase et le neutre réunis d’un côté, et le conducteur de terre de l’autre. À travers l’isolant, le courant de fuite est quasi nul ; l’appareil en déduit une résistance en mégohms.">
+    <rect class="box" x="20" y="60" width="150" height="110" rx="10"/>
+    <text class="b" x="95" y="88" text-anchor="middle">Mesureur</text>
+    <text class="b" x="95" y="106" text-anchor="middle">d’isolement</text>
+    <text class="m" x="95" y="132" text-anchor="middle">tension d’essai</text>
+    <text class="m" x="95" y="148" text-anchor="middle">continue</text>
+    <text class="m" x="95" y="195" text-anchor="middle">résultat en MΩ</text>
+    <text class="b" x="445" y="42" text-anchor="middle">Câble, hors tension</text>
+    <rect class="box" x="270" y="55" width="350" height="150" rx="10"/>
+    <text class="m" x="300" y="80">phase</text>
+    <text class="m" x="300" y="125">neutre</text>
+    <text class="m" x="300" y="170">terre</text>
+    <path class="ph" d="M290 90 H600"/>
+    <path class="n" d="M290 135 H600"/>
+    <path class="pe" d="M290 180 H600"/>
+    <path class="pe2" d="M290 180 H600"/>
+    <path class="acc" d="M170 100 H240 V90 H290 M240 100 V135 H290"/>
+    <path class="acc" d="M170 150 H220 V180 H290"/>
+    <path class="thin dash" d="M400 143 V171 M400 171 l -4 -7 M400 171 l 4 -7"/>
+    <text class="m" x="412" y="161">courant de fuite quasi nul</text>
+  </svg>
+  <figcaption>Hors tension, l’appareil applique une tension d’essai entre des conducteurs qui ne devraient jamais se toucher, ici les conducteurs actifs et la terre (on mesure aussi entre phase et neutre). Un bon isolant ne laisse passer qu’un courant de fuite minuscule : la résistance, en MΩ, est élevée.</figcaption>
+</figure>
 <h2 id="valeur">Quelle valeur ?</h2>
 <p>Dans Voltaplan, la résistance d’isolement s’encode dans l’onglet Projet, en MΩ. L’application la juge ainsi :</p>
 <table>

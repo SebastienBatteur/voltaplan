@@ -48,6 +48,30 @@
 <p>Un câble électrique combine les deux : une âme en cuivre pour conduire, une enveloppe en plastique pour isoler et protéger.</p>
 
 <h2 id="circuit">Le circuit fermé</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 260" role="img" aria-label="Circuit fermé : la phase part du tableau, traverse l’interrupteur fermé et arrive à la lampe allumée ; le neutre ramène le courant de la lampe au tableau. Des flèches montrent le courant qui fait une boucle complète.">
+    <rect class="box" x="20" y="50" width="120" height="180" rx="10"/>
+    <text class="b" x="75" y="78" text-anchor="middle">Tableau</text>
+    <text class="m" x="75" y="150" text-anchor="middle">230 V</text>
+    <text x="128" y="105" text-anchor="end">L</text>
+    <text x="128" y="205" text-anchor="end">N</text>
+    <path class="ph" d="M140 100 H290"/>
+    <path class="ph" d="M340 100 H560 V128"/>
+    <circle cx="290" cy="100" r="3"/>
+    <circle cx="340" cy="100" r="3"/>
+    <line x1="290" y1="100" x2="340" y2="100"/>
+    <text class="m" x="315" y="124" text-anchor="middle">interrupteur fermé</text>
+    <circle class="f-lit" cx="560" cy="150" r="22"/>
+    <path d="M545 135 L575 165 M545 165 L575 135"/>
+    <text class="b" x="528" y="145" text-anchor="end">lampe allumée</text>
+    <path class="n" d="M560 172 V200 H140"/>
+    <path class="acc" d="M268 100 l-10 -6 M268 100 l-10 6 M455 100 l-10 -6 M455 100 l-10 6 M345 200 l10 -6 M345 200 l10 6"/>
+    <text class="m" x="155" y="88">phase : aller</text>
+    <text class="m" x="350" y="222" text-anchor="middle">neutre : retour du courant</text>
+    <text class="t-acc" x="330" y="165" text-anchor="middle">le courant fait une boucle complète</text>
+  </svg>
+  <figcaption>Un circuit fermé : le courant part par la phase, traverse la lampe et revient par le neutre. Ouvrir l’interrupteur coupe la boucle, et la lampe s’éteint.</figcaption>
+</figure>
 <p>Le courant ne circule que s’il peut faire une boucle complète : partir de la source, traverser l’appareil et revenir à la source. C’est ce qu’on appelle un <a href="lexique.html#circuit">circuit</a> fermé. Dans une maison, l’aller se fait par la <a href="lexique.html#phase">phase</a> et le retour par le <a href="lexique.html#neutre">neutre</a> (dans les réseaux belges sans neutre, par une deuxième phase : voir <a href="alternatif-mono-tri.html">monophasé et triphasé</a>).</p>
 <p>Un interrupteur ne fait rien d’autre qu’ouvrir ou fermer cette boucle. Ouvert, il coupe le chemin : plus de courant, la lampe s’éteint. Fermé, il le rétablit. C’est tout le principe du <a href="simple-allumage.html">simple allumage</a>.</p>
 <p>Si le courant trouve un chemin plus court que prévu, sans passer par un appareil, c’est un <a href="lexique.html#court-circuit">court-circuit</a> : le courant devient énorme et le disjoncteur doit couper immédiatement. Si le chemin passe par une personne, c’est une <a href="lexique.html#electrisation">électrisation</a>.</p>
@@ -65,6 +89,25 @@
 <p>Elles sont liées par deux formules qu’on utilise tous les jours : <strong>U = R × I</strong> (la <a href="resistance-loi-ohm.html">loi d’Ohm</a>) et <strong>P = U × I</strong> (la <a href="puissance-energie.html">puissance</a>). Avec elles, on calcule le courant d’une bouilloire, la section d’un câble ou la consommation d’une lampe. Un tableau récapitulatif des unités se trouve aussi sur la page <a href="https://sbg-energy.com/unites-electriques">unités électriques</a>.</p>
 
 <h2 id="eau">L’analogie de l’eau</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 290" role="img" aria-label="Analogie de l’eau : une pompe pousse l’eau dans un tuyau fermé en boucle. La pression de la pompe correspond à la tension, le débit dans le tuyau au courant, un robinet à moitié fermé à la résistance, et une roue à aubes que l’eau fait tourner à la puissance.">
+    <path class="acc" d="M110 120 V60 H280 M320 60 H540 V122 M540 178 V240 H110 V180"/>
+    <circle class="box" cx="110" cy="150" r="30"/>
+    <path class="f-ink" d="M110 136 L98 160 L122 160 Z"/>
+    <text class="b" x="152" y="145">pompe</text>
+    <text class="m" x="152" y="163">pression = tension</text>
+    <path class="f-acc" d="M280 46 L320 74 L320 46 L280 74 Z"/>
+    <text class="m" x="300" y="34" text-anchor="middle">robinet à moitié fermé</text>
+    <text class="m" x="300" y="96" text-anchor="middle">= résistance</text>
+    <circle class="box" cx="540" cy="150" r="28"/>
+    <path class="thin" d="M512 150 H568 M540 122 V178 M520 130 L560 170 M520 170 L560 130"/>
+    <text class="b" x="498" y="145" text-anchor="end">roue à aubes</text>
+    <text class="m" x="498" y="163" text-anchor="end">travail = puissance</text>
+    <path d="M195 60 l-10 -6 M195 60 l-10 6 M430 60 l-10 -6 M430 60 l-10 6 M540 100 l-6 -10 M540 100 l6 -10 M330 240 l10 -6 M330 240 l10 6 M110 210 l-6 10 M110 210 l6 10"/>
+    <text class="m" x="325" y="266" text-anchor="middle">débit (litres par seconde) = courant</text>
+  </svg>
+  <figcaption>Comme l’eau dans un circuit fermé, le courant a besoin d’une poussée (la tension), circule avec un certain débit (le courant), est freiné par la résistance et fournit un travail (la puissance).</figcaption>
+</figure>
 <p>Pour se représenter ces grandeurs, on compare souvent un circuit à une installation d’eau :</p>
 <ul>
   <li>la <strong>tension</strong> est la pression de l’eau (la différence de pression entre l’entrée et la sortie d’un tuyau) ;</li>

@@ -33,6 +33,46 @@
 <p>La commande de volet joue le rôle d’aiguillage : elle reçoit la phase sur sa borne L et la renvoie vers l’une de ses deux sorties. Au repos (position arrêt), aucune sortie n’est alimentée et le moteur ne tourne pas. Arrivé en haut ou en bas, le moteur s’arrête tout seul grâce à ses <a href="lexique.html#fin-de-course">fins de course</a>, même si vous maintenez la touche. Voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>.</p>
 
 <h2 id="fils">Le rôle de chaque fil</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 280" role="img" aria-label="Schéma de câblage d’un volet roulant : la phase va du tableau à la borne L de la commande de volet ; la commande, ici en position montée, renvoie la phase soit vers la sortie montée, soit vers la sortie descente, chacune reliée à son fil sur le moteur ; le neutre et la terre vont directement du tableau au moteur.">
+    <rect class="box" x="20" y="40" width="120" height="220" rx="10"/>
+    <text class="b" x="80" y="66" text-anchor="middle">Tableau</text>
+    <text x="122" y="144" text-anchor="end">L</text>
+    <text x="122" y="204" text-anchor="end">N</text>
+    <text x="122" y="244" text-anchor="end">PE</text>
+    <rect class="box" x="250" y="20" width="150" height="90" rx="10"/>
+    <text class="b" x="325" y="42" text-anchor="middle">Commande de volet</text>
+    <text x="275" y="78" text-anchor="middle">L</text>
+    <text x="325" y="78" text-anchor="middle">▲</text>
+    <text x="375" y="78" text-anchor="middle">▼</text>
+    <circle cx="275" cy="92" r="3"/>
+    <circle cx="325" cy="92" r="3"/>
+    <circle cx="375" cy="92" r="3"/>
+    <line x1="275" y1="92" x2="325" y2="92"/>
+    <rect class="box" x="480" y="110" width="140" height="150" rx="10"/>
+    <text class="b" x="550" y="132" text-anchor="middle">Moteur</text>
+    <text x="490" y="154">▼</text>
+    <text x="490" y="179">▲</text>
+    <text x="490" y="204">N</text>
+    <text x="490" y="244">PE</text>
+    <circle cx="560" cy="195" r="26"/>
+    <text class="b" x="560" y="200" text-anchor="middle">M</text>
+    <path class="acc" d="M605 190 V160 M605 160 l-5 8 M605 160 l5 8"/>
+    <path class="thin dash" d="M605 200 V230 M605 230 l-5 -8 M605 230 l5 -8"/>
+    <path class="ph" d="M140 140 H275 V110"/>
+    <path class="rt" d="M375 110 V150 H480"/>
+    <path class="rt" d="M325 110 V175 H480"/>
+    <path class="n" d="M140 200 H480"/>
+    <path class="pe" d="M140 240 H480"/>
+    <path class="pe2" d="M140 240 H480"/>
+    <text class="m" x="160" y="132">phase (brun)</text>
+    <text class="m" x="390" y="142">descente (▼)</text>
+    <text class="m" x="335" y="167">montée (▲)</text>
+    <text class="m" x="160" y="192">neutre (bleu)</text>
+    <text class="m" x="160" y="232">terre (vert-jaune)</text>
+  </svg>
+  <figcaption>La commande aiguille la phase vers la montée ou vers la descente, jamais vers les deux (ici, position montée). Le neutre et la terre vont directement au moteur : quatre conducteurs entre la commande et le moteur.</figcaption>
+</figure>
 <table>
   <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
   <tbody>

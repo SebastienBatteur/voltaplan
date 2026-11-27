@@ -42,6 +42,50 @@
 <p>Seule la <strong>commande</strong> passe par radio. Un <a href="relais-connectes.html">relais connecté</a> reste raccordé à la phase et au neutre, et il alimente la lampe par un fil. Le circuit garde son <a href="disjoncteur.html">disjoncteur</a> adapté à la <a href="lexique.html#section">section</a> et son <a href="differentiel.html">différentiel</a>. Les seuls appareils totalement sans fil sont ceux qui fonctionnent sur pile : boutons, détecteurs, sondes de température, contacts de fenêtre.</p>
 
 <h2 id="maillage">Le réseau maillé</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 315" role="img" aria-label="Comparaison de deux réseaux. À gauche, Zigbee en réseau maillé : la passerelle, un relais, une prise et une ampoule secteur se relaient les messages ; un capteur à pile passe par le relais ou l’ampoule, sans rien relayer lui-même. À droite, Wi-Fi en étoile : chaque appareil parle directement au routeur.">
+    <text class="b" x="160" y="22" text-anchor="middle">Zigbee : réseau maillé</text>
+    <text class="b" x="480" y="22" text-anchor="middle">Wi-Fi : réseau en étoile</text>
+    <path class="thin dash" d="M320 15 V280"/>
+    <path class="thin dash acc" d="M80 53 L90 150 M80 53 L230 100 M90 150 L230 100 M90 150 L220 195 M230 100 L220 195 M90 150 L150 245 M220 195 L150 245"/>
+    <path class="thin dash acc" d="M480 140 L380 65 M480 140 L580 65 M480 140 L380 215 M480 140 L580 215"/>
+    <rect class="box" x="25" y="35" width="110" height="36" rx="10"/>
+    <text x="80" y="58" text-anchor="middle">Passerelle</text>
+    <circle class="box" cx="90" cy="150" r="16"/>
+    <circle class="f-acc acc" cx="90" cy="150" r="16"/>
+    <circle class="box" cx="230" cy="100" r="16"/>
+    <circle class="f-acc acc" cx="230" cy="100" r="16"/>
+    <circle class="box" cx="220" cy="195" r="16"/>
+    <circle class="f-acc acc" cx="220" cy="195" r="16"/>
+    <circle class="box" cx="150" cy="245" r="12"/>
+    <circle class="dash" cx="150" cy="245" r="12"/>
+    <text class="m" x="68" y="154" text-anchor="end">relais</text>
+    <text class="m" x="252" y="104">prise</text>
+    <text class="m" x="242" y="199">ampoule</text>
+    <text class="m" x="150" y="276" text-anchor="middle">capteur à pile</text>
+    <rect class="box" x="430" y="122" width="100" height="36" rx="10"/>
+    <text class="b" x="480" y="145" text-anchor="middle">Routeur</text>
+    <circle class="box" cx="380" cy="65" r="16"/>
+    <circle class="f-acc acc" cx="380" cy="65" r="16"/>
+    <circle class="box" cx="580" cy="65" r="16"/>
+    <circle class="f-acc acc" cx="580" cy="65" r="16"/>
+    <circle class="box" cx="380" cy="215" r="16"/>
+    <circle class="f-acc acc" cx="380" cy="215" r="16"/>
+    <circle class="box" cx="580" cy="215" r="16"/>
+    <circle class="f-acc acc" cx="580" cy="215" r="16"/>
+    <text class="m" x="380" y="97" text-anchor="middle">prise</text>
+    <text class="m" x="580" y="97" text-anchor="middle">relais</text>
+    <text class="m" x="380" y="247" text-anchor="middle">ampoule</text>
+    <text class="m" x="580" y="247" text-anchor="middle">relais</text>
+    <text class="m" x="480" y="276" text-anchor="middle">tout passe par le routeur</text>
+    <circle class="box" cx="30" cy="298" r="7"/>
+    <circle class="f-acc acc" cx="30" cy="298" r="7"/>
+    <text class="m" x="44" y="302">appareil secteur : relaie</text>
+    <circle class="dash" cx="230" cy="298" r="7"/>
+    <text class="m" x="244" y="302">appareil sur pile : ne relaie pas</text>
+  </svg>
+  <figcaption>En Zigbee, les appareils secteur relaient les messages : le capteur à pile a plusieurs chemins vers la passerelle, mais ne relaie rien lui-même. En Wi-Fi, chaque appareil doit être à portée du routeur.</figcaption>
+</figure>
 <p>Dans un réseau en étoile, chaque appareil parle directement à la passerelle : s’il est trop loin, il n’est pas entendu. Dans un <strong>réseau maillé</strong>, les appareils alimentés par le secteur servent de relais radio : le message d’un capteur au fond du jardin passe par un module de la cuisine, puis par une prise connectée du salon, avant d’atteindre la passerelle. Si un chemin disparaît, le réseau en trouve un autre.</p>
 <p>Conséquence pratique : <strong>les appareils sur pile ne relaient pas</strong>, pour économiser leur énergie. Un réseau composé uniquement de capteurs sur pile, loin de la passerelle, sera fragile. On répartit donc des appareils secteur (relais, prises, ampoules connectées) dans la maison, en particulier entre la passerelle et les zones éloignées.</p>
 

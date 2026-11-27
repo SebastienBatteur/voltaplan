@@ -52,6 +52,49 @@
 <p>Le marquage varie d’un fabricant à l’autre (L, 1, 2 ou des flèches, parfois un petit schéma au dos de l’appareil). En cas de doute, la notice ou le schéma imprimé sur le mécanisme fait foi.</p>
 
 <h2 id="fils">Le rôle de chaque fil</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 290" role="img" aria-label="Schéma de câblage d’un double allumage : la phase va du tableau à la borne L de l’interrupteur double ; la borne 1 part vers la lampe 1 par le retour 1, la borne 2 vers la lampe 2 par le retour 2 ; le neutre et la terre vont du tableau à la lampe 1 puis à la lampe 2. La touche 1 est fermée et la lampe 1 allumée ; la touche 2 est ouverte et la lampe 2 éteinte.">
+    <rect class="box" x="20" y="40" width="130" height="230" rx="10"/>
+    <text class="b" x="85" y="66" text-anchor="middle">Tableau</text>
+    <text x="132" y="115" text-anchor="end">L</text>
+    <text x="132" y="205" text-anchor="end">N</text>
+    <text x="132" y="245" text-anchor="end">PE</text>
+    <rect class="box" x="240" y="20" width="170" height="78" rx="10"/>
+    <text class="b" x="325" y="40" text-anchor="middle">Interrupteur double</text>
+    <path class="thin" d="M262 73 V60 H358"/>
+    <circle cx="262" cy="76" r="3"/>
+    <circle cx="322" cy="76" r="3"/>
+    <circle cx="380" cy="76" r="3"/>
+    <line x1="300" y1="60" x2="320" y2="73"/>
+    <line x1="358" y1="60" x2="384" y2="52"/>
+    <text class="s" x="254" y="80" text-anchor="end">L</text>
+    <text class="s" x="314" y="80" text-anchor="end">1</text>
+    <text class="s" x="372" y="80" text-anchor="end">2</text>
+    <rect class="box" x="300" y="170" width="130" height="100" rx="10"/>
+    <circle class="f-lit" cx="365" cy="210" r="22"/>
+    <path d="M348 193 L382 227 M348 227 L382 193"/>
+    <text class="b" x="365" y="262" text-anchor="middle">Lampe 1</text>
+    <rect class="box" x="480" y="170" width="130" height="100" rx="10"/>
+    <circle cx="545" cy="210" r="22"/>
+    <path d="M528 193 L562 227 M528 227 L562 193"/>
+    <text class="b" x="545" y="262" text-anchor="middle">Lampe 2</text>
+    <path class="ph" d="M150 110 H262 V98"/>
+    <path class="rt" d="M322 98 V170"/>
+    <path class="rt" d="M380 98 V120 H545 V170"/>
+    <path class="n" d="M150 200 H300"/>
+    <path class="n" d="M430 200 H480"/>
+    <path class="pe" d="M150 240 H300"/>
+    <path class="pe2" d="M150 240 H300"/>
+    <path class="pe" d="M430 240 H480"/>
+    <path class="pe2" d="M430 240 H480"/>
+    <text class="m" x="160" y="102">phase (brun)</text>
+    <text class="m" x="330" y="150">retour 1 (noir)</text>
+    <text class="m" x="440" y="112">retour 2 (gris)</text>
+    <text class="m" x="160" y="192">neutre (bleu)</text>
+    <text class="m" x="160" y="232">terre (vert-jaune)</text>
+  </svg>
+  <figcaption>Deux simples allumages qui partagent la même phase : chaque touche a son propre retour vers sa lampe. Ici, la touche 1 est fermée (lampe 1 allumée) et la touche 2 ouverte (lampe 2 éteinte).</figcaption>
+</figure>
 <table>
   <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
   <tbody>

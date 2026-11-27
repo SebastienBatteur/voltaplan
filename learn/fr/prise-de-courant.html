@@ -58,6 +58,45 @@
 
 <h2 id="cablage">Repiquage ou boîte de dérivation</h2>
 <p>Les prises d’un même circuit sont branchées <a href="serie-et-parallele.html">en parallèle</a> : chacune reçoit la phase, le neutre et la terre. Deux façons de faire :</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 245" role="img" aria-label="Schéma de trois prises câblées en repiquage : la phase brune, le neutre bleu et la terre vert-jaune partent du tableau vers la prise 1 par un premier câble, puis repartent des bornes de la prise 1 vers la prise 2 par un deuxième câble, et de la prise 2 vers la prise 3 par un troisième câble. Chaque prise reçoit les trois fils.">
+    <rect class="box" x="20" y="25" width="110" height="170" rx="10"/>
+    <text class="b" x="75" y="50" text-anchor="middle">Tableau</text>
+    <text x="122" y="90" text-anchor="end">L</text>
+    <text x="122" y="130" text-anchor="end">N</text>
+    <text x="122" y="170" text-anchor="end">PE</text>
+    <rect class="box" x="210" y="25" width="70" height="170" rx="10"/>
+    <text class="b" x="245" y="50" text-anchor="middle">Prise 1</text>
+    <rect class="box" x="365" y="25" width="70" height="170" rx="10"/>
+    <text class="b" x="400" y="50" text-anchor="middle">Prise 2</text>
+    <rect class="box" x="520" y="25" width="70" height="170" rx="10"/>
+    <text class="b" x="555" y="50" text-anchor="middle">Prise 3</text>
+    <path class="ph" d="M130 85 H555"/>
+    <path class="n" d="M130 125 H555"/>
+    <path class="pe" d="M130 165 H555"/>
+    <path class="pe2" d="M130 165 H555"/>
+    <circle class="f-ink" cx="245" cy="85" r="4"/>
+    <circle class="f-ink" cx="245" cy="125" r="4"/>
+    <circle class="f-ink" cx="245" cy="165" r="4"/>
+    <circle class="f-ink" cx="400" cy="85" r="4"/>
+    <circle class="f-ink" cx="400" cy="125" r="4"/>
+    <circle class="f-ink" cx="400" cy="165" r="4"/>
+    <circle class="f-ink" cx="555" cy="85" r="4"/>
+    <circle class="f-ink" cx="555" cy="125" r="4"/>
+    <circle class="f-ink" cx="555" cy="165" r="4"/>
+    <text class="m" x="170" y="70" text-anchor="middle">câble 1</text>
+    <text class="m" x="322" y="70" text-anchor="middle">câble 2</text>
+    <text class="m" x="477" y="70" text-anchor="middle">câble 3</text>
+    <path class="ph" d="M20 225 H50"/>
+    <text class="m" x="58" y="229">phase (brun)</text>
+    <path class="n" d="M200 225 H230"/>
+    <text class="m" x="238" y="229">neutre (bleu)</text>
+    <path class="pe" d="M380 225 H410"/>
+    <path class="pe2" d="M380 225 H410"/>
+    <text class="m" x="418" y="229">terre (vert-jaune)</text>
+  </svg>
+  <figcaption>En repiquage, chaque câble repart des bornes de la prise précédente : toutes les prises sont en parallèle, et les bornes de la prise 1 transportent le courant des prises 2 et 3.</figcaption>
+</figure>
 <ul>
   <li><strong>En repiquage</strong> : le câble arrive à la première prise, et un second câble repart de ses bornes vers la prise suivante. C’est simple et économique en câble. Il faut des bornes qui acceptent deux conducteurs et un serrage soigné, car les bornes de la première prise transportent le courant de toutes les suivantes.</li>
   <li><strong>Depuis une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a></strong> : le câble du tableau arrive dans une boîte, et un câble part vers chaque prise. Les raccordements se font avec des connecteurs (à levier ou à enfichage). Une prise peut alors être remplacée sans toucher aux autres.</li>

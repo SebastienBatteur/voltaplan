@@ -43,6 +43,69 @@
   <li><strong>Le circuit de puissance</strong> : la phase arrive sur l’entrée du contact ; la sortie du contact part vers la lampe (c’est le retour lampe) ; neutre et terre vont directement à la lampe.</li>
 </ul>
 <p>Les boutons sont en <strong>parallèle</strong> : chacun relie la phase au fil de commande de la bobine. Il n’y a ni navette, ni ordre à respecter entre eux.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 330" role="img" aria-label="Schéma de câblage d’un télérupteur. Circuit de commande : la phase va à la borne 1 de chaque bouton-poussoir ; la borne 2 de chaque poussoir rejoint un fil de commande commun relié à la borne A1 de la bobine ; la borne A2 est reliée au neutre. Circuit de puissance : la phase arrive sur la borne 1 du contact, la borne 2 part vers la lampe par le retour lampe ; neutre et terre vont du tableau à la lampe. Les poussoirs sont relâchés, le contact est resté fermé et la lampe est allumée.">
+    <rect class="box" x="15" y="30" width="100" height="285" rx="10"/>
+    <text class="b" x="65" y="56" text-anchor="middle">Tableau</text>
+    <text x="100" y="95" text-anchor="end">L</text>
+    <text x="100" y="277" text-anchor="end">N</text>
+    <text x="100" y="307" text-anchor="end">PE</text>
+    <rect class="box" x="170" y="40" width="100" height="62" rx="10"/>
+    <text class="b" x="220" y="60" text-anchor="middle">Poussoir 1</text>
+    <path d="M212 72 H228 M220 72 V80 M198 80 H242"/>
+    <circle cx="188" cy="90" r="3"/>
+    <circle cx="252" cy="90" r="3"/>
+    <text class="s" x="180" y="94" text-anchor="end">1</text>
+    <text class="s" x="260" y="94">2</text>
+    <rect class="box" x="170" y="120" width="100" height="62" rx="10"/>
+    <text class="b" x="220" y="140" text-anchor="middle">Poussoir 2</text>
+    <path d="M212 152 H228 M220 152 V160 M198 160 H242"/>
+    <circle cx="188" cy="170" r="3"/>
+    <circle cx="252" cy="170" r="3"/>
+    <text class="s" x="180" y="174" text-anchor="end">1</text>
+    <text class="s" x="260" y="174">2</text>
+    <rect class="box" x="330" y="130" width="150" height="130" rx="10"/>
+    <text class="b" x="405" y="150" text-anchor="middle">Télérupteur</text>
+    <circle cx="352" cy="170" r="3"/>
+    <rect x="343" y="180" width="18" height="32"/>
+    <circle cx="352" cy="222" r="3"/>
+    <path d="M352 173 V180 M352 212 V219"/>
+    <text class="s" x="360" y="174">A1</text>
+    <text class="s" x="360" y="226">A2</text>
+    <circle cx="452" cy="170" r="3"/>
+    <circle cx="452" cy="222" r="3"/>
+    <line x1="452" y1="173" x2="452" y2="219"/>
+    <text class="s" x="444" y="174" text-anchor="end">1</text>
+    <text class="s" x="444" y="226" text-anchor="end">2</text>
+    <path class="thin dash" d="M361 196 H446"/>
+    <text class="s" x="352" y="246" text-anchor="middle">bobine</text>
+    <text class="s" x="452" y="246" text-anchor="middle">contact</text>
+    <rect class="box" x="530" y="150" width="90" height="110" rx="10"/>
+    <circle class="f-lit" cx="575" cy="200" r="22"/>
+    <path d="M558 183 L592 217 M558 217 L592 183"/>
+    <text class="b" x="575" y="252" text-anchor="middle">Lampe</text>
+    <path class="ph" d="M115 90 H170"/>
+    <path class="ph" d="M452 130 V24 H150 V170 H170"/>
+    <path class="rt" d="M270 90 H290 V170"/>
+    <path class="rt" d="M270 170 H330"/>
+    <path class="rt" d="M480 222 H505 V138 H575 V150"/>
+    <path class="n" d="M115 272 H575 V260"/>
+    <path class="n" d="M352 272 V260"/>
+    <path class="pe" d="M115 302 H605 V260"/>
+    <path class="pe2" d="M115 302 H605 V260"/>
+    <circle class="f-ink" cx="150" cy="90" r="4"/>
+    <circle class="f-ink" cx="290" cy="170" r="4"/>
+    <circle class="f-ink" cx="352" cy="272" r="4"/>
+    <text class="m" x="300" y="44">phase (brun)</text>
+    <text class="m" x="298" y="114">commande</text>
+    <text class="m" x="505" y="130">retour lampe</text>
+    <text class="m" x="130" y="264">neutre (bleu)</text>
+    <text class="m" x="130" y="294">terre (vert-jaune)</text>
+    <text class="t-acc" x="165" y="218">circuit de commande</text>
+    <text class="t-acc" x="620" y="72" text-anchor="end">circuit de puissance</text>
+  </svg>
+  <figcaption>À gauche, le circuit de commande : les poussoirs, en parallèle, envoient une impulsion à la bobine (A1, A2). À droite, le circuit de puissance : le contact (1, 2) alimente la lampe. Les poussoirs sont relâchés, mais le contact reste fermé jusqu’à l’impulsion suivante.</figcaption>
+</figure>
 
 <h2 id="fils">Le rôle de chaque fil</h2>
 <table>

@@ -52,10 +52,58 @@
 <p>Pour l’appareil branché, cela ne change rien : il reçoit 230 V. Pour l’installation, si : avec deux phases, les deux conducteurs sont sous tension par rapport à la terre.</p>
 
 <h2 id="triphase">Le triphasé</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 265" role="img" aria-label="Les tensions des trois phases L1, L2 et L3 sur un cycle de 20 millisecondes : trois courbes de même hauteur, décalées chacune d’un tiers de cycle, si bien qu’elles n’atteignent jamais leur maximum en même temps.">
+    <path d="M90 40 V220 M90 130 H610"/>
+    <text class="m" x="82" y="134" text-anchor="end">0</text>
+    <text class="m" x="610" y="150" text-anchor="end">temps</text>
+    <polyline class="ph" points="90 130 100 119.6 110 109.3 120 99.4 130 90 140 81.3 150 73.4 160 66.5 170 60.7 180 56.1 190 52.7 200 50.7 210 50 220 50.7 230 52.7 240 56.1 250 60.7 260 66.5 270 73.4 280 81.3 290 90 300 99.4 310 109.3 320 119.6 330 130 340 140.4 350 150.7 360 160.6 370 170 380 178.7 390 186.6 400 193.5 410 199.3 420 203.9 430 207.3 440 209.3 450 210 460 209.3 470 207.3 480 203.9 490 199.3 500 193.5 510 186.6 520 178.7 530 170 540 160.6 550 150.7 560 140.4 570 130"/>
+    <polyline points="90 199.3 100 203.9 110 207.3 120 209.3 130 210 140 209.3 150 207.3 160 203.9 170 199.3 180 193.5 190 186.6 200 178.7 210 170 220 160.6 230 150.7 240 140.4 250 130 260 119.6 270 109.3 280 99.4 290 90 300 81.3 310 73.4 320 66.5 330 60.7 340 56.1 350 52.7 360 50.7 370 50 380 50.7 390 52.7 400 56.1 410 60.7 420 66.5 430 73.4 440 81.3 450 90 460 99.4 470 109.3 480 119.6 490 130 500 140.4 510 150.7 520 160.6 530 170 540 178.7 550 186.6 560 193.5 570 199.3"/>
+    <polyline class="rt" points="90 60.7 100 66.5 110 73.4 120 81.3 130 90 140 99.4 150 109.3 160 119.6 170 130 180 140.4 190 150.7 200 160.6 210 170 220 178.7 230 186.6 240 193.5 250 199.3 260 203.9 270 207.3 280 209.3 290 210 300 209.3 310 207.3 320 203.9 330 199.3 340 193.5 350 186.6 360 178.7 370 170 380 160.6 390 150.7 400 140.4 410 130 420 119.6 430 109.3 440 99.4 450 90 460 81.3 470 73.4 480 66.5 490 60.7 500 56.1 510 52.7 520 50.7 530 50 540 50.7 550 52.7 560 56.1 570 60.7"/>
+    <text class="b" x="210" y="38" text-anchor="middle">L1</text>
+    <text class="b" x="370" y="38" text-anchor="middle">L2</text>
+    <text class="b" x="530" y="38" text-anchor="middle">L3</text>
+    <path class="thin" d="M90 225 V235 M90 230 H570 M570 225 V235"/>
+    <text class="m" x="330" y="252" text-anchor="middle">un cycle : 20 ms</text>
+  </svg>
+  <figcaption>Les trois phases ont la même tension, mais décalée d’un tiers de cycle : quand l’une est à son maximum, les deux autres montent ou descendent.</figcaption>
+</figure>
 <p>Le triphasé utilise trois phases, notées L1, L2 et L3. Leurs tensions ont la même valeur, mais elles sont décalées d’un tiers de cycle : quand l’une est à son maximum, les deux autres sont en train de descendre ou de monter. La tension <strong>entre deux phases</strong> est plus grande que celle entre une phase et le point neutre, d’un facteur √3 (environ 1,73).</p>
 <p>Ce décalage a deux grands avantages : on transporte davantage de puissance avec peu de conducteurs supplémentaires, et on crée facilement un champ tournant qui fait démarrer les moteurs triphasés sans artifice.</p>
 
 <h2 id="reseaux-belges">Les deux réseaux belges</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 265" role="img" aria-label="Comparaison des deux réseaux belges. À gauche, le 3N × 400 V : trois phases et un neutre, 400 volts entre deux phases et 230 volts entre une phase et le neutre ; une prise utilise une phase et le neutre. À droite, le 3 × 230 V : trois phases sans neutre, 230 volts entre deux phases ; une prise utilise deux phases.">
+    <rect class="box" x="20" y="15" width="285" height="235" rx="10"/>
+    <rect class="box" x="335" y="15" width="285" height="235" rx="10"/>
+    <text class="b" x="162" y="45" text-anchor="middle">3N × 400 V</text>
+    <text class="b" x="477" y="45" text-anchor="middle">3 × 230 V</text>
+    <path class="ph" d="M60 80 H285"/>
+    <path d="M60 116 H285"/>
+    <path class="rt" d="M60 152 H285"/>
+    <path class="n" d="M60 188 H285"/>
+    <text x="50" y="85" text-anchor="end">L1</text>
+    <text x="50" y="121" text-anchor="end">L2</text>
+    <text x="50" y="157" text-anchor="end">L3</text>
+    <text x="50" y="193" text-anchor="end">N</text>
+    <path class="acc" d="M120 84 V112 M120 84 l-4 7 M120 84 l4 7 M120 112 l-4 -7 M120 112 l4 -7"/>
+    <text class="t-acc b" x="130" y="103">400 V</text>
+    <path class="acc" d="M210 156 V184 M210 156 l-4 7 M210 156 l4 7 M210 184 l-4 -7 M210 184 l4 -7"/>
+    <text class="t-acc b" x="220" y="175">230 V</text>
+    <text class="m" x="162" y="230" text-anchor="middle">prise : une phase + le neutre</text>
+    <path class="ph" d="M375 80 H600"/>
+    <path d="M375 116 H600"/>
+    <path class="rt" d="M375 152 H600"/>
+    <text x="365" y="85" text-anchor="end">L1</text>
+    <text x="365" y="121" text-anchor="end">L2</text>
+    <text x="365" y="157" text-anchor="end">L3</text>
+    <path class="acc" d="M450 84 V112 M450 84 l-4 7 M450 84 l4 7 M450 112 l-4 -7 M450 112 l4 -7"/>
+    <text class="t-acc b" x="460" y="103">230 V</text>
+    <text class="m" x="477" y="193" text-anchor="middle">pas de neutre</text>
+    <text class="m" x="477" y="230" text-anchor="middle">prise : deux phases</text>
+  </svg>
+  <figcaption>Une prise reçoit 230 V dans les deux réseaux, mais pas de la même façon : en 3 × 230 V, ses deux conducteurs sont des phases, tous deux sous tension par rapport à la terre.</figcaption>
+</figure>
 <table>
   <thead><tr><th></th><th>3N × 400 V</th><th>3 × 230 V</th></tr></thead>
   <tbody>

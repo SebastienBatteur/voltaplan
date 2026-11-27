@@ -49,6 +49,49 @@
   <li>des <strong>contacts de puissance</strong> qui ferment le circuit du chauffe-eau.</li>
 </ul>
 <p>La bobine consomme très peu ; les contacts, eux, laissent passer tout le courant du chauffe-eau. Un petit signal commande ainsi un gros appareil. La différence avec le <a href="telerupteur.html">télérupteur</a> : le contacteur n’a pas de mémoire. Il reste fermé tant que la bobine est alimentée et s’ouvre dès que le signal disparaît.</p>
+<figure class="illu">
+  <svg viewBox="0 0 640 300" role="img" aria-label="Schéma du contacteur jour/nuit. En haut, le circuit de commande : le signal heures creuses arrive sur la bobine du contacteur. Le contacteur porte en façade un sélecteur à trois positions : 0, auto et I, ici sur auto. La bobine actionne le contact de puissance. En bas, le circuit de puissance : la phase part du disjoncteur, traverse le contact fermé et alimente la résistance du chauffe-eau ; le neutre va directement à la résistance, la terre vert-jaune à la cuve.">
+    <text class="b t-acc" x="95" y="30" text-anchor="middle">Circuit de commande</text>
+    <rect class="box" x="20" y="40" width="150" height="60" rx="10"/>
+    <text class="b" x="95" y="65" text-anchor="middle">Signal</text>
+    <text class="m" x="95" y="85" text-anchor="middle">heures creuses</text>
+    <path d="M170 70 H210 V132 H298 M298 132 l-8 -5 M298 132 l-8 5"/>
+    <rect class="box" x="240" y="40" width="160" height="190" rx="10"/>
+    <text class="b" x="320" y="62" text-anchor="middle">Contacteur</text>
+    <rect class="f-acc thin" x="296" y="75" width="48" height="20" rx="5"/>
+    <text class="s" x="280" y="89" text-anchor="middle">0</text>
+    <text class="s b" x="320" y="89" text-anchor="middle">auto</text>
+    <text class="s" x="360" y="89" text-anchor="middle">I</text>
+    <text class="s" x="320" y="110" text-anchor="middle">sélecteur</text>
+    <rect x="300" y="120" width="40" height="25"/>
+    <text class="s" x="348" y="137">bobine</text>
+    <path class="thin dash" d="M320 145 V196"/>
+    <circle cx="300" cy="205" r="3"/>
+    <circle cx="340" cy="205" r="3"/>
+    <line x1="300" y1="205" x2="340" y2="205"/>
+    <text class="s" x="320" y="224" text-anchor="middle">contact</text>
+    <text class="b" x="95" y="150" text-anchor="middle">Circuit de puissance</text>
+    <rect class="box" x="20" y="160" width="150" height="120" rx="10"/>
+    <text class="b" x="95" y="185" text-anchor="middle">Disjoncteur</text>
+    <text x="162" y="210" text-anchor="end">L</text>
+    <text x="162" y="250" text-anchor="end">N</text>
+    <text x="162" y="275" text-anchor="end">PE</text>
+    <rect class="box" x="500" y="120" width="120" height="160" rx="10"/>
+    <text class="b" x="560" y="145" text-anchor="middle">Chauffe-eau</text>
+    <rect x="548" y="180" width="24" height="50"/>
+    <path class="ph" d="M170 205 H300"/>
+    <path class="ph" d="M340 205 H460 V165 H560 V180"/>
+    <path class="n" d="M170 245 H560 V230"/>
+    <path class="pe" d="M170 270 H600 V230"/>
+    <path class="pe2" d="M170 270 H600 V230"/>
+    <circle class="f-ink" cx="600" cy="230" r="4"/>
+    <text class="s" x="606" y="220" text-anchor="middle">cuve</text>
+    <text class="m" x="178" y="197">phase</text>
+    <text class="m" x="178" y="237">neutre</text>
+    <text class="m" x="178" y="262">terre</text>
+  </svg>
+  <figcaption>Le petit signal heures creuses alimente la bobine ; la bobine ferme le contact, qui laisse passer tout le courant du chauffe-eau. Le sélecteur en façade permet de forcer la marche (I) ou l’arrêt (0).</figcaption>
+</figure>
 
 <h2 id="signal">D’où vient le signal ?</h2>
 <p>Le signal « heures creuses » est donné par le gestionnaire de réseau. Selon le <a href="lexique.html#compteur">compteur</a> et l’époque de l’installation, il arrive de différentes façons : un récepteur séparé à côté du compteur, un contact intégré au compteur, ou un relais du compteur communicant. Dans tous les cas, ce contact sert à alimenter (ou couper) la bobine du contacteur.</p>

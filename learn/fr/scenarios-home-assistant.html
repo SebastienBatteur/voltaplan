@@ -28,6 +28,30 @@
 <p class="lead">Une fois les relais et les capteurs en place, la <a href="lexique.html#domotique">domotique</a> prend tout son sens avec les <strong>scénarios</strong> : des règles qui enchaînent automatiquement des actions. Pour les créer, on utilise l’application du fabricant ou un logiciel qui réunit tous les appareils, comme Home Assistant. Le choix entre pilotage local et cloud compte autant que le choix des appareils.</p>
 
 <h2 id="scenario">Anatomie d’un scénario</h2>
+<figure class="illu">
+  <svg viewBox="0 0 640 145" role="img" aria-label="Un scénario en trois boîtes : si un mouvement est détecté dans le couloir (déclencheur), et seulement s’il fait nuit (condition facultative), alors allumer l’éclairage à 20 % pendant deux minutes (action).">
+    <text class="b t-acc" x="110" y="22" text-anchor="middle">SI</text>
+    <text class="b t-acc" x="325" y="22" text-anchor="middle">ET SI</text>
+    <text class="b t-acc" x="535" y="22" text-anchor="middle">ALORS</text>
+    <rect class="box" x="20" y="34" width="180" height="96" rx="10"/>
+    <text class="b" x="110" y="58" text-anchor="middle">Déclencheur</text>
+    <text x="110" y="88" text-anchor="middle">mouvement</text>
+    <text x="110" y="106" text-anchor="middle">dans le couloir</text>
+    <path d="M200 82 H236 M236 82 l-8 -5 M236 82 l-8 5"/>
+    <rect class="box dash" x="240" y="34" width="170" height="96" rx="10"/>
+    <text class="b" x="325" y="58" text-anchor="middle">Condition</text>
+    <text x="325" y="88" text-anchor="middle">seulement</text>
+    <text x="325" y="106" text-anchor="middle">s’il fait nuit</text>
+    <text class="m" x="325" y="122" text-anchor="middle">facultative</text>
+    <path d="M410 82 H446 M446 82 l-8 -5 M446 82 l-8 5"/>
+    <rect class="box" x="450" y="34" width="170" height="96" rx="10"/>
+    <rect class="f-acc" x="450" y="34" width="170" height="96" rx="10"/>
+    <text class="b" x="535" y="58" text-anchor="middle">Action</text>
+    <text x="535" y="88" text-anchor="middle">allumer à 20 %</text>
+    <text x="535" y="106" text-anchor="middle">pendant deux minutes</text>
+  </svg>
+  <figcaption>Un scénario se lit comme une phrase : un déclencheur, des conditions facultatives, puis des actions. Ici, la nuit, un mouvement dans le couloir allume l’éclairage à 20 % pendant deux minutes.</figcaption>
+</figure>
 <p>Tout scénario se décompose en trois parties :</p>
 <ul>
   <li>un <strong>déclencheur</strong> : un bouton appuyé, une heure, le coucher du soleil, un mouvement détecté, une fenêtre ouverte, une puissance mesurée ;</li>
