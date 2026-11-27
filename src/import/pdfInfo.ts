@@ -7,6 +7,7 @@
  */
 import { walk } from '../model/tree';
 import type { Address, ElNode, Project } from '../model/types';
+import type { MigrationWarning } from '../model/migrate';
 import type { PdfText } from './pdfDossier';
 
 const fold = (s: string) =>
@@ -185,18 +186,21 @@ export function readPdfInfo(items: PdfText[]): PdfInfo {
   return info;
 }
 
-/** Reporte les informations lues dans le projet (sans écraser ce qui est déjà rempli). */
+/**
+ * Reporte les informations lues dans le projet (sans écraser ce qui est déjà rempli). Rend les champs repris, en
+ * suffixes des clés de traduction `imp.pdf.info.*`.
+ */
 export function applyPdfInfo(project: Project, info: PdfInfo): string[] {
   const m = project.meta;
   const got: string[] = [];
   const merge = (a: Address, b: Address) => ({ ...b, ...Object.fromEntries(Object.entries(a).filter(([, v]) => v)) });
   if (info.title) {
     m.title = info.title;
-    got.push('nom du projet');
+    got.push('title');
   }
   if (info.site && Object.keys(info.site.address).length) {
     m.site = merge(info.site.address, m.site ?? {});
-    got.push("adresse de l'installation");
+    got.push('site');
   }
   if (info.client && (info.client.name || Object.keys(info.client.address).length)) {
     m.client = { ...m.client, name: info.client.name ?? m.client.name, email: info.client.email ?? m.client.email, address: merge(info.client.address, m.client.address ?? {}) };
@@ -204,15 +208,15 @@ export function applyPdfInfo(project: Project, info: PdfInfo): string[] {
   }
   if (info.installer && (info.installer.name || Object.keys(info.installer.address).length)) {
     m.installer = { ...m.installer, name: info.installer.name ?? m.installer.name, phone: info.installer.phone ?? m.installer.phone, email: info.installer.email ?? m.installer.email, vat: info.installer.vat ?? m.installer.vat, address: merge(info.installer.address, m.installer.address ?? {}) };
-    got.push('installateur');
+    got.push('installer');
   }
   if (info.inspection && !/^(-|–|signature)/i.test(info.inspection)) {
     m.inspectionBodyName = info.inspection;
-    got.push('organisme agréé');
+    got.push('inspection');
   }
   if (info.mainCurrent) {
     m.mainCurrent = info.mainCurrent;
-    got.push('calibre du branchement');
+    got.push('mainCurrent');
   }
   if (info.date) {
     m.date = info.date;
@@ -220,11 +224,11 @@ export function applyPdfInfo(project: Project, info: PdfInfo): string[] {
   }
   if (info.docNumber) {
     m.docNumber = info.docNumber;
-    got.push('numéro du dossier');
+    got.push('docNumber');
   }
   if (info.installationKind) {
     m.installationKind = info.installationKind;
-    got.push(info.installationKind === 'new' ? 'installation nouvelle' : 'installation existante');
+    got.push(info.installationKind === 'new' ? 'kindNew' : 'kindExisting');
   }
   return got;
 }
@@ -404,18 +408,16 @@ export function readBom(items: PdfText[]): BomCount | null {
 }
 
 /** Compare la liste du matériel du PDF au schéma importé : écarts à vérifier (aucun si tout concorde). */
-export function checkBom(project: Project, bom: BomCount): string {
+export function checkBom(project: Project, bom: BomCount): MigrationWarning[] {
   const nodes: ElNode[] = [...walk(project.roots)].map((x) => x.node);
   const lights = nodes.filter((n) => n.kind === 'light').reduce((s, n) => s + (Number(n.props.count) || 1), 0);
   const sockets = nodes.filter((n) => n.kind === 'socket');
   const outlets = sockets.reduce((s, n) => s + (Number(n.props.count) || 1), 0);
   const switches = nodes.filter((n) => n.kind === 'switch' || n.kind === 'pushButton').length;
-  const gaps: string[] = [];
-  if (bom.lights !== lights) gaps.push(`${bom.lights} point(s) lumineux (importé : ${lights})`);
-  if (bom.socketPoints !== sockets.length) gaps.push(`${bom.socketPoints} prise(s) (importé : ${sockets.length})`);
-  else if (bom.outlets !== outlets) gaps.push(`${bom.outlets} socles en comptant les prises doubles et triples (importé : ${outlets}) : nombre de socles des prises à préciser`);
-  if (bom.switches !== switches) gaps.push(`${bom.switches} interrupteur(s) ou bouton(s)-poussoir(s) (importé : ${switches})`);
-  return gaps.length
-    ? `Liste du matériel du PDF : ${gaps.join(' ; ')}. À compléter ou vérifier.`
-    : 'Liste du matériel du PDF : points lumineux, prises et commandes concordent avec le schéma importé.';
+  const gaps: MigrationWarning[] = [];
+  if (bom.lights !== lights) gaps.push({ key: 'imp.pdf.bomLights', params: { n: bom.lights, got: lights } });
+  if (bom.socketPoints !== sockets.length) gaps.push({ key: 'imp.pdf.bomSockets', params: { n: bom.socketPoints, got: sockets.length } });
+  else if (bom.outlets !== outlets) gaps.push({ key: 'imp.pdf.bomOutlets', params: { n: bom.outlets, got: outlets } });
+  if (bom.switches !== switches) gaps.push({ key: 'imp.pdf.bomSwitches', params: { n: bom.switches, got: switches } });
+  return gaps.length ? gaps : [{ key: 'imp.pdf.bomOk' }];
 }

@@ -4,6 +4,7 @@ import { draadwijsSupply, importDraadwijs, parseAddress } from '../src/import/dr
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import { walk } from '../src/model/tree';
 import type { ElNode, Project } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 const node = (id: string, type: string, props: Record<string, unknown>, children: unknown[] = []) => ({ id, type, props, children });
 const mcb = (id: string, name: string, amps: string, section: string, children: unknown[]) =>
@@ -97,7 +98,7 @@ describe('import Draadwijs (.draadwijs)', () => {
     expect(byId(project, 'g2')!.parent?.id).toBe('ats');
     expect(byId(project, 'ev')!.node.props).toMatchObject({ residualCurrent: 30, rcdType: 'B' });
     expect(byId(project, 'evc')!.node.props).toMatchObject({ applianceType: 'evCharger', power: 11000 });
-    expect(warnings.join('\n')).toMatch(/vliegtuig/);
+    expect(frWarnings(warnings).join('\n')).toMatch(/vliegtuig/);
     // Repères comme dans Draadwijs : ordre du schéma, disjoncteur d'alimentation du sous-tableau compris
     const letters = ['c-light', 'c-sock', 'c-hob', 'c-pv', 'c-bat', 'c-sub', 'c-g'].map((id) => byId(project, id)!.node.props.fixedLetter);
     expect(letters).toEqual(['A', 'B', 'C', 'D', 'E', 'F', 'G']);
@@ -118,7 +119,7 @@ describe('import Draadwijs (.draadwijs)', () => {
     const bar = [...walk(project.roots)].find((x) => x.node.kind === 'earthBar')!.node;
     expect(pg.symbols.some((s) => s.nodeId === bar.id)).toBe(true);
     expect(pg.furniture?.[0]).toMatchObject({ kind: 'sofa', center: { x: 3000, y: 3400 }, w: 2000, h: 900 });
-    expect(warnings.join('\n')).toMatch(/kerstboom/);
+    expect(frWarnings(warnings).join('\n')).toMatch(/kerstboom/);
   });
 
   it('adresses et réseaux', () => {
@@ -142,7 +143,7 @@ describe('import Draadwijs (.draadwijs)', () => {
       const nodes = [...walk(project.roots)].length;
       const symbols = project.plan.pages.reduce((a, pg) => a + pg.symbols.length, 0);
       console.log(p, { nodes, symbols, pages: project.plan.pages.length, furniture: project.plan.pages[0].furniture?.length }, warnings);
-      expect(warnings.join('\n')).not.toMatch(/non reconnu/);
+      expect(frWarnings(warnings).join('\n')).not.toMatch(/non reconnu/);
     }
   });
 });

@@ -470,7 +470,7 @@ export function PlanView() {
             editPage((pg) => ({ ...pg, images: pg.images.map((i) => (i.background ? nb : i)) }));
             chooseTool('select');
           })
-          .catch((err) => alert(String((err as Error).message ?? err)))
+          .catch((err) => alert(importErrorText(err, t)))
           .finally(() => setBusy(false));
         return;
       }

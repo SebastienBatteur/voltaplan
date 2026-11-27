@@ -8,7 +8,8 @@ réglementaires, traductions, essais sur le terrain, documentation.
 
 Ne joignez **jamais** à un ticket, une demande de fusion ou un commit :
 
-- un dossier `.voltaplan` ou `.trik` de client ;
+- un dossier `.voltaplan` ou `.trik` de client, ni un fichier d'un autre logiciel (`.vschema`, `.eds`, `.draadwijs`,
+  export Condui, dossier PDF…) ;
 - une photo de tableau ou de logement d'un client ;
 - un nom, une adresse, un numéro EAN.
 
@@ -23,7 +24,7 @@ tableau d'essai, en masquant les étiquettes nominatives. Les tickets sont **pub
 | Un bogue | ticket « Bogue » |
 | **Une règle RGIE fausse, manquante ou mal formulée** | ticket « Règle RGIE » : édition (ancien RGIE ou Livre 1), article ou section si vous le connaissez, cas concret, résultat attendu |
 | Une traduction (NL, EN, DE) | ticket « Traduction », ou directement une demande de fusion |
-| Une idée | ticket « Idée » ou discussion |
+| Une idée | ticket libre ou discussion |
 
 Les règles du moteur sont toutes marquées « à relire » (`needsReview`) tant qu'un professionnel ne les a pas
 vérifiées. Une contribution réglementaire doit citer sa **source**. **Ne recopiez pas de texte normatif protégé**
@@ -88,8 +89,8 @@ contribution externe n'est fusionnée. Signalez quand même vos idées et bogues
 - **Aide, pas certification** : aucune formulation ne doit laisser croire à une validation officielle.
 - **Peu de dépendances** et code testé. Toute nouvelle règle RGIE vient avec son cas dans
   `test/rules.matrix.test.ts`.
-- Textes de l'interface en **français, néerlandais et anglais** (`src/i18n`). Un test vérifie que les trois
-  restent complets.
+- Textes de l'interface en **français, néerlandais, anglais et allemand** (`src/i18n`). Un test
+  (`test/i18n.test.ts`) vérifie que les quatre ont les mêmes clés et les mêmes paramètres.
 
 Les décisions d'architecture sont dans [docs/adr](docs/adr) ; la stratégie dans [docs/strategie](docs/strategie).
 

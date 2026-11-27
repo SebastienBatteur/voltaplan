@@ -54,7 +54,7 @@ describe('taille maximale des fichiers importés', () => {
     expect(importErrorText(e, (k, p) => translate('nl', k, p))).toContain('Bestand te groot');
     expect(importErrorText(e, (k, p) => translate('en', k, p))).toContain('File too large');
     // Allemand : retombe sur l'anglais
-    expect(importErrorText(e, (k, p) => translate('de', k, p))).toContain('File too large');
+    expect(importErrorText(e, (k, p) => translate('de', k, p))).toContain('Datei zu groß');
     expect(importErrorText(new Error('autre'), (k) => k)).toBe('autre');
   });
 

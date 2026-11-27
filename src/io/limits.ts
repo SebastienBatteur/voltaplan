@@ -2,6 +2,7 @@
  * Tailles maximales des fichiers importés (projet, Trikker, Eendraadschema, image, PDF).
  * Un fichier trop gros (ou piégé) bloquerait l'onglet : on le refuse avant de le lire, avec un message clair.
  */
+import { I18nError } from '../i18n/error';
 
 const MB = 1024 * 1024;
 
@@ -64,7 +65,8 @@ export function checkImagePixels(name: string, w: number, h: number): void {
 }
 
 /** Message d'erreur à afficher, traduit pour les erreurs connues. */
-export function importErrorText(e: unknown, t: (key: 'import.tooLarge', params?: Record<string, string | number>) => string): string {
+export function importErrorText(e: unknown, t: (key: string, params?: Record<string, string | number>) => string): string {
+  if (e instanceof I18nError) return t(e.key, e.params);
   if (e instanceof FileTooLargeError) return t('import.tooLarge', { name: e.fileName, size: formatMb(e.size), max: formatMb(e.max) });
   return e instanceof Error ? e.message : String(e);
 }

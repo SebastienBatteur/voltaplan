@@ -7,7 +7,8 @@ Complète [offline.md](offline.md) (fonctionnement) et [desktop-tauri.md](deskto
 
 | Catégorie | Fonctions | Hors ligne |
 |---|---|---|
-| **A. Entièrement disponibles** | unifilaire, plan de position, tableau, liste du matériel, calculs, contrôle RGIE, dossier imprimé / PDF (impression du navigateur), import et export Trikker, export Eendraadschema, fond de plan depuis une image ou un PDF, détection des murs, calage de la photo du tableau, ouverture et enregistrement de fichiers sur l'appareil, projets du navigateur, versions locales, brouillons, langues | **oui**, dès la première visite (tout est mis en cache à l'installation) |
+| **A. Entièrement disponibles** | unifilaire, plan de position, tableau, liste du matériel, calculs, contrôle RGIE, dossier imprimé / PDF (impression du navigateur), imports des autres logiciels (Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF), export Trikker et Eendraadschema, fond de plan depuis une image, un PDF ou un DXF, détection des murs, calage de la photo du tableau, ouverture et enregistrement de fichiers sur l'appareil, projets du navigateur, versions locales, brouillons, langues | **oui**, dès la première visite (tout est mis en cache à l'installation, sauf le moteur OCR : voir la ligne suivante) |
+| **A′. Disponible après une première utilisation en ligne** | lecture locale des photos (OCR : compteur, noms de pièces, tableau sans IA) | **oui**, une fois le moteur (≈ 18 Mo) chargé et mis en cache par une première lecture |
 | **B. Interface disponible, service nécessaire** | IA en ligne (Anthropic, OpenAI, Gemini, Mistral), GitHub, Google Drive, OneDrive, Dropbox | la fenêtre s'ouvre ; l'action est **désactivée ou mise en attente** avec le message « Nécessite une connexion Internet » ; un enregistrement vers ces services est **mis en attente** (gardé dans le navigateur, repris au retour du réseau ou au prochain lancement) |
 | **C. Service local** | IA locale (Ollama, LM Studio sur le même ordinateur) | **oui**, si le service tourne sur l'ordinateur ; le bouton de lecture IA reste actif hors ligne dans ce cas |
 
@@ -25,10 +26,10 @@ Complète [offline.md](offline.md) (fonctionnement) et [desktop-tauri.md](deskto
 
 | # | Étape | Résultat attendu |
 |---|---|---|
-| 1 | Première visite en ligne, attendre 10 s | aucune erreur ; dans les outils de développement (si disponibles), le cache `voltaplan-<version>` contient environ 22 fichiers |
+| 1 | Première visite en ligne, attendre 10 s | aucune erreur ; dans les outils de développement (si disponibles), le cache `voltaplan-<version>` contient une trentaine de fichiers (33 pour la construction du 2026-11-26) |
 | 2 | Passer en mode avion, recharger | l'application s'affiche ; repère « Hors ligne » |
 | 3 | Catégorie A : dessiner un circuit, ouvrir le plan, le tableau, le contrôle, imprimer le dossier en PDF, importer un `.trik`, ajouter un fond de plan PDF | tout fonctionne |
-| 4 | Catégorie B : bouton « Lire avec l'IA », onglet OneDrive | désactivé ou avertissement ; aucune erreur brute |
+| 4 | Catégorie B : bouton « Lire la photo (IA) », onglet OneDrive | désactivé ou avertissement ; aucune erreur brute |
 | 5 | Enregistrer un projet ouvert depuis OneDrive, toujours hors ligne | « En attente d'envoi (OneDrive) » ; message clair |
 | 6 | Fermer complètement l'application, la rouvrir hors ligne | bandeau « Enregistrement en attente… Reprendre » et/ou « Travail non enregistré retrouvé » |
 | 7 | Revenir en ligne, « Reprendre » | envoi fait, état « Enregistré (OneDrive, hh:mm) » |

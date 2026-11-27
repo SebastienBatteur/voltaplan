@@ -5,6 +5,7 @@
  * Fonctions pures sur des tableaux de pixels (testées sans navigateur).
  */
 import type { Pt } from '../model/types';
+import { I18nError } from '../i18n/error';
 
 export interface Gray {
   w: number;
@@ -47,7 +48,7 @@ function solve(A: number[][], b: number[]): number[] {
     for (let r = c + 1; r < n; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
     [M[c], M[p]] = [M[p], M[c]];
     const piv = M[c][c];
-    if (Math.abs(piv) < 1e-12) throw new Error('Points alignés : impossible de redresser.');
+    if (Math.abs(piv) < 1e-12) throw new I18nError('imp.trace.aligned', undefined, 'Points alignés : impossible de redresser.');
     for (let r = 0; r < n; r++) {
       if (r === c) continue;
       const f = M[r][c] / piv;

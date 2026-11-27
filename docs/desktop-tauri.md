@@ -444,11 +444,16 @@ pathState(path))`, `ConflictError`) ; `pathState` passe par la commande `file_st
 | `exportProjectV1` → `download` | copie v1 « … (v1).voltaplan » | `.voltaplan` | non |
 | `StorageDialog` → `download` | export Trikker | `.trik` | non |
 | `StorageDialog` → `download` | export Eendraadschema | `.eds` | non |
-| `BomPanel` → `download` | nomenclature | `.csv` | non |
+| `BomPanel` → `download` | nomenclature, liste des circuits | `.csv` | non |
 | `BoardView` (image envoyée à l'IA) → `download` | image du tableau | `.jpg` | non |
 
 `ALLOWED_EXTS` = `voltaplan`, `trik`, `eds`, `csv`, `jpg` (la première version oubliait `.jpg` : l'export de
 l'image du tableau aurait été refusé). Toute nouvelle extension écrite par `download()` doit y être ajoutée.
+
+Lecture (« Ouvrir », « Importer d'un autre logiciel… ») : `pick_open_path` ouvre la boîte du système côté Rust,
+puis `read_file` ne lit que le chemin choisi. Extensions acceptées (`READ_EXTS`) : `voltaplan`, `openrgie`, `json`,
+`trik`, `vschema`, `eds`, `draadwijs`, `zip`, `pdf` ; la source est ensuite reconnue d'après le contenu
+(`sniffFormat`, `src/io/projectData.ts`). Seul un `.voltaplan` ouvert devient une cible d'« Enregistrer ».
 
 Non concernés :
 
@@ -480,7 +485,8 @@ si c'est une commande de plugin, si l'application déclare un manifeste (`tauri_
 dans `build.rs`, absent ici) ou si l'origine n'est pas locale. L'application n'a qu'une fenêtre et ne charge
 aucune page distante. Si un manifeste d'application est ajouté un jour, il faudra déclarer les commandes
 (`AppManifest::commands`) et ajouter `allow-pick-save-path`, `allow-save-begin`, `allow-save-chunk`,
-`allow-save-commit`, `allow-save-abort`, `allow-file-state` à la capability.
+`allow-save-commit`, `allow-save-abort`, `allow-file-state`, `allow-pick-open-path`, `allow-read-file`,
+`allow-set-close-warning` à la capability.
 
 Alternative écartée : remplir la liste autorisée quand la boîte JS (`save()` du plugin) renvoie un chemin.
 Une page compromise pourrait alors appeler elle-même la commande d'ajout avec un chemin arbitraire.
@@ -529,7 +535,7 @@ protections complémentaires.
   erreurs Rust (au début, sur un morceau, au remplacement) transformées en `Error`, `lastWritten` repris de la
   réponse, annulation, exports et copie v1 sans `.bak`, gros fichier découpé en morceaux de 4 Mo et
   reconstitué à l'identique, abandon d'un flux verrouillé (`save_abort`).
-- Rust (`#[cfg(test)]` dans `atomic_save.rs`, 12 tests, CI sur les 3 systèmes) : extensions, nom du fichier
+- Rust (`#[cfg(test)]` dans `atomic_save.rs`, 13 tests, CI sur les 3 systèmes) : extensions, nom du fichier
   temporaire, empreinte FNV (valeurs de référence, découpage indifférent), liste autorisée, création puis
   remplacement avec `.bak`, pas de `.bak` sans demande ni hors projet, écriture par morceaux (plus de 3 Mo, rien
   remplacé avant la fin), abandon et libération sans reste, temporaire altéré détecté, échecs sans reste,

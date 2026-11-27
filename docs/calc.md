@@ -1,7 +1,8 @@
 # Calculs électriques de Voltaplan
 
-Code : `src/calc/electrical.ts` (chute de tension, court-circuit) et `src/calc/balance.ts` (bilan de
-puissance, phases). Fonctions pures, sans React, testées dans `test/calc.test.ts` (exemples calculés
+Code : `src/calc/electrical.ts` (chute de tension, court-circuit), `src/calc/balance.ts` (bilan de
+puissance, phases) et `src/calc/cableLength.ts` (longueur des câbles estimée d'après le plan, § 7). Fonctions
+pures, sans React, testées dans `test/calc.test.ts` et `test/cableLength.test.ts` (exemples calculés
 à la main dans les commentaires). Affichage : onglet Contrôle (`src/ui/CheckPanel.tsx`). Contrôles
 réglementaires : bloc `R-VDROP` / `R-ICC-LMAX` de `src/rules/be/rgie.ts`.
 
@@ -133,6 +134,34 @@ Par tableau (circuits dont le tableau le plus proche au-dessus est celui-ci ; «
 
 Sur un réseau 3 × 230 V sans neutre, L1/L2/L3 sont les repères saisis par l'utilisateur (une charge
 monophasée y est raccordée entre deux phases).
+
+## 7. Longueur des câbles estimée d'après le plan
+
+Les calculs ci-dessus ont besoin de la longueur L de chaque câble. Quand elle n'est pas saisie,
+`estimateCableLengths` l'estime d'après le plan de position (« ⟳ Mettre à jour » et bouton « Estimer les
+longueurs » de l'onglet Matériel) :
+
+- trajet : du tableau du circuit (s'il est posé sur le plan) aux points du câble, dans l'ordre du schéma, à
+  **angles droits** (|Δx| + |Δy|, le long des murs plutôt qu'à vol d'oiseau) ;
+- montée et descente aller-retour selon la hauteur de pose (plafond à 2,60 m) : interrupteur et bouton-poussoir à
+  1,10 m alimentés par le plafond, interrupteur à tirette à 2,30 m, prise basse à 0,25 m reliée par le bas,
+  applique à 1,90 m, point lumineux au plafond 0,30 m de raccordement ; départ du tableau 1,50 m ; changement
+  d'étage 3 m par page ;
+- tracés de câbles dessinés entre deux points (`plan.pages[].wires`, repris de Condui) : suivis par leurs points de
+  passage au lieu du trajet à angles droits ; le départ du tableau, que Condui ne trace pas, reste estimé ;
+- marge de raccordement et de cheminement : + 10 % ; résultat arrondi au mètre supérieur.
+
+La longueur obtenue est marquée « estimée » (`lengthEstimated`, « ≈ » dans la liste du matériel) ; une longueur
+saisie n'est jamais remplacée, et la saisir enlève la marque. Câble sans point posé : pas d'estimation ; tableau
+absent du plan : trajet compté depuis le premier point (trop court, signalé).
+
+Import sans tracés (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, circuits non tracés de Condui) :
+`autoWires` crée des tracés d'après l'unifilaire, du tableau au premier point puis de point en point dans l'ordre du
+schéma, avec un coude à angle droit, sur une même page. Ils sont marqués `auto`, dessinés plus pâles et signalés
+« à ajuster » ; leur longueur est celle de l'estimation.
+
+C'est une **estimation** pour la chute de tension et la liste du matériel, pas un relevé : le trajet réel (gaines,
+passages, boîtes) peut être plus long.
 
 ## Limites
 

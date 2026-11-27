@@ -9,6 +9,9 @@
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
 import { createNode, emptyPage, emptyProject, uid } from '../model/tree';
 import type { ElNode, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
+import { Warnings } from './warnings';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
 
 type Obj = Record<string, unknown>;
 type Props = Record<string, PropValue>;
@@ -128,7 +131,7 @@ function inPolygon(p: Pt, pts: Pt[]): boolean {
 
 export interface ConduiImportResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
 }
 
 export function importCondui(text: string, fileName = 'Projet Condui'): ConduiImportResult {
@@ -136,11 +139,11 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
   try {
     data = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch {
-    throw new Error("Ce fichier n'est pas un projet Condui valide (JSON illisible).");
+    throw new I18nError('imp.condui.invalidJson', undefined, "Ce fichier n'est pas un projet Condui valide (JSON illisible).");
   }
-  if (!isObj(data) || !isObj(data.disciplines) || !isObj(data.disciplines.electrical) || !isObj(data.building)) throw new Error("Ce fichier n'est pas un projet Condui valide.");
-  const warnings = new Set<string>();
-  if (data.schemaVersion !== '2.3.0') warnings.add(`Version de fichier Condui ${String(data.schemaVersion)} : seule la version 2.3.0 a été testée, vérifiez le résultat.`);
+  if (!isObj(data) || !isObj(data.disciplines) || !isObj(data.disciplines.electrical) || !isObj(data.building)) throw new I18nError('imp.condui.invalid', undefined, "Ce fichier n'est pas un projet Condui valide.");
+  const warnings = new Warnings();
+  if (data.schemaVersion !== '2.3.0') warnings.add('imp.condui.version', { version: String(data.schemaVersion) });
   const el = data.disciplines.electrical;
   const inst = isObj(el.installation) ? el.installation : {};
   const pj = isObj(data.project) ? data.project : {};
@@ -159,7 +162,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
   const site = isObj(data.site) ? data.site : {};
   const installer = isObj(pj.installerOverride) ? pj.installerOverride : {};
   const supply = conduiSupply(inst.nominalVoltage);
-  if (!supply) warnings.add('Réseau Condui non reconnu : à choisir dans les infos du projet.');
+  if (!supply) warnings.add('imp.condui.supply');
   project.meta = {
     ...project.meta,
     title: str(pj.name) ?? fileName.replace(/\.zip$/i, ''),
@@ -281,7 +284,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
       n = make(ep, 'other', { name: 'Interrupteur crépusculaire' }, sym);
     } else {
       n = make(ep, 'other', { name: sym }, sym);
-      warnings.add(`Symbole Condui non reconnu, importé comme « autre » : ${sym}`);
+      warnings.add('imp.condui.symbol', { sym });
     }
     if (str(ep.notes)) n.location = str(ep.notes);
     pose(n, ep);
@@ -340,7 +343,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
   const protectionNode = (p: Obj, prefix: string): ElNode => {
     const type = String(p.type ?? 'MCB');
     const device = type === 'RCD' ? 'rcd' : type === 'RCBO' ? 'rcbo' : type === 'FUSE' ? 'fuse' : 'mcb';
-    if (!['RCD', 'RCBO', 'MCB', 'FUSE'].includes(type)) warnings.add(`Protection Condui « ${type} » importée comme disjoncteur.`);
+    if (!['RCD', 'RCBO', 'MCB', 'FUSE'].includes(type)) warnings.add('imp.condui.protection', { type });
     const c0 = arr(p.circuits)[0];
     const label = str(p.label);
     const n = make(
@@ -363,7 +366,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
     // Valeurs absentes dans Condui (différentiel sans calibre) : pas de valeur par défaut inventée
     if (num(p.ratingA) === undefined) {
       delete n.props.ratedCurrent;
-      warnings.add('Différentiel Condui sans calibre : à compléter dans Voltaplan.');
+      warnings.add('imp.condui.rcdRating');
     }
     if (device === 'rcd') delete n.props.curve;
     if (num(p.breakingCapacityKa) === undefined) delete n.props.breakingCapacity;
@@ -457,7 +460,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
       mainIsMain = pn.isMain === true;
     }
   }
-  if (!mainBoard) warnings.add('Aucun tableau dans le projet Condui.');
+  if (!mainBoard) warnings.add('imp.condui.noBoard');
   // Terre : barrette (sectionneur de terre) et prise de terre dans le tableau principal
   let earthBar: ElNode | null = null;
   if (mainBoard) {
@@ -734,12 +737,12 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
     (page.wires ??= []).push({ a, b, pts: arr(g.points).map(mm) });
     wires++;
   }
-  if (multi) warnings.add('Points posés plusieurs fois sur un même étage dans Condui (quantité « 2x ») : une seule position reprise, la quantité est gardée.');
-  if (skipped.size) warnings.add(`Éléments de plan Condui non repris : ${[...skipped].join(', ')}.`);
-  if (!wires && elements.some((e) => String(e.kind).startsWith('electrical.plan-wire'))) warnings.add('Tracés de câbles Condui non repris : points d’arrivée introuvables.');
-  if (arr(data.assets).length) warnings.add(`${arr(data.assets).length} document(s) joint(s) au projet Condui (fiches techniques) non repris.`);
+  if (multi) warnings.add('imp.condui.multi');
+  if (skipped.size) warnings.add('imp.condui.skipped', { list: [...skipped].join(', ') });
+  if (!wires && elements.some((e) => String(e.kind).startsWith('electrical.plan-wire'))) warnings.add('imp.condui.wires');
+  if (arr(data.assets).length) warnings.add('imp.condui.assets', { n: arr(data.assets).length });
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
-  return { project, warnings: [...warnings] };
+  return { project, warnings: warnings.list() };
 }

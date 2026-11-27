@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voltaplan guide</title>
 <meta name="description" content="Voltaplan user guide: single-line diagram, layout plan, distribution board, RGIE check, printing, saving.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/guide.html">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/guide.html">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/guide.html">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/guide.html">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/guide.html">
 <link rel="icon" href="../icon.svg">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,11 +18,12 @@
   <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
   <nav class="links">
     <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
     <a href="#installer">Install</a>
     <a class="repo-link" href="#">Source code</a>
     <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Sponsor Voltaplan on GitHub Sponsors (optional)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Sponsor</span></a>
     <a class="btn primary" href="../app/">Open the app</a>
-    <span class="lang"><a href="../guide.html" data-lang="fr">FR</a><a href="../nl/guide.html" data-lang="nl">NL</a><a href="guide.html" aria-current="true" data-lang="en">EN</a></span>
+    <span class="lang"><a href="../guide.html" data-lang="fr">FR</a><a href="../nl/guide.html" data-lang="nl">NL</a><a href="guide.html" aria-current="true" data-lang="en">EN</a><a href="../de/guide.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
 <main class="doc">
@@ -31,6 +37,7 @@
     <a href="#tableau">Distribution board</a>
     <a href="#photo">Board photo</a>
     <a href="#maj">Update</a>
+    <a href="#longueurs">Cable lengths</a>
     <a href="#materiel">Bill of materials</a>
     <a href="#controle">RGIE check</a>
     <a href="#calculs">Voltage drop and short-circuit</a>
@@ -38,7 +45,7 @@
     <a href="#imprimer">Printing the file</a>
     <a href="#sauver">Saving and opening</a>
     <a href="#nuage">Drive, OneDrive, Dropbox</a>
-    <a href="#trikker">Trikker</a>
+    <a href="#importer">Import from other software</a>
     <a href="#ia">AI (optional)</a>
     <a href="#pays">Countries and regulations</a>
     <a href="#raccourcis">Shortcuts</a>
@@ -49,15 +56,15 @@
     <h2 id="demarrer">Getting started</h2>
     <p>The simplest way: <a href="../app/">open the app in your browser</a> (<span class="app-url">app/</span>). It can be installed like an application (the “Install” icon in the Chrome or Edge address bar) and then works offline.</p>
     <ol>
-      <li><strong>New</strong> creates an empty project with an origin (the supply), or <strong>Import Trikker</strong> picks up an existing file.</li>
-      <li>Fill in the <strong>Project</strong> tab: address, installer, voltage, EAN, type of installation (new or existing).</li>
+      <li>On the <strong>My projects</strong> screen (see below), create a <strong>New project</strong>, or use <strong>Import from other software</strong> to pick up an existing file (see <a href="#importer">Import</a>).</li>
+      <li>Fill in the <strong>Project</strong> tab: address, installer, voltage, EAN, type of installation (new or existing). <em>Read the meter plate (photo)…</em> reads the voltage and number of phases from a photo of the meter plate, on this device, and suggests the supply.</li>
       <li>Add the distribution board, RCDs, circuits and points in the <strong>tree</strong> on the left; the single-line diagram draws itself.</li>
       <li>Place the points on the <strong>Floor plan</strong>, arrange the devices in the <strong>Board</strong>, then click <strong>⟳ Update</strong>.</li>
       <li>Fix whatever the <strong>RGIE check</strong> reports, then <strong>Print / PDF</strong>.</li>
     </ol>
     <p class="note">Voltaplan is an aid: it replaces neither the official text of the RGIE (Belgian electrical installation regulations, Book 1) nor the opinion of the approved inspection body.</p>
 
-    <p><strong>My projects</strong>: when it opens, Voltaplan shows the main actions (new project, survey an existing installation, open a file or the cloud, import Trikker) and your latest projects; one click reopens them. Come back with <em>File → My projects (home)</em>. A <strong>new project</strong> takes 4 short steps (type, address and client, installer, supply), each optional. For a new installation you can start from a <strong>typical house</strong>: lighting, sockets, cooker, bathroom and washing machine under a 30 mA RCD, and earthing are already in place; then adapt it.</p>
+    <p><strong>My projects</strong>: when it opens, Voltaplan shows the main actions (<strong>New project</strong>, <strong>Survey an existing installation</strong>, <strong>Open a file</strong>, <strong>Open from the cloud or the browser</strong>, <strong>Import from other software</strong>) and your latest projects; one click reopens them. Come back with <em>File → My projects (home)</em> or by clicking the logo. A <strong>new project</strong> takes 4 short steps (type, address and client, installer, supply), each optional. For a new installation you can start from a <strong>typical house</strong>: lighting, sockets, cooker, bathroom and washing machine under a 30 mA RCD, and earthing are already in place; then adapt it.</p>
 
     <h2 id="installer">Install</h2>
     <table>
@@ -70,7 +77,7 @@
 
     <h2 id="ecran">The screen</h2>
     <ul>
-      <li><strong>Top bar</strong>: <strong>File</strong> menu (new, open, import Trikker, save, save as, print / PDF), Save button (blue when there are unsaved changes), ⟳ Update, undo / redo, tabs, language (FR, NL, EN).</li>
+      <li><strong>Top bar</strong>: <strong>File</strong> menu (My projects (home), New, New survey (existing installation), Open…, Import from other software…, Save, Save as…, Local versions…, Survey assistant (experimental)…, Print / PDF), Save button (blue when there are unsaved changes), ⟳ Update, undo / redo, tabs, ⚙ AI, language (French, Dutch, English, German). On a small screen, undo, redo, Update, AI and the language move to the “⋯” menu.</li>
       <li><strong>Tabs</strong>: Single-line, Floor plan, Board, Materials, Project, RGIE check (the red number = number of non-conformities).</li>
       <li><strong>On the left</strong>: the installation tree and the properties of the selected element. The ‹ button hides the whole column (› brings it back). Click the “Installation” or “Properties” heading to collapse that part; drag the line between them to share the height, and the right edge of the column to widen it. The layout is remembered on this computer.</li>
       <li><strong>Elements</strong> (below “Properties”): the palette. On the single-line diagram, tree or board: single-line elements by family (boards and protections, wiring, lighting, sockets and appliances, controls, home automation and misc.); a click adds the element under the selected one (greyed if it cannot connect there). On the plan: the tools (walls, doors, windows, texts, furniture by room), single-line elements to drop at the next click, and <em>Not yet on the plan</em>: what remains to be placed, grouped by circuit.</li>
@@ -80,7 +87,7 @@
 
     <h2 id="installation">Describing the installation</h2>
     <p>The installation is a tree: origin → (meter) → protective devices → distribution board → RCDs → circuit breakers → cables → points (sockets, switches, light points, appliances…).</p>
-    <p><strong>Adding an element</strong> — three ways, each offering only what can be connected under the chosen element:</p>
+    <p><strong>Adding an element</strong> — several ways, each offering only what can be connected under the chosen element:</p>
     <ol>
       <li><strong>Right-click</strong> a symbol on the single-line diagram (e.g. a circuit breaker) → “Add to” → Cable;</li>
       <li>the <strong>＋</strong> at the end of a tree row (shown on hover or on the selected row);</li>
@@ -92,7 +99,7 @@
     <p>The new element is selected: fill in its properties. Example for a socket circuit: right-click the board → Protection (20 A circuit breaker); then on that circuit breaker → Cable (VOB 3G2.5); then on the cable → Socket, as many times as needed. Finally, <strong>⟳ Update</strong> puts the circuit breaker in the board and the sockets on the plan.</p>
     <ul>
       <li><strong>Protection</strong>: device (circuit breaker / MCB, RCD, RCBO, fuse, switch-disconnector), rating, poles, curve, breaking capacity, RCD sensitivity and type, number of modules, manufacturer reference, “old part” (installed before 1 October 1981).</li>
-      <li><strong>Cable</strong>: type (VOB, XVB…), cross-section, number of conductors, in conduit, installation method, <strong>length</strong> (needed for the calculations).</li>
+      <li><strong>Cable</strong>: type (VOB, XVB…), cross-section, number of conductors, in conduit, installation method, <strong>length</strong> (for the voltage drop and the bill of materials; entered, or estimated from the plan: see <a href="#longueurs">Cable lengths</a>).</li>
       <li><strong>Location</strong>: the room (e.g. “Kitchen”). It is used to place the points on the plan next to the room name.</li>
       <li><strong>RGIE numbering</strong> (3.1.2.1): circuits A, B, C…; points A1, A2… in order from the protective device; a switch takes the number of the point it controls. A letter can be forced.</li>
     </ul>
@@ -105,7 +112,10 @@
       <li><strong>Walls</strong> (right angles, snapped ends, dimensions), <strong>doors</strong>, double doors, French windows, <strong>sliding patio doors</strong>, <strong>windows</strong>, <strong>room names</strong>, several pages (floors).</li>
       <li><strong>Editing a door or window</strong>: click it (the opening, the leaf or the swing arc), then in the panel: type (door, double door, French window, sliding patio door, window…), width, <em>Open to the other side</em> and <em>Hinge on the other end</em>; for a sliding door, <em>Slide the other way</em>. Clicking elsewhere deselects it.</li>
       <li><strong>Background</strong>: photo or PDF. <em>Set scale</em>: click two points and enter their real distance. <em>Straighten</em>: click the 4 corners of a known rectangle on a photo taken at an angle. <em>Trace walls</em>: automatic detection of walls, doors and windows, to be checked. <em>Align background</em>: overlay a recent photo on the plan to see what has changed.</li>
-      <li><strong>Furniture</strong>: pictograms to scale (beds, sofa, kitchen, bathroom fittings…). Furniture imported from Trikker (images) can be selected too: drag to move, width, depth, angle, 90° rotation, duplicate, delete, or <em>Replace with a pictogram</em> (same place, same size).</li>
+      <li><strong>Read room names</strong>: reads the room names written on the background plan (on this device, no image sent) and places them on the plan, to be checked.</li>
+      <li><strong>Equip the room</strong>: select a room name (bedroom, kitchen, bathroom…); Voltaplan offers the usual equipment for that type of room, to tick, and typical furniture. The points are placed in position but <strong>not connected</strong>: link them to their circuits afterwards. It is not an RGIE list, just a starting point (<kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it).</li>
+      <li><strong>Cable traces</strong>: traces taken over from an import (Condui) or created from the single-line diagram are drawn as dashed lines; those created automatically are paler and need adjusting (see <a href="#longueurs">Cable lengths</a>).</li>
+      <li><strong>Furniture</strong>: pictograms to scale (beds, sofa, kitchen, bathroom fittings…). Furniture imported from other software as images (Trikker) can be selected too: drag to move, width, depth, angle, 90° rotation, duplicate, delete, or <em>Replace with a pictogram</em> (same place, same size).</li>
       <li><strong>Electrical symbols</strong>: “Place on plan” from the properties or from the palette's <em>Not yet on the plan</em> list, or right-click on the plan to add a new one; then drag, rotate, remove. Ceiling lights, fluorescent tubes, appliances, motors and square elements are drawn without a connection stroke. Sockets, switches, push buttons, bells and wall lights keep their small stroke, <strong>turned automatically towards the nearest wall</strong> (it follows when they or the wall move); “Face the walls” applies it to the elements of an imported plan, and rotating an element by hand stops its automatic orientation.</li>
     </ul>
 
@@ -124,7 +134,7 @@
       <li>“Align photo (rows)”: for each row, click the left edge of the first module, then the end of the row, at mid-height of the devices.</li>
       <li>“Arrange from photo”: without AI, Voltaplan finds the occupied modules on each row (a blanking cover is uniform, a bare rail darker) and the gaps between devices, then places the project's devices there. A device already placed (by hand or by the AI) keeps its position if the photo shows a device there; protections go before relays and home-automation modules. Then: first those of 2 modules or more, where the photo shows a device of that width; then the single-module ones, in order, on the remaining occupied modules. Anything that does not fit stays in the reserve, and positions occupied on the photo with no matching project device are listed, each with a “Link to…” menu offering every element of this board's single-line diagram, or “＋ New breaker”. This is a suggestion: the photo shows neither type nor rating; check and move devices with the mouse (“Undo” goes back).</li>
       <li>“Compare with photo”: without AI, Voltaplan measures the gaps between devices and flags those whose width does not match (e.g. 1 module in the project, 2 on the photo). The drawn devices become transparent so you can compare by eye.</li>
-      <li>Optionally, the AI reads the ratings, curves and sensitivities, arranges the devices in place and compares them with the project (see <a href="#ia">AI</a>).</li>
+      <li>“Read the photo”: without AI, a local reading (on this device, no image sent) cuts out the devices and reads the labels, ratings and sensitivities that are legible; they are proposed with low confidence, to be checked. Local reading is reliable for printed labels, less so for the ratings of small modules on a photo of the whole board. When the AI is set up and unlocked, the same button becomes “Read photo (AI)”: the AI reads the ratings, curves and sensitivities, arranges the devices in place and compares them with the project (see <a href="#ia">AI</a>).</li>
     </ol>
 
     <h2 id="maj">Update (new installation, added circuits)</h2>
@@ -132,13 +142,23 @@
     <ul>
       <li>new devices are placed in the first free position in the board, <strong>without moving the others</strong> (a board that was never laid out is arranged entirely); if there is no room left, you are told;</li>
       <li>new points are placed on the plan <strong>next to their room name</strong>; the others go into a “to place” column to the left of the plan;</li>
+      <li><strong>cable lengths</strong> are estimated from the plan (see <a href="#longueurs">Cable lengths</a>);</li>
       <li>a <strong>revision</strong> is added to the file with the list of added circuits (RGIE 3.1.2: an extension must be recorded on the drawings);</li>
       <li>numbering, labels, bill of materials and check are recalculated.</li>
     </ul>
     <p>“Undo” in the result window reverts everything in one step.</p>
 
+    <h2 id="longueurs">Cable lengths</h2>
+    <p><strong>⟳ Update</strong> and the <strong>Estimate lengths</strong> button (Materials tab) estimate the length of each cable from the layout plan: from the board to the first point, then from point to point in diagram order, at right angles, with a 10 % margin. Place the board on the plan: without it, the run is counted from the first point and is too short (you are told).</p>
+    <ul>
+      <li><strong>Rises and drops</strong> according to mounting height: switch and push button at hand height (1.10 m) fed from the ceiling, pull-cord switch at the top (2.30 m), low socket (0.25 m) fed from below, wall light at 1.90 m; changes of floor are counted.</li>
+      <li><strong>Cable traces</strong>: traces taken over from Condui (point to point through the waypoints) are drawn as dashed lines and followed by the estimate; the run from the board, which Condui does not trace, is still estimated. For an import without traces (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, untraced Condui circuits), right-angle traces are created from the single-line diagram, from the board to the first point and then from point to point; they are drawn paler and marked “to adjust”.</li>
+      <li>An estimated length is marked <em>Length estimated from the plan</em> in the properties and “≈” in the bill of materials. <strong>A length you entered is never replaced</strong>, and entering one removes the mark.</li>
+    </ul>
+    <p>The RGIE only requires cable lengths on the diagram for a non-domestic installation; for a domestic one, type, cross-section, number of conductors and installation method are enough. The length is mainly used for the voltage drop and the bill of materials.</p>
+
     <h2 id="materiel">Bill of materials</h2>
-    <p><strong>Materials</strong> tab: materials are grouped by category and totalled (pieces, cable runs and total cable length). Items are described by their <strong>characteristics and European standard</strong> (e.g. “Circuit breaker 2P C20 A 3 kA — EN 60898-1”): manufacturer references, and even product ranges, differ from one country to another. Cables keep their national designation with the harmonised equivalent where one exists (VOB ≈ H07V-U/R). A manufacturer reference can be added to each element. CSV export for Excel; a “Bill of materials” page in the printed file.</p>
+    <p><strong>Materials</strong> tab: materials are grouped by category and totalled (pieces, cable runs and total cable length). Items are described by their <strong>characteristics and European standard</strong> (e.g. “Circuit breaker 2P C20 A 3 kA — EN 60898-1”): manufacturer references, and even product ranges, differ from one country to another. Cables keep their national designation with the harmonised equivalent where one exists (VOB ≈ H07V-U/R). A manufacturer reference can be added to each element. CSV export for a spreadsheet; a “Bill of materials” page in the printed file. <strong>Circuit list (CSV)</strong>: letter, name, protection, RCD, cable, number of points and rooms of each circuit, as in the PDF file. <strong>Estimate lengths</strong>: see <a href="#longueurs">Cable lengths</a>.</p>
 
     <p>The <strong>By room</strong> button sorts the materials room by room (from each element's location or its room on the plan), handy for the job or a quote.</p>
 
@@ -146,37 +166,43 @@
     <p><strong>A checking aid</strong>: it replaces neither the RGIE text nor the inspection by an approved body. Each finding has a <strong>status</strong>, a <strong>hazard</strong> level (high, moderate, low) and, where relevant, the <strong>blocking</strong> mark.</p>
     <table>
       <tr><th>Status</th><th>Meaning</th></tr>
-      <tr><td>Non-compliant</td><td>non-compliance with the applicable RGIE edition; blocking for a new part, and for an existing part when the hazard is high (earthing, RCD, cable protection…)</td></tr>
-      <tr><td>Missing information</td><td>required data missing (rating, cross-section, installer…); blocking for a new part</td></tr>
+      <tr><td>Non-compliance detected</td><td>non-compliance with the applicable RGIE edition; blocking for a new part, and for an existing part when the hazard is high (earthing, RCD, cable protection…)</td></tr>
+      <tr><td>Insufficient information</td><td>required data missing or unknown (rating, cross-section, sensitivity…)</td></tr>
+      <tr><td>Potential anomaly</td><td>based on deduced or unconfirmed information (for example a value read from a photo)</td></tr>
+      <tr><td>Contradictory information</td><td>the drawing and a declaration (or two sources) disagree</td></tr>
       <tr><td>Warning</td><td>point to examine (estimated voltage drop, selectivity…)</td></tr>
-      <tr><td>To check</td><td>on-site check or interpretation (wet room guessed from the room name, EV charger, photovoltaics, measurements)</td></tr>
+      <tr><td>Manual check required</td><td>on-site check or interpretation (wet room guessed from the room name, EV charger, photovoltaics, measurements)</td></tr>
       <tr><td>Recommendation</td><td>upgrade advised, not required for an existing part</td></tr>
       <tr><td>Derogation</td><td>finding covered by a derogation you entered with its reason</td></tr>
     </table>
-    <p><strong>RGIE edition</strong>: in the Project tab, enter the <strong>installation date</strong> (“1995”, “2024-03-15”). Before 1/10/1981: old part; until 31/5/2020: former RGIE (Royal Decree of 10 March 1981); since 1/6/2020: Book 1. An installation often mixes several generations: in the properties of a board or breaker, <strong>Installed on</strong> and <strong>New or existing part</strong> apply the rules of its time to that part only (a circuit added in 2024 to a 1990 installation follows Book 1).</p>
+    <p><strong>Existing installation</strong>: an element missing from the drawing is not assumed to be missing from the real installation. An earth electrode, main RCD or 30 mA RCD that is not drawn gives “Insufficient information”, not blocking, with the buttons <em>Confirm present</em>, <em>Confirm absent</em> and <em>I don’t know</em>. A confirmed absence gives a non-compliance again. For a new installation, the drawing remains the reference. Documentary requirements (file information, values not filled in) are shown separately, never as non-compliances of the installation.</p>
+    <p><strong>RGIE edition</strong>: in the Project tab, enter the <strong>installation date</strong> (“1995”, “2024-03-15”). Before 1/10/1981: old part; until 31/5/2020: former RGIE (Royal Decree of 10 March 1981); since 1/6/2020: Book 1. An installation often mixes several generations: in the properties of a board or breaker, <strong>Installed on</strong> and <strong>New or existing part</strong> apply the rules of its time to that part only (a circuit added in 2024 to a 1990 installation follows Book 1). Dated amendments of Book 1 are applied according to the start date of the work: for example, since 1/3/2025, sockets of at most 16 A with shutters (IPXX-D), except a socket reserved for a specific appliance.</p>
     <p><strong>Bathroom</strong>: set <strong>Room with bath or shower</strong> (yes / no) in the circuit or point properties. A suggestive room name (“bathroom”, “shower”) is only a hint, reported as “To check”.</p>
-    <p><strong>Derogation</strong>: <strong>Derogation…</strong> button under a finding, with a required reason and a reference (article, inspection report). The finding is no longer blocking but stays visible, with its reason, in the panel and the printed file. The <strong>Single-line</strong>, <strong>Plan</strong> and <strong>Board</strong> buttons of a finding open the element in that view.</p>
+    <p><strong>Derogation</strong>: <strong>Derogation…</strong> button under a finding, with a required reason and a reference (article, inspection report). The finding is no longer blocking but stays visible, with its reason, in the panel and the printed file. The <strong>Single-line</strong>, <strong>Plan</strong> and <strong>Board</strong> buttons of a finding open the element in that view. When the fix is obvious, a button under the finding offers it (for example “Choose 20 A”, “Socket with shutters”, “Type A RCD”); “Undo” reverts it. Missing file information leads to the Project tab.</p>
     <p>Rules checked include: mandatory file information, earthing and measurements, main and 30 mA RCDs (wet rooms, washing machine…), selectivity, cross-section ↔ rating, sockets per circuit, dedicated circuits, child safety and earthing of sockets, <strong>two-pole breakers on 3 × 230 V networks</strong>, voltage drop and short-circuit. Details and points awaiting expert review are in the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">regulatory coverage</a>.</p>
 
     <h2 id="calculs">Voltage drop and short-circuit</h2>
-    <p>At the bottom of the Check tab, a table gives for each circuit: length to the furthest point, cross-section, voltage drop, minimum short-circuit current and maximum protected length. Conventional IEC 60364 method: copper ρ = 0.0225 Ω·mm²/m, current = rating of the protective device, 80 % of the voltage for the short-circuit; limits 3 % (lighting) and 5 % (other). Fill in the <strong>length</strong> of each cable to get the values.</p>
+    <p>At the bottom of the Check tab, a table gives for each circuit: length to the furthest point, cross-section, voltage drop, minimum short-circuit current and maximum protected length. Conventional IEC 60364 method (an estimate, not a protection study): ρ = 0.0225 Ω·mm²/m for copper (0.036 for aluminium), current = rating of the protective device, 80 % of the voltage for the short-circuit; limits 3 % (lighting) and 5 % (other). If every load has a power, the drop is also calculated with the actual current. The <strong>length</strong> of each cable is needed: entered, or estimated from the plan (see <a href="#longueurs">Cable lengths</a>).</p>
 
     <h2 id="mesures">Measurements</h2>
     <p>Project tab: earth resistance, insulation, equipotential bonding, test of each RCD (tripping time ≤ 300 ms, 500 ms for an “S” type, circuits covered), date and test instrument. They are checked and printed on the “Measurements” page.</p>
 
     <h2 id="imprimer">Printing the file</h2>
-    <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): first choose the <strong>document type</strong>. <em>Working document</em>: always printable, even with anomalies. <em>Inspection file</em>: for the approved body; marked “DRAFT — NOT COMPLIANT” while blocking findings remain. <em>Anomaly report</em>: all findings, the circuit list and the measurements. <em>Complete technical file</em>: all parts. Then: A4 or A3 landscape and the parts to include (single-line, plans, boards, circuits, legend, measurements, bill of materials, 1:1 labels, findings). Each page has the title block: document type, version and date, installer (name, capacity, VAT), address, voltage, EAN, signature boxes. In the print dialog, choose “Save as PDF” for a vector PDF. For labels, print at 100 % (no “fit to page”).</p>
+    <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): first choose the <strong>document type</strong>. <em>Working document</em>: always printable, even with anomalies. <em>Inspection file</em>: for the approved body; marked “DRAFT — NON-COMPLIANCES TO ADDRESS”, “DRAFT — CHECKS TO DO” or “DRAFT — INCOMPLETE FILE” while points remain to be dealt with. <em>Anomaly report</em>: all findings, the circuit list and the measurements. <em>Complete technical file</em>: all parts. Then: A4 or A3 landscape and the parts to include (single-line, plans, boards, circuits, legend, measurements, bill of materials, 1:1 labels, findings). Each page has the title block: document type, file number, version and date, installer (name, capacity, VAT), address, voltage, EAN, signature boxes. In the print dialog, choose “Save as PDF” for a vector PDF. For labels, print at 100 % (no “fit to page”).</p>
 
     <p><strong>QR labels for the board</strong>: 4 labels of 9 × 5.5 cm. With a <strong>link to the online file</strong> (Project tab, e.g. a Drive or OneDrive share link) the QR code opens that file; without one it holds the essentials (address, installer, phone, file number), readable offline. Voltaplan hosts nothing. File <strong>status</strong> (Project tab): <em>In progress</em>, <em>Ready for inspection</em> or <em>Inspected</em>.</p>
 
     <h2 id="sauver">Saving and opening</h2>
     <table>
       <tr><th>Location</th><th>What for</th></tr>
-      <tr><td>This device</td><td><code>.voltaplan</code> file (readable JSON); with Chrome / Edge, “Save” overwrites the same file</td></tr>
-      <tr><td>Browser</td><td>projects kept in this browser + an <strong>automatic draft</strong> every 20 s, offered when you reopen</td></tr>
-      <tr><td>GitHub</td><td>file in a repository (version history); personal token encrypted with a passphrase</td></tr>
+      <tr><td>This device</td><td><code>.voltaplan</code> file; with Chrome / Edge, “Save” overwrites the same file</td></tr>
+      <tr><td>Browser (under “Other locations”)</td><td>projects kept in this browser + an <strong>automatic draft</strong> every 20 s, offered when you reopen</td></tr>
+      <tr><td>GitHub (under “Other locations”)</td><td>file in a repository (version history); personal token encrypted with a passphrase</td></tr>
       <tr><td>Drive, OneDrive, Dropbox</td><td>see below</td></tr>
     </table>
+
+    <p><strong>The <code>.voltaplan</code> file</strong> is an ordinary ZIP archive: the project model as readable JSON (<code>project.json</code>), the original photos and PDFs as they are, and a README explaining how to recover the data without Voltaplan. Older projects (single JSON file) still open. <em>File → Local versions…</em> keeps the latest versions of each project on this device.</p>
+    <p><strong>Exports</strong> (Save as… → This device): <em>Export for Trikker (.trik)</em>, <em>Export to Eendraadschema (.eds)</em>, <em>Export to format v1…</em> (for older Voltaplan versions) and, with Chrome or Edge on a computer, <em>Export to folder…</em> (ordinary files in a folder).</p>
 
     <h3 id="plusieurs">Working together</h3>
     <p>Voltaplan has no team account: you simply share the project file, ideally in a <strong>shared folder</strong> (Drive, OneDrive, Dropbox or a network drive), opened with <em>This device</em> or the desktop app. One person edits at a time. If the file changed elsewhere since your last save, Voltaplan <strong>overwrites nothing</strong>: it warns you and keeps your version. Someone who only needs to read gets the PDF file.</p>
@@ -190,11 +216,36 @@
     </ul>
     <p>Paste the ID into Voltaplan, then “List projects” or “Save here”: a window from the service opens so you can sign in. The token is kept in memory for the session only. For a published build, the ID can be set at build time (<code>VITE_ONEDRIVE_CLIENT_ID</code>, <code>VITE_DROPBOX_CLIENT_ID</code>, <code>VITE_GOOGLE_CLIENT_ID</code>).</p>
 
-    <h2 id="trikker">Trikker</h2>
-    <p><strong>Import Trikker (.trik)</strong> brings in the diagram, numbering, plan (walls, openings, rooms, images), addresses and notes. <strong>Save as… → This device → Export for Trikker (.trik)</strong> produces a Trikker file (Windows-1252, like Trikker).</p>
+    <h2 id="importer">Import from other software</h2>
+    <p>A single entry: <strong>File → Import from other software…</strong>, or the <strong>Import from other software</strong> card on the My projects screen. Voltaplan recognises the source <strong>from the file's content</strong>, whatever its extension:</p>
+    <table>
+      <tr><th>Source</th><th>What is taken over</th></tr>
+      <tr><td>Voltaplan project</td><td>everything (the file is simply opened)</td></tr>
+      <tr><td>Trikker (<code>.trik</code>)</td><td>diagram, numbering, plan (walls, openings, rooms, images), addresses and notes</td></tr>
+      <tr><td>Volter (<code>.vschema</code>)</td><td>board, RCDs, breakers and cables, points, floors, walls, doors, windows, furniture, EAN and network; what Volter does not record (meter, earthing) is flagged</td></tr>
+      <tr><td>Eendraadschema (<code>.eds</code>)</td><td>supply, boards, protections, cables, points and file details; the site plan is not taken over</td></tr>
+      <tr><td>Draadwijs</td><td>diagram, plan, measurements, network, address; the quote is not taken over</td></tr>
+      <tr><td>PlanElec Sketch</td><td>diagram, references, plan in metres and placed symbols</td></tr>
+      <tr><td>Condui (<code>.zip</code> export)</td><td>supply, boards, RCDs, circuits, cables, points and controls, plan per floor, cable traces; attached documents are not taken over</td></tr>
+      <tr><td>PDF file from other software</td><td>circuit table, sub-boards, points counted by their references, plans as background with walls, doors and windows read from the drawing, board front view, title block information, measurements</td></tr>
+    </table>
+    <ul>
+      <li><strong>PDF file</strong>: read in the browser, with no upload and no AI; files in French, Dutch, English or German. Only PDFs <strong>containing text</strong> can be read: a scanned PDF, or one whose text is drawn as images, is refused with an explanation. What the text does not say (exact type of points, controls…) is flagged when the file opens.</li>
+      <li>A <strong><code>.zip</code> archive</strong> containing one of these files is opened and the diagram file inside it is imported.</li>
+      <li>An <strong>unrecognised</strong> file is refused with a message explaining why (diagram from unrecognised software, or not an electrical diagram file) and listing the recognised formats.</li>
+      <li>Imports without cable traces get right-angle traces created from the single-line diagram, to adjust (see <a href="#longueurs">Cable lengths</a>).</li>
+      <li>An imported file only appears in “Recent projects” once it has been saved.</li>
+    </ul>
+    <p>To go back to Trikker or Eendraadschema: <strong>Save as… → This device → Export for Trikker (.trik)</strong> (Windows-1252, like Trikker) or <strong>Export to Eendraadschema (.eds)</strong>.</p>
 
     <h2 id="ia">AI (optional)</h2>
-    <p>Everything works without AI, including “Arrange from photo”, which analyses the image on your computer. For now the AI adds just one thing: <strong>reading the markings on the devices</strong> in the board photo (type, rating, curve, sensitivity, RCD type, label), then arranging the project's devices in place and comparing them. It uses the Anthropic API (Claude models) with <strong>your own key</strong>: Voltaplan has no server and never sees your photos or your key.</p>
+    <p>Everything works without AI, including “Arrange from photo” and the local readings (meter plate, room names on the plan, “Read the photo” on the board), done on your device without sending anything. The AI, off by default, can complement these readings, each use being allowed separately:</p>
+    <ul>
+      <li><strong>Board</strong>: reading the markings on the devices in the board photo (type, rating, curve, sensitivity, RCD type, label), then arranging the project's devices in place and comparing them;</li>
+      <li><strong>Meter</strong>: voltage and phases from the photo of the plate, only when the local reading missed something;</li>
+      <li><strong>Plan</strong>: electrical symbols and missed room names, from a photo or PDF of the plan, after the local reading; they are placed as unconnected elements, to be linked to their circuits.</li>
+    </ul>
+    <p>The AI goes through the provider you choose — the Anthropic API (Claude models) by default, an OpenAI-compatible API, or a local model — with <strong>your own key</strong>: Voltaplan has no server and never sees your photos or your key.</p>
 
     <h3>1. Get an Anthropic API key</h3>
     <ol>
@@ -211,14 +262,14 @@
       <li><strong>Model</strong>: <code>claude-opus-5-5</code> by default (the most accurate at reading small markings). You can enter another Claude model ID, faster or cheaper, at the cost of less reliable reading.</li>
       <li><strong>New key</strong>: paste the <code>sk-ant-…</code> key.</li>
       <li><strong>Passphrase</strong> (8 characters minimum), then <strong>Encrypt and save</strong>.</li>
-      <li>Under <strong>What the AI may generate</strong>, tick <strong>Module layout from a photo of the board</strong>. Nothing is ticked to begin with. The other boxes (plan from a photo, single-line diagram from an old file, fix suggestions) are planned but not active yet.</li>
+      <li>Under <strong>What the AI may generate</strong>, tick the uses you want: <strong>Module layout from a photo of the board</strong>, <strong>Meter</strong> (voltage and phases from the plate photo), <strong>Plan</strong> (room names and electrical symbols). Nothing is ticked to begin with. The two other boxes (single-line diagram from an old file, fix suggestions) are planned but not used yet.</li>
     </ol>
 
     <h3>3. Read a board photo</h3>
     <ol>
       <li><strong>Board</strong> tab: import the photo and <strong>align</strong> it (row by row) as described in <a href="#photo">Board photo</a>.</li>
-      <li>Click <strong>Read photo (AI)</strong>. This button only appears if AI is enabled and allowed for the board.</li>
-      <li>If the key is locked (after reloading the page, for example), the “Read photo (AI)” button is greyed out: click the 🔒 padlock next to it and enter the <strong>passphrase</strong> (or use ⚙ AI). You only need to do this once per session. The <strong>⚙ AI</strong> button at the top right turns green while the key is unlocked: the AI is ready. A counter shows the seconds elapsed while reading.</li>
+      <li>Click <strong>Read photo (AI)</strong>. The button has this name when the AI is enabled, allowed for the board and ready; otherwise it is called “Read the photo” and does the local reading, without AI.</li>
+      <li>If the key is locked (after reloading the page, for example), click the 🔒 padlock next to the button and enter the <strong>passphrase</strong> (or use ⚙ AI). You only need to do this once per session. The <strong>⚙ AI</strong> button at the top right turns green while the key is unlocked: the AI is ready. A counter shows the seconds elapsed while reading.</li>
       <li>Voltaplan <strong>arranges the project's devices</strong> in the positions read, including those in reserve: each device on the photo gets the project device that matches it best (type, rating, sensitivity, curve, label, then tree order). The AI also reads the brand and model and measures the width on the ruler: the width read becomes the device's width (a compact 4-pole device can be 2 modules wide) and the model fills in the reference if it is empty. A device is only placed where the photo shows a device of the same type (never a breaker in place of a meter); whatever does not fit stays in reserve. Relays, impulse relays, contactors, time switches, transformers, meters and home-automation modules from the single-line diagram count as board devices when « In the board » is ticked in their properties (ticked by default for relays and meters). For a device seen on the photo but missing from the project, the « Link to… » menu in the list offers similar types first, then every other element of this board's single-line diagram: choosing one ticks « In the board », takes the width and reference read, and places it where it was seen. For a breaker or RCD missing from the single-line diagram, « ＋ New… » creates it under the board with what was read (rating, curve, width, reference). A connected breaker mounted behind a circuit's breaker (EARU…) is created with « ＋ In series under O »: a protection in series in the same circuit, reference taken over, placed where it was seen. Identical devices the photo cannot tell apart (for example three 40 A 30 mA RCDs) are placed in single-line diagram order, left to right, unless an RCD's label lists its circuits (« A-F », « G H I J », « K to M »): it is then matched to the RCD of the single-line diagram that protects those circuits. Write these references on your RCD labels before taking the photo. For breakers, the circuit letter marked on or below the device (« H ») is the best clue; otherwise the usage label is compared word by word (« SOCKETS I » goes to « Sockets I », not to « Sockets II »). The characteristics read complete the single-line diagram: an empty value read with certainty is filled in directly; a value that differs from the project, or is read with doubt, is listed under « Characteristics read on the photo, to confirm », with an <strong>Apply</strong> button (or <strong>Apply all</strong>). The single-line diagram is never changed without your consent. <kbd>Ctrl</kbd>+<kbd>Z</kbd> undoes it.</li>
       <li>The result then lists the differences with the project (missing device, width, type, rating, curve, sensitivity, uncertain reading). <strong>It is an automatic reading that must be checked</strong>: confirm each device with its badge. Only the layout changes; device characteristics are never modified.</li>
     </ol>
@@ -228,8 +279,8 @@
 
     <h3>What is sent, and where</h3>
     <table>
-      <tr><td>Sent to Anthropic</td><td>the aligned board photo, the number of rows and modules per row, and the interface language. Nothing else: not the customer's name or address, nor the rest of the project.</td></tr>
-      <tr><td>How</td><td>directly from your browser (or the desktop app) to <code>api.anthropic.com</code>, over HTTPS, with no intermediary.</td></tr>
+      <tr><td>Sent to the chosen provider</td><td>for the board: the aligned board photo, the number of rows and modules per row, and the interface language; for the meter or the plan (if you ticked those uses): the photo of the plate or the image of the plan. Nothing else: not the customer's name or address, nor the rest of the project.</td></tr>
+      <tr><td>How</td><td>directly from your browser (or the desktop app) to the provider (<code>api.anthropic.com</code> for Anthropic), over HTTPS, with no intermediary. With a local model, nothing leaves the computer.</td></tr>
       <tr><td>Stored key</td><td>encrypted (256-bit AES-GCM, key derived from the passphrase with PBKDF2-SHA-256) in the local storage of this browser or app. <strong>Never</strong> in the <code>.voltaplan</code> file, nor in any file sent to a customer or an approved inspection body.</td></tr>
       <tr><td>Passphrase</td><td>is not stored anywhere. The decrypted key stays in memory until the tab or the app is closed.</td></tr>
       <tr><td>On Anthropic's side</td><td>data sent to the API is covered by Anthropic's <a href="https://www.anthropic.com/legal/commercial-terms">commercial terms</a>, which by default exclude its use for training models.</td></tr>
@@ -240,7 +291,7 @@
       <li><strong>Forgotten passphrase</strong>: the key cannot be recovered. Click <strong>Delete key</strong>, then save a new one.</li>
       <li><strong>New key</strong>: <strong>Delete key</strong>, then paste the new one.</li>
       <li><strong>Compromised key</strong> (lost computer, key copied by mistake): disable it in the Anthropic console under <strong>API Keys</strong>. It stops working everywhere immediately.</li>
-      <li><strong>Another computer or browser</strong>: the key is not there. Set it up again; you can reuse the same key or create one per workstation.</li>
+      <li><strong>Another computer or browser</strong>: the key is not there. Transfer it with the QR code or link (see <a href="#ia-transfert">Other devices</a>), or set it up again; you can reuse the same key or create one per workstation.</li>
     </ul>
 
     <h3>Troubleshooting</h3>
@@ -258,11 +309,12 @@
       <li><code>settings.ts</code>: settings and permissions, all disabled by default;</li>
       <li><code>secureStore.ts</code>: the encrypted key vault;</li>
       <li><code>boardPhoto.ts</code>: comparison of the reading with the project;</li>
-      <li><code>boardPhotoAi.ts</code>: the API call with the official <code>@anthropic-ai/sdk</code> SDK, loaded only on first use.</li>
+      <li><code>boardPhotoAi.ts</code>: the API call with the official <code>@anthropic-ai/sdk</code> SDK, loaded only on first use;</li>
+      <li><code>provider.ts</code> and <code>photoAi.ts</code>: the OpenAI-compatible providers and the meter and plan readings.</li>
     </ul>
     <p>The response is constrained by a schema (structured output): rows → devices with position, width, type, rating, curve, sensitivity, label and confidence level. Any new AI feature must have its own permission box, disabled by default, and must never send personal project data without the user knowing.</p>
 
-    <h3>Other devices</h3>
+    <h3 id="ia-transfert">Other devices</h3>
     <p>In the AI settings, <strong>Other devices</strong> section: scan the <strong>QR code</strong> with the phone, or <em>Copy link</em> and paste it on the other device (<em>Receive: paste the link or code</em>). The key travels encrypted; the other device asks for the passphrase. No server is involved.</p>
 
     <h2 id="pays">Countries and regulations</h2>
@@ -271,6 +323,7 @@
     <h2 id="raccourcis">Shortcuts</h2>
     <table>
       <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Save</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Save as</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Open</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>Print / PDF</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Undo / redo</td></tr>
@@ -290,7 +343,7 @@ npm run desktop    # desktop app (requires Rust)</pre>
     <p>React + TypeScript + Vite, desktop app with Tauri. Code licensed under the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>: any modified version that is distributed or offered online must publish its source code. Contributions are welcome on the <a class="repo-link" href="#">repository</a>.</p>
   </article>
 </main>
-<footer>Voltaplan — free and open source — <a href="https://github.com/sponsors/SebastienBatteur">support the project</a> (optional) — <a href="privacy.html">Privacy</a> — <a href="terms.html">Terms of use</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">source code</a></footer>
+<footer>Voltaplan — free and open source — <a href="https://github.com/sponsors/SebastienBatteur">support the project</a> (optional) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Terms of use</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">source code</a></footer>
 <script src="../site.js"></script>
 </body>
 </html>

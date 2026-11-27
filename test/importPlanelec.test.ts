@@ -4,6 +4,7 @@ import { importPlanelec, isPlanelec, planelecSupply } from '../src/import/planel
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import { walk } from '../src/model/tree';
 import type { ElNode, Project } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 const n = (id: string, family: string, props: Record<string, unknown>, children: unknown[] = [], extra: Record<string, unknown> = {}) => ({ id, family, props, children, ...extra });
 const breaker = (id: string, kind: string, amps: number, children: unknown[], name?: string, residual = 30) =>
@@ -126,7 +127,7 @@ describe('import PlanElec Sketch (.planelec.json)', () => {
     expect(pg.symbols.filter((s) => s.nodeId === 'o1')).toHaveLength(1);
     expect(pg.symbols.some((s) => s.nodeId === 'met')).toBe(true);
     expect(project.loose.map((x) => x.kind)).toEqual(['detector']);
-    expect(warnings.join('\n')).toMatch(/plusieurs fois/);
+    expect(frWarnings(warnings).join('\n')).toMatch(/plusieurs fois/);
   });
 
   it('refuse un autre fichier', () => {
@@ -143,7 +144,7 @@ describe('import PlanElec Sketch (.planelec.json)', () => {
       const nodes = [...walk(project.roots)].length;
       const symbols = project.plan.pages.reduce((a, pg) => a + pg.symbols.length, 0);
       console.log(p, { nodes, symbols, pages: project.plan.pages.length, loose: project.loose.length }, warnings);
-      expect(warnings.join('\n')).not.toMatch(/non reconnu/);
+      expect(frWarnings(warnings).join('\n')).not.toMatch(/non reconnu/);
     }
   });
 });

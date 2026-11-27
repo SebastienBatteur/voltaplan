@@ -14,6 +14,9 @@ import type { ElNode, NodeKind, PlanPage, Project, PropValue } from '../model/ty
 import { distToWalls, planFromShapes, scaleFromDoors, type PdfShape } from './pdfPlan';
 import { roomBounds } from '../plan/roomKit';
 import { enclosures, moduleWidth } from '../board/model';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
+import { Warnings } from './warnings';
 import { applyPdfInfo, checkBom, inZone, noWallZones, readBom, readCableLengths, readInstallationPeriod, readMainProtection, readMeasurements, readPdfInfo, type Rect } from './pdfInfo';
 
 /** Morceau de texte d'une page (origine en haut à gauche, en points PDF). */
@@ -236,7 +239,7 @@ export function detectSupply(text: string): string | undefined {
 
 export interface PdfDossierResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
   circuits: number;
   /** Fonds de plan à rendre : page Voltaplan (index) ← page du PDF (1…). L'image de fond y est déjà, sans contenu. */
   backgrounds: { pageIndex: number; pdfPage: number }[];
@@ -304,10 +307,10 @@ export function findPlanPages(items: PdfText[], pages: PdfPageSize[]): PdfPlanPa
 export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileName = 'Dossier PDF', shapes: PdfShape[][] = []): PdfDossierResult {
   const rows = readCircuitTables(items, pages);
   if (!rows.length) {
-    if (!items.length) throw new Error("Ce PDF ne contient pas de texte lisible (texte dessiné ou document scanné) : il ne peut pas être repris automatiquement. Importez-le comme fond de plan, ou utilisez la lecture d'une photo du tableau.");
-    throw new Error("Aucun tableau des circuits trouvé dans ce PDF (colonnes « repère », « protection », « câble »…). Il ne peut pas être repris automatiquement.");
+    if (!items.length) throw new I18nError('imp.pdf.noReadableText', undefined, "Ce PDF ne contient pas de texte lisible (texte dessiné ou document scanné) : il ne peut pas être repris automatiquement. Importez-le comme fond de plan, ou utilisez la lecture d'une photo du tableau.");
+    throw new I18nError('imp.pdf.noTable', undefined, "Aucun tableau des circuits trouvé dans ce PDF (colonnes « repère », « protection », « câble »…). Il ne peut pas être repris automatiquement.");
   }
-  const warnings = new Set<string>();
+  const warnings = new Warnings();
   const project = emptyProject();
   const all = items.map((i) => i.str).join(' ');
   const supply = detectSupply(all);
@@ -316,12 +319,12 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   if (ean) project.meta.ean = ean;
   // Cartouche, page de garde, fiche : adresse, client, installateur, date, numéro, calibre du branchement…
   const got = applyPdfInfo(project, readPdfInfo(items));
-  if (got.length) warnings.add(`Informations du dossier reprises du PDF : ${got.join(', ')}. À vérifier dans l'onglet Projet.`);
+  for (const f of got) warnings.add('imp.pdf.info.' + f);
   const meter = project.roots[0].children[0];
   const mainRcd = meter.children[0];
   const mainBoard = mainRcd.children[0];
   // Le différentiel général n'est pas dans le tableau des circuits : celui du modèle (300 mA) est gardé, à vérifier
-  warnings.add('Différentiel général et compteur : valeurs par défaut de Voltaplan, à vérifier sur le schéma du PDF.');
+  warnings.add('imp.pdf.mainDefault');
   const otherKids = mainBoard.children.filter((n) => n.kind !== 'protection');
   mainBoard.children = [];
 
@@ -364,7 +367,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
     pointsOf.push({ row: r, points });
     // Points : nombre (colonne « points » ou repères A1, A2… des autres pages), type d'après le nom du circuit
     const n = r.points ?? countPoints(items, r.code);
-    if (r.points === undefined && shared.has(r.code) && n > 0) warnings.add(`Repère ${r.code} utilisé dans plusieurs tableaux : nombre de points à vérifier.`);
+    if (r.points === undefined && shared.has(r.code) && n > 0) warnings.add('imp.pdf.sharedCode', { code: r.code });
     const it = interpretLabel(label);
     const room = r.rooms && !/,/.test(r.rooms) ? r.rooms : it.room;
     // Catégorie seule (« Appareil fixe », « Vast toestel », « CVC ») : un appareil à préciser
@@ -379,7 +382,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
         cable.children.push(p);
         points.push(p);
       }
-      if (usage.kind === 'appliance' && n > 1) warnings.add(`Circuit ${r.code} : ${n} points pour un appareil, un seul repris ; complétez les autres.`);
+      if (usage.kind === 'appliance' && n > 1) warnings.add('imp.pdf.appliancePoints', { code: r.code, n });
     } else if (!isSpare && !SUBBOARD.test(fold(label)) && n > 0) unknown++;
     // Différentiel de groupe : circuits consécutifs avec le même 30 mA (colonne « différentiel ») ; 300 mA = général
     if (diffMa !== undefined && diffMa < 100 && prot.residualCurrent === undefined) {
@@ -409,11 +412,11 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
       b.props.fixedLetter = feeder!.code;
     } else {
       mainBoard.children.push(b);
-      warnings.add(`Sous-tableau « ${name} » : circuit d'alimentation non trouvé, placé dans le tableau principal.`);
+      warnings.add('imp.pdf.subBoard', { name });
     }
   }
   mainBoard.children.push(...otherKids);
-  if (unknown) warnings.add(`${unknown} circuit(s) dont le type de points n'a pas pu être déduit du nom : points à ajouter.`);
+  if (unknown) warnings.add('imp.pdf.unknownPoints', { n: unknown });
   const backgrounds = placeOnPlans(project, items, pages, pointsOf, boardNames[0] ?? '', warnings, shapes);
   readBoardFronts(project, items, pages, nodesByCode, shared, warnings);
   // Différentiel général : caractéristiques écrites sur le schéma ou la face avant
@@ -423,14 +426,17 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
     mainRcd.props = { ...mainRcd.props, ...main, device };
     if (device === 'rcd') delete mainRcd.props.curve;
     if (main.breakingCapacity === undefined) delete mainRcd.props.breakingCapacity;
-    warnings.delete('Différentiel général et compteur : valeurs par défaut de Voltaplan, à vérifier sur le schéma du PDF.');
-    warnings.add(`Différentiel général repris du PDF : ${main.ratedCurrent} A, ${main.residualCurrent} mA${main.rcdType ? `, type ${main.rcdType}` : ''} ; compteur à vérifier.`);
+    warnings.delete('imp.pdf.mainDefault');
+    const mp = { rated: String(main.ratedCurrent), residual: String(main.residualCurrent) };
+    if (main.rcdType) warnings.add('imp.pdf.mainReadType', { ...mp, type: String(main.rcdType) });
+    else warnings.add('imp.pdf.mainRead', mp);
   }
   // Mesures (terre, isolement) et longueurs des câbles
   const meas = readMeasurements(items);
   if (meas.earthResistanceOhm !== undefined || meas.insulationMOhm !== undefined) {
     project.measurements = { ...project.measurements, ...meas };
-    warnings.add(`Mesures reprises du PDF : ${[meas.earthResistanceOhm !== undefined ? `terre ${meas.earthResistanceOhm} Ω` : '', meas.insulationMOhm !== undefined ? `isolement ${meas.insulationMOhm} MΩ` : ''].filter(Boolean).join(', ')}.`);
+    if (meas.earthResistanceOhm !== undefined) warnings.add('imp.pdf.measEarth', { ohm: meas.earthResistanceOhm });
+    if (meas.insulationMOhm !== undefined) warnings.add('imp.pdf.measInsulation', { mohm: meas.insulationMOhm });
   }
   const lengths = readCableLengths(items);
   let withLength = 0;
@@ -441,23 +447,20 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
       withLength++;
     }
   }
-  if (withLength) warnings.add(`Longueur des câbles reprise du PDF pour ${withLength} circuit(s).`);
+  if (withLength) warnings.add('imp.pdf.lengths', { n: withLength });
   // Date (ou période) de réalisation : elle décide des règles du RGIE applicables
   const period = readInstallationPeriod(items);
   if (period?.to) {
     project.meta.installationDate = period.to;
-    if (period.from && period.from < '1981-10-01') warnings.add("Installation commencée avant le 1/10/1981 : marquez les parties anciennes (« partie ancienne », RGIE 3.1.2.1).");
-    warnings.add(`Période d'installation reprise du PDF : ${period.from === period.to ? period.to : `du ${period.from} au ${period.to}`} ; date retenue pour le contrôle : ${period.to}.`);
+    if (period.from && period.from < '1981-10-01') warnings.add('imp.pdf.before1981');
+    if (period.from && period.from !== period.to) warnings.add('imp.pdf.periodRange', { from: period.from, to: period.to });
+    else warnings.add('imp.pdf.period', { date: period.to });
   }
   // Contrôle par la liste du matériel du PDF (points lumineux, prises, commandes)
   const bom = readBom(items);
-  if (bom) warnings.add(checkBom(project, bom));
-  warnings.add(
-    backgrounds.length
-      ? 'Le type exact des points et leurs commandes (interrupteurs) ne sont pas dans le texte du PDF : à compléter.'
-      : 'Le type exact des points, leurs commandes (interrupteurs) et leur position sur le plan ne sont pas dans le texte du PDF : à compléter. Le plan peut être importé comme fond de plan (onglet Plan).',
-  );
-  return { project, warnings: [...warnings], circuits: rows.length, backgrounds };
+  if (bom) for (const w of checkBom(project, bom)) warnings.add(w.key, w.params);
+  warnings.add(backgrounds.length ? 'imp.pdf.todoPlan' : 'imp.pdf.todoNoPlan');
+  return { project, warnings: warnings.list(), circuits: rows.length, backgrounds };
 }
 
 /** Page de face avant d'un tableau (« Disposition du tableau », « Face avant », « Bordindeling »…), pas un schéma. */
@@ -477,7 +480,7 @@ function readBoardFronts(
   pages: PdfPageSize[],
   nodesByCode: Map<string, ElNode>,
   shared: Set<string>,
-  warnings: Set<string>,
+  warnings: Warnings,
 ): void {
   const frontPages = pages
     .map((_, i) => i + 1)
@@ -539,7 +542,7 @@ function readBoardFronts(
     if (lines.length > size.rows) e.board.props.rows = lines.length;
     if (perRow > size.perRow) e.board.props.modulesPerRow = perRow;
   }
-  if (placedN) warnings.add(`Face avant du tableau lue dans le PDF : ${placedN} disjoncteur(s) placé(s) à leur rangée ; différentiels et généraux à placer (onglet Tableau, « Mettre à jour »).`);
+  if (placedN) warnings.add('imp.pdf.front', { n: placedN });
 }
 
 /** Tracés hors des zones sans mur (cartouche, légende) : un sous-chemin entièrement dedans est retiré. */
@@ -568,7 +571,7 @@ function placeOnPlans(
   pages: PdfPageSize[],
   pointsOf: { row: DossierCircuit; points: ElNode[] }[],
   mainBoard: string,
-  warnings: Set<string>,
+  warnings: Warnings,
   shapes: PdfShape[][] = [],
 ): { pageIndex: number; pdfPage: number }[] {
   const plans = findPlanPages(items, pages);
@@ -685,15 +688,15 @@ function placeOnPlans(
       if (hit && node) node.location = hit.l.text;
     }
   }
-  if (rooms) warnings.add(`${rooms} nom(s) de pièce lu(s) sur le plan ; les points posés y prennent leur pièce.`);
+  if (rooms) warnings.add('imp.pdf.rooms', { n: rooms });
   const nWalls = [...byName.values()].reduce((s, v) => s + v.page.walls.length, 0);
   const nOpen = [...byName.values()].reduce((s, v) => s + v.page.openings.length, 0);
-  if (nWalls) warnings.add(`${nWalls} mur(s) et ${nOpen} porte(s) ou fenêtre(s) lus dans le dessin du PDF : à vérifier.`);
-  if (byDoors) warnings.add("Échelle estimée d'après les portes (largeur courante 85 cm) : vérifiez une cote, et corrigez avec « Mettre à l'échelle » si besoin.");
+  if (nWalls) warnings.add('imp.pdf.walls', { walls: nWalls, openings: nOpen });
+  if (byDoors) warnings.add('imp.pdf.scaleDoors');
   const unscaled = plans.filter((pl) => !pl.scaled).map((pl) => pl.name);
-  warnings.add(
-    `Plans du PDF repris en fond de plan (${[...byName.keys()].join(', ')})${placed ? ` ; ${placed} point(s) posé(s) à côté de leur repère, position à vérifier` : ''}${missing ? ` ; ${missing} sans repère trouvé (à placer)` : ''}.`,
-  );
-  if (unscaled.length) warnings.add(`Échelle non indiquée sur le plan (${[...new Set(unscaled)].join(', ')}) : utilisez « Mettre à l'échelle » (onglet Plan) sur une cote connue.`);
+  warnings.add('imp.pdf.plans', { list: [...byName.keys()].join(', ') });
+  if (placed) warnings.add('imp.pdf.plansPlaced', { n: placed });
+  if (missing) warnings.add('imp.pdf.plansMissing', { n: missing });
+  if (unscaled.length) warnings.add('imp.pdf.unscaled', { list: [...new Set(unscaled)].join(', ') });
   return backgrounds;
 }

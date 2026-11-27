@@ -5,6 +5,7 @@ import { parseProject } from '../src/io/storage';
 import { readProjectFile } from '../src/io/files';
 import { emptyProject } from '../src/model/tree';
 import type { PlanPage } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 const PNG = 'data:image/png;base64,iVBORw0KGgo=';
 
@@ -44,7 +45,7 @@ describe('import XML (Trikker) : pas de DTD ni d’entités', () => {
     expect(ok.project.plan.pages[0].images[0].href).toBe(PNG);
     const bad = importTrikker(trik('<Figuur Breedte="100" ImageAsBase64="&quot;);alert(1)//"><Center X="1" Y="2" /></Figuur>'));
     expect(bad.project.plan.pages[0].images).toEqual([]);
-    expect(bad.warnings.join(' ')).toMatch(/illisible/);
+    expect(frWarnings(bad.warnings).join(' ')).toMatch(/illisible/);
   });
 });
 

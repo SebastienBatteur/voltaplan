@@ -10,11 +10,12 @@ Application **gratuite et open source** de création de schémas électriques �
 
 ## Ce qui fonctionne (v0.1)
 
+- **Importer d'un autre logiciel…** (menu Fichier et accueil) : une seule entrée ; la source est reconnue d'après le **contenu**, l'extension ne sert qu'en repli. Formats reconnus : projet Voltaplan, Trikker (`.trik`), Volter (`.vschema`), Eendraadschema (`.eds`, versions 1 à 4), Draadwijs (`.draadwijs`), PlanElec Sketch (`.planelec.json`), export Condui (`.zip`) et **dossier PDF** d'un autre logiciel (lu dans le navigateur, sans IA : circuits, plans en fond de plan, murs, informations du cartouche ; un PDF sans texte est refusé). Une archive `.zip` quelconque est ouverte et le fichier de schéma qu'elle contient est importé ; un fichier inconnu est refusé avec la liste des formats reconnus. Ce qui n'est pas repris est signalé à l'ouverture.
 - **Import Trikker (.trik)** : schéma, plan (murs, portes, fenêtres, escaliers, images de fond, plusieurs pages), adresses, notes. Testé sur des fichiers Trikker 1.5.17, dont un dossier accepté au contrôle.
 - **Schéma unifilaire** dessiné automatiquement, **de bas en haut comme la figure 3.1 du RGIE** (alimentation en bas, tableaux, circuits qui montent, points numérotés à partir de la protection) ; option « haut → bas ». Numérotation des circuits A, B, C… et des points A1, A2…, lettres imposées de Trikker respectées.
 - **Symboles du RGIE** (Livre 1, tableau 2.23) sur l'unifilaire et le plan : prises (terre, sécurité enfant, multiples, étanches « h »), interrupteurs (unipolaire, bipolaire, va-et-vient, permutateur, gradateur, tirette, lampe témoin, lampe de signalisation), boutons-poussoirs, points lumineux, applique, tube fluorescent, projecteur, éclairage de sécurité, appareils (cuisinière, four, micro-ondes, lave-linge, sèche-linge, lave-vaisselle, frigo, congélateur, chauffe-eau, chauffage, ventilateur, borne VE), moteur, sonnerie, boîte de dérivation, transformateur, panneau solaire, onduleur, disjoncteur (marque du déclencheur), différentiel (tore), fusible, compteur, coffret de branchement, mode de pose des canalisations.
 - **Plan de position** à l'échelle (en mm), **lié** à l'unifilaire : cliquer sur un élément le sélectionne partout ; « Voir sur le plan » / « Voir sur l'unifilaire » ; déplacer, pivoter ou retirer un symbole ; placer sur le plan un élément qui n'y est pas encore.
-- **Dessin du plan** : murs (angles droits et extrémités accrochés, cote affichée), portes, doubles portes, portes-fenêtres, fenêtres, noms de pièces, plusieurs pages (étages). **Édition** : glisser un mur (les murs raccordés et les ouvertures suivent), ses extrémités, une ouverture le long de son mur, un texte ; panneau de propriétés (longueur, épaisseur, largeur, type, sens d'ouverture). **Mobilier** : catalogue de pictogrammes vectoriels à l'échelle (canapé, fauteuil, tables, meuble TV, lits, armoire, bureau, plan de travail, évier, taque, frigo, lave-linge, baignoire, douche, WC, lavabos, voiture, escalier), à placer, glisser, pivoter, redimensionner et dupliquer. **Fond de plan** importé d'une photo ou d'un PDF, puis **mis à l'échelle** en cliquant deux points et en donnant leur distance réelle. Sans fond de plan, le même outil met **toute la page** à l'échelle (utile pour un plan Trikker dessiné hors échelle). **Redresser (4 coins)** : une photo prise de biais est remise droite et à l'échelle en cliquant les 4 angles d'un rectangle connu (ex. façades 13 × 8,5 m). **Tracer les murs** : détection automatique, sans IA, des murs (façades d'après le rectangle, cloisons foncées), des **portes** (cloisons interrompues de 60 à 130 cm) et des **fenêtres** (parties claires des façades), à vérifier ensuite. **Caler le fond** : superpose une photo sur un plan existant (2 repères) pour repérer les modifications.
+- **Dessin du plan** : murs (angles droits et extrémités accrochés, cote affichée), portes, doubles portes, portes-fenêtres, fenêtres, noms de pièces, plusieurs pages (étages). **Édition** : glisser un mur (les murs raccordés et les ouvertures suivent), ses extrémités, une ouverture le long de son mur, un texte ; panneau de propriétés (longueur, épaisseur, largeur, type, sens d'ouverture). **Mobilier** : catalogue de pictogrammes vectoriels à l'échelle (canapé, fauteuil, tables, meuble TV, lits, armoire, bureau, plan de travail, évier, taque, frigo, lave-linge, baignoire, douche, WC, lavabos, voiture, escalier), à placer, glisser, pivoter, redimensionner et dupliquer. **Fond de plan** importé d'une photo, d'un PDF ou d'un fichier DXF, puis **mis à l'échelle** en cliquant deux points et en donnant leur distance réelle. Sans fond de plan, le même outil met **toute la page** à l'échelle (utile pour un plan Trikker dessiné hors échelle). **Redresser (4 coins)** : une photo prise de biais est remise droite et à l'échelle en cliquant les 4 angles d'un rectangle connu (ex. façades 13 × 8,5 m). **Tracer les murs** : détection automatique, sans IA, des murs (façades d'après le rectangle, cloisons foncées), des **portes** (cloisons interrompues de 60 à 130 cm) et des **fenêtres** (parties claires des façades), à vérifier ensuite. **Caler le fond** : superpose une photo sur un plan existant (2 repères) pour repérer les modifications.
 - **Édition** : arborescence de l'installation, propriétés (calibre, courbe, différentiel, câble, section, prises, interrupteurs…), ajout, duplication, suppression, réorganisation, annuler / rétablir (Ctrl+Z / Ctrl+Y).
 - **Contrôle RGIE** (aide à la vérification, voir [couverture réglementaire](docs/audit/REGULATORY-COVERAGE.md)) :
   - éditions datées (avant 1981, ancien RGIE de 1981, Livre 1 depuis le 1/6/2020), appliquées **partie par partie** (date de réalisation d'un tableau ou d'un circuit) ;
@@ -22,20 +23,23 @@ Application **gratuite et open source** de création de schémas électriques �
   - partie neuve → non-conformités **bloquantes** ; partie existante → règles de sécurité bloquantes, les autres en **recommandations** ;
   - dérogations saisies avec motif et référence, visibles dans le dossier ;
   - « Local avec baignoire ou douche » indiqué explicitement (le nom de la pièce n'est qu'un indice à confirmer).
-- **Langues** : français, néerlandais, anglais, allemand (partiel).
+- **Langues** : interface en français, néerlandais, anglais et allemand.
 - **Tableau** : rangées DIN (12 ou 13 modules), appareils en glisser-déposer à leur largeur réelle (disjoncteur 1P+N en 1 ou 2 modules, différentiel 2 ou 4 modules…), disposition automatique, réserve, étiquettes. **Photo du tableau** : calage par les 4 coins, comparaison sans IA (largeur et place de chaque appareil), et en option lecture par l'IA (type, calibre, courbe, sensibilité) comparée au matériel défini ; confirmation appareil par appareil.
 - **Dossier imprimable / PDF** (A4 ou A3 paysage) : unifilaire (découpé sur plusieurs pages si nécessaire), plans, tableau, liste des circuits, légende automatique des symboles utilisés, étiquettes du tableau à l'échelle 1:1, constats du contrôle. Cartouche sur chaque page : version et date, installateur (nom, qualité, TVA), adresse, tension et nature du courant, EAN, cases de signature installateur / organisme agréé / propriétaire. Mention « PROJET » tant que des constats bloquants restent à traiter.
 - **Mesures** : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel (temps de déclenchement, circuits protégés), date et appareil de mesure ; contrôlées (≤ 300 ms, 500 ms pour un « S ») et imprimées sur la page « Mesures » du dossier.
 - **Trikker** : import et **export** (.trik, Windows-1252 comme Trikker) ; aller-retour vérifié sur des fichiers réels (schéma, numérotation, plan, pièces, adresses).
-- **Hors ligne** : la version web s'installe comme une application (PWA) et fonctionne sans connexion après la première visite.
+- **Hors ligne** : la version web s'installe comme une application (PWA) et fonctionne sans connexion après la première visite (la lecture locale des photos, après une première lecture en ligne).
 - **Enregistrement** (comme draw.io) : cet appareil (fichier), navigateur (projets gardés localement + brouillon automatique récupérable), GitHub (dépôt, jeton chiffré localement). Google Drive, OneDrive et Dropbox (identifiant d'application à enregistrer une fois chez chaque service).
 - **Sélection en chaîne** : un élément sélectionné allume toute sa chaîne (amont jusqu'au compteur, tout l'aval) dans l'arborescence, l'unifilaire, le plan et le tableau.
 - **⟳ Mettre à jour** (nouvelle installation, circuits ajoutés) : nouveaux appareils posés dans le tableau sans déplacer les autres, nouveaux points posés sur le plan près du nom de leur pièce, révision ajoutée au dossier.
-- **Liste du matériel** : par caractéristiques et normes européennes (les références fabricant varient d'un pays à l'autre), quantités, longueurs de câble, export CSV, page du dossier.
-- **Calculs** : chute de tension et longueur maximale protégée contre les courts-circuits par circuit (méthode conventionnelle IEC 60364).
-- **Eendraadschema** : export `.eds` (format v4).
+- **Liste du matériel** : par caractéristiques et normes européennes (les références fabricant varient d'un pays à l'autre), quantités, longueurs de câble, export CSV (aussi par pièce), liste des circuits en CSV, page du dossier.
+- **Calculs** : chute de tension et longueur maximale protégée contre les courts-circuits par circuit (méthode conventionnelle IEC 60364), bilan de puissance et équilibre des phases ([docs/calc.md](docs/calc.md)).
+- **Longueur des câbles estimée d'après le plan** (« Mettre à jour », bouton « Estimer les longueurs » de l'onglet Matériel) : du tableau aux points dans l'ordre du schéma, à angles droits, montées et descentes selon la hauteur de pose, changement d'étage, 10 % de marge ; tracés Condui suivis ; pour un import sans tracés, tracés à angles droits créés d'après l'unifilaire (« à ajuster »). Longueur marquée « estimée » ; une longueur saisie n'est jamais remplacée.
+- **Lecture locale des photos (OCR, sans IA)** : plaque du compteur, noms de pièces d'un plan, étiquettes et appareils du tableau ; aucune image envoyée, fonctionne hors ligne. L'IA, si elle est configurée, ne vient qu'en complément.
+- **Équiper une pièce** : sur le plan, l'équipement habituel du type de pièce (à cocher) est posé à sa place, non raccordé, à relier ensuite aux circuits.
+- **Eendraadschema** : import et export `.eds` (export au format v4).
 - **Google Drive, OneDrive, Dropbox** : prêts, à activer avec un identifiant d'application par service (voir le guide).
-- **Fichiers locaux** : format `.voltaplan` (JSON lisible ; les fichiers `.openrgie` des premières versions, quand l'application s'appelait OpenRGIE, s'ouvrent toujours). Avec Chrome/Edge, « Enregistrer » réécrit le même fichier.
+- **Fichiers locaux** : format `.voltaplan`, une archive ZIP (modèle JSON lisible et documents originaux : photos, PDF ; voir [docs/file-format.md](docs/file-format.md)). Les anciens fichiers JSON et les fichiers `.openrgie` des premières versions, quand l'application s'appelait OpenRGIE, s'ouvrent toujours. Avec Chrome/Edge et dans l'application de bureau, « Enregistrer » réécrit le même fichier.
 
 ## Utilisation
 
@@ -66,11 +70,11 @@ L'application de bureau utilise [Tauri](https://tauri.app) : petit installateur,
 
 | Workflow | Quand | Ce qu'il fait |
 |---|---|---|
-| `ci.yml` | push sur `main` et pull request qui touchent autre chose que la documentation, chaque semaine, à la demande | Linux : typage, ESLint, tous les tests, construction ; audit des dépendances livrées (`npm audit --omit=dev`) ; la version web est jointe aux runs de `main` |
+| `ci.yml` | push sur `main` et pull request qui touchent autre chose que la documentation ou le site, chaque semaine, à la demande | Linux : typage, ESLint, tous les tests, construction, vérification de provenance ; audit des dépendances livrées (`npm audit --omit=dev`) ; la version web est jointe aux runs de `main` |
 | `ci-multi-os.yml` | push sur `main` qui touche `src/`, `package*.json` ou `vite.config.ts`, chaque semaine, à la demande | mêmes vérifications sur Windows et macOS |
-| `secrets.yml` | chaque push sur `main` et chaque pull request (documentation comprise), chaque semaine | recherche de secrets dans tout l'historique (gitleaks) |
+| `secrets.yml` | chaque push sur `main` et chaque pull request (documentation comprise), chaque semaine, à la demande | recherche de secrets dans tout l'historique (gitleaks) |
 | `codeql.yml` | push sur `main` et pull request qui touchent du code, chaque semaine, à la demande | analyse de sécurité du code (CodeQL) |
-| `desktop-build.yml` | pull request et push sur `main` qui touchent `src-tauri/` ou un paquet Tauri, à la demande | construction de l'application de bureau sur les 3 systèmes, sans publication |
+| `desktop-build.yml` | pull request et push sur `main` qui touchent `src-tauri/` ou un paquet Tauri, à la demande | construction de l'application de bureau et tests Rust sur les 3 systèmes, sans publication |
 | `release.yml` | tag `v*` (ex. `git tag v0.2.0 && git push --tags`) ou lancement manuel | installateurs Windows, macOS (Apple Silicon et Intel) et Linux ; release *brouillon* créée sur GitHub pour un tag |
 | `pages.yml` | push sur `main` qui change le site ou l'application | publie le site (accueil + guide, dossier `site/`) et l'application web dans `app/` sur GitHub Pages (à activer une fois : *Settings → Pages → Source : GitHub Actions*) |
 
@@ -95,10 +99,14 @@ Tests : `npm test` (les fichiers Trikker réels placés dans `test/fixtures/*.tr
 | R-RCD-TYPE-A | Type A (pas AC) pour ces appareils |
 | R-RCD-SELECTIVITY | Sélectivité entre différentiels |
 | R-CABLE-NO-OVERCURRENT | Protection contre les surintensités présente (un interrupteur différentiel seul ne suffit pas) |
+| R-SOCKET-IPXXD | Prises de 16 A au plus avec obturateurs (IPXX-D) pour les travaux commencés depuis le 1/3/2025, sauf prise réservée à un appareil |
+| R-RCD30-MAX | Au plus 8 circuits derrière un différentiel 30 mA (tableaux faits depuis le 1/6/2023) |
+| R-POLES-NO-NEUTRAL | Réseau 3 × 230 V sans neutre : protection bipolaire |
+| R-VDROP / R-ICC-LMAX | Chute de tension (3 % éclairage, 5 % autres) et longueur maximale protégée contre les courts-circuits ([docs/calc.md](docs/calc.md)) |
 | R-EARTH-* / R-INSULATION | Prise de terre présente, résistance ≤ 30 Ω (alerte jusqu'à 100 Ω), isolement ≥ 0,5 MΩ |
 | R-*-MISSING | Données obligatoires du schéma manquantes (calibre, sensibilité, section…) |
 
-Les valeurs sont dans [src/rules/be/rgie.ts](src/rules/be/rgie.ts) et les textes dans [src/i18n](src/i18n). **Elles doivent être relues par un professionnel** avant de s'y fier.
+Liste partielle : le catalogue complet (éditions, statut, gravité) est dans [src/rules/be/catalog.ts](src/rules/be/catalog.ts). Les valeurs sont dans [src/rules/be/rgie.ts](src/rules/be/rgie.ts) et les textes dans [src/i18n](src/i18n). **Elles doivent être relues par un professionnel** avant de s'y fier.
 
 ## Sens du schéma unifilaire et normes
 
@@ -118,11 +126,12 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 ## Architecture
 
 - `src/model` : modèle de données (arbre de nœuds + plan référant les nœuds par id).
-- `src/import/trikker.ts` : import Trikker (attributs d'origine conservés pour un futur export sans perte).
+- `src/import` : imports des autres logiciels (Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF) ; `src/io/projectData.ts` reconnaît la source d'après le contenu (`sniffFormat`). `src/export` : exports Trikker et Eendraadschema.
 - `src/rules` : **référentiels par pays** (contrat `RulePack`, registre). `src/rules/be/rgie.ts` = Belgique (RGIE), fonctions pures et testées.
 - `src/unifilar` : mise en page automatique et symboles SVG (tableau 2.23 du RGIE).
-- `src/plan` : géométrie du plan (accroche, ouvertures, mise à l'échelle).
-- `src/io` : fichiers (navigateur et application de bureau), fond de plan photo/PDF (pdf.js).
+- `src/plan` : géométrie du plan (accroche, ouvertures, mise à l'échelle, murs relevés sur une image, équipement d'une pièce).
+- `src/calc` : chute de tension, court-circuit, bilan de puissance, longueur des câbles. `src/ocr` : lecture locale des photos (Tesseract).
+- `src/io` : fichiers (navigateur et application de bureau), stockage en ligne, fond de plan photo/PDF (pdf.js) ou DXF. `src/format` : archive `.voltaplan` (format v2).
 - `src-tauri` : application de bureau.
 - `.github/workflows` : tests et paquets installables.
 - `src/ui` : interface React.
@@ -135,7 +144,7 @@ Rien d'autre à modifier : l'unifilaire, le plan, le contrôle et (bientôt) l'e
 3. ✅ Tableau : rangées DIN, glisser-déposer, photo et validation du matériel, étiquettes 1:1
 4. ✅ Export PDF / impression du dossier (A4, A3 : cartouche, légende, circuits, mesures, étiquettes 1:1)
 5. ⏳ Assistant de relevé : ✅ premier parcours (photo du tableau → brouillon, questions, relevé figé) ; ⏳ plusieurs photos et tableaux, documents existants, plans d'architecte, plan de position. IA facultative (votre clé, ou un modèle local)
-6. ✅ Export Trikker ; ✅ PWA hors ligne ; ✅ version de bureau Tauri et workflows de paquets — ⏳ Eendraadschema (format à étudier)
+6. ✅ Export Trikker ; ✅ PWA hors ligne ; ✅ version de bureau Tauri et workflows de paquets ; ✅ Eendraadschema (import et export)
 7. ⏳ Stockage en ligne (Google Drive, OneDrive, Dropbox), avant la première bêta publique :
    - séance de validation réelle : conflits concurrents, coupures réseau, expiration des sessions, iOS ;
    - **R2** (développé et vérifié en réel le 2026-11-25) : repère discret proposant de se reconnecter en un clic avant l'expiration de la session ;

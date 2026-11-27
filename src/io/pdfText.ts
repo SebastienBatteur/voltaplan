@@ -4,6 +4,7 @@
  * (src/import/pdfDossier.ts).
  */
 import { looksElectric } from '../import/electricWords';
+import { I18nError } from '../i18n/error';
 import type { PdfPageSize, PdfText } from '../import/pdfDossier';
 import { shapesFromOperatorList, type PdfShape } from '../import/pdfPlan';
 
@@ -24,8 +25,8 @@ export async function readPdfText(data: Blob): Promise<{ items: PdfText[]; pages
       const tc = await (await doc.getPage(i)).getTextContent();
       for (const it of tc.items) if ('str' in it) first += it.str + '\n';
     }
-    if (!first.trim()) throw new Error("Ce PDF ne contient pas de texte (plan en image ou document numérisé) : il ne peut pas être repris automatiquement.");
-    if (!looksElectric(first)) throw new Error("Ce PDF ne ressemble pas à un dossier d'installation électrique (pas de schéma unifilaire, de tableau ni de circuits dans les premières pages) : rien n'a été importé.");
+    if (!first.trim()) throw new I18nError('imp.pdf.noText', undefined, "Ce PDF ne contient pas de texte (plan en image ou document numérisé) : il ne peut pas être repris automatiquement.");
+    if (!looksElectric(first)) throw new I18nError('imp.pdf.notElectric', undefined, "Ce PDF ne ressemble pas à un dossier d'installation électrique (pas de schéma unifilaire, de tableau ni de circuits dans les premières pages) : rien n'a été importé.");
     const items: PdfText[] = [];
     const pages: PdfPageSize[] = [];
     const shapes: PdfShape[][] = [];

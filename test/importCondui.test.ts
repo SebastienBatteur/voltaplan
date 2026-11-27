@@ -6,6 +6,7 @@ import { openProjectData } from '../src/io/projectData';
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import { computeNumbering, walk } from '../src/model/tree';
 import type { ElNode } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 const place = (id: string, x: number, y: number, floorId = 'F0') => ({
   id,
@@ -417,7 +418,7 @@ describe('import Condui', () => {
     expect(num.get(sub.children[0].children[0].children[0].id)).toBe('J-A1');
     // Symbole inconnu : « autre » avec avertissement
     expect(find(project.roots, 'mystery_thing').kind).toBe('other');
-    expect(warnings.some((w) => w.includes('mystery_thing'))).toBe(true);
+    expect(frWarnings(warnings).some((w) => w.includes('mystery_thing'))).toBe(true);
     // Toujours des enfants permis par le modèle
     for (const { node, parent } of walk(project.roots)) if (parent) expect(ALLOWED_CHILDREN[parent.kind], `${node.kind} sous ${parent.kind}`).toContain(node.kind);
   });
@@ -464,7 +465,7 @@ describe('import Condui', () => {
     const s1 = find(project.roots, 'switch_1p_twoway');
     const l1 = all(project.roots).find((n) => n.source?.attrs.label === 'D1' && n.kind === 'light')!;
     expect(project.plan.pages[0].wires).toEqual([{ a: s1.id, b: l1.id, pts: [{ x: 1500, y: 1600 }] }]);
-    expect(warnings.some((w) => w.includes('Tracés'))).toBe(false);
+    expect(warnings.some((w) => w.key === 'imp.condui.wires')).toBe(false);
   });
 
   it('ouverture du .zip exporté par Condui (manifeste + project.json)', async () => {
@@ -493,7 +494,7 @@ describe('import Condui', () => {
     for (const p of samples) {
       const { project, warnings } = importCondui(readFileSync(p, 'utf-8'), p);
       expect(
-        warnings.filter((w) => /non reconnu/.test(w)),
+        frWarnings(warnings).filter((w) => /non reconnu/.test(w)),
         p,
       ).toEqual([]);
       for (const { node, parent } of walk(project.roots)) if (parent) expect(ALLOWED_CHILDREN[parent.kind], `${node.kind} sous ${parent.kind}`).toContain(node.kind);

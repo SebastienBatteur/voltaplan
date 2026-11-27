@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frequently asked questions — Voltaplan</title>
+<meta name="description" content="Frequently asked questions about Voltaplan: price, licence, where files are stored, offline use, import, RGIE, optional AI, privacy.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/faq.html">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/faq.html">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/faq.html">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/faq.html">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/faq.html">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
+    <a href="guide.html#installer">Install</a>
+    <a class="repo-link" href="#">Source code</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Sponsor Voltaplan on GitHub Sponsors (optional)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Sponsor</span></a>
+    <a class="btn primary" href="../app/">Open the app</a>
+    <span class="lang"><a href="../faq.html" data-lang="fr">FR</a><a href="../nl/faq.html" data-lang="nl">NL</a><a href="faq.html" aria-current="true" data-lang="en">EN</a><a href="../de/faq.html" data-lang="de">DE</a></span>
+  </nav>
+</div></header>
+<main class="doc">
+  <nav class="toc" aria-label="Contents">
+    <a href="#c-general">General</a>
+    <a href="#gratuit">Is it free?</a>
+    <a href="#licence">Is it open source?</a>
+    <a href="#compte">Do I need an account?</a>
+    <a href="#bureau">Browser or desktop app?</a>
+    <a href="#hors-ligne">Offline?</a>
+    <a href="#langues">Languages</a>
+    <a href="#c-fichiers">Files</a>
+    <a href="#fichiers">Where are my files?</a>
+    <a href="#format">File format</a>
+    <a href="#importer">Import from other software</a>
+    <a href="#pdf">PDF file from other software</a>
+    <a href="#c-rgie">RGIE and inspection</a>
+    <a href="#organisme">Does it replace the inspection body?</a>
+    <a href="#rgie">Which RGIE version?</a>
+    <a href="#neuf-existant">New or existing</a>
+    <a href="#pays">Other countries</a>
+    <a href="#c-fonctions">Features</a>
+    <a href="#longueurs">Cable lengths</a>
+    <a href="#imprimer">Printing the file</a>
+    <a href="#c-vie-privee">AI and privacy</a>
+    <a href="#ia">Is the AI required?</a>
+    <a href="#telemetrie">Telemetry</a>
+    <a href="#c-projet">The project</a>
+    <a href="#bug">Report a bug, contribute</a>
+    <a href="#soutenir">Support Voltaplan</a>
+  </nav>
+  <article>
+    <h2 id="c-general">General</h2>
+
+    <h3 id="gratuit">Is Voltaplan free?</h3>
+    <p>Yes, entirely: no subscription, no ads, no locked features. Saving and the PDF file are included, with no watermark and no project limit. <a href="#soutenir">Donations</a> are optional and unlock nothing.</p>
+
+    <h3 id="licence">Is it open source? Under which licence?</h3>
+    <p>Yes. The code is published under the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> licence on the <a class="repo-link" href="#">GitHub repository</a>. Any modified version that is distributed or offered online must publish its source code.</p>
+
+    <h3 id="compte">Do I need to create an account?</h3>
+    <p>No. Voltaplan has no account and no server. If you choose to save to Google Drive, OneDrive, Dropbox or GitHub, you sign in to <strong>your</strong> account with that service, directly from the app.</p>
+
+    <h3 id="bureau">Browser or desktop app?</h3>
+    <p>The web version runs in Chrome, Edge or Firefox, with nothing to install. Your browser can install it as an app on a computer, iPhone, iPad or Android device (see <a href="guide.html#installer">Install</a>). A desktop app for Windows, macOS and Linux is planned, but <strong>no desktop version has been published yet</strong>: the installers will appear on the repository's <a class="release-link" href="#">Releases</a> page.</p>
+
+    <h3 id="hors-ligne">Does it work offline?</h3>
+    <p>Yes, after the first visit: drawing, plan, board, calculations, RGIE check, PDF file, files and local versions work without Internet. Offline, the online AI, GitHub, Drive, OneDrive and Dropbox are unavailable; saves to these services are queued. The photo reading engine (≈ 18 MB) is downloaded the first time you read a photo, and then works offline too.</p>
+
+    <h3 id="langues">Which languages?</h3>
+    <p>The app and this website are available in French, Dutch, English and German. PDF import also recognises files written in these four languages.</p>
+
+    <h2 id="c-fichiers">Files</h2>
+
+    <h3 id="fichiers">Where are my files stored?</h3>
+    <p>Wherever you choose: on your device (a <code>.voltaplan</code> file, also on a USB stick or in a synced folder), in the browser, or in your own online storage: <strong>OneDrive, Google Drive, Dropbox or GitHub</strong>. No Voltaplan server ever receives your projects. Projects kept in the browser are erased if you clear its data: keep a file copy too. See <a href="guide.html#sauver">Saving and opening</a>.</p>
+
+    <h3 id="format">Is the file format open?</h3>
+    <p>Yes. A <code>.voltaplan</code> file is an ordinary ZIP archive: the project model as readable JSON (<code>project.json</code>), the original photos and PDFs as they are, and a README explaining how to recover the data without Voltaplan. The format is described in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. You can also export for Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) and as CSV.</p>
+
+    <h3 id="importer">Which files can I import?</h3>
+    <p><strong>File → Import from other software…</strong> (or the card on the My projects screen) recognises the source from the content, whatever the extension: Voltaplan project, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code> export) and PDF files from other software. A <code>.zip</code> archive containing one of these files is opened. An unrecognised file is refused with an explanation. Details: <a href="guide.html#importer">Import from other software</a>.</p>
+
+    <h3 id="pdf">Can I take over a PDF file made with other software?</h3>
+    <p>Yes, if it contains <strong>text</strong>: circuit table, sub-boards, points, plans (as background, with walls, doors and windows read from the drawing), board front view, title block information and measurements are taken over. The PDF is read in your browser, with no upload and no AI. A <strong>scanned PDF</strong>, or one whose text is drawn as images, cannot be read: it is refused with an explanation. What the text does not say is flagged when the file opens, for you to complete.</p>
+
+    <h2 id="c-rgie">RGIE and inspection</h2>
+
+    <h3 id="organisme">Does Voltaplan replace the approved inspection body?</h3>
+    <p>No. Voltaplan is an <strong>aid</strong> for drawing and checking: it is not an inspection body and issues no certification, attestation or conformity report. “No anomaly detected” only means that no anomaly was found among the rules actually checked, with the information entered. You remain responsible for the installation and the documents you sign; the inspection is still carried out by the approved body. See the <a href="terms.html">terms of use</a>.</p>
+
+    <h3 id="rgie">Which version of the RGIE is checked?</h3>
+    <p>The Belgian RGIE, <strong>Book 1</strong> (low and extra-low voltage installations), in force since 1/6/2020. Depending on the installation date entered, part by part, Voltaplan also applies the former RGIE (Royal Decree of 10 March 1981) or the rules for an old part (before 1/10/1981), as well as the dated amendments of Book 1. Symbols follow table 2.23 and the single-line diagram follows figure 3.1. Only part of the rules is checked, and they must be reviewed by a professional: the list and the open points are in the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">regulatory coverage</a> (in French).</p>
+
+    <h3 id="neuf-existant">New or existing installation?</h3>
+    <p>Both. For a <strong>new installation</strong>, you design the installation: all rules apply and non-compliances are blocking for the inspection file. For an <strong>existing installation</strong> (sale, upgrade), you survey what is in place: what is not seen stays “unknown” and is not counted as missing; safety rules remain blocking, the others become recommendations. An installation can mix parts from several periods.</p>
+
+    <h3 id="pays">What about other countries?</h3>
+    <p>Today, only the Belgian RGIE is available. The engine is designed for other countries (one country = one rules module, with its texts and lists), but no other regulation is included yet.</p>
+
+    <h2 id="c-fonctions">Features</h2>
+
+    <h3 id="longueurs">How are cable lengths estimated?</h3>
+    <p>From the layout plan: from the board to the points in diagram order, at right angles, with rises and drops according to mounting height (switch at 1.10 m, low socket at 0.25 m…), changes of floor and a 10 % margin. Condui cable traces are reused; for other imports, right-angle traces are created from the single-line diagram, shown as dashed lines, to adjust. A length you entered is never replaced. See <a href="guide.html#longueurs">Cable lengths</a>.</p>
+
+    <h3 id="imprimer">How do I print the file?</h3>
+    <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): working document, inspection file, anomaly report or complete technical file, in A4 or A3 landscape, with the parts of your choice (single-line diagram, plans, boards, legend, measurements, bill of materials, 1:1 labels…). Choose “Save as PDF” in the print dialog for a vector PDF. The inspection file carries a “DRAFT — …” mark while points remain to be dealt with. See <a href="guide.html#imprimer">Printing the file</a>.</p>
+
+    <h2 id="c-vie-privee">AI and privacy</h2>
+
+    <h3 id="ia">Is the AI required?</h3>
+    <p>No. Everything works without AI; it is off by default and each use must be allowed. If you turn it on, it goes through the provider you choose with <strong>your own key</strong> (Anthropic, or an OpenAI-compatible API: OpenAI, Gemini, Mistral), or through a <strong>local model</strong> (Ollama, LM Studio) with no key, in which case nothing leaves the computer. Only the photo concerned (board, meter plate or plan) is sent, directly from your device to the provider, never the customer's name or address. Any cost is yours. See <a href="guide.html#ia">AI</a> and the <a href="privacy.html">privacy policy</a>.</p>
+
+    <h3 id="telemetrie">Is there any telemetry or audience tracking?</h3>
+    <p>No: no telemetry, no statistics, no cookies or trackers added by Voltaplan. Only the website host (GitHub Pages) receives the usual requests to download the app, as for any website.</p>
+
+    <h2 id="c-projet">The project</h2>
+
+    <h3 id="bug">How do I report a bug or contribute?</h3>
+    <p>Open an issue on the <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub repository</a>. Issues are public: never attach a customer's file, photo or address. Report a security vulnerability through a <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">private report</a>. Code, rules, translations and tests are welcome: see the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">contribution guide</a> (a regulatory contribution cites its source; a contributor agreement is required before the first contribution).</p>
+
+    <h3 id="soutenir">How can I support Voltaplan?</h3>
+    <p>With an optional donation on <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: it funds development, maintenance and regulatory review time, and unlocks nothing. Reporting a bug or having a rule reviewed by a professional helps just as much.</p>
+  </article>
+</main>
+<footer>Voltaplan — free and open source — <a href="https://github.com/sponsors/SebastienBatteur">support the project</a> (optional) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Terms of use</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">source code</a></footer>
+<script src="../site.js"></script>
+</body>
+</html>

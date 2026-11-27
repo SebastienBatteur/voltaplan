@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voltaplan-Anleitung</title>
+<meta name="description" content="Anleitung für Voltaplan: Einpoliger Plan, Lageplan, Verteiler, RGIE-Prüfung, Druck, Speichern.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/guide.html">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/guide.html">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/guide.html">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/guide.html">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/guide.html">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Anleitung</a>
+    <a href="faq.html">FAQ</a>
+    <a href="#installer">Installieren</a>
+    <a class="repo-link" href="#">Quellcode</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Voltaplan über GitHub Sponsors unterstützen (freiwillig)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Unterstützen</span></a>
+    <a class="btn primary" href="../app/">App öffnen</a>
+    <span class="lang"><a href="../guide.html" data-lang="fr">FR</a><a href="../nl/guide.html" data-lang="nl">NL</a><a href="../en/guide.html" data-lang="en">EN</a><a href="guide.html" aria-current="true" data-lang="de">DE</a></span>
+  </nav>
+</div></header>
+<main class="doc">
+  <nav class="toc" aria-label="Inhalt">
+    <a href="#demarrer">Erste Schritte</a>
+    <a href="#installer">Installieren</a>
+    <a href="#ecran">Der Bildschirm</a>
+    <a href="#installation">Die Anlage beschreiben</a>
+    <a href="#unifilaire">Einpoliger Plan</a>
+    <a href="#plan">Lageplan</a>
+    <a href="#tableau">Verteiler</a>
+    <a href="#photo">Foto des Verteilers</a>
+    <a href="#maj">Aktualisieren</a>
+    <a href="#longueurs">Leitungslängen</a>
+    <a href="#materiel">Materialliste</a>
+    <a href="#controle">RGIE-Prüfung</a>
+    <a href="#calculs">Spannungsfall und Kurzschluss</a>
+    <a href="#mesures">Messungen</a>
+    <a href="#imprimer">Unterlagen drucken</a>
+    <a href="#sauver">Speichern und öffnen</a>
+    <a href="#nuage">Drive, OneDrive, Dropbox</a>
+    <a href="#importer">Aus anderer Software importieren</a>
+    <a href="#ia">KI (optional)</a>
+    <a href="#pays">Länder und Vorschriften</a>
+    <a href="#raccourcis">Tastenkürzel</a>
+    <a href="#confidentialite">Datenschutz</a>
+    <a href="#dev">Entwickeln</a>
+  </nav>
+  <article>
+    <h2 id="demarrer">Erste Schritte</h2>
+    <p>Am einfachsten: <a href="../app/">die App im Browser öffnen</a> (<span class="app-url">app/</span>). Sie lässt sich wie eine Anwendung installieren (Symbol „Installieren“ in der Adressleiste von Chrome oder Edge) und funktioniert danach ohne Verbindung.</p>
+    <p class="note">Die Oberfläche der App ist auf Deutsch verfügbar (Sprache oben rechts wählbar). Voltaplan prüft nach dem RGIE (belgische Vorschriften für elektrische Installationen) und ist für Anlagen in Belgien gedacht.</p>
+    <ol>
+      <li>Beim Öffnen bietet der Bildschirm <strong>Meine Projekte</strong> an: <strong>Neues Projekt</strong>, <strong>Bestehende Installation aufnehmen</strong>, <strong>Datei öffnen</strong>, <strong>Aus der Cloud oder dem Browser öffnen</strong> und <strong>Aus anderer Software importieren</strong> (siehe <a href="#importer">Importieren</a>). Ihre letzten Projekte sind dort aufgelistet: ein Klick öffnet sie wieder. Zurück gelangen Sie über <em>Datei → Meine Projekte (Startseite)</em> oder per Klick auf das Logo.</li>
+      <li>Ein neues Projekt entsteht in <strong>4 kleinen Schritten</strong>: Art der Anlage, Adresse und Kunde, Installateur (Voltaplan kann sich diese Angaben merken), Einspeisung (Spannung, Erdungssystem, Nennstrom des Hausanschluss-Leitungsschutzschalters). Jeder Schritt kann übersprungen werden: <em>Jetzt erstellen</em> und später ergänzen. Für eine neue Anlage können Sie von einem <strong>Musterhaus</strong> ausgehen: Beleuchtung, Steckdosen, Herd, Bad und Waschmaschine unter einem 30-mA-Fehlerstromschutzschalter sowie Erdung sind bereits vorhanden; passen Sie danach an die Wirklichkeit an.</li>
+      <li>Füllen Sie den Reiter <strong>Projekt</strong> aus: Adresse, Installateur, Spannung, EAN, Art der Anlage (neu oder bestehend). <em>Zählerschild lesen (Foto)…</em> liest Spannung und Phasenzahl von einem Foto des Typenschilds, auf diesem Gerät, und schlägt die Einspeisung vor.</li>
+      <li>Fügen Sie Verteiler, Fehlerstromschutzschalter, Stromkreise und Punkte in der <strong>Baumansicht</strong> links hinzu; der einpolige Plan zeichnet sich von selbst.</li>
+      <li>Platzieren Sie die Punkte im <strong>Lageplan</strong>, ordnen Sie die Geräte im <strong>Verteiler</strong> an und klicken Sie dann auf <strong>⟳ Aktualisieren</strong>.</li>
+      <li>Beheben Sie, was die <strong>RGIE-Prüfung</strong> meldet, dann <strong>Drucken / PDF</strong>.</li>
+    </ol>
+    <p class="note">Voltaplan ist eine Hilfe: Es ersetzt weder den amtlichen Text des RGIE (Buch 1) noch die Beurteilung durch die zugelassene Prüfstelle.</p>
+
+    <h2 id="installer">Installieren</h2>
+    <table>
+      <tr><th>System</th><th>Datei</th><th>Hinweis</th></tr>
+      <tr><td>Windows 10 / 11</td><td><code>.msi</code> oder <code>-setup.exe</code></td><td>SmartScreen kann warnen (unsigniertes Installationsprogramm): „Weitere Informationen“ → „Trotzdem ausführen“.</td></tr>
+      <tr><td>macOS (Apple Silicon oder Intel)</td><td><code>.dmg</code></td><td>Erstes Öffnen: Rechtsklick → Öffnen.</td></tr>
+      <tr><td>Linux</td><td><code>.AppImage</code>, <code>.deb</code>, <code>.rpm</code></td><td>AppImage: ausführbar machen, dann starten.</td></tr>
+    </table>
+    <p><strong>Es ist noch keine Desktop-Version veröffentlicht</strong>: Nutzen Sie bis dahin die Web-Version, die Ihr Browser wie eine Anwendung installieren kann (Chrome, Edge: Installationssymbol in der Adressleiste; iPhone und iPad: Teilen → „Zum Home-Bildschirm“; Android: Menü → „App installieren“). Sie funktioniert offline. Die signierten Desktop-Installationsprogramme werden auf der Seite <a class="release-link" href="#">Releases</a> des Repositorys veröffentlicht.</p>
+
+    <h2 id="ecran">Der Bildschirm</h2>
+    <ul>
+      <li><strong>Obere Leiste</strong>: Menü <strong>Datei</strong> (Meine Projekte (Startseite), Neu, Neue Aufnahme (bestehende Installation), Öffnen…, Aus anderer Software importieren…, Speichern, Speichern unter…, Lokale Versionen …, Aufnahme-Assistent (experimentell) …, Drucken / PDF), Schaltfläche Speichern (blau, wenn es Änderungen gibt), ⟳ Aktualisieren, Rückgängig / Wiederholen, Reiter, ⚙ KI, Sprache (Französisch, Niederländisch, Englisch, Deutsch). Auf kleinen Bildschirmen wandern Rückgängig, Wiederholen, Aktualisieren, KI und die Sprache in das Menü „⋯“.</li>
+      <li><strong>Reiter</strong>: Einpoliger Plan, Lageplan, Verteiler, Material, Projekt, RGIE-Prüfung (die rote Zahl = Anzahl der Nichtkonformitäten).</li>
+      <li><strong>Links</strong>: die Baumansicht der Anlage und die Eigenschaften des ausgewählten Elements. Die Schaltfläche ‹ blendet die ganze Spalte aus (› öffnet sie wieder). Klicken Sie auf den Titel „Anlage“ oder „Eigenschaften“, um den Teil einzuklappen; ziehen Sie die Trennlinie, um die Höhe aufzuteilen, und den rechten Rand der Spalte, um sie zu verbreitern. Die Anordnung wird auf diesem Computer gespeichert.</li>
+      <li><strong>Elemente</strong> (unter „Eigenschaften“): die Palette. Im einpoligen Plan, in der Baumansicht oder im Verteiler: die Elemente des einpoligen Plans nach Gruppen (Verteiler und Schutzeinrichtungen, Leitungen, Beleuchtung, Steckdosen und Geräte, Bedienung, Gebäudeautomation und Sonstiges); ein Klick fügt das Element unter dem ausgewählten hinzu (ausgegraut, wenn es dort nicht angeschlossen werden kann). Im Lageplan: die Werkzeuge (Wände, Türen, Fenster, Texte, Möbel nach Raum), die Elemente des einpoligen Plans, die beim nächsten Klick platziert werden, und <em>Noch nicht im Plan</em>: was noch zu platzieren ist, nach Stromkreis geordnet.</li>
+      <li><strong>Verknüpfte Auswahl</strong>: Ein Element, das in der Baumansicht, im einpoligen Plan, im Lageplan oder im Verteiler gewählt wird, ist überall ausgewählt. <strong>Seine ganze Kette leuchtet orange</strong>: was es bis zum Zähler versorgt und alles, was es versorgt; der Rest des einpoligen Plans wird blasser.</li>
+      <li><strong>Navigieren</strong>: Ziehen aus einem leeren Bereich verschiebt den ganzen Plan oder Verteiler (im einpoligen Plan: überall ziehen). <strong>Langes Drücken</strong> (eine halbe Sekunde ohne Bewegung, mit der Maus oder dem Finger), dann ziehen: verschiebt die ganze Ansicht, auch wenn Sie auf einem Symbol, einer Wand oder einem Gerät beginnen. Schnelles Ziehen auf einem Element verschiebt dieses. Mausrad = Zoom, „Einpassen“ = alles anzeigen.</li>
+    </ul>
+
+    <h2 id="installation">Die Anlage beschreiben</h2>
+    <p>Die Anlage ist ein Baum: Ursprung → (Zähler) → Schutzeinrichtungen → Verteiler → Fehlerstromschutzschalter → Leitungsschutzschalter → Leitungen → Punkte (Steckdosen, Schalter, Brennstellen, Geräte…).</p>
+    <p><strong>Ein Element hinzufügen</strong> — mehrere Wege, die nur anbieten, was unter dem gewählten Element angeschlossen werden kann:</p>
+    <ol>
+      <li><strong>Rechtsklick</strong> auf ein Symbol des einpoligen Plans (z. B. einen Leitungsschutzschalter) → „Hinzufügen zu“ → Leitung;</li>
+      <li>das <strong>＋</strong> am Ende einer Zeile der Baumansicht (sichtbar beim Überfahren oder in der ausgewählten Zeile);</li>
+      <li>die Schaltfläche <strong>Hinzufügen…</strong> oben in den Eigenschaften;</li>
+      <li>die Palette <strong>Elemente</strong> der linken Spalte;</li>
+      <li>im Lageplan ein <strong>Rechtsklick</strong> an der Stelle des Elements: Sie wählen das Element und dann seinen Platz im einpoligen Plan (unter welcher Leitung, welchem Schalter… oder ein neuer Stromkreis eines Verteilers). Voltaplan schlägt den Stromkreis des nächstgelegenen Elements im Lageplan vor. Das Element wird dem einpoligen Plan hinzugefügt und an der geklickten Stelle im Lageplan platziert.</li>
+    </ol>
+    <p><strong>Schutzeinrichtung in Reihe</strong>: Die Schaltfläche <em>＋ Schutzeinrichtung in Reihe</em> eines Leitungsschutzschalters fügt direkt darunter eine zweite Schutzeinrichtung ein, die seine Leitungen übernimmt, zum Beispiel einen vernetzten Leitungsschutzschalter mit Messung (EARU, Zigbee) hinter dem Leitungsschutzschalter des Stromkreises. Sie bleibt im selben Stromkreis: kein neuer Buchstabe, die Nummerierung der Punkte ändert sich nicht. Geben Sie ihr als Nennstrom den eingestellten Schwellenwert, höchstens den des Leitungsschutzschalters darüber.</p>
+    <p>Das neue Element ist ausgewählt: Füllen Sie seine Eigenschaften aus. Beispiel für einen Steckdosenstromkreis: Rechtsklick auf den Verteiler → Schutzeinrichtung (Leitungsschutzschalter 20 A); dann auf diesen Leitungsschutzschalter → Leitung (VOB 3G2,5); dann auf die Leitung → Steckdose, so oft wie nötig. Schließlich setzt <strong>⟳ Aktualisieren</strong> den Leitungsschutzschalter in den Verteiler und die Steckdosen in den Lageplan.</p>
+    <ul>
+      <li><strong>Schutzeinrichtung</strong>: Gerät (Leitungsschutzschalter, Fehlerstromschutzschalter, FI/LS-Schalter, Sicherung, Lasttrennschalter), Nennstrom, Polzahl, Kennlinie, Schaltvermögen, Empfindlichkeit und Typ des Fehlerstromschutzschalters, Anzahl der Module, Herstellerreferenz, „alter Teil“ (vor dem 1.10.1981).</li>
+      <li><strong>Leitung</strong>: Typ (VOB, XVB…), Querschnitt, Anzahl der Leiter, im Rohr, Verlegeart, <strong>Länge</strong> (für den Spannungsfall und die Materialliste; eingegeben oder anhand des Lageplans geschätzt: siehe <a href="#longueurs">Leitungslängen</a>).</li>
+      <li><strong>Ort</strong>: der Raum (z. B. „Küche“). Er dient dazu, die Punkte im Lageplan in der Nähe des Raumnamens zu platzieren.</li>
+      <li><strong>RGIE-Nummerierung</strong> (3.1.2.1): Stromkreise A, B, C…; Punkte A1, A2… der Reihe nach ab der Schutzeinrichtung; ein Schalter erhält die Nummer des Punktes, den er schaltet. Ein Buchstabe kann vorgegeben werden.</li>
+    </ul>
+
+    <h2 id="unifilaire">Einpoliger Plan</h2>
+    <p>Automatisch <strong>von unten nach oben</strong> gezeichnet (Einspeisung unten, wie Abbildung 3.1 des RGIE); die Schaltfläche „Richtung“ wechselt zu oben → unten. Die Symbole folgen Tabelle 2.23 des RGIE; die Legende der verwendeten Symbole wird mit den Unterlagen gedruckt. Ein roter oder orangefarbener Punkt auf einem Symbol = Feststellung der Prüfung.</p>
+
+    <h2 id="plan">Lageplan</h2>
+    <ul>
+      <li><strong>Wände</strong> (rechte Winkel, eingerastete Enden, Maße), <strong>Türen</strong>, Doppeltüren, Fenstertüren, <strong>Schiebetüren</strong>, <strong>Fenster</strong>, <strong>Raumnamen</strong>, mehrere Seiten (Geschosse).</li>
+      <li><strong>Eine Tür oder ein Fenster ändern</strong>: Klicken Sie darauf (Laibung, Flügel oder Öffnungsbogen), dann im Bereich: Typ (Tür, Doppeltür, Fenstertür, Schiebetür, Fenster…), Breite, <em>Zur anderen Seite öffnen</em> und <em>Scharnier auf der anderen Seite</em>; bei einer Schiebetür <em>In die andere Richtung schieben</em>. Ein Klick daneben hebt die Auswahl auf.</li>
+      <li><strong>Planhintergrund</strong>: Foto, PDF oder <strong>DXF-Plan</strong> (Export aus AutoCAD, ArchiCAD, SketchUp, LibreCAD…). Ein DXF mit angegebener Einheit wird <strong>direkt im richtigen Maßstab</strong> platziert; sonst verwenden Sie <em>Skalieren</em>. Ein „binäres“ DXF muss zuerst als Text-DXF (ASCII) neu gespeichert werden.</li>
+      <li><strong>Stromkreisfarben</strong>: Die Schaltfläche <em>Stromkreisfarben</em> gibt jedem Stromkreis eine Farbe, im Lageplan und im einpoligen Plan, mit Legende. Praktisch, um auf einen Blick zu sehen, welche Steckdose an welchem Leitungsschutzschalter hängt. Die gedruckten Unterlagen bleiben schwarz.</li>
+      <li><strong>Für einen Foto- oder PDF-Hintergrund</strong>: <em>Skalieren</em>: Klicken Sie zwei Punkte an und geben Sie ihren tatsächlichen Abstand an. <em>Entzerren (4 Ecken)</em>: Klicken Sie die 4 Ecken eines bekannten Rechtecks auf einem schräg aufgenommenen Foto an. <em>Wände nachzeichnen</em>: automatische Erkennung von Wänden, Türen und Fenstern, zu prüfen. <em>Hintergrund ausrichten</em>: ein aktuelles Foto über den Plan legen, um Änderungen zu sehen.</li>
+      <li><strong>Raumnamen lesen</strong>: liest die auf dem Planhintergrund geschriebenen Raumnamen (auf diesem Gerät, kein Bild wird gesendet) und setzt sie in den Plan, zu prüfen.</li>
+      <li><strong>Raum ausstatten</strong>: Wählen Sie den Namen eines Raums (Schlafzimmer, Küche, Bad…); Voltaplan schlägt die übliche Ausstattung dieses Raumtyps zum Ankreuzen vor, sowie typische Möbel. Die Punkte werden an ihrem Platz gesetzt, aber <strong>nicht angeschlossen</strong>: Verbinden Sie sie anschließend mit ihren Stromkreisen. Das ist keine Liste des RGIE, nur ein Ausgangspunkt (<kbd>Strg</kbd>+<kbd>Z</kbd> macht es rückgängig).</li>
+      <li><strong>Leitungswege</strong>: Aus einem Import (Condui) übernommene oder anhand des einpoligen Plans erzeugte Leitungswege werden gestrichelt gezeichnet; automatisch erzeugte sind blasser und anzupassen (siehe <a href="#longueurs">Leitungslängen</a>).</li>
+      <li><strong>Möbel</strong>: maßstabsgetreue Piktogramme (Betten, Sofa, Küche, Sanitär…). Aus anderer Software als Bilder importierte Möbel (Trikker) lassen sich ebenfalls auswählen: ziehen zum Verschieben, Breite, Tiefe, Winkel, Drehung um 90°, duplizieren, löschen oder <em>Durch Piktogramm ersetzen</em> (gleicher Platz, gleiche Größe).</li>
+      <li><strong>Elektrische Symbole</strong>: „Im Plan platzieren“ aus den Eigenschaften oder aus der Liste <em>Noch nicht im Plan</em> der Palette, oder Rechtsklick in den Plan, um ein neues hinzuzufügen; dann ziehen, drehen, entfernen. Brennstellen, Leuchtstoffröhren, Geräte, Motoren und quadratische Elemente werden ohne Anschlussstrich gezeichnet. Steckdosen, Schalter, Taster, Klingeln und Wandleuchten behalten ihren kleinen Strich, <strong>automatisch zur nächstgelegenen Wand gedreht</strong> (er folgt, wenn man sie verschiebt oder die Wand sich bewegt); „Zu den Wänden ausrichten“ wendet das auf die Elemente eines importierten Plans an, und eine Drehung von Hand beendet die automatische Ausrichtung dieses Elements.</li>
+    </ul>
+
+    <h2 id="tableau">Verteiler</h2>
+    <p>DIN-Reihen (Anzahl der Reihen und Module pro Reihe in den Eigenschaften des Verteilers). Die Geräte haben ihre <strong>tatsächliche Breite</strong>: ein Leitungsschutzschalter 1P+N kann je nach Baureihe 1 oder 2 Module breit sein, ein 2P-Leitungsschutzschalter 2, ein 4P-Fehlerstromschutzschalter 4 — unter „Module“ anzugeben. Ziehen und Ablegen zwischen Reihen und Reserve; „Automatische Anordnung“ ordnet alles in der Reihenfolge des Baums. Die Beschriftungen (Kennzeichen + Verwendung) werden im Maßstab 1:1 gedruckt.</p>
+
+    <h2 id="photo">Foto des Verteilers</h2>
+    <ol>
+      <li>„Foto des Verteilers …“: Wählen Sie ein von vorne aufgenommenes Foto.</li>
+      <li>„Foto ausrichten (Reihen)“: Klicken Sie für jede Reihe den linken Rand des ersten Moduls und dann das Ende der Reihe an, auf halber Höhe der Geräte.</li>
+      <li>„Nach Foto anordnen“: Ohne KI erkennt Voltaplan in jeder Reihe die belegten Module (eine Blindabdeckung ist gleichmäßig, eine leere Schiene dunkler) und die Trennungen zwischen Geräten und setzt dann die Geräte des Projekts dorthin. Ein bereits platziertes Gerät (von Hand oder durch die KI) behält seinen Platz, wenn das Foto dort ein Gerät zeigt; Schutzeinrichtungen haben Vorrang vor Relais und Automationsmodulen. Danach: zuerst die Geräte mit 2 oder mehr Modulen, dort wo das Foto ein Gerät dieser Breite zeigt; dann die einmoduligen, der Reihe nach, auf den übrigen belegten Modulen. Was keinen Platz findet, bleibt in der Reserve, und die auf dem Foto belegten Plätze ohne Gerät des Projekts werden aufgelistet, jeweils mit einem Menü „Zuordnen zu …“, das alle Elemente des einpoligen Plans dieses Verteilers anbietet, oder „＋ Neu: … in diesem Verteiler“. Das ist ein Vorschlag: Das Foto verrät weder Typ noch Nennstrom; prüfen und mit der Maus verschieben („Rückgängig“ macht es rückgängig).</li>
+      <li>„Mit Foto vergleichen“: Ohne KI misst Voltaplan die Trennungen zwischen Geräten und meldet die, deren Breite nicht übereinstimmt (z. B. 1 Modul im Projekt, 2 auf dem Foto). Die gezeichneten Geräte werden durchsichtig, um mit dem Auge zu vergleichen.</li>
+      <li>„Foto lesen“: Ohne KI zerlegt eine lokale Lesung (auf diesem Gerät, kein Bild wird gesendet) die Geräte und liest lesbare Beschriftungen, Nennströme und Empfindlichkeiten; sie werden mit geringer Sicherheit vorgeschlagen, zu prüfen. Die lokale Lesung ist zuverlässig für gedruckte Beschriftungen, weniger für die Nennströme kleiner Module auf einem Foto des ganzen Verteilers. Ist die KI eingerichtet und entsperrt, wird dieselbe Schaltfläche zu „Foto lesen (KI)“: Die KI liest Nennströme, Kennlinien und Empfindlichkeiten, ordnet die Geräte an ihrem Platz an und vergleicht sie mit dem Projekt (siehe <a href="#ia">KI</a>).</li>
+    </ol>
+
+    <h2 id="maj">Aktualisieren (neue Anlage, hinzugefügte Stromkreise)</h2>
+    <p>Nachdem Sie die Anlage erstellt oder Stromkreise hinzugefügt haben, klicken Sie auf <strong>⟳ Aktualisieren</strong>:</p>
+    <ul>
+      <li>neue Geräte werden auf den ersten freien Platz im Verteiler gesetzt, <strong>ohne die anderen zu verschieben</strong> (ein noch nie angeordneter Verteiler wird vollständig geordnet); ist kein Platz mehr, wird das gemeldet;</li>
+      <li>neue Punkte werden im Lageplan <strong>in der Nähe ihres Raumnamens</strong> platziert; die übrigen kommen in eine Spalte „zu platzieren“ links vom Plan;</li>
+      <li>die <strong>Leitungslängen</strong> werden anhand des Lageplans geschätzt (siehe <a href="#longueurs">Leitungslängen</a>);</li>
+      <li>eine <strong>Revision</strong> wird den Unterlagen mit der Liste der hinzugefügten Stromkreise hinzugefügt (RGIE 3.1.2: eine Erweiterung muss in die Pläne eingetragen werden);</li>
+      <li>Nummerierung, Beschriftungen, Materialliste und Prüfung werden neu berechnet.</li>
+    </ul>
+    <p>„Rückgängig“ im Ergebnisfenster macht alles auf einmal rückgängig.</p>
+
+    <h2 id="longueurs">Leitungslängen</h2>
+    <p><strong>⟳ Aktualisieren</strong> und die Schaltfläche <strong>Längen schätzen</strong> (Reiter Material) schätzen die Länge jeder Leitung anhand des Lageplans: vom Verteiler zum ersten Punkt, dann von Punkt zu Punkt in der Reihenfolge des Plans, rechtwinklig, mit 10 % Zuschlag. Platzieren Sie den Verteiler im Lageplan: ohne ihn wird der Weg ab dem ersten Punkt gezählt und bleibt zu kurz (das wird gemeldet).</p>
+    <ul>
+      <li><strong>Steig- und Fallleitungen</strong> nach Montagehöhe: Schalter und Taster in Griffhöhe (1,10 m), von der Decke versorgt, Zugschalter oben (2,30 m), tiefe Steckdose (0,25 m) von unten versorgt, Wandleuchte auf 1,90 m; Geschosswechsel werden mitgezählt.</li>
+      <li><strong>Leitungswege</strong>: Aus Condui übernommene Wege (von Punkt zu Punkt über die Zwischenpunkte) werden gestrichelt gezeichnet und von der Schätzung verfolgt; der Abgang vom Verteiler, den Condui nicht zeichnet, bleibt geschätzt. Bei einem Import ohne Leitungswege (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, nicht gezeichnete Stromkreise aus Condui) werden rechtwinklige Wege anhand des einpoligen Plans erzeugt, vom Verteiler zum ersten Punkt und dann von Punkt zu Punkt; sie werden blasser gezeichnet und als „anzupassen“ gekennzeichnet.</li>
+      <li>Eine geschätzte Länge ist in den Eigenschaften mit <em>Länge anhand des Lageplans geschätzt</em> und in der Materialliste mit „≈“ gekennzeichnet. <strong>Eine eingegebene Länge wird nie ersetzt</strong>, und ihre Eingabe entfernt die Kennzeichnung.</li>
+    </ul>
+    <p>Das RGIE verlangt die Länge der Leitungen im Plan nur für nicht häusliche Anlagen; im Wohnbereich genügen Typ, Querschnitt, Anzahl der Leiter und Verlegeart. Die Länge dient vor allem der Berechnung des Spannungsfalls und der Materialliste.</p>
+
+    <h2 id="materiel">Materialliste</h2>
+    <p>Reiter <strong>Material</strong>: Das Material ist nach Kategorie gruppiert und summiert (Stückzahl, Abschnitte und Gesamtlänge der Leitungen). Es wird nach seinen <strong>Merkmalen und seiner europäischen Norm</strong> bezeichnet (z. B. „Leitungsschutzschalter 2P C20 A 3 kA — EN 60898-1“): Herstellerreferenzen und sogar Baureihen ändern sich von Land zu Land. Leitungen behalten ihre nationale Bezeichnung mit der harmonisierten Entsprechung, wenn es eine gibt (VOB ≈ H07V-U/R). Jedem Element kann eine Herstellerreferenz hinzugefügt werden. CSV-Export für eine Tabellenkalkulation; Seite „Materialliste“ in den gedruckten Unterlagen. <strong>Stromkreisliste (CSV)</strong>: Buchstabe, Name, Schutzeinrichtung, Fehlerstromschutzschalter, Leitung, Anzahl der Punkte und Räume jedes Stromkreises, wie in den PDF-Unterlagen. <strong>Längen schätzen</strong>: siehe <a href="#longueurs">Leitungslängen</a>. Die Schaltfläche <strong>Nach Raum</strong> ordnet das Material Raum für Raum (nach dem Ort jedes Elements oder dem Raum im Lageplan): nützlich zur Vorbereitung der Baustelle oder eines Angebots.</p>
+
+    <h2 id="controle">RGIE-Prüfung</h2>
+    <p><strong>Eine Hilfe bei der Prüfung</strong>: Sie ersetzt weder den Text des RGIE noch die Kontrolle durch eine zugelassene Prüfstelle. Jede Feststellung trägt einen <strong>Status</strong>, eine <strong>Schwere</strong> (hohe, mittlere, geringe Gefahr) und gegebenenfalls den Vermerk <strong>blockierend</strong>.</p>
+    <table>
+      <tr><th>Status</th><th>Bedeutung</th></tr>
+      <tr><td>Nichtkonformität festgestellt</td><td>Nichtkonformität mit der anwendbaren Ausgabe des RGIE; blockierend für einen neuen Teil, und für einen bestehenden Teil bei hoher Gefahr (Erdung, Fehlerstromschutzschalter, Leitungsschutz…)</td></tr>
+      <tr><td>Unzureichende Angaben</td><td>notwendige Angabe fehlt oder ist unbekannt (Nennstrom, Querschnitt, Empfindlichkeit…)</td></tr>
+      <tr><td>Mögliche Anomalie</td><td>nach einer abgeleiteten oder nicht bestätigten Angabe (zum Beispiel einem von einem Foto gelesenen Wert)</td></tr>
+      <tr><td>Widersprüchliche Angaben</td><td>Zeichnung und eine Erklärung (oder zwei Quellen) stimmen nicht überein</td></tr>
+      <tr><td>Warnung</td><td>zu untersuchender Punkt (geschätzter Spannungsfall, Selektivität…)</td></tr>
+      <tr><td>Manuelle Prüfung erforderlich</td><td>Prüfung vor Ort oder Auslegung nötig (Feuchtraum aus dem Raumnamen erraten, Ladestation, Photovoltaik, Messungen)</td></tr>
+      <tr><td>Empfehlung</td><td>empfohlene, für einen bestehenden Teil nicht verlangte Instandsetzung</td></tr>
+      <tr><td>Abweichung</td><td>Feststellung, die durch eine von Ihnen mit Begründung eingegebene Abweichung abgedeckt ist</td></tr>
+    </table>
+    <p><strong>Bestehende Anlage</strong>: Ein in der Zeichnung fehlendes Element gilt nicht als in der realen Anlage fehlend. Ein nicht gezeichneter Erder, Haupt-Fehlerstromschutzschalter oder 30-mA-Fehlerstromschutzschalter ergibt „Unzureichende Angaben“, nicht blockierend, mit den Schaltflächen <em>Als vorhanden bestätigen</em>, <em>Als fehlend bestätigen</em> und <em>Ich weiß es nicht</em>. Ein bestätigtes Fehlen ergibt wieder eine Nichtkonformität. Bei einer neuen Anlage bleibt die Zeichnung maßgeblich. Die Anforderungen an die Unterlagen (Pflichtangaben, nicht ausgefüllte Werte) werden getrennt dargestellt, nie als Nichtkonformitäten der Anlage.</p>
+    <p><strong>Ausgabe des RGIE</strong>: Reiter Projekt, geben Sie das <strong>Ausführungsdatum</strong> an („1995“, „2024-03-15“). Vor dem 1.10.1981: alter Teil; bis 31.5.2020: altes RGIE (KE vom 10. März 1981); seit 1.6.2020: Buch 1. Eine Anlage vereint oft mehrere Generationen: In den Eigenschaften eines Verteilers oder Leitungsschutzschalters wenden <strong>Ausgeführt am</strong> und <strong>Neuer oder bestehender Teil</strong> die Regeln ihrer Zeit nur auf diesen Teil an (ein 2024 zu einer Anlage von 1990 hinzugefügter Stromkreis folgt Buch 1). Datierte Änderungen von Buch 1 werden nach dem Datum des Arbeitsbeginns angewandt: zum Beispiel seit dem 1.3.2025 Steckdosen von höchstens 16 A mit Kinderschutz (IPXX-D), außer einer Steckdose, die einem bestimmten Gerät vorbehalten ist.</p>
+    <p><strong>Bad</strong>: Geben Sie <strong>Raum mit Badewanne oder Dusche</strong> (ja / nein) in den Eigenschaften des Stromkreises oder Punktes an. Ein aussagekräftiger Raumname („Bad“, „Dusche“) ist nur ein Hinweis, gemeldet als „Manuelle Prüfung erforderlich“.</p>
+    <p><strong>Abweichung</strong>: Schaltfläche <strong>Abweichung…</strong> unter einer Feststellung, Begründung erforderlich, mit Referenz (Artikel, Protokoll der zugelassenen Prüfstelle). Die Feststellung ist nicht mehr blockierend, bleibt aber mit ihrer Begründung im Bereich und in den Unterlagen sichtbar. Die Schaltflächen <strong>Einpoliger Plan</strong>, <strong>Lageplan</strong> und <strong>Verteiler</strong> einer Feststellung öffnen das Element in der gewählten Ansicht. Ist die Korrektur offensichtlich, schlägt eine Schaltfläche sie unter der Feststellung vor (zum Beispiel „20 A wählen“, „Steckdose mit Kinderschutz“, „FI-Schutzschalter Typ A“, „Unter den 30-mA-FI setzen“); „Rückgängig“ macht sie rückgängig. Eine fehlende Pflichtangabe der Unterlagen führt zum Reiter Projekt.</p>
+    <p>Unter anderem geprüfte Regeln: Pflichtangaben der Unterlagen, Erdung und Messungen, Haupt-Fehlerstromschutzschalter und 30 mA (Feuchträume, Waschmaschine…), Selektivität, Querschnitt ↔ Nennstrom, Anzahl der Steckdosen pro Stromkreis, eigene Stromkreise, Kinderschutz und Erdung der Steckdosen, <strong>zweipolige Leitungsschutzschalter im 3 × 230-V-Netz</strong>, Spannungsfall und Kurzschluss. Die Einzelheiten und die noch zu begutachtenden Punkte stehen in der <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">regulatorischen Abdeckung</a> (auf Französisch).</p>
+
+    <h2 id="calculs">Spannungsfall und Kurzschluss</h2>
+    <p>Unten im Reiter Prüfung gibt eine Tabelle für jeden Stromkreis an: Länge bis zum entferntesten Punkt, Querschnitt, Spannungsfall, minimaler Kurzschlussstrom und maximal geschützte Länge. Konventionelles Verfahren nach IEC 60364 (eine Schätzung, keine Schutzstudie): ρ = 0,0225 Ω·mm²/m für Kupfer (0,036 für Aluminium), Strom = Nennstrom der Schutzeinrichtung, 80 % der Spannung für den Kurzschluss; Grenzen 3 % (Beleuchtung) und 5 % (sonstige). Haben alle Verbraucher eine Leistung, wird der Spannungsfall auch mit dem tatsächlichen Strom berechnet. Dafür ist die <strong>Länge</strong> jeder Leitung nötig: eingegeben oder anhand des Lageplans geschätzt (siehe <a href="#longueurs">Leitungslängen</a>).</p>
+
+    <h2 id="mesures">Messungen</h2>
+    <p>Reiter Projekt: Erdungswiderstand, Isolation, Schutzpotentialausgleich, Prüfung jedes Fehlerstromschutzschalters (Auslösezeit ≤ 300 ms, 500 ms für einen Typ „S“, geschützte Stromkreise), Datum und Messgerät. Sie werden geprüft und auf der Seite „Messungen“ gedruckt.</p>
+
+    <h2 id="imprimer">Unterlagen drucken</h2>
+    <p><strong>Drucken / PDF</strong> (<kbd>Strg</kbd>+<kbd>P</kbd>): Wählen Sie zuerst die <strong>Dokumentart</strong>. <em>Arbeitsdokument</em>: immer druckbar, auch bei Mängeln. <em>Abnahmeunterlagen</em>: für die zugelassene Prüfstelle; Vermerk „ENTWURF — NICHTKONFORMITÄTEN ZU BEHEBEN“, „ENTWURF — PRÜFUNGEN AUSSTEHEND“ oder „ENTWURF — UNTERLAGEN UNVOLLSTÄNDIG“, solange noch offene Punkte bestehen. <em>Mängelbericht</em>: alle Feststellungen, die Liste der Stromkreise und die Messungen. <em>Vollständige technische Unterlagen</em>: alle Teile. Danach: Format A4 oder A3 quer und Auswahl der Teile (einpoliger Plan, Lagepläne, Verteiler, Stromkreise, Legende, Messungen, Materialliste, Beschriftungen 1:1, Feststellungen). Jede Seite hat das Schriftfeld: Dokumentart, Dossiernummer, Version und Datum, Installateur (Name, Qualifikation, MwSt.-Nr.), Adresse, Spannung, EAN, Unterschriftsfelder. Wählen Sie im Druckdialog „Als PDF speichern“ für ein Vektor-PDF. Drucken Sie die Beschriftungen mit 100 % (ohne „an Seite anpassen“).</p>
+    <p><strong>QR-Etiketten für den Verteilerkasten</strong> (Teil <em>QR-Etiketten für den Verteilerkasten</em>): 4 Etiketten von 9 × 5,5 cm zum Aufkleben in den Verteilerkasten. Geben Sie im Reiter Projekt einen <strong>Link zum Online-Dossier</strong> an (zum Beispiel einen Freigabelink von Drive oder OneDrive), öffnet der QR-Code dieses Dossier; sonst enthält er das Wesentliche (Adresse, Installateur, Telefon, Dossiernummer), ohne Verbindung lesbar. Voltaplan hostet nichts.</p>
+    <p><strong>Stand der Unterlagen</strong> (Reiter Projekt): <em>In Arbeit</em>, <em>Bereit zur Prüfung</em> oder <em>Geprüft</em>. Er wird in der Liste „Meine Projekte“ angezeigt.</p>
+
+    <h2 id="sauver">Speichern und öffnen</h2>
+    <table>
+      <tr><th>Speicherort</th><th>Wofür</th></tr>
+      <tr><td>Dieses Gerät</td><td>Datei <code>.voltaplan</code>; mit Chrome / Edge überschreibt „Speichern“ dieselbe Datei</td></tr>
+      <tr><td>Browser (unter „Weitere Speicherorte“)</td><td>in diesem Browser gespeicherte Projekte + <strong>automatischer Entwurf</strong> alle 20 s, beim erneuten Öffnen angeboten</td></tr>
+      <tr><td>GitHub (unter „Weitere Speicherorte“)</td><td>Datei in einem Repository (Versionsverlauf); persönliches Token, mit einer Passphrase verschlüsselt</td></tr>
+      <tr><td>Drive, OneDrive, Dropbox</td><td>siehe unten</td></tr>
+    </table>
+    <p><strong>Die Datei <code>.voltaplan</code></strong> ist ein gewöhnliches ZIP-Archiv: das Projektmodell als lesbares JSON (<code>project.json</code>), die Originalfotos und -PDFs unverändert und eine LIESMICH-Datei, die erklärt, wie man die Daten ohne Voltaplan zurückgewinnt. Ältere Projekte (einzelne JSON-Datei) lassen sich weiterhin öffnen. <em>Datei → Lokale Versionen …</em> bewahrt die letzten Versionen jedes Projekts auf diesem Gerät auf.</p>
+    <p><strong>Exporte</strong> (Speichern unter… → Dieses Gerät): <em>Für Trikker exportieren (.trik)</em>, <em>Eendraadschema exportieren (.eds)</em>, <em>Im Format v1 exportieren…</em> (für ältere Versionen von Voltaplan) und, mit Chrome oder Edge am Computer, <em>In Ordner exportieren…</em> (gewöhnliche Dateien in einem Ordner).</p>
+
+    <h3 id="plusieurs">Zu mehreren arbeiten</h3>
+    <p>Voltaplan hat kein Team-Konto: Man teilt einfach die Projektdatei. Am einfachsten ist ein <strong>freigegebener Ordner</strong> (Drive, OneDrive, Dropbox oder ein Netzlaufwerk), geöffnet mit <em>Dieses Gerät</em> oder der Desktop-Anwendung. Es bearbeitet jeweils eine Person. Wurde die Datei seit Ihrem letzten Speichern anderswo geändert, <strong>überschreibt Voltaplan nichts</strong>: Es warnt Sie und behält Ihre Version (Kopie daneben oder lokale Versionen). Einer Kollegin oder einem Kollegen, die nur lesen sollen, senden Sie das PDF der Unterlagen.</p>
+
+    <h2 id="nuage">Drive, OneDrive, Dropbox</h2>
+    <p>Voltaplan spricht direkt aus Ihrem Browser mit dem Dienst; es gibt keinen Voltaplan-Server dazwischen. Jeder Dienst verlangt, die <strong>Anwendung einmal zu registrieren</strong>, um eine Kennung (öffentlich, ohne Geheimnis) zu erhalten. Die anzugebende Weiterleitungsadresse wird in Voltaplan angezeigt (Speichern unter… → Drive, OneDrive, Dropbox): Es ist die Adresse der Anwendung, gefolgt von <code>oauth.html</code>.</p>
+    <ul>
+      <li><strong>OneDrive</strong>: <a href="https://entra.microsoft.com">entra.microsoft.com</a> → App registrations → New registration; Konten in jedem Verzeichnis und persönliche Microsoft-Konten; Plattform <em>Single-page application (SPA)</em> mit der Weiterleitungsadresse; Berechtigung Microsoft Graph <code>Files.ReadWrite.AppFolder</code>. Kopieren Sie die „Application (client) ID“.</li>
+      <li><strong>Dropbox</strong>: <a href="https://www.dropbox.com/developers/apps">dropbox.com/developers/apps</a> → Create app; <em>Scoped access</em>, <em>App folder</em>; Reiter Permissions: <code>files.content.read</code> und <code>files.content.write</code>; Reiter Settings: Redirect URI. Kopieren Sie den „App key“.</li>
+      <li><strong>Google Drive</strong>: <a href="https://console.cloud.google.com">console.cloud.google.com</a> → Google Drive API aktivieren; OAuth-Zustimmungsbildschirm; Credentials → OAuth-Client-ID vom Typ <em>Web application</em>, JavaScript-Ursprung = Adresse der Website, Weiterleitungs-URI = Adresse von <code>oauth.html</code>; Bereich <code>drive.file</code>. Kopieren Sie die „Client ID“.</li>
+    </ul>
+    <p>Fügen Sie die Kennung in Voltaplan ein, dann „Projekte auflisten“ oder „Hier speichern“: Ein Fenster des Dienstes öffnet sich zur Anmeldung. Das Token bleibt nur während der Sitzung im Speicher. Für eine veröffentlichte Version kann die Kennung beim Kompilieren festgelegt werden (<code>VITE_ONEDRIVE_CLIENT_ID</code>, <code>VITE_DROPBOX_CLIENT_ID</code>, <code>VITE_GOOGLE_CLIENT_ID</code>).</p>
+
+    <h2 id="importer">Aus anderer Software importieren</h2>
+    <p>Ein einziger Eintrag: <strong>Datei → Aus anderer Software importieren…</strong> oder die Karte <strong>Aus anderer Software importieren</strong> auf dem Bildschirm Meine Projekte. Voltaplan erkennt die Quelle <strong>am Inhalt</strong> der Datei, unabhängig von ihrer Endung:</p>
+    <table>
+      <tr><th>Quelle</th><th>Was übernommen wird</th></tr>
+      <tr><td>Voltaplan-Projekt</td><td>alles (die Datei wird einfach geöffnet)</td></tr>
+      <tr><td>Trikker (<code>.trik</code>)</td><td>Plan, Nummerierung, Lageplan (Wände, Öffnungen, Räume, Bilder), Adressen und Notizen</td></tr>
+      <tr><td>Volter (<code>.vschema</code>)</td><td>Verteiler, Fehlerstromschutzschalter, Leitungsschutzschalter und Leitungen, Punkte, Geschosse, Wände, Türen, Fenster, Möbel, EAN und Netz; was Volter nicht speichert (Zähler, Erdung), wird gemeldet</td></tr>
+      <tr><td>Eendraadschema (<code>.eds</code>)</td><td>Anschluss, Verteiler, Schutzeinrichtungen, Leitungen, Punkte und Dossierangaben; der Situationsplan wird nicht übernommen</td></tr>
+      <tr><td>Draadwijs</td><td>Plan, Lageplan, Messungen, Netz, Adresse; das Angebot wird nicht übernommen</td></tr>
+      <tr><td>PlanElec Sketch</td><td>Plan, Kennzeichen, Lageplan in Metern und platzierte Symbole</td></tr>
+      <tr><td>Condui (Export <code>.zip</code>)</td><td>Anschluss, Verteiler, Fehlerstromschutzschalter, Stromkreise, Leitungen, Punkte und Bedienelemente, Lageplan je Geschoss, Leitungswege; beigefügte Dokumente werden nicht übernommen</td></tr>
+      <tr><td>PDF-Unterlagen einer anderen Software</td><td>Stromkreistabelle, Unterverteiler, anhand ihrer Kennzeichen gezählte Punkte, Pläne als Planhintergrund mit aus der Zeichnung gelesenen Wänden, Türen und Fenstern, Frontansicht der Verteiler, Angaben aus dem Schriftfeld, Messungen</td></tr>
+    </table>
+    <ul>
+      <li><strong>PDF-Unterlagen</strong>: im Browser gelesen, ohne Versand und ohne KI; Unterlagen auf Französisch, Niederländisch, Englisch oder Deutsch. Nur PDFs <strong>mit Text</strong> werden gelesen: Ein gescanntes PDF oder eines, dessen Text gezeichnet ist (Bilder), wird mit einer Erklärung abgelehnt. Was der Text nicht sagt (genauer Typ der Punkte, Bedienelemente…), wird beim Öffnen gemeldet.</li>
+      <li>Ein <strong><code>.zip</code>-Archiv</strong>, das eine dieser Dateien enthält, wird geöffnet und die darin enthaltene Plandatei importiert.</li>
+      <li>Eine <strong>nicht erkannte</strong> Datei wird mit einer Meldung abgelehnt, die den Grund nennt (Plan einer nicht erkannten Software oder keine Datei eines elektrischen Plans) und die erkannten Formate auflistet.</li>
+      <li>Importe ohne Leitungswege erhalten rechtwinklige Wege, die anhand des einpoligen Plans erzeugt werden und anzupassen sind (siehe <a href="#longueurs">Leitungslängen</a>).</li>
+      <li>Eine importierte Datei erscheint erst nach dem Speichern unter „Letzte Projekte“.</li>
+    </ul>
+    <p>Zurück zu Trikker oder Eendraadschema: <strong>Speichern unter… → Dieses Gerät → Für Trikker exportieren (.trik)</strong> (Windows-1252, wie Trikker) oder <strong>Eendraadschema exportieren (.eds)</strong>.</p>
+
+    <h2 id="ia">KI (optional)</h2>
+    <p>Alles funktioniert ohne KI, auch „Nach Foto anordnen“ und die lokalen Lesungen (Zählerschild, Raumnamen des Plans, „Foto lesen“ im Verteiler), die auf Ihrem Gerät erfolgen, ohne etwas zu senden. Die KI, standardmäßig deaktiviert, kann diese Lesungen ergänzen; jede Nutzung wird einzeln erlaubt:</p>
+    <ul>
+      <li><strong>Verteiler</strong>: die Aufschriften der Geräte auf dem Foto des Verteilers lesen (Typ, Nennstrom, Kennlinie, Empfindlichkeit, FI-Typ, Beschriftung), dann die Geräte des Projekts an ihrem Platz anordnen und vergleichen;</li>
+      <li><strong>Zähler</strong>: Spannung und Phasen aus dem Foto des Typenschilds, nur wenn die lokale Lesung nicht alles erfasst hat;</li>
+      <li><strong>Lageplan</strong>: elektrische Piktogramme und übersehene Raumnamen aus einem Foto oder PDF des Plans, nach der lokalen Lesung; sie werden als nicht angeschlossene Elemente gesetzt, die ihren Stromkreisen zuzuordnen sind.</li>
+    </ul>
+    <p>Die KI läuft über den Anbieter Ihrer Wahl — standardmäßig die API von Anthropic (Claude-Modelle), eine OpenAI-kompatible API oder ein lokales Modell —, mit <strong>Ihrem eigenen Schlüssel</strong>: Voltaplan hat keinen Server und sieht weder Ihre Fotos noch Ihren Schlüssel.</p>
+
+    <h3>1. Einen Anthropic-API-Schlüssel erhalten</h3>
+    <ol>
+      <li>Legen Sie ein Konto auf <a href="https://console.anthropic.com">console.anthropic.com</a> an (E-Mail-Adresse oder Google-Konto).</li>
+      <li><strong>Billing</strong> (Abrechnung): Fügen Sie ein Zahlungsmittel hinzu und kaufen Sie Guthaben. Die API wird nach Verbrauch bezahlt, getrennt von einem etwaigen Claude.ai-Abonnement.</li>
+      <li>Empfohlen: Legen Sie unter <strong>Limits</strong> ein niedriges <strong>monatliches Ausgabenlimit</strong> fest. Ein gestohlener Schlüssel oder ein Fehler kann so nie mehr kosten als dieses Limit.</li>
+      <li><strong>API Keys</strong> → <strong>Create Key</strong>; geben Sie ihm einen Namen (z. B. „Voltaplan – mein PC“). Der Schlüssel beginnt mit <code>sk-ant-</code> und wird <strong>nur ein einziges Mal</strong> angezeigt: Kopieren Sie ihn sofort.</li>
+    </ol>
+    <p>Der Preis hängt vom Modell und der Größe des Fotos ab; er ist auf <a href="https://www.anthropic.com/pricing#api">anthropic.com/pricing</a> veröffentlicht. Jede Lesung ist <strong>eine</strong> Anfrage (ein Foto und eine kurze Anweisung); die tatsächlichen Kosten erscheinen in der Konsole unter <strong>Usage</strong>.</p>
+
+    <h3>2. Voltaplan einrichten</h3>
+    <ol>
+      <li>Klicken Sie in der oberen Leiste auf <strong>⚙ KI</strong> und haken Sie <strong>KI verwenden</strong> an.</li>
+      <li><strong>Modell</strong>: standardmäßig <code>claude-opus-5-5</code> (am genauesten beim Lesen kleiner Aufschriften). Sie können eine andere Claude-Modellkennung eingeben, schneller oder günstiger, um den Preis einer weniger sicheren Lesung.</li>
+      <li><strong>Neuer Schlüssel</strong>: Fügen Sie den Schlüssel <code>sk-ant-…</code> ein.</li>
+      <li><strong>Passphrase</strong> (mindestens 8 Zeichen), dann <strong>Verschlüsseln und speichern</strong>.</li>
+      <li>Haken Sie unter <strong>Was die KI erzeugen darf</strong> die gewünschten Nutzungen an: <strong>Anordnung der Module anhand eines Fotos des Verteilers</strong>, <strong>Zähler</strong> (Spannung und Phasen aus dem Foto des Typenschilds), <strong>Lageplan</strong> (Raumnamen und elektrische Piktogramme). Anfangs ist nichts angehakt. Die beiden übrigen Kästchen (einpoliger Plan aus alten Unterlagen, Korrekturvorschläge) sind vorgesehen, werden aber noch nicht verwendet.</li>
+    </ol>
+
+    <h3>3. Ein Verteilerfoto lesen</h3>
+    <ol>
+      <li>Reiter <strong>Verteiler</strong>: Importieren Sie das Foto und richten Sie es aus (Reihe für Reihe), wie unter <a href="#photo">Foto des Verteilers</a> beschrieben.</li>
+      <li>Klicken Sie auf <strong>Foto lesen (KI)</strong>. Die Schaltfläche trägt diesen Namen, wenn die KI aktiviert, für den Verteiler erlaubt und bereit ist; sonst heißt sie „Foto lesen“ und führt die lokale Lesung ohne KI aus.</li>
+      <li>Ist der Schlüssel gesperrt (zum Beispiel nach dem Neuladen der Seite), klicken Sie auf das Schloss 🔒 neben der Schaltfläche und geben Sie die <strong>Passphrase</strong> ein (oder gehen Sie über ⚙ KI). Das ist einmal pro Sitzung nötig. Die Schaltfläche <strong>⚙ KI</strong> oben rechts wird grün, solange der Schlüssel entsperrt ist: Die KI ist bereit. Ein Zähler zeigt die während der Lesung vergangenen Sekunden.</li>
+      <li>Voltaplan <strong>ordnet die Geräte des Projekts</strong> an den gelesenen Plätzen an, auch die in der Reserve: Jedes Gerät auf dem Foto erhält das Gerät des Projekts, das ihm am ähnlichsten ist (Typ, Nennstrom, Empfindlichkeit, Kennlinie, Beschriftung, dann Reihenfolge des Baums). Die KI liest auch Marke und Modell und misst die Breite am Lineal: Die gelesene Breite wird die des Geräts (ein kompakter vierpoliger Schalter kann 2 Module breit sein), und das Modell füllt die Referenz, wenn sie leer ist. Ein Gerät wird nur an den Platz eines Geräts gleichen Typs gesetzt (nie ein Leitungsschutzschalter an die Stelle eines Zählers); was keinen Platz findet, bleibt in der Reserve. Relais, Stromstoßschalter, Schütze, Schaltuhren, Transformatoren, Zähler und Automationsmodule des einpoligen Plans zählen als Geräte des Verteilers, wenn in ihren Eigenschaften „Im Verteiler (auf der Schiene)“ angehakt ist (bei Relais und Zählern standardmäßig angehakt). Für ein auf dem Foto gesehenes, im Projekt fehlendes Gerät bietet das Menü „Zuordnen zu …“ der Liste zuerst Elemente ähnlichen Typs an, dann alle anderen Elemente des einpoligen Plans dieses Verteilers: Die Auswahl hakt „Im Verteiler“ an, übernimmt Breite und Referenz und setzt es an die gelesene Stelle. Für einen im einpoligen Plan fehlenden Leitungsschutzschalter oder Fehlerstromschutzschalter erstellt „＋ Neu: … in diesem Verteiler“ ihn unter dem Verteiler mit dem Gelesenen (Nennstrom, Kennlinie, Breite, Referenz). Ein vernetzter Leitungsschutzschalter hinter dem Leitungsschutzschalter eines Stromkreises (EARU…) wird mit „＋ In Reihe unter …“ erstellt: Schutzeinrichtung in Reihe im selben Stromkreis, Referenz übernommen, an die gelesene Stelle gesetzt. Gleiche Geräte, die das Foto nicht unterscheidet (zum Beispiel drei Fehlerstromschutzschalter 40 A 30 mA), werden in der Reihenfolge des einpoligen Plans von links nach rechts gesetzt, außer wenn die Beschriftung eines Fehlerstromschutzschalters seine Stromkreise nennt („A-F“, „G H I J“, „K à M“): Er wird dann dem Fehlerstromschutzschalter des einpoligen Plans zugeordnet, der diese Stromkreise schützt. Notieren Sie diese Kennzeichen vor dem Foto auf den Beschriftungen Ihrer Fehlerstromschutzschalter. Für Leitungsschutzschalter ist der auf dem Gerät oder darunter markierte Buchstabe des Stromkreises („H“) der beste Hinweis; andernfalls wird die Verwendungsbeschriftung Wort für Wort verglichen („PRISES I“ geht an „Prises I“, nicht an „Prises II“). Die gelesenen Merkmale ergänzen den einpoligen Plan: Ein leerer, mit Sicherheit gelesener Wert wird direkt übernommen; ein vom Projekt abweichender oder unsicher gelesener Wert wird unter „Vom Foto gelesene Merkmale, zu bestätigen“ aufgeführt, mit einer Schaltfläche <strong>Anwenden</strong> (oder <strong>Alle anwenden</strong>). Der einpolige Plan wird nie ohne Ihre Zustimmung geändert. <kbd>Strg</kbd>+<kbd>Z</kbd> macht rückgängig.</li>
+      <li>Das Ergebnis listet dann die Unterschiede zum Projekt auf (fehlendes Gerät, Breite, Typ, Nennstrom, Kennlinie, Empfindlichkeit, unsichere Lesung). <strong>Es ist eine automatische Lesung, die zu prüfen ist</strong>: Bestätigen Sie jedes Gerät mit seiner Markierung. Nur die Anordnung ändert sich; die Merkmale der Geräte werden nie geändert.</li>
+    </ol>
+
+    <h3>Andere Anbieter und lokale Modelle</h3>
+    <p>In <strong>⚙ KI</strong>, <strong>Anbieter</strong>: „Anthropic (Claude)“ oder „OpenAI-kompatible API“. Die zweite Option funktioniert mit OpenAI (<code>https://api.openai.com/v1</code>), Gemini (OpenAI-kompatibler Endpunkt von Google), Mistral und <strong>lokalen Modellen</strong>, die auf Ihrem Computer laufen: Ollama (<code>http://localhost:11434/v1</code>) oder LM Studio (<code>http://localhost:1234/v1</code>). Mit einem lokalen Modell wird <strong>kein Schlüssel verlangt und nichts verlässt den Computer</strong>. Wählen Sie ein Modell, das Bilder lesen kann. Der Dienst, der das Foto erhält, wird vor jedem Versand in den Einstellungen angezeigt. Unabhängig vom Anbieter wird die Antwort geprüft: Eine unvollständige oder fehlerhafte Antwort wird abgelehnt und ändert nichts.</p>
+
+    <h3>Was gesendet wird, und wohin</h3>
+    <table>
+      <tr><td>An den gewählten Anbieter gesendet</td><td>für den Verteiler: das ausgerichtete Foto des Verteilers, die Anzahl der Reihen und der Module pro Reihe sowie die Sprache der Oberfläche; für Zähler oder Lageplan (wenn Sie diese Nutzungen angehakt haben): das Foto des Typenschilds oder das Bild des Plans. Sonst nichts: weder Name noch Adresse des Kunden, noch der Rest des Projekts.</td></tr>
+      <tr><td>Auf welchem Weg</td><td>direkt von Ihrem Browser (oder der Desktop-Anwendung) zum Anbieter (<code>api.anthropic.com</code> für Anthropic), über HTTPS, ohne jeden Vermittler. Mit einem lokalen Modell verlässt nichts den Computer.</td></tr>
+      <tr><td>Gespeicherter Schlüssel</td><td>verschlüsselt (AES-GCM 256 Bit, Schlüssel aus der Passphrase per PBKDF2-SHA-256 abgeleitet) im lokalen Speicher dieses Browsers oder der Anwendung. <strong>Nie</strong> in der Datei <code>.voltaplan</code> und nie in einer an einen Kunden oder eine zugelassene Prüfstelle gesendeten Datei.</td></tr>
+      <tr><td>Passphrase</td><td>wird nirgends gespeichert. Der entschlüsselte Schlüssel bleibt bis zum Schließen des Tabs oder der Anwendung im Speicher.</td></tr>
+      <tr><td>Bei Anthropic</td><td>die an die API gesendeten Daten unterliegen den <a href="https://www.anthropic.com/legal/commercial-terms">kommerziellen Bedingungen</a> von Anthropic, die ihre Nutzung zum Trainieren der Modelle standardmäßig ausschließen.</td></tr>
+    </table>
+
+    <h3>Schlüssel ändern oder löschen</h3>
+    <ul>
+      <li><strong>Passphrase vergessen</strong>: Der Schlüssel kann nicht wiederhergestellt werden. Klicken Sie auf <strong>Schlüssel löschen</strong> und speichern Sie dann einen neuen.</li>
+      <li><strong>Neuer Schlüssel</strong>: <strong>Schlüssel löschen</strong>, dann den neuen einfügen.</li>
+      <li><strong>Kompromittierter Schlüssel</strong> (Computer verloren, Schlüssel versehentlich kopiert): Deaktivieren Sie ihn in der Anthropic-Konsole unter <strong>API Keys</strong>. Er funktioniert sofort nirgends mehr.</li>
+      <li><strong>Anderes Gerät</strong> (Smartphone, anderer Computer, Desktop-Anwendung): Der Schlüssel ist dort nicht vorhanden. Scannen Sie in den KI-Einstellungen unter <strong>Andere Geräte</strong> den <strong>QR-Code</strong> mit dem Smartphone, oder <strong>Link kopieren</strong> und auf dem anderen Gerät einfügen (Feld „Empfangen: Link oder Code einfügen“). Der Schlüssel reist verschlüsselt: Das andere Gerät fragt nach der Passphrase. Es wird kein Server verwendet.</li>
+    </ul>
+
+    <h3>Bei Fehlern</h3>
+    <table>
+      <tr><td><code>401</code> / authentication</td><td>Schlüssel falsch, widerrufen oder falsch kopiert (überzähliges Leerzeichen). Löschen Sie ihn und fügen Sie ihn erneut ein.</td></tr>
+      <tr><td>unzureichendes Guthaben / <code>400</code> billing</td><td>Guthaben aufgebraucht oder Ausgabenlimit erreicht: siehe <strong>Billing</strong> und <strong>Limits</strong> in der Konsole.</td></tr>
+      <tr><td><code>404</code> / model</td><td>unbekannte Modellkennung: Tragen Sie in ⚙ KI wieder <code>claude-opus-5-5</code> ein.</td></tr>
+      <tr><td><code>429</code> / <code>529</code></td><td>zu viele Anfragen oder Dienst überlastet: in einer Minute erneut versuchen.</td></tr>
+      <tr><td>„Die KI hat die Verarbeitung dieses Fotos abgelehnt.“</td><td>das Foto wurde nicht verarbeitet. Versuchen Sie es mit einem schärferen Foto, das nur den Verteiler zeigt.</td></tr>
+    </table>
+
+    <h3>Für Entwickler</h3>
+    <p>Der Code liegt in <code>src/ai/</code>:</p>
+    <ul>
+      <li><code>settings.ts</code>: Einstellungen und Berechtigungen, standardmäßig alles deaktiviert;</li>
+      <li><code>secureStore.ts</code>: der verschlüsselte Tresor des Schlüssels;</li>
+      <li><code>boardPhoto.ts</code>: der Vergleich der Lesung mit dem Projekt;</li>
+      <li><code>boardPhotoAi.ts</code>: der API-Aufruf mit dem offiziellen SDK <code>@anthropic-ai/sdk</code>, erst bei der ersten Nutzung geladen;</li>
+      <li><code>provider.ts</code> und <code>photoAi.ts</code>: die OpenAI-kompatiblen Anbieter und die Lesungen von Zähler und Lageplan.</li>
+    </ul>
+    <p>Die Antwort ist durch ein Schema eingeschränkt (strukturierte Ausgabe): Reihen → Geräte mit Position, Breite, Typ, Nennstrom, Kennlinie, Empfindlichkeit, Beschriftung und Sicherheitsgrad. Eine neue KI-Funktion muss ihr eigenes, standardmäßig deaktiviertes Berechtigungskästchen haben und darf nie personenbezogene Daten des Projekts senden, ohne dass der Benutzer es weiß.</p>
+
+    <h2 id="pays">Länder und Vorschriften</h2>
+    <p>Das belgische RGIE ist das Standard-Regelwerk (Reiter Projekt → Regelwerk). Die Engine ist für andere Länder vorgesehen: ein Land = ein Regelmodul, seine Texte und Listen (Leitungsbezeichnungen…), ohne den Rest der Anwendung zu ändern. Eine Bezeichnung, die es im Land des Projekts nicht gibt, wird gemeldet. Derzeit ist nur Belgien enthalten.</p>
+
+    <h2 id="raccourcis">Tastenkürzel</h2>
+    <table>
+      <tr><td><kbd>Strg</kbd>+<kbd>S</kbd></td><td>Speichern</td></tr>
+      <tr><td><kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>S</kbd></td><td>Speichern unter</td></tr>
+      <tr><td><kbd>Strg</kbd>+<kbd>O</kbd></td><td>Öffnen</td></tr>
+      <tr><td><kbd>Strg</kbd>+<kbd>P</kbd></td><td>Drucken / PDF</td></tr>
+      <tr><td><kbd>Strg</kbd>+<kbd>Z</kbd> / <kbd>Strg</kbd>+<kbd>Y</kbd></td><td>Rückgängig / Wiederholen</td></tr>
+      <tr><td><kbd>Entf</kbd></td><td>Das ausgewählte Element des Plans löschen</td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>Das aktuelle Werkzeug verlassen</td></tr>
+    </table>
+
+    <h2 id="confidentialite">Datenschutz</h2>
+    <p>Voltaplan hat keinen Server. Die Projekte (mit Namen und Adressen der Kunden) bleiben auf Ihrem Computer oder in dem Speicher, den Sie wählen. Kein Konto, kein Tracking, keine Werbung. Einzelheiten: <a href="privacy.html">Datenschutzerklärung</a>.</p>
+
+    <h2 id="dev">Entwickeln</h2>
+    <pre>npm install
+npm run dev        # http://localhost:5173
+npm test           # Tests
+npm run build      # Web-Version in dist/
+npm run desktop    # Desktop-Anwendung (Rust erforderlich)</pre>
+    <p>React + TypeScript + Vite, Desktop-Anwendung mit Tauri. Code unter der Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>: Jede veränderte Version, die verbreitet oder online angeboten wird, muss ihren Quellcode veröffentlichen. Beiträge sind im <a class="repo-link" href="#">Repository</a> willkommen.</p>
+  </article>
+</main>
+<footer>Voltaplan — kostenlos und Open Source — <a href="https://github.com/sponsors/SebastienBatteur">Projekt unterstützen</a> (freiwillig) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Datenschutz</a> — <a href="terms.html">Nutzungsbedingungen</a> — Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Quellcode</a></footer>
+<script src="../site.js"></script>
+</body>
+</html>

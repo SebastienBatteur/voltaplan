@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { applyPdfInfo, checkBom, parseDate, parseParty, readBom, readCableLengths, readInstallationPeriod, readMainProtection, readMeasurements, readPdfInfo } from '../src/import/pdfInfo';
 import type { PdfText } from '../src/import/pdfDossier';
 import { createNode, emptyProject } from '../src/model/tree';
+import { frWarnings } from './warnText';
 
 const t = (page: number, x: number, y: number, str: string, size = 6): PdfText => ({ page, x, y, str, size });
 
@@ -58,7 +59,7 @@ describe('informations d’un dossier PDF repris', () => {
     expect(p.meta).toMatchObject({ title: 'Demo', mainCurrent: 63, date: '2026-11-26', docNumber: 'AMP-1677-RGIE', installationKind: 'new' });
     expect(p.meta.site).toMatchObject({ postalCode: '9000', city: 'Gent' });
     expect(p.meta.installer.name).toBe('Jan Vandamme');
-    expect(got).toContain("adresse de l'installation");
+    expect(got).toContain('site');
   });
 
   it('liste du matériel : totaux (prises doubles comptées), sur plusieurs pages, et comparaison au schéma', () => {
@@ -86,7 +87,7 @@ describe('informations d’un dossier PDF repris', () => {
     const cable = createNode('cable');
     cable.children = [createNode('light'), createNode('light'), createNode('light'), createNode('socket', { count: 2 }), createNode('socket'), createNode('socket')];
     p.roots[0].children[0].children[0].children[0].children.push(Object.assign(createNode('protection'), { children: [cable] }));
-    const msg = checkBom(p, bom);
+    const msg = frWarnings(checkBom(p, bom)).join(' ');
     expect(msg).toMatch(/socles en comptant les prises doubles/);
     expect(msg).toMatch(/2 interrupteur/);
     expect(readBom([t(1, 10, 10, 'Rien', 9)])).toBeNull();

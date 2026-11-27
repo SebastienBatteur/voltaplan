@@ -41,7 +41,7 @@ describe('un seul « Importer » : source reconnue d’après le contenu, quelle
     expect(await sniffFormat(wrap, 'envoi.zip')).toBe('zip');
     const r = await openProjectData(wrap, 'envoi.zip');
     expect(r.format).toBe('draadwijs');
-    expect(r.warnings[0]).toMatch(/dossier\/projet\.json.*envoi\.zip/);
+    expect(r.warnings[0]).toEqual({ key: 'imp.file.fromZip', params: { path: 'dossier/projet.json', name: 'envoi.zip' } });
     const empty = (await writeZip([{ path: 'photo.txt', data: 'rien', store: false }]))!;
     await expect(openProjectData(empty, 'vide.zip')).rejects.toThrow(/aucun fichier de schéma/);
   });

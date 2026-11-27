@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Voltaplan</title>
 <meta name="description" content="Eendraadschema's, situatieschema's en verdeelborden met hulp bij de AREI-controle, gratis en open source, in de browser of als desktoptoepassing.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/">
 <link rel="icon" href="../icon.svg">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,21 +18,23 @@
   <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
   <nav class="links">
     <a href="guide.html">Handleiding</a>
+    <a href="faq.html">FAQ</a>
     <a href="guide.html#installer">Installeren</a>
     <a class="repo-link" href="#">Broncode</a>
     <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Voltaplan steunen via GitHub Sponsors (vrijblijvend)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Steunen</span></a>
     <a class="btn primary" href="../app/">Toepassing openen</a>
-    <span class="lang"><a href="../" data-lang="fr">FR</a><a href="./" aria-current="true" data-lang="nl">NL</a><a href="../en/" data-lang="en">EN</a></span>
+    <span class="lang"><a href="../" data-lang="fr">FR</a><a href="./" aria-current="true" data-lang="nl">NL</a><a href="../en/" data-lang="en">EN</a><a href="../de/" data-lang="de">DE</a></span>
   </nav>
 </div></header>
 <main>
   <section class="hero">
     <h1>Het elektrisch dossier volgens het AREI,<br>van schema tot etiket op het verdeelbord.</h1>
-    <p>Voltaplan tekent het eendraadschema, het situatieschema en het verdeelbord van een huishoudelijke installatie, controleert de regels van het AREI en drukt het dossier af voor het erkend organisme. Gratis, open source, in het Nederlands, Frans en Engels.</p>
+    <p>Voltaplan tekent het eendraadschema, het situatieschema en het verdeelbord van een huishoudelijke installatie, controleert de regels van het AREI en drukt het dossier af voor het erkend organisme. Gratis, open source, in het Nederlands, Frans, Engels en Duits.</p>
     <div class="actions">
       <a class="btn primary" href="../app/">Openen in de browser</a>
       <a class="btn" href="guide.html#installer">Installeren op computer of telefoon</a>
       <a class="btn" href="guide.html">Handleiding lezen</a>
+      <a class="btn" href="faq.html">Veelgestelde vragen</a>
     </div>
     <p class="note" style="font-size:15px;color:inherit">Voor de webversie hoeft u niets te installeren: ze werkt in Chrome, Edge of Firefox, en daarna ook offline. Uw projecten blijven op uw computer (of in de opslagdienst die u kiest); geen enkele server van Voltaplan ontvangt ze.</p>
   </section>
@@ -38,8 +45,9 @@
     <div class="card"><h3>Verdeelbord met slepen en neerzetten</h3><p>DIN-rails, werkelijke breedte van de toestellen, etiketten op ware grootte (1:1), vergelijking met een foto van het bord.</p></div>
     <div class="card"><h3>AREI-controle</h3><p>Blokkerende non-conformiteiten voor een nieuwe installatie, advies om een bestaande installatie conform te maken, spanningsval en kortsluiting.</p></div>
     <div class="card"><h3>Materiaallijst</h3><p>Volgens kenmerken en Europese normen, met aantallen en lengtes, CSV-export voor de offerte.</p></div>
+    <div class="card"><h3>Kabellengte volgens het plan</h3><p>Geschat van het bord tot de punten, met de montagehoogtes en verdiepingswissels; een ingevoerde lengte wordt nooit vervangen.</p></div>
     <div class="card"><h3>Dossier A4 / A3</h3><p>Volledige titelhoek, legende, metingen, etiketten, vectoriële PDF. Vermelding „ONTWERP” zolang er blokkerende vaststellingen zijn. Hulp bij de controle: geen certificering.</p></div>
-    <div class="card"><h3>Trikker</h3><p>Import en export van .trik-bestanden: werk gewoon verder met uw bestaande dossiers.</p></div>
+    <div class="card"><h3>Importeren uit ander programma</h3><p>Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui of pdf-dossier: de bron wordt vanzelf herkend. Export naar Trikker en Eendraadschema.</p></div>
     <div class="card"><h3>Uw bestanden, waar u wilt</h3><p>Deze computer, de browser, GitHub, Google Drive, OneDrive of Dropbox.</p></div>
     <div class="card"><h3>Begeleide start</h3><p>Startscherm „Mijn projecten”, assistent in 4 stappen en een aan te passen typewoning. Achtergrondplan ook uit DXF, op schaal.</p></div>
     <div class="card"><h3>Kleuren en QR-etiketten</h3><p>Eén kleur per kring op het plan en het eendraadschema; materiaal per ruimte; QR-etiketten voor in de kast, zonder hosting bij ons.</p></div>
@@ -57,7 +65,7 @@
   </section>
   <p class="note">Voltaplan is een hulpmiddel. Het vervangt noch de officiële tekst van het AREI, noch het oordeel van het erkend organisme (Vinçotte, BTV, ACA…).</p>
 </main>
-<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
+<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
 <script src="../site.js"></script>
 </body>
 </html>

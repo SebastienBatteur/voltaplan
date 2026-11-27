@@ -8,6 +8,9 @@ import { moduleWidth } from '../board/model';
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
 import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
+import { Warnings } from './warnings';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
 
 /** Unité Volter : 1 = 1 cm ; Voltaplan : mm. */
 const CM = 10;
@@ -185,7 +188,7 @@ const poles = (v: unknown) => {
 
 export interface VolterImportResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
 }
 
 export function importVolter(text: string, fileName = 'Projet Volter'): VolterImportResult {
@@ -193,11 +196,11 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   try {
     data = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch {
-    throw new Error("Ce fichier n'est pas une sauvegarde Volter valide (JSON illisible).");
+    throw new I18nError('imp.volter.invalidJson', undefined, "Ce fichier n'est pas une sauvegarde Volter valide (JSON illisible).");
   }
-  if (!isObj(data) || !isObj(data.project) || !Array.isArray(data.boards)) throw new Error("Ce fichier n'est pas une sauvegarde Volter valide.");
-  const warnings = new Set<string>();
-  if (data.version !== 2) warnings.add(`Version de sauvegarde Volter ${String(data.version)} : seule la version 2 a été testée, vérifiez le résultat.`);
+  if (!isObj(data) || !isObj(data.project) || !Array.isArray(data.boards)) throw new I18nError('imp.volter.invalid', undefined, "Ce fichier n'est pas une sauvegarde Volter valide.");
+  const warnings = new Warnings();
+  if (data.version !== 2) warnings.add('imp.volter.version', { version: String(data.version) });
   const vp = data.project;
   const project = emptyProject();
 
@@ -205,7 +208,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   const werf = isObj(vp.werf) ? vp.werf : {};
   const inst = isObj(vp.installateur) ? vp.installateur : {};
   const supply = volterSupply(vp.spanning);
-  if (!supply && vp.spanning) warnings.add(`Réseau Volter « ${String(vp.spanning)} » non reconnu : à choisir dans les infos du projet.`);
+  if (!supply && vp.spanning) warnings.add('imp.volter.supply', { net: String(vp.spanning) });
   const ean = arr(vp.eanCodes).map((e) => str(e.code)).find(Boolean);
   const email = str(inst.email);
   project.meta = {
@@ -225,7 +228,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   const updated = str(vp.updatedAt);
   if (updated && /^\d{4}-\d{2}-\d{2}/.test(updated)) project.meta.date = updated.slice(0, 10);
   // Période d'installation de Volter (« tot2020 »…) : sens exact non documenté, à confirmer par l'utilisateur
-  if (str(vp.installatiePeriode)) warnings.add(`Période d'installation indiquée dans Volter : « ${String(vp.installatiePeriode)} ». Vérifiez le type d'installation et sa date dans les infos du projet.`);
+  if (str(vp.installatiePeriode)) warnings.add('imp.volter.period', { period: String(vp.installatiePeriode) });
 
   // ——— Composants, par circuit ———
   const floors = arr(vp.floors).sort((a, b) => (num(a.level) ?? 0) - (num(b.level) ?? 0));
@@ -243,7 +246,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       const id = str(c.id) ?? uid();
       const type = str(c.type) ?? '?';
       const k = VOLTER_TYPES[type] ?? other(type);
-      if (!VOLTER_TYPES[type]) warnings.add(`Symbole Volter non reconnu, importé comme « autre » : ${type}`);
+      if (!VOLTER_TYPES[type]) warnings.add('imp.volter.symbol', { type });
       const props: Props = { ...(k.props ?? {}) };
       const qty = num(c.quantity);
       if (qty && qty > 1 && (k.kind === 'socket' || k.kind === 'light' || k.kind === 'solarPanel')) props.count = qty;
@@ -402,7 +405,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     const rcds = sorted.filter((m) => m.moduleType === 'differentieel');
     const mcbs = sorted.filter((m) => m.moduleType === 'automaat');
     for (const m of sorted)
-      if (!['hoofddifferentieel', 'differentieel', 'automaat'].includes(String(m.moduleType))) warnings.add(`Module de tableau Volter non reconnu ignoré : ${String(m.moduleType)}`);
+      if (!['hoofddifferentieel', 'differentieel', 'automaat'].includes(String(m.moduleType))) warnings.add('imp.volter.module', { type: String(m.moduleType) });
     const rcdNode = new Map(rcds.map((m) => [str(m.id)!, rcd(m)]));
     const placed = new Set<string>();
     // Disjoncteurs : sous leur différentiel (differentieelId, sinon liste automaatIds du différentiel)
@@ -452,7 +455,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       } else meter.children.push(board);
     } else mainBoard.children.splice(mainBoard.children.length - 1, 0, board);
   }
-  if (!mainBoard) warnings.add('Aucun tableau dans la sauvegarde Volter.');
+  if (!mainBoard) warnings.add('imp.volter.noBoard');
   // Face avant : rangée (rijIndex) et ordre (kolom, sinon position) de chaque appareil ; colonnes en modules d'après la
   // largeur des appareils (l'unité de « kolom » n'est pas celle des modules)
   const byId = new Map<string, ElNode>();
@@ -498,7 +501,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   // Composants rattachés à un circuit absent, ou sans circuit : non raccordés
   for (const comps of byCircuit.values()) loose.push(...comps);
   project.loose = loose.map((c) => nodeOf.get(str(c.id)!)).filter((n): n is ElNode => !!n);
-  if (project.loose.length) warnings.add(`${project.loose.length} symbole(s) Volter sans circuit : posés sur le plan, non raccordés.`);
+  if (project.loose.length) warnings.add('imp.volter.loose', { n: project.loose.length });
 
   // ——— Plans (un étage = une page) ———
   project.plan = { pages: [], width: 20000, height: 15000 };
@@ -541,7 +544,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       // Genre de porte (`soort`) : absent = porte battante simple
       const soort = str(d.soort) ?? '';
       const kind = /^garage/i.test(soort) ? 'garageDoor' : /^schuif/i.test(soort) ? 'slidingDoor' : /^dubbel/i.test(soort) ? 'doubleDoor' : /^(raamdeur|franse)/i.test(soort) ? 'frenchDoor' : 'door';
-      if (soort && kind === 'door') warnings.add(`Porte Volter de genre inconnu, dessinée comme une porte simple : ${soort}`);
+      if (soort && kind === 'door') warnings.add('imp.volter.door', { kind: soort });
       // Sens vérifié sur le plan de Volter (schéma d'essai 5) : `hingeSide` right = charnière au bout b du mur
       // (Voltaplan : mirrored) ; `openDirection` right = battant du côté -y local du mur (Voltaplan : hinge 'left')
       page.openings.push({ kind, ...o, hinge: d.openDirection === 'right' ? 'left' : 'right', mirrored: d.hingeSide === 'right' });
@@ -588,7 +591,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
             ]
           : arr(vorm.punten).map(pt);
       if (pts.length < 2) {
-        warnings.add(`Surface extérieure Volter de forme inconnue ignorée : ${String(vorm.soort)}.`);
+        warnings.add('imp.volter.outdoorShape', { shape: String(vorm.soort) });
         continue;
       }
       const xs = pts.map((p) => p.x);
@@ -599,7 +602,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       page.rects.push({ center: round(center), w: Math.round(Math.max(...xs) - x0), h: Math.round(Math.max(...ys) - y0), angle: 0 });
       const name = str(v.naam);
       if (name) page.labels.push({ id: uid(), text: name, pos: round(center), size: 3 });
-      if (vorm.soort !== 'veelhoek' || pts.length !== 4) warnings.add('Surface extérieure Volter non rectangulaire (cercle, forme libre) : reprise comme rectangle englobant.');
+      if (vorm.soort !== 'veelhoek' || pts.length !== 4) warnings.add('imp.volter.outdoorRect');
     }
     for (const l of arr(f.labels)) {
       const t = str(l.text);
@@ -619,10 +622,10 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     }
     project.plan.pages.push(page);
   }
-  if (skipped.size) warnings.add(`Éléments d'aménagement Volter non repris (pas d'équivalent dans Voltaplan) : ${[...skipped].join(', ')}.`);
+  if (skipped.size) warnings.add('imp.volter.skipped', { list: [...skipped].join(', ') });
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
-  warnings.add('Volter ne sauvegarde ni le compteur ni la prise de terre : complétez le raccordement et la résistance de terre.');
-  return { project, warnings: [...warnings] };
+  warnings.add('imp.volter.noMeter');
+  return { project, warnings: warnings.list() };
 }

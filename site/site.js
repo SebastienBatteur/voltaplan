@@ -1,6 +1,6 @@
 // Liens vers le dépôt : déduits de l'adresse GitHub Pages (<compte>.github.io/<dépôt>/) si le site y est servi,
 // sinon (domaine propre, ex. voltaplan.org) le dépôt officiel.
-// Pages en néerlandais et en anglais dans nl/ et en/ ; ce script est toujours à la racine du site.
+// Pages en néerlandais, en anglais et en allemand dans nl/, en/ et de/ ; ce script est toujours à la racine du site.
 (function () {
   var root = new URL('./', document.currentScript.src).href;
   var lang = document.documentElement.lang || 'fr';
@@ -17,10 +17,10 @@
     }
   };
 
-  // Accueil en français, première visite : proposer directement la langue du navigateur (nl / en)
+  // Accueil en français, première visite : proposer directement la langue du navigateur (nl / en / de)
   if (lang === 'fr' && location.href.replace(/index\.html$/, '') === root && !store()) {
     var nav = (navigator.language || 'fr').slice(0, 2);
-    if (nav === 'nl' || nav === 'en') {
+    if (nav === 'nl' || nav === 'en' || nav === 'de') {
       location.replace(root + nav + '/');
       return;
     }

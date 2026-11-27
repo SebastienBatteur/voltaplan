@@ -1,6 +1,6 @@
 /**
- * Cohérence des traductions : mêmes clés en français, néerlandais et anglais ; paramètres {x} identiques ;
- * allemand partiel (repli sur l'anglais) sans clé inconnue ; libellés de toutes les propriétés et valeurs.
+ * Cohérence des traductions : mêmes clés en français, néerlandais, anglais et allemand ; paramètres {x} identiques ;
+ * libellés de toutes les propriétés et valeurs.
  */
 import { fr } from '../src/i18n/fr';
 import { nl } from '../src/i18n/nl';
@@ -16,6 +16,7 @@ describe('traductions', () => {
   it.each([
     ['nl', nl],
     ['en', en],
+    ['de', de],
   ] as const)('%s a exactement les clés du français', (_, d) => {
     const missing = keys(fr).filter((k) => !(k in d));
     const extra = keys(d).filter((k) => !(k in fr));
@@ -33,10 +34,6 @@ describe('traductions', () => {
     expect(diff).toEqual([]);
   });
 
-  it('allemand : aucune clé inconnue', () => {
-    expect(keys(de).filter((k) => !(k in fr))).toEqual([]);
-  });
-
   it('chaque propriété et chaque valeur de liste a un libellé', () => {
     const missing: string[] = [];
     for (const defs of Object.values(PROP_SCHEMAS))
@@ -47,7 +44,7 @@ describe('traductions', () => {
     expect([...new Set(missing)]).toEqual([]);
   });
 
-  it('chaque règle du catalogue a son constat dans les trois langues', () => {
-    for (const id of Object.keys(BE_RULES)) for (const d of [fr, nl, en]) expect(('rule.' + id) in d).toBe(true);
+  it('chaque règle du catalogue a son constat dans les quatre langues', () => {
+    for (const id of Object.keys(BE_RULES)) for (const d of [fr, nl, en, de]) expect(('rule.' + id) in d).toBe(true);
   });
 });

@@ -10,6 +10,9 @@ import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
 import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
 import { parseAddress } from './draadwijs';
+import { Warnings } from './warnings';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
 
 type Obj = Record<string, unknown>;
 type Props = Record<string, PropValue>;
@@ -94,7 +97,7 @@ const ELEMENTS: [RegExp, NodeKind, string?][] = [
 
 export interface PlanelecImportResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
 }
 
 export function importPlanelec(text: string, fileName = 'Projet PlanElec'): PlanelecImportResult {
@@ -102,12 +105,12 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
   try {
     data = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch {
-    throw new Error("Ce fichier n'est pas un projet PlanElec valide (JSON illisible).");
+    throw new I18nError('imp.planelec.invalidJson', undefined, "Ce fichier n'est pas un projet PlanElec valide (JSON illisible).");
   }
   if (!isObj(data) || data.format !== 'planelec-sketch' || !isObj(data.singleLine) || !isObj(data.singleLine.root))
-    throw new Error("Ce fichier n'est pas un projet PlanElec Sketch valide.");
-  const warnings = new Set<string>();
-  if (data.version !== 2) warnings.add(`Version de fichier PlanElec ${String(data.version)} : seule la version 2 a été testée, vérifiez le résultat.`);
+    throw new I18nError('imp.planelec.invalid', undefined, "Ce fichier n'est pas un projet PlanElec Sketch valide.");
+  const warnings = new Warnings();
+  if (data.version !== 2) warnings.add('imp.planelec.version', { version: String(data.version) });
   const meta = isObj(data.meta) ? data.meta : {};
   const root = data.singleLine.root;
   const rp = isObj(root.props) ? root.props : {};
@@ -115,7 +118,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
 
   // ——— Métadonnées ———
   const supply = planelecSupply(rp.supply);
-  if (!supply && rp.supply) warnings.add(`Réseau PlanElec « ${String(rp.supply)} » non reconnu : à choisir dans les infos du projet.`);
+  if (!supply && rp.supply) warnings.add('imp.planelec.supply', { net: String(rp.supply) });
   const email = (v: unknown) => (str(v)?.includes('@') ? str(v) : undefined);
   const customerAddress = parseAddress(str(meta.customerAddress));
   project.meta = {
@@ -146,7 +149,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
     return n;
   };
   const attach = (parent: ElNode, child: ElNode) => {
-    if (!allowed(parent, child)) warnings.add(`PlanElec : « ${child.source?.tag ?? child.kind} » sous « ${parent.source?.tag ?? parent.kind} » gardé tel quel (non prévu par le modèle de Voltaplan).`);
+    if (!allowed(parent, child)) warnings.add('imp.planelec.nesting', { child: child.source?.tag ?? child.kind, parent: parent.source?.tag ?? parent.kind });
     parent.children.push(child);
   };
   let earthResistance: number | undefined;
@@ -182,7 +185,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
           rcdType: residual ? str(p.rcdType) : undefined,
           phase: ['L1', 'L2', 'L3'].includes(String(p.phase)) ? String(p.phase) : undefined,
         });
-        if (kind && !['rcd', 'rcbo', 'fuse', 'mcb', 'switch', 'isolator'].includes(kind)) warnings.add(`Protection PlanElec « ${kind} » importée comme disjoncteur.`);
+        if (kind && !['rcd', 'rcbo', 'fuse', 'mcb', 'switch', 'isolator'].includes(kind)) warnings.add('imp.planelec.protection', { kind });
         break;
       }
       case 'board':
@@ -209,7 +212,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
       case 'switch': {
         const k = String(p.kind ?? 'single');
         const switchType = p.dimmer === true ? 'dimmer' : p.pull === true ? 'pullCord' : p.shutter === true ? 'shutter' : (SWITCHES[k] ?? 'single');
-        if (!SWITCHES[k]) warnings.add(`Interrupteur PlanElec « ${k} » importé comme simple allumage.`);
+        if (!SWITCHES[k]) warnings.add('imp.planelec.switch', { kind: k });
         node = make(src, 'switch', { switchType, pilotLight: p.pilotLamp === true ? true : undefined, signalLamp: p.signalLamp === true ? true : undefined, splashProof: p.splashProof === true ? true : undefined }, text);
         break;
       }
@@ -245,7 +248,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
         break;
       default:
         node = make(src, 'other', { name: family }, text);
-        warnings.add(`Élément PlanElec non reconnu, importé comme « autre » : ${family}`);
+        warnings.add('imp.planelec.unknown', { family });
     }
     attach(parent, node);
     for (const k of kids) convert(k, node);
@@ -258,7 +261,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
   nodeOf.set(origin.id, origin);
   for (const c of arr(root.children)) convert(c, origin);
   if (earthResistance !== undefined) project.measurements = { ...project.measurements, earthResistanceOhm: earthResistance };
-  if (arr(data.singleLine.notes).length || arr(root.notes).length) warnings.add('Notes du schéma PlanElec non reprises.');
+  if (arr(data.singleLine.notes).length || arr(root.notes).length) warnings.add('imp.planelec.notes');
 
   // ——— Plan ———
   const plan = isObj(data.situation) ? data.situation : {};
@@ -318,7 +321,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
             hinge: /^OUTWARD/.test(swing) ? 'right' : 'left',
             mirrored: /RIGHT$/.test(swing),
           });
-        } else warnings.add(`Ouverture PlanElec « ${type} » ignorée.`);
+        } else warnings.add('imp.planelec.opening', { type });
       }
     }
     // Pièces : nom au centre (sommets du contour)
@@ -375,7 +378,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
       const id = str(pl.nodeId);
       if (!id || !nodeOf.has(id)) continue;
       if (placed.has(id)) {
-        warnings.add('Élément PlanElec posé plusieurs fois sur un même plan : seule la première position est reprise.');
+        warnings.add('imp.planelec.multi');
         continue;
       }
       placed.add(id);
@@ -435,13 +438,13 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
       page.symbols.push({ nodeId: n.id, pos, rotation: num(el.rotation) ?? 0 });
       grow(pos);
     }
-    if (arr(f.wires).length) warnings.add('Tracés de câbles PlanElec non repris.');
+    if (arr(f.wires).length) warnings.add('imp.planelec.wires');
     project.plan.pages.push(page);
   });
-  if (project.loose.length) warnings.add(`${project.loose.length} symbole(s) PlanElec hors schéma (détecteurs, sonnerie, prises data…) : posés sur le plan, non raccordés.`);
-  if (skipped.size) warnings.add(`Éléments de plan PlanElec non repris : ${[...skipped].join(', ')}.`);
+  if (project.loose.length) warnings.add('imp.planelec.loose', { n: project.loose.length });
+  if (skipped.size) warnings.add('imp.planelec.skipped', { list: [...skipped].join(', ') });
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
-  return { project, warnings: [...warnings] };
+  return { project, warnings: warnings.list() };
 }

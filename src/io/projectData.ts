@@ -28,6 +28,7 @@ import { mergeSources, projectAssetRefs, splitProject, type AssetRef } from '../
 import { AssetSession, type DocSource } from '../format/session';
 import { blobBytes } from '../format/sha256';
 import { checkFileSize } from './limits';
+import { I18nError } from '../i18n/error';
 import { FILE_FORMAT, LEGACY_FORMATS } from '../brand';
 import { sanitizeProjectImages } from './sanitize';
 import { parseProjectChecked } from './storage';
@@ -147,7 +148,9 @@ async function zipCandidates(blob: Blob): Promise<{ path: string; data: Blob }[]
 async function unknownFileError(blob: Blob, name: string): Promise<Error> {
   const { looksElectric, WORDS_SAMPLE } = await import('../import/electricWords');
   const electric = looksElectric(decodeText(await blobBytes(blob.slice(0, WORDS_SAMPLE))));
-  return new Error(
+  return new I18nError(
+    electric ? 'imp.file.unknownElectric' : 'imp.file.unknown',
+    { name },
     electric
       ? `« ${name} » ressemble à un schéma électrique d'un logiciel que Voltaplan ne connaît pas encore : rien n'a été importé. Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`
       : `« ${name} » n'est pas un fichier de schéma électrique reconnu. Fichiers reconnus : projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec Sketch, Condui (export .zip) et dossier PDF d'un autre logiciel.`,
@@ -157,7 +160,7 @@ async function unknownFileError(blob: Blob, name: string): Promise<Error> {
 export interface ProjectOpen {
   project: Project;
   format: DataFormat;
-  /** Avertissements : texte (import Trikker) ou clé de traduction (lecture d'un projet, import Eendraadschema). */
+  /** Avertissements : clé de traduction et paramètres (texte brut accepté pour les appelants plus anciens). */
   warnings: (string | MigrationWarning)[];
   /** Archive v2 : rapport de validation (entrées ignorées, invalides, récupération). */
   report?: ArchiveReport;
@@ -212,7 +215,7 @@ export async function openProjectData(data: Blob | string, name: string, session
   if (r.format !== 'v1' && r.format !== 'v2') {
     const { autoWires } = await import('../calc/cableLength');
     const w = autoWires(r.project);
-    if (w.added) return { ...r, project: w.project, warnings: [...r.warnings, `${w.added} tracé(s) de câble créé(s) d'après l'unifilaire, à angles droits : à ajuster.`] };
+    if (w.added) return { ...r, project: w.project, warnings: [...r.warnings, { key: 'imp.file.cableRoutes', params: { n: w.added } }] };
   }
   return r;
 }
@@ -231,14 +234,14 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
         if (!inner || inner === 'zip') continue;
         try {
           const r = await openProjectFile(c.data, c.path.split('/').pop()!, session, opts, 1);
-          return { ...r, needsNewFile: true, warnings: [`Fichier « ${c.path} » repris de l'archive « ${name} ».`, ...r.warnings] };
+          return { ...r, needsNewFile: true, warnings: [{ key: 'imp.file.fromZip', params: { path: c.path, name } }, ...r.warnings] };
         } catch (e) {
           last = e;
         }
       }
       if (last) throw last;
     }
-    throw new Error(`L'archive « ${name} » ne contient aucun fichier de schéma reconnu (projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF).`);
+    throw new I18nError('imp.file.zipEmpty', { name }, `L'archive « ${name} » ne contient aucun fichier de schéma reconnu (projet Voltaplan, Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF).`);
   }
   if (!fmt) {
     // Fichier non reconnu : même plafond que les imports texte, puis seul le début est lu
@@ -260,7 +263,7 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
         if (bg) bg.href = await pdfPageImage(blob, b.pdfPage);
       } catch {
         pg.images = pg.images.filter((im) => im !== bg);
-        warnings.push(`Page ${b.pdfPage} du PDF : image du plan non rendue.`);
+        warnings.push({ key: 'imp.pdf.pageImage', params: { page: b.pdfPage } });
       }
     }
     await extractEmbeddedImages(project, async (b, n) => (await session.store.add(b, { name: n })).sha256);
@@ -275,7 +278,7 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
         if (t.walls.length >= 3) {
           pg.walls = t.walls;
           pg.openings = t.openings;
-          warnings.push(`${pg.name} : ${t.walls.length} mur(s) relevé(s) sur l'image du plan (bâtiment dessiné en image dans le PDF) : à vérifier.`);
+          warnings.push({ key: 'imp.pdf.tracedWalls', params: { page: pg.name, n: t.walls.length } });
         }
       } catch {
         // Lecture de l'image impossible : le fond de plan reste, sans murs
@@ -317,7 +320,7 @@ async function openProjectFile(data: Blob | string, name: string, session: Asset
   const add = async (b: Blob, n: string) => (await session.store.add(b, { name: n })).sha256;
   if (fmt === 'trik') {
     const { project, warnings } = importTrikker(decodeText(await blobBytes(blob)), name);
-    if (sanitizeProjectImages(project)) warnings.push('Images non intégrées ignorées.');
+    if (sanitizeProjectImages(project)) warnings.push({ key: 'imp.file.imagesIgnored' });
     await extractEmbeddedImages(project, add);
     return { project, format: 'trik', warnings, needsNewFile: true };
   }

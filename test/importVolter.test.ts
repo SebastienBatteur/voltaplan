@@ -5,6 +5,7 @@ import { importVolter, VOLTER_TYPES, volterSupply } from '../src/import/volter';
 import { walk } from '../src/model/tree';
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import type { ElNode, Project } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 /** Sauvegarde Volter fabriquée pour le test (même forme que les fichiers d'essai, données inventées). */
 function sample() {
@@ -195,8 +196,8 @@ describe('import Volter (.vschema)', () => {
     expect(pg.labels.map((l) => l.text).sort()).toEqual(['Rond-point', 'Séjour', 'Terrasse']);
     expect(pg.rects).toContainEqual({ center: { x: 5000, y: 5000 }, w: 2000, h: 2000, angle: 0 });
     expect(project.loose.map((n) => n.props.name)).toEqual(['unknownThing']);
-    expect(warnings.join('\n')).toMatch(/unknownThing/);
-    expect(warnings.join('\n')).toMatch(/lift/);
+    expect(frWarnings(warnings).join('\n')).toMatch(/unknownThing/);
+    expect(frWarnings(warnings).join('\n')).toMatch(/lift/);
   });
 
   it('place le sous-tableau sous son disjoncteur et suit les liaisons entre étages', () => {
@@ -248,7 +249,7 @@ describe('import Volter (.vschema)', () => {
       const nodes = [...walk(project.roots)].length;
       const symbols = project.plan.pages.reduce((a, pg) => a + pg.symbols.length, 0);
       console.log(p, { nodes, symbols, loose: project.loose.length, pages: project.plan.pages.length }, warnings);
-      expect(warnings.join('\n')).not.toMatch(/non reconnu/);
+      expect(frWarnings(warnings).join('\n')).not.toMatch(/non reconnu/);
     }
   });
 

@@ -8,6 +8,9 @@
 import { ALLOWED_CHILDREN, CABLE_TYPES } from '../model/schema';
 import { createNode, emptyPage, emptyProject, letterFor, uid } from '../model/tree';
 import type { Address, ElNode, Furniture, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
+import { Warnings } from './warnings';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
 
 /** Unité Draadwijs : 1 = 1 cm ; Voltaplan : mm. */
 const CM = 10;
@@ -113,7 +116,7 @@ export function parseAddress(s: string | undefined): Address {
 
 export interface DraadwijsImportResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
 }
 
 export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): DraadwijsImportResult {
@@ -121,11 +124,11 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
   try {
     data = JSON.parse(text.charCodeAt(0) === 0xfeff ? text.slice(1) : text);
   } catch {
-    throw new Error("Ce fichier n'est pas un projet Draadwijs valide (JSON illisible).");
+    throw new I18nError('imp.draadwijs.invalidJson', undefined, "Ce fichier n'est pas un projet Draadwijs valide (JSON illisible).");
   }
-  if (!isObj(data) || !isObj(data.project) || !isObj(data.root)) throw new Error("Ce fichier n'est pas un projet Draadwijs valide.");
-  const warnings = new Set<string>();
-  if (data.version !== 3) warnings.add(`Version de fichier Draadwijs ${String(data.version)} : seule la version 3 a été testée, vérifiez le résultat.`);
+  if (!isObj(data) || !isObj(data.project) || !isObj(data.root)) throw new I18nError('imp.draadwijs.invalid', undefined, "Ce fichier n'est pas un projet Draadwijs valide.");
+  const warnings = new Warnings();
+  if (data.version !== 3) warnings.add('imp.draadwijs.version', { version: String(data.version) });
   const dp = data.project;
   const root = data.root;
   const rp = isObj(root.props) ? root.props : {};
@@ -133,7 +136,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
 
   // ——— Métadonnées ———
   const supply = draadwijsSupply(rp.net);
-  if (!supply && rp.net) warnings.add(`Réseau Draadwijs « ${String(rp.net)} » non reconnu : à choisir dans les infos du projet.`);
+  if (!supply && rp.net) warnings.add('imp.draadwijs.supply', { net: String(rp.net) });
   const email = str(dp.klantEmail);
   project.meta = {
     ...project.meta,
@@ -184,7 +187,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
     if (allowed(parent, child)) parent.children.push(child);
     else if (fallback && allowed(fallback, child)) fallback.children.push(child);
     else {
-      warnings.add(`Draadwijs : « ${child.source?.tag ?? child.kind} » sous « ${parent.source?.tag ?? parent.kind} » rangé à côté (non admis par le modèle de Voltaplan).`);
+      warnings.add('imp.draadwijs.nesting', { child: child.source?.tag ?? child.kind, parent: parent.source?.tag ?? parent.kind });
       (fallback ?? parent).children.push(child);
     }
   };
@@ -246,7 +249,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
         // Inverseur (source de secours) : coupure de tous les pôles ; règles propres à venir (idée D8)
         const sw = make(src, 'protection', { device: 'switch', circuitName: ['Inverseur', str(p.soort), str(p.bron)].filter(Boolean).join(' — ') });
         attach(parent, sw, cable);
-        warnings.add("Inverseur de source (alimentation de secours) importé comme interrupteur-sectionneur : le contrôle de Voltaplan ne vérifie pas encore le fonctionnement sur la source de secours.");
+        warnings.add('imp.draadwijs.ats');
         for (const k of kids) convert(k, sw);
         return;
       }
@@ -274,7 +277,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
         break;
       case 'schakelaar':
         node = make(src, 'switch', { switchType: SWITCHES[String(p.soort)] ?? 'single', splashProof: p.waterdicht === true ? true : undefined }, plaats);
-        if (p.soort && !SWITCHES[String(p.soort)]) warnings.add(`Interrupteur Draadwijs « ${String(p.soort)} » importé comme simple allumage.`);
+        if (p.soort && !SWITCHES[String(p.soort)]) warnings.add('imp.draadwijs.switch', { kind: String(p.soort) });
         break;
       case 'drukknop':
         node = make(src, 'pushButton', {}, plaats);
@@ -322,7 +325,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
         break;
       default:
         node = make(src, 'other', { name: type }, plaats);
-        warnings.add(`Élément Draadwijs non reconnu, importé comme « autre » : ${type}`);
+        warnings.add('imp.draadwijs.unknown', { type });
     }
     attach(parent, node, cable);
     for (const k of kids) convert(k, into ?? node, cable);
@@ -382,7 +385,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
       const b = { x: Math.round(w.a.x + ux * (s + width)), y: Math.round(w.a.y + uy * (s + width)) };
       const soort = String(o.soort ?? '');
       const kind = soort === 'raam' ? 'window' : soort === 'poort' ? 'garageDoor' : soort === 'schuifdeur' ? 'slidingDoor' : soort === 'dubbeleDeur' ? 'doubleDoor' : 'door';
-      if (!['raam', 'poort', 'deur', 'schuifdeur', 'dubbeleDeur'].includes(soort)) warnings.add(`Ouverture Draadwijs « ${soort} » dessinée comme une porte.`);
+      if (!['raam', 'poort', 'deur', 'schuifdeur', 'dubbeleDeur'].includes(soort)) warnings.add('imp.draadwijs.opening', { kind: soort });
       page.openings.push({ kind, a, b, width: w.thickness, ...(kind === 'window' ? {} : { hinge: o.kant === true ? 'left' : 'right', mirrored: o.flip === true }) });
     }
     for (const tx of arr(f.texts)) {
@@ -423,10 +426,10 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
     }
     project.plan.pages.push(page);
   }
-  if (skipped.size) warnings.add(`Meubles Draadwijs non repris (pas d'équivalent dans Voltaplan) : ${[...skipped].join(', ')}.`);
+  if (skipped.size) warnings.add('imp.draadwijs.furniture', { list: [...skipped].join(', ') });
   if (!project.plan.pages.length) project.plan.pages.push(emptyPage('Rez-de-chaussée'));
   project.plan.width = Math.max(20000, Math.ceil((maxX + 2000) / 1000) * 1000);
   project.plan.height = Math.max(15000, Math.ceil((maxY + 2000) / 1000) * 1000);
-  if (isObj(data.offerte)) warnings.add('Devis Draadwijs (taux horaire, TVA, remise) non repris : Voltaplan ne fait pas de devis.');
-  return { project, warnings: [...warnings] };
+  if (isObj(data.offerte)) warnings.add('imp.draadwijs.quote');
+  return { project, warnings: warnings.list() };
 }

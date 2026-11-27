@@ -3,6 +3,7 @@ import { distToWalls, planFromShapes, scaleFromDoors, shapesFromOperatorList, wa
 import { importPdfDossier, type PdfText } from '../src/import/pdfDossier';
 import { noWallZones } from '../src/import/pdfInfo';
 import type { Pt } from '../src/model/types';
+import { frWarnings } from './warnText';
 
 const P = (x: number, y: number): Pt => ({ x, y });
 const BLACK: [number, number, number] = [30, 30, 30];
@@ -124,7 +125,7 @@ describe('plan lu dans le dessin du PDF', () => {
     // La lampe prend le repère du milieu de la pièce
     expect(pg.symbols).toHaveLength(1);
     expect(pg.symbols[0].pos.y).toBeGreaterThan(140 * k);
-    expect(warnings.some((w) => /mur\(s\) et .* lus dans le dessin/.test(w))).toBe(true);
+    expect(frWarnings(warnings).some((w) => /mur\(s\) et .* lus dans le dessin/.test(w))).toBe(true);
   });
 
   it('import : noms de pièces lus sur le plan, pièce de chaque point posé', () => {
@@ -183,7 +184,7 @@ describe('plan lu dans le dessin du PDF', () => {
     expect(at('B')).toEqual({ row: 0, col: 4 });
     expect(at('C')).toEqual({ row: 1, col: 0 });
     expect(at('D')).toEqual({ row: 1, col: 2 });
-    expect(warnings.some((w) => /Face avant du tableau lue/.test(w))).toBe(true);
+    expect(frWarnings(warnings).some((w) => /Face avant du tableau lue/.test(w))).toBe(true);
   });
 
   it('cartouche et légende repérés d’abord : un trait épais dedans n’est pas un mur', () => {

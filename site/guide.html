@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Guide de Voltaplan</title>
 <meta name="description" content="Guide d'utilisation de Voltaplan : unifilaire, plan, tableau, contrôle RGIE, impression, sauvegardes.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/guide.html">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/guide.html">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/guide.html">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/guide.html">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/guide.html">
 <link rel="icon" href="icon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,11 +18,12 @@
   <a class="brand" href="./"><img src="icon.svg" alt="">Voltaplan</a>
   <nav class="links">
     <a href="guide.html">Guide</a>
+    <a href="faq.html">FAQ</a>
     <a href="#installer">Installer</a>
     <a class="repo-link" href="#">Code source</a>
     <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
     <a class="btn primary" href="app/">Ouvrir l'application</a>
-    <span class="lang"><a href="guide.html" aria-current="true" data-lang="fr">FR</a><a href="nl/guide.html" data-lang="nl">NL</a><a href="en/guide.html" data-lang="en">EN</a></span>
+    <span class="lang"><a href="guide.html" aria-current="true" data-lang="fr">FR</a><a href="nl/guide.html" data-lang="nl">NL</a><a href="en/guide.html" data-lang="en">EN</a><a href="de/guide.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
 <main class="doc">
@@ -31,6 +37,7 @@
     <a href="#tableau">Tableau</a>
     <a href="#photo">Photo du tableau</a>
     <a href="#maj">Mettre à jour</a>
+    <a href="#longueurs">Longueur des câbles</a>
     <a href="#materiel">Liste du matériel</a>
     <a href="#controle">Contrôle RGIE</a>
     <a href="#calculs">Chute de tension et court-circuit</a>
@@ -38,7 +45,7 @@
     <a href="#imprimer">Imprimer le dossier</a>
     <a href="#sauver">Enregistrer et ouvrir</a>
     <a href="#nuage">Drive, OneDrive, Dropbox</a>
-    <a href="#trikker">Trikker</a>
+    <a href="#importer">Importer d'un autre logiciel</a>
     <a href="#ia">IA (facultative)</a>
     <a href="#pays">Pays et règlements</a>
     <a href="#raccourcis">Raccourcis</a>
@@ -49,9 +56,9 @@
     <h2 id="demarrer">Démarrer</h2>
     <p>La façon la plus simple : <a href="app/">ouvrir l'application dans le navigateur</a> (<span class="app-url">app/</span>). Elle s'installe comme une application (icône « Installer » dans la barre d'adresse de Chrome ou Edge) et fonctionne ensuite sans connexion.</p>
     <ol>
-      <li>À l'ouverture, l'écran <strong>Mes projets</strong> propose : <strong>Nouveau projet</strong>, <strong>Relever une installation existante</strong>, ouvrir un fichier ou un dossier du nuage, ou <strong>Importer Trikker</strong>. Vos derniers projets y sont listés : un clic les rouvre. On y revient par <em>Fichier → Mes projets</em>.</li>
+      <li>À l'ouverture, l'écran <strong>Mes projets</strong> propose : <strong>Nouveau projet</strong>, <strong>Relever une installation existante</strong>, <strong>Ouvrir un fichier</strong>, <strong>Ouvrir depuis le cloud ou le navigateur</strong> et <strong>Importer d'un autre logiciel</strong> (voir <a href="#importer">Importer</a>). Vos derniers projets y sont listés : un clic les rouvre. On y revient par <em>Fichier → Mes projets (accueil)</em> ou en cliquant le logo.</li>
       <li>Un nouveau projet se crée en <strong>4 petites étapes</strong> : type d'installation, adresse et client, installateur (Voltaplan peut s'en souvenir), alimentation (tension, schéma de terre, courant du disjoncteur de branchement). Chaque étape peut être passée : <em>Créer maintenant</em> et compléter plus tard. Pour une installation neuve, vous pouvez partir d'une <strong>maison type</strong> : éclairage, prises, cuisinière, salle de bain et lave-linge sous différentiel 30 mA et terre sont déjà en place ; adaptez ensuite à la réalité.</li>
-      <li>Remplissez l'onglet <strong>Projet</strong> : adresse, installateur, tension, EAN, type d'installation (neuve ou existante).</li>
+      <li>Remplissez l'onglet <strong>Projet</strong> : adresse, installateur, tension, EAN, type d'installation (neuve ou existante). <em>Lire la plaque du compteur (photo)…</em> lit la tension et le nombre de phases sur une photo de la plaque, sur cet appareil, et propose l'alimentation.</li>
       <li>Ajoutez tableau, différentiels, circuits et points dans l'<strong>arborescence</strong> à gauche ; l'unifilaire se dessine tout seul.</li>
       <li>Placez les points sur le <strong>Plan</strong>, rangez les appareils dans le <strong>Tableau</strong>, puis cliquez <strong>⟳ Mettre à jour</strong>.</li>
       <li>Corrigez ce que signale le <strong>Contrôle RGIE</strong>, puis <strong>Imprimer / PDF</strong>.</li>
@@ -69,7 +76,7 @@
 
     <h2 id="ecran">L'écran</h2>
     <ul>
-      <li><strong>Barre du haut</strong> : menu <strong>Fichier</strong> (nouveau, ouvrir, importer Trikker, enregistrer, enregistrer sous, imprimer / PDF), bouton Enregistrer (en bleu s'il y a des modifications), ⟳ Mettre à jour, annuler / rétablir, onglets, langue (FR, NL, EN).</li>
+      <li><strong>Barre du haut</strong> : menu <strong>Fichier</strong> (Mes projets (accueil), Nouveau, Nouveau relevé (installation existante), Ouvrir…, Importer d'un autre logiciel…, Enregistrer, Enregistrer sous…, Versions locales…, Assistant de relevé (expérimental)…, Imprimer / PDF), bouton Enregistrer (en bleu s'il y a des modifications), ⟳ Mettre à jour, annuler / rétablir, onglets, ⚙ IA, langue (français, néerlandais, anglais, allemand). Sur petit écran, annuler, rétablir, Mettre à jour, IA et la langue passent dans le menu « ⋯ ».</li>
       <li><strong>Onglets</strong> : Unifilaire, Plan, Tableau, Matériel, Projet, Contrôle RGIE (le chiffre rouge = nombre de non-conformités).</li>
       <li><strong>À gauche</strong> : l'arborescence de l'installation et les propriétés de l'élément sélectionné. Le bouton ‹ masque toute la colonne (› la rouvre). Cliquez le titre « Installation » ou « Propriétés » pour replier la partie ; faites glisser la ligne qui les sépare pour partager la hauteur, et le bord droit de la colonne pour l'élargir. La disposition est retenue sur cet ordinateur.</li>
       <li><strong>Éléments</strong> (sous « Propriétés ») : la palette. Sur l'unifilaire, l'arborescence ou le tableau, les éléments de l'unifilaire par grandes familles (tableaux et protections, canalisations, éclairage, prises et appareils, commandes, domotique et divers) : un clic ajoute l'élément sous celui qui est sélectionné (grisé s'il ne peut pas s'y brancher). Sur le plan : les outils (murs, portes, fenêtres, textes, mobilier par pièce), les éléments de l'unifilaire à poser au prochain clic, et <em>Pas encore sur le plan</em> : ce qui reste à placer, rangé par circuit.</li>
@@ -79,7 +86,7 @@
 
     <h2 id="installation">Décrire l'installation</h2>
     <p>L'installation est un arbre : origine → (compteur) → protections → tableau → différentiels → disjoncteurs → canalisations → points (prises, interrupteurs, points lumineux, appareils…).</p>
-    <p><strong>Ajouter un élément</strong> — trois façons, qui proposent seulement ce que l'on peut brancher sous l'élément choisi :</p>
+    <p><strong>Ajouter un élément</strong> — plusieurs façons, qui proposent seulement ce que l'on peut brancher sous l'élément choisi :</p>
     <ol>
       <li><strong>Clic droit</strong> sur un symbole de l'unifilaire (ex. un disjoncteur) → « Ajouter dans » → Canalisation ;</li>
       <li>le <strong>＋</strong> au bout d'une ligne de l'arborescence (visible au survol ou sur la ligne sélectionnée) ;</li>
@@ -91,7 +98,7 @@
     <p>Le nouvel élément est sélectionné : remplissez ses propriétés. Exemple pour un circuit de prises : clic droit sur le tableau → Protection (disjoncteur 20 A) ; puis sur ce disjoncteur → Canalisation (VOB 3G2,5) ; puis sur la canalisation → Prise, autant de fois que nécessaire. Enfin <strong>⟳ Mettre à jour</strong> pose le disjoncteur dans le tableau et les prises sur le plan.</p>
     <ul>
       <li><strong>Protection</strong> : appareil (disjoncteur, différentiel, disjoncteur différentiel, fusible, interrupteur-sectionneur), calibre, pôles, courbe, pouvoir de coupure, sensibilité et type du différentiel, nombre de modules, référence fabricant, « partie ancienne » (avant le 1/10/1981).</li>
-      <li><strong>Canalisation</strong> : type (VOB, XVB…), section, nombre de conducteurs, sous tube, mode de pose, <strong>longueur</strong> (nécessaire pour les calculs).</li>
+      <li><strong>Canalisation</strong> : type (VOB, XVB…), section, nombre de conducteurs, sous tube, mode de pose, <strong>longueur</strong> (pour la chute de tension et la liste du matériel ; saisie, ou estimée d'après le plan : voir <a href="#longueurs">Longueur des câbles</a>).</li>
       <li><strong>Emplacement</strong> : la pièce (ex. « Cuisine »). Il sert à poser les points sur le plan près du nom de la pièce.</li>
       <li><strong>Numérotation RGIE</strong> (3.1.2.1) : circuits A, B, C… ; points A1, A2… dans l'ordre depuis la protection ; un interrupteur prend le numéro du point qu'il commande. Une lettre peut être imposée.</li>
     </ul>
@@ -106,7 +113,10 @@
       <li><strong>Fond de plan</strong> : photo, PDF ou <strong>plan DXF</strong> (export d'AutoCAD, ArchiCAD, SketchUp, LibreCAD…). Un DXF dont l'unité est indiquée est posé <strong>directement à la bonne échelle</strong> ; sinon, utilisez <em>Mettre à l'échelle</em>. Un DXF « binaire » doit d'abord être réenregistré en DXF texte (ASCII).</li>
       <li><strong>Couleurs des circuits</strong> : le bouton <em>Couleurs des circuits</em> donne une couleur à chaque circuit, sur le plan et l'unifilaire, avec une légende. Pratique pour voir d'un coup d'œil quelle prise dépend de quel disjoncteur. Le dossier imprimé reste en noir.</li>
       <li><strong>Pour un fond photo ou PDF</strong> : <em>Mettre à l'échelle</em> : cliquez deux points et donnez leur distance réelle. <em>Redresser</em> : cliquez les 4 coins d'un rectangle connu d'une photo prise de biais. <em>Tracer les murs</em> : détection automatique des murs, portes et fenêtres, à vérifier. <em>Caler le fond</em> : superposer une photo récente sur le plan pour voir les modifications.</li>
-      <li><strong>Mobilier</strong> : pictogrammes à l'échelle (lits, canapé, cuisine, sanitaires…). Les meubles importés de Trikker (images) se sélectionnent aussi : glisser pour déplacer, largeur, profondeur, angle, rotation de 90°, dupliquer, supprimer, ou <em>Remplacer par un pictogramme</em> (même place et même taille).</li>
+      <li><strong>Lire les noms de pièces</strong> : lit les noms de pièces écrits sur le fond de plan (sur cet appareil, aucune image envoyée) et les pose sur le plan, à vérifier.</li>
+      <li><strong>Équiper la pièce</strong> : sélectionnez le nom d'une pièce (chambre, cuisine, salle de bain…) ; Voltaplan propose l'équipement habituel de ce type de pièce, à cocher, et le mobilier type. Les points sont posés à leur place mais <strong>non raccordés</strong> : reliez-les ensuite à leurs circuits. Ce n'est pas une liste du RGIE, seulement un point de départ (<kbd>Ctrl</kbd>+<kbd>Z</kbd> annule).</li>
+      <li><strong>Tracés de câbles</strong> : les tracés repris d'un import (Condui) ou créés d'après l'unifilaire sont dessinés en pointillé ; ceux qui ont été créés automatiquement sont plus pâles et à ajuster (voir <a href="#longueurs">Longueur des câbles</a>).</li>
+      <li><strong>Mobilier</strong> : pictogrammes à l'échelle (lits, canapé, cuisine, sanitaires…). Les meubles importés d'un autre logiciel sous forme d'images (Trikker) se sélectionnent aussi : glisser pour déplacer, largeur, profondeur, angle, rotation de 90°, dupliquer, supprimer, ou <em>Remplacer par un pictogramme</em> (même place et même taille).</li>
       <li><strong>Symboles électriques</strong> : « Placer sur le plan » depuis les propriétés ou la liste <em>Pas encore sur le plan</em> de la palette, ou clic droit sur le plan pour en ajouter un nouveau ; puis glisser, pivoter, retirer. Les points lumineux, tubes néon, appareils, moteurs et éléments carrés sont dessinés sans trait de raccordement. Les prises, interrupteurs, boutons-poussoirs, sonneries et appliques gardent leur petit trait, <strong>tourné automatiquement vers le mur le plus proche</strong> (et il suit si on les déplace ou si le mur bouge) ; « Orienter vers les murs » l'applique aux éléments d'un plan importé, et une rotation à la main arrête l'orientation automatique de cet élément.</li>
     </ul>
 
@@ -119,7 +129,7 @@
       <li>« Caler la photo (rangées) » : pour chaque rangée, cliquez le bord gauche du premier module puis le bout de la rangée, à mi-hauteur des appareils.</li>
       <li>« Disposer d'après la photo » : sans IA, Voltaplan repère sur chaque rangée les modules occupés (un cache-module est uniforme, un rail nu plus sombre) et les séparations entre appareils, puis y pose les appareils du projet. Un appareil déjà placé (à la main ou par l'IA) garde sa place si la photo y montre un appareil ; les protections passent avant les relais et modules domotiques. Ensuite : d'abord ceux de 2 modules ou plus, là où la photo montre un appareil de cette largeur ; ensuite ceux d'un module, dans l'ordre, sur les modules occupés restants. Ce qui ne trouve pas de place reste en réserve, et les emplacements occupés sur la photo sans appareil du projet sont listés, chacun avec un menu « Associer à… » qui propose tous les éléments de l'unifilaire de ce tableau, ou « ＋ Nouveau disjoncteur ». C'est une proposition : la photo ne dit ni le type ni le calibre ; vérifiez et déplacez à la souris (« Annuler » revient en arrière).</li>
       <li>« Comparer » : sans IA, Voltaplan mesure les séparations entre appareils et signale ceux dont la largeur ne correspond pas (ex. 1 module dans le projet, 2 sur la photo). Les appareils dessinés deviennent transparents pour comparer à l'œil.</li>
-      <li>En option, l'IA lit les calibres, courbes et sensibilités, dispose les appareils à leur place et les compare au projet (voir <a href="#ia">IA</a>).</li>
+      <li>« Lire la photo » : sans IA, une lecture locale (sur cet appareil, aucune image envoyée) découpe les appareils et lit les étiquettes, calibres et sensibilités lisibles ; ils sont proposés avec une confiance faible, à vérifier. La lecture locale est fiable pour les étiquettes imprimées, moins pour les calibres des petits modules sur une photo du tableau entier. Si l'IA est configurée et déverrouillée, le même bouton devient « Lire la photo (IA) » : l'IA lit les calibres, courbes et sensibilités, dispose les appareils à leur place et les compare au projet (voir <a href="#ia">IA</a>).</li>
     </ol>
 
     <h2 id="maj">Mettre à jour (nouvelle installation, circuits ajoutés)</h2>
@@ -127,49 +137,65 @@
     <ul>
       <li>les nouveaux appareils sont posés dans le premier emplacement libre du tableau, <strong>sans déplacer les autres</strong> (un tableau jamais disposé est rangé entièrement) ; s'il n'y a plus de place, c'est signalé ;</li>
       <li>les nouveaux points sont posés sur le plan <strong>près du nom de leur pièce</strong> ; les autres vont dans une colonne « à placer » à gauche du plan ;</li>
+      <li>la <strong>longueur des câbles</strong> est estimée d'après le plan (voir <a href="#longueurs">Longueur des câbles</a>) ;</li>
       <li>une <strong>révision</strong> est ajoutée au dossier avec la liste des circuits ajoutés (RGIE 3.1.2 : une extension doit être reportée sur les plans) ;</li>
       <li>numérotation, étiquettes, liste du matériel et contrôle sont recalculés.</li>
     </ul>
     <p>« Annuler » dans la fenêtre de résultat revient en arrière en une fois.</p>
 
+    <h2 id="longueurs">Longueur des câbles</h2>
+    <p><strong>⟳ Mettre à jour</strong> et le bouton <strong>Estimer les longueurs</strong> (onglet Matériel) estiment la longueur de chaque câble d'après le plan de position : du tableau au premier point, puis de point en point dans l'ordre du schéma, à angles droits, avec 10 % de marge. Posez le tableau sur le plan : sans lui, le trajet est compté depuis le premier point et reste trop court (c'est signalé).</p>
+    <ul>
+      <li><strong>Montées et descentes</strong> selon la hauteur de pose : interrupteur et bouton-poussoir à hauteur de main (1,10 m) alimentés par le plafond, interrupteur à tirette en haut (2,30 m), prise basse (0,25 m) alimentée par le bas, applique à 1,90 m ; changement d'étage compté.</li>
+      <li><strong>Tracés de câbles</strong> : les tracés repris de Condui (de point à point par les points de passage) sont dessinés en pointillé et suivis par l'estimation ; le départ du tableau, que Condui ne trace pas, reste estimé. Pour un import sans tracés (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, circuits non tracés de Condui), des tracés à angles droits sont créés d'après l'unifilaire, du tableau au premier point puis de point en point ; ils sont dessinés plus pâles et signalés « à ajuster ».</li>
+      <li>Une longueur estimée est marquée <em>Longueur estimée d'après le plan</em> dans les propriétés et « ≈ » dans la liste du matériel. <strong>Une longueur saisie n'est jamais remplacée</strong>, et la saisir enlève la marque.</li>
+    </ul>
+    <p>Le RGIE n'exige la longueur des canalisations sur le schéma que pour une installation non domestique ; en domestique, type, section, nombre de conducteurs et mode de pose suffisent. La longueur sert surtout au calcul de la chute de tension et à la liste du matériel.</p>
+
     <h2 id="materiel">Liste du matériel</h2>
-    <p>Onglet <strong>Matériel</strong> : le matériel est groupé par catégorie et additionné (pièces, tronçons et longueur totale des câbles). Il est désigné par ses <strong>caractéristiques et sa norme européenne</strong> (ex. « Disjoncteur 2P C20 A 3 kA — EN 60898-1 ») : les références fabricant et même les gammes changent d'un pays à l'autre. Les câbles gardent leur désignation nationale avec l'équivalent harmonisé quand il existe (VOB ≈ H07V-U/R). Une référence fabricant peut être ajoutée à chaque élément. Export CSV pour Excel ; page « Liste du matériel » dans le dossier imprimé. Le bouton <strong>Par pièce</strong> range le matériel pièce par pièce (d'après l'emplacement de chaque élément, ou la pièce du plan) : utile pour préparer le chantier ou un devis.</p>
+    <p>Onglet <strong>Matériel</strong> : le matériel est groupé par catégorie et additionné (pièces, tronçons et longueur totale des câbles). Il est désigné par ses <strong>caractéristiques et sa norme européenne</strong> (ex. « Disjoncteur 2P C20 A 3 kA — EN 60898-1 ») : les références fabricant et même les gammes changent d'un pays à l'autre. Les câbles gardent leur désignation nationale avec l'équivalent harmonisé quand il existe (VOB ≈ H07V-U/R). Une référence fabricant peut être ajoutée à chaque élément. Export CSV pour un tableur ; page « Liste du matériel » dans le dossier imprimé. <strong>Liste des circuits (CSV)</strong> : lettre, nom, protection, différentiel, câble, nombre de points et pièces de chaque circuit, comme dans le dossier PDF. <strong>Estimer les longueurs</strong> : voir <a href="#longueurs">Longueur des câbles</a>. Le bouton <strong>Par pièce</strong> range le matériel pièce par pièce (d'après l'emplacement de chaque élément, ou la pièce du plan) : utile pour préparer le chantier ou un devis.</p>
 
     <h2 id="controle">Contrôle RGIE</h2>
     <p><strong>Une aide à la vérification</strong> : elle ne remplace ni le texte du RGIE ni le contrôle par un organisme agréé. Chaque constat porte un <strong>statut</strong>, une <strong>gravité</strong> (danger élevé, modéré, faible) et, s'il y a lieu, la mention <strong>bloquant</strong>.</p>
     <table>
       <tr><th>Statut</th><th>Signification</th></tr>
-      <tr><td>Non conforme</td><td>non-conformité à l'édition du RGIE applicable ; bloquante pour une partie neuve, et pour une partie existante si le danger est élevé (terre, différentiel, protection des câbles…)</td></tr>
-      <tr><td>Information manquante</td><td>donnée nécessaire absente (calibre, section, installateur…) ; bloquante pour une partie neuve</td></tr>
+      <tr><td>Non-conformité détectée</td><td>non-conformité à l'édition du RGIE applicable ; bloquante pour une partie neuve, et pour une partie existante si le danger est élevé (terre, différentiel, protection des câbles…)</td></tr>
+      <tr><td>Informations insuffisantes</td><td>donnée nécessaire absente ou inconnue (calibre, section, sensibilité…)</td></tr>
+      <tr><td>Anomalie potentielle</td><td>d'après une information déduite ou non confirmée (par exemple une valeur lue sur une photo)</td></tr>
+      <tr><td>Informations contradictoires</td><td>le dessin et une déclaration (ou deux sources) ne sont pas d'accord</td></tr>
       <tr><td>Avertissement</td><td>point à examiner (chute de tension estimée, sélectivité…)</td></tr>
-      <tr><td>À vérifier</td><td>vérification à faire sur place ou interprétation (local humide deviné d'après le nom de la pièce, borne de recharge, photovoltaïque, mesures)</td></tr>
+      <tr><td>Vérification manuelle nécessaire</td><td>vérification à faire sur place ou interprétation (local humide deviné d'après le nom de la pièce, borne de recharge, photovoltaïque, mesures)</td></tr>
       <tr><td>Recommandation</td><td>mise en conformité conseillée, non exigée pour une partie existante</td></tr>
       <tr><td>Dérogation</td><td>constat couvert par une dérogation que vous avez saisie avec son motif</td></tr>
     </table>
-    <p><strong>Édition du RGIE</strong> : onglet Projet, indiquez la <strong>date de réalisation</strong> (« 1995 », « 2024-03-15 »). Avant le 1/10/1981 : partie ancienne ; jusqu'au 31/5/2020 : ancien RGIE (AR du 10 mars 1981) ; depuis le 1/6/2020 : Livre 1. Une installation mêle souvent plusieurs générations : dans les propriétés d'un tableau ou d'un disjoncteur, <strong>Réalisé le</strong> et <strong>Partie neuve ou existante</strong> appliquent les règles de son époque à cette partie seulement (un circuit ajouté en 2024 à une installation de 1990 suit le Livre 1).</p>
+    <p><strong>Installation existante</strong> : un élément absent du dessin n'est pas considéré comme absent de l'installation réelle. Une prise de terre, un différentiel général ou un différentiel 30 mA non dessinés donnent « Informations insuffisantes », non bloquant, avec les boutons <em>Confirmer présent</em>, <em>Confirmer absent</em> et <em>Je ne sais pas</em>. Une absence confirmée redonne une non-conformité. Pour une installation neuve, le dessin reste la référence. Les exigences documentaires (mentions du dossier, valeurs non renseignées) sont présentées à part, jamais comme des non-conformités de l'installation.</p>
+    <p><strong>Édition du RGIE</strong> : onglet Projet, indiquez la <strong>date de réalisation</strong> (« 1995 », « 2024-03-15 »). Avant le 1/10/1981 : partie ancienne ; jusqu'au 31/5/2020 : ancien RGIE (AR du 10 mars 1981) ; depuis le 1/6/2020 : Livre 1. Une installation mêle souvent plusieurs générations : dans les propriétés d'un tableau ou d'un disjoncteur, <strong>Réalisé le</strong> et <strong>Partie neuve ou existante</strong> appliquent les règles de son époque à cette partie seulement (un circuit ajouté en 2024 à une installation de 1990 suit le Livre 1). Les modifications datées du Livre 1 sont appliquées selon la date de début des travaux : par exemple, depuis le 1/3/2025, prises de 16 A au plus avec obturateurs (IPXX-D), sauf prise réservée à un appareil précis.</p>
     <p><strong>Salle de bain</strong> : indiquez <strong>Local avec baignoire ou douche</strong> (oui / non) dans les propriétés du circuit ou du point. Un nom de pièce évocateur (« SDB », « douche ») n'est qu'un indice signalé « À vérifier ».</p>
-    <p><strong>Dérogation</strong> : bouton <strong>Dérogation…</strong> sous un constat, motif obligatoire et référence (article, PV de l'organisme agréé). Le constat n'est plus bloquant mais reste visible, avec son motif, dans le panneau et le dossier. Les boutons <strong>Unifilaire</strong>, <strong>Plan</strong> et <strong>Tableau</strong> d'un constat ouvrent l'élément dans la vue choisie.</p>
+    <p><strong>Dérogation</strong> : bouton <strong>Dérogation…</strong> sous un constat, motif obligatoire et référence (article, PV de l'organisme agréé). Le constat n'est plus bloquant mais reste visible, avec son motif, dans le panneau et le dossier. Les boutons <strong>Unifilaire</strong>, <strong>Plan</strong> et <strong>Tableau</strong> d'un constat ouvrent l'élément dans la vue choisie. Quand la correction est évidente, un bouton la propose sous le constat (par exemple « Choisir 20 A », « Prise avec obturateurs », « Différentiel type A », « Placer sous le 30 mA ») ; « Annuler » revient en arrière. Une mention manquante du dossier mène à l'onglet Projet.</p>
     <p>Règles vérifiées, entre autres : mentions obligatoires du dossier, terre et mesures, différentiel général et 30 mA (locaux humides, lave-linge…), sélectivité, section ↔ calibre, nombre de prises par circuit, circuits spécialisés, sécurité enfant et terre des prises, <strong>disjoncteurs bipolaires en réseau 3 × 230 V</strong>, chute de tension et court-circuit. Le détail et les points en attente d'expertise sont dans la <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">couverture réglementaire</a>.</p>
 
     <h2 id="calculs">Chute de tension et court-circuit</h2>
-    <p>En bas de l'onglet Contrôle, un tableau donne pour chaque circuit : longueur jusqu'au point le plus éloigné, section, chute de tension, courant de court-circuit minimal et longueur maximale protégée. Méthode conventionnelle IEC 60364 : cuivre ρ = 0,0225 Ω·mm²/m, courant = calibre de la protection, 80 % de la tension pour le court-circuit ; limites 3 % (éclairage) et 5 % (autres). Remplissez la <strong>longueur</strong> de chaque canalisation pour obtenir les valeurs.</p>
+    <p>En bas de l'onglet Contrôle, un tableau donne pour chaque circuit : longueur jusqu'au point le plus éloigné, section, chute de tension, courant de court-circuit minimal et longueur maximale protégée. Méthode conventionnelle IEC 60364 (une estimation, pas une étude de protection) : ρ = 0,0225 Ω·mm²/m pour le cuivre (0,036 pour l'aluminium), courant = calibre de la protection, 80 % de la tension pour le court-circuit ; limites 3 % (éclairage) et 5 % (autres). Si toutes les charges ont une puissance, la chute est aussi calculée avec le courant réel. Il faut la <strong>longueur</strong> de chaque canalisation : saisie, ou estimée d'après le plan (voir <a href="#longueurs">Longueur des câbles</a>).</p>
 
     <h2 id="mesures">Mesures</h2>
     <p>Onglet Projet : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel (temps de déclenchement ≤ 300 ms, 500 ms pour un « S », circuits couverts), date et appareil de mesure. Elles sont contrôlées et imprimées sur la page « Mesures ».</p>
 
     <h2 id="imprimer">Imprimer le dossier</h2>
-    <p><strong>Imprimer / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>) : choisissez d'abord le <strong>type de document</strong>. <em>Document de travail</em> : toujours imprimable, même avec des anomalies. <em>Dossier de réception</em> : pour l'organisme agréé ; mention « PROJET — NON CONFORME » tant qu'il reste des constats bloquants. <em>Rapport d'anomalies</em> : tous les constats, la liste des circuits et les mesures. <em>Dossier technique complet</em> : toutes les parties. Ensuite : format A4 ou A3 paysage et choix des parties (unifilaire, plans, tableaux, circuits, légende, mesures, liste du matériel, étiquettes 1:1, constats). Chaque page a le cartouche : type de document, version et date, installateur (nom, qualité, TVA), adresse, tension, EAN, cases de signature. Dans la boîte d'impression, choisissez « Enregistrer au format PDF » pour un PDF vectoriel. Pour les étiquettes, imprimez à 100 % (sans « ajuster à la page »).</p>
+    <p><strong>Imprimer / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>) : choisissez d'abord le <strong>type de document</strong>. <em>Document de travail</em> : toujours imprimable, même avec des anomalies. <em>Dossier de réception</em> : pour l'organisme agréé ; mention « PROJET — NON-CONFORMITÉS À TRAITER », « PROJET — VÉRIFICATIONS À FAIRE » ou « PROJET — DOSSIER INCOMPLET » tant qu'il reste des points à traiter. <em>Rapport d'anomalies</em> : tous les constats, la liste des circuits et les mesures. <em>Dossier technique complet</em> : toutes les parties. Ensuite : format A4 ou A3 paysage et choix des parties (unifilaire, plans, tableaux, circuits, légende, mesures, liste du matériel, étiquettes 1:1, constats). Chaque page a le cartouche : type de document, numéro du dossier, version et date, installateur (nom, qualité, TVA), adresse, tension, EAN, cases de signature. Dans la boîte d'impression, choisissez « Enregistrer au format PDF » pour un PDF vectoriel. Pour les étiquettes, imprimez à 100 % (sans « ajuster à la page »).</p>
     <p><strong>Étiquettes QR du coffret</strong> (partie <em>Étiquettes QR du coffret</em>) : 4 étiquettes de 9 × 5,5 cm à coller dans le coffret. Si vous indiquez dans l'onglet Projet un <strong>lien vers le dossier en ligne</strong> (par exemple un lien de partage Drive ou OneDrive), le QR code ouvre ce dossier ; sinon il contient l'essentiel (adresse, installateur, téléphone, numéro de dossier), lisible sans connexion. Voltaplan n'héberge rien.</p>
     <p><strong>Statut du dossier</strong> (onglet Projet) : <em>En cours</em>, <em>Prêt pour le contrôle</em> ou <em>Contrôlé</em>. Il s'affiche dans la liste « Mes projets ».</p>
 
     <h2 id="sauver">Enregistrer et ouvrir</h2>
     <table>
       <tr><th>Emplacement</th><th>Pour quoi</th></tr>
-      <tr><td>Cet appareil</td><td>fichier <code>.voltaplan</code> (JSON lisible) ; avec Chrome / Edge, « Enregistrer » réécrit le même fichier</td></tr>
-      <tr><td>Navigateur</td><td>projets gardés dans ce navigateur + <strong>brouillon automatique</strong> toutes les 20 s, proposé à la réouverture</td></tr>
-      <tr><td>GitHub</td><td>fichier dans un dépôt (historique des versions) ; jeton personnel chiffré par une phrase de passe</td></tr>
+      <tr><td>Cet appareil</td><td>fichier <code>.voltaplan</code> ; avec Chrome / Edge, « Enregistrer » réécrit le même fichier</td></tr>
+      <tr><td>Navigateur (sous « Autres emplacements »)</td><td>projets gardés dans ce navigateur + <strong>brouillon automatique</strong> toutes les 20 s, proposé à la réouverture</td></tr>
+      <tr><td>GitHub (sous « Autres emplacements »)</td><td>fichier dans un dépôt (historique des versions) ; jeton personnel chiffré par une phrase de passe</td></tr>
       <tr><td>Drive, OneDrive, Dropbox</td><td>voir ci-dessous</td></tr>
     </table>
+
+    <p><strong>Le fichier <code>.voltaplan</code></strong> est une archive ZIP ordinaire : le modèle du projet en JSON lisible (<code>project.json</code>), les photos et PDF d'origine tels quels, et un LISEZMOI qui explique comment récupérer les données sans Voltaplan. Les anciens projets (JSON unique) s'ouvrent toujours. <em>Fichier → Versions locales…</em> garde les dernières versions de chaque projet sur cet appareil.</p>
+    <p><strong>Exports</strong> (Enregistrer sous… → Cet appareil) : <em>Exporter pour Trikker (.trik)</em>, <em>Exporter Eendraadschema (.eds)</em>, <em>Exporter au format v1…</em> (pour les anciennes versions de Voltaplan) et, avec Chrome ou Edge sur ordinateur, <em>Exporter en dossier…</em> (fichiers ordinaires dans un dossier).</p>
 
     <h3 id="plusieurs">Travailler à plusieurs</h3>
     <p>Voltaplan n'a pas de compte d'équipe : on partage simplement le fichier du projet. Le plus simple est un <strong>dossier partagé</strong> (Drive, OneDrive, Dropbox ou un disque réseau), ouvert avec <em>Cet appareil</em> ou l'application de bureau. Une personne modifie à la fois. Si le fichier a changé ailleurs depuis votre dernier enregistrement, Voltaplan <strong>n'écrase rien</strong> : il vous prévient et garde votre version (copie à côté, ou versions locales). Pour un collègue qui doit seulement lire, envoyez le PDF du dossier.</p>
@@ -183,11 +209,36 @@
     </ul>
     <p>Collez l'identifiant dans Voltaplan, puis « Lister » ou « Enregistrer ici » : une fenêtre du service s'ouvre pour vous connecter. Le jeton reste en mémoire pendant la session seulement. Pour une version publiée, l'identifiant peut être fixé à la compilation (<code>VITE_ONEDRIVE_CLIENT_ID</code>, <code>VITE_DROPBOX_CLIENT_ID</code>, <code>VITE_GOOGLE_CLIENT_ID</code>).</p>
 
-    <h2 id="trikker">Trikker</h2>
-    <p><strong>Importer Trikker (.trik)</strong> reprend schéma, numérotation, plan (murs, ouvertures, pièces, images), adresses et notes. <strong>Enregistrer sous… → Cet appareil → Exporter en .trik</strong> produit un fichier Trikker (Windows-1252, comme Trikker).</p>
+    <h2 id="importer">Importer d'un autre logiciel</h2>
+    <p>Une seule entrée : <strong>Fichier → Importer d'un autre logiciel…</strong>, ou la carte <strong>Importer d'un autre logiciel</strong> de l'écran Mes projets. Voltaplan reconnaît la source <strong>d'après le contenu</strong> du fichier, quelle que soit son extension :</p>
+    <table>
+      <tr><th>Source</th><th>Ce qui est repris</th></tr>
+      <tr><td>Projet Voltaplan</td><td>tout (le fichier est simplement ouvert)</td></tr>
+      <tr><td>Trikker (<code>.trik</code>)</td><td>schéma, numérotation, plan (murs, ouvertures, pièces, images), adresses et notes</td></tr>
+      <tr><td>Volter (<code>.vschema</code>)</td><td>tableau, différentiels, disjoncteurs et câbles, points, étages, murs, portes, fenêtres, mobilier, EAN et réseau ; ce que Volter n'enregistre pas (compteur, terre) est signalé</td></tr>
+      <tr><td>Eendraadschema (<code>.eds</code>)</td><td>raccordement, tableaux, protections, câbles, points et infos du dossier ; le plan de situation n'est pas repris</td></tr>
+      <tr><td>Draadwijs</td><td>schéma, plan, mesures, réseau, adresse ; le devis n'est pas repris</td></tr>
+      <tr><td>PlanElec Sketch</td><td>schéma, repères, plan en mètres et symboles posés</td></tr>
+      <tr><td>Condui (export <code>.zip</code>)</td><td>raccordement, tableaux, différentiels, circuits, câbles, points et commandes, plan par étage, tracés de câbles ; les documents joints ne sont pas repris</td></tr>
+      <tr><td>Dossier PDF d'un autre logiciel</td><td>tableau des circuits, sous-tableaux, points comptés par leurs repères, plans en fond de plan avec murs, portes et fenêtres lus dans le dessin, face avant des tableaux, informations du cartouche, mesures</td></tr>
+    </table>
+    <ul>
+      <li><strong>Dossier PDF</strong> : lu dans le navigateur, sans envoi ni IA ; dossiers en français, néerlandais, anglais ou allemand. Seuls les PDF <strong>avec du texte</strong> sont lus : un PDF scanné ou dont le texte est dessiné (images) est refusé avec une explication. Ce que le texte ne dit pas (type exact des points, commandes…) est signalé à l'ouverture.</li>
+      <li>Une <strong>archive <code>.zip</code></strong> qui contient un de ces fichiers est ouverte et le fichier de schéma qu'elle contient est importé.</li>
+      <li>Un fichier <strong>non reconnu</strong> est refusé avec un message qui explique pourquoi (schéma d'un logiciel non reconnu, ou pas un fichier de schéma électrique) et liste les formats reconnus.</li>
+      <li>Les imports sans tracés de câbles reçoivent des tracés à angles droits créés d'après l'unifilaire, à ajuster (voir <a href="#longueurs">Longueur des câbles</a>).</li>
+      <li>Un fichier importé n'apparaît dans « Projets récents » qu'après avoir été enregistré.</li>
+    </ul>
+    <p>Pour revenir vers Trikker ou Eendraadschema : <strong>Enregistrer sous… → Cet appareil → Exporter pour Trikker (.trik)</strong> (Windows-1252, comme Trikker) ou <strong>Exporter Eendraadschema (.eds)</strong>.</p>
 
     <h2 id="ia">IA (facultative)</h2>
-    <p>Tout fonctionne sans IA, y compris « Disposer d'après la photo », qui analyse l'image sur votre ordinateur. L'IA ajoute une seule chose aujourd'hui : <strong>lire les inscriptions des appareils</strong> sur la photo du tableau (type, calibre, courbe, sensibilité, type de différentiel, étiquette) puis disposer les appareils du projet à leur place et les comparer. Elle utilise l'API d'Anthropic (modèles Claude), avec <strong>votre propre clé</strong> : Voltaplan n'a aucun serveur et ne voit jamais vos photos ni votre clé.</p>
+    <p>Tout fonctionne sans IA, y compris « Disposer d'après la photo » et les lectures locales (plaque du compteur, noms de pièces du plan, « Lire la photo » du tableau), faites sur votre appareil sans rien envoyer. L'IA, désactivée par défaut, peut compléter ces lectures, chaque usage étant autorisé séparément :</p>
+    <ul>
+      <li><strong>Tableau</strong> : lire les inscriptions des appareils sur la photo du tableau (type, calibre, courbe, sensibilité, type de différentiel, étiquette), puis disposer les appareils du projet à leur place et les comparer ;</li>
+      <li><strong>Compteur</strong> : tension et phases depuis la photo de la plaque, seulement si la lecture locale n'a pas tout lu ;</li>
+      <li><strong>Plan</strong> : pictogrammes électriques et noms de pièces manqués, depuis une photo ou un PDF de plan, après la lecture locale ; ils sont posés comme éléments non raccordés, à rattacher à leurs circuits.</li>
+    </ul>
+    <p>L'IA passe par le fournisseur que vous choisissez — l'API d'Anthropic (modèles Claude) par défaut, une API compatible OpenAI, ou un modèle local —, avec <strong>votre propre clé</strong> : Voltaplan n'a aucun serveur et ne voit jamais vos photos ni votre clé.</p>
 
     <h3>1. Obtenir une clé API Anthropic</h3>
     <ol>
@@ -204,14 +255,14 @@
       <li><strong>Modèle</strong> : <code>claude-opus-5-5</code> par défaut (le plus précis pour lire de petites inscriptions). Vous pouvez saisir un autre identifiant de modèle Claude, plus rapide ou moins cher, au prix d'une lecture moins sûre.</li>
       <li><strong>Nouvelle clé</strong> : collez la clé <code>sk-ant-…</code>.</li>
       <li><strong>Phrase secrète</strong> (8 caractères minimum), puis <strong>Chiffrer et enregistrer</strong>.</li>
-      <li>Sous <strong>Ce que l'IA peut générer</strong>, cochez <strong>Disposition des modules depuis une photo du tableau</strong>. Rien n'est coché au départ. Les autres cases (plan depuis une photo, unifilaire depuis un ancien dossier, suggestions de correction) sont prévues mais pas encore actives.</li>
+      <li>Sous <strong>Ce que l'IA peut générer</strong>, cochez les usages voulus : <strong>Disposition des modules depuis une photo du tableau</strong>, <strong>Compteur</strong> (tension et phases depuis la photo de la plaque), <strong>Plan</strong> (noms de pièces et pictogrammes électriques). Rien n'est coché au départ. Les deux autres cases (unifilaire depuis un ancien dossier, suggestions de correction) sont prévues mais pas encore utilisées.</li>
     </ol>
 
     <h3>3. Lire une photo de tableau</h3>
     <ol>
       <li>Onglet <strong>Tableau</strong> : importez la photo et faites le <strong>cadrage</strong> (rangée par rangée) comme décrit dans <a href="#photo">Photo du tableau</a>.</li>
-      <li>Cliquez sur <strong>Lire la photo (IA)</strong>. Ce bouton n'apparaît que si l'IA est activée et autorisée pour le tableau.</li>
-      <li>Si la clé est verrouillée (après un rechargement de la page, par exemple), le bouton « Lire la photo (IA) » est grisé : cliquez sur le cadenas 🔒 à côté et entrez la <strong>phrase secrète</strong> (ou passez par ⚙ IA). C'est à faire une fois par session. Le bouton <strong>⚙ IA</strong> en haut à droite passe au vert tant que la clé est déverrouillée : l'IA est prête. Un compteur indique les secondes écoulées pendant la lecture.</li>
+      <li>Cliquez sur <strong>Lire la photo (IA)</strong>. Le bouton porte ce nom quand l'IA est activée, autorisée pour le tableau et prête ; sinon il s'appelle « Lire la photo » et fait la lecture locale, sans IA.</li>
+      <li>Si la clé est verrouillée (après un rechargement de la page, par exemple), cliquez sur le cadenas 🔒 à côté du bouton et entrez la <strong>phrase secrète</strong> (ou passez par ⚙ IA). C'est à faire une fois par session. Le bouton <strong>⚙ IA</strong> en haut à droite passe au vert tant que la clé est déverrouillée : l'IA est prête. Un compteur indique les secondes écoulées pendant la lecture.</li>
       <li>Voltaplan <strong>dispose les appareils du projet</strong> aux places lues, y compris ceux qui étaient en réserve : chaque appareil de la photo reçoit l'appareil du projet qui lui ressemble le plus (type, calibre, sensibilité, courbe, étiquette, puis ordre de l'arbre). L'IA lit aussi la marque et le modèle, et mesure la largeur sur la règle : la largeur lue devient celle de l'appareil (un tétrapolaire compact peut faire 2 modules) et le modèle remplit la référence si elle est vide. Un appareil n'est placé qu'à la place d'un appareil de même type (jamais un disjoncteur à la place d'un compteur) ; ce qui ne trouve pas de place reste en réserve. Les relais, télérupteurs, contacteurs, horloges, transformateurs, compteurs et modules domotiques de l'unifilaire comptent comme appareils du tableau quand la case « Dans le tableau » est cochée dans leurs propriétés (cochée par défaut pour les relais et les compteurs). Pour un appareil vu sur la photo et absent du projet, le menu « Associer à… » de la liste propose d'abord les éléments de type proche, puis tous les autres éléments de l'unifilaire de ce tableau : le choisir coche « Dans le tableau », reprend largeur et référence, et le place à l'endroit lu. Pour un disjoncteur ou un différentiel absent de l'unifilaire, « ＋ Nouveau… » le crée sous le tableau avec ce qui a été lu (calibre, courbe, largeur, référence). Un disjoncteur connecté monté derrière le disjoncteur d'un circuit (EARU…) se crée avec « ＋ En série sous O » : protection en série dans le même circuit, référence reprise, placée à l'endroit lu. Des appareils identiques que la photo ne distingue pas (par exemple trois différentiels 40 A 30 mA) sont placés dans l'ordre de l'unifilaire, de gauche à droite, sauf si l'étiquette d'un différentiel cite ses circuits (« A-F », « G H I J », « K à M ») : il est alors associé au différentiel de l'unifilaire qui protège ces circuits. Notez ces repères sur les étiquettes de vos différentiels avant la photo. Pour les disjoncteurs, la lettre du circuit marquée sur l'appareil ou sous lui (« H ») est le meilleur indice ; à défaut, l'étiquette d'usage est comparée mot à mot (« PRISES I » va à « Prises I », pas à « Prises II »). Les caractéristiques lues complètent l'unifilaire : une valeur vide lue avec certitude est reprise d'office ; une valeur différente de celle du projet, ou lue avec un doute, est listée sous « Caractéristiques lues sur la photo, à confirmer », avec un bouton <strong>Appliquer</strong> (ou <strong>Tout appliquer</strong>). L'unifilaire n'est jamais modifié sans votre accord. <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule.</li>
       <li>Le résultat liste ensuite les différences avec le projet (appareil absent, largeur, type, calibre, courbe, sensibilité, lecture incertaine). <strong>C'est une lecture automatique à vérifier</strong> : confirmez chaque appareil avec sa pastille. Seule la disposition change ; les caractéristiques des appareils ne sont jamais modifiées.</li>
     </ol>
@@ -221,8 +272,8 @@
 
     <h3>Ce qui est envoyé, et où</h3>
     <table>
-      <tr><td>Envoyé à Anthropic</td><td>la photo du tableau cadrée, le nombre de rangées et de modules par rangée, et la langue de l'interface. Rien d'autre : ni le nom ou l'adresse du client, ni le reste du projet.</td></tr>
-      <tr><td>Par quel chemin</td><td>directement de votre navigateur (ou de l'application de bureau) vers <code>api.anthropic.com</code>, en HTTPS, sans aucun intermédiaire.</td></tr>
+      <tr><td>Envoyé au fournisseur choisi</td><td>pour le tableau : la photo du tableau cadrée, le nombre de rangées et de modules par rangée, et la langue de l'interface ; pour le compteur ou le plan (si vous avez coché ces usages) : la photo de la plaque ou l'image du plan. Rien d'autre : ni le nom ou l'adresse du client, ni le reste du projet.</td></tr>
+      <tr><td>Par quel chemin</td><td>directement de votre navigateur (ou de l'application de bureau) vers le fournisseur (<code>api.anthropic.com</code> pour Anthropic), en HTTPS, sans aucun intermédiaire. Avec un modèle local, rien ne quitte l'ordinateur.</td></tr>
       <tr><td>Clé enregistrée</td><td>chiffrée (AES-GCM 256 bits, clé dérivée de la phrase secrète par PBKDF2-SHA-256) dans le stockage local de ce navigateur ou de l'application. <strong>Jamais</strong> dans le fichier <code>.voltaplan</code>, ni dans un fichier envoyé à un client ou à un organisme agréé.</td></tr>
       <tr><td>Phrase secrète</td><td>n'est enregistrée nulle part. La clé déchiffrée reste en mémoire jusqu'à la fermeture de l'onglet ou de l'application.</td></tr>
       <tr><td>Côté Anthropic</td><td>les données envoyées à l'API suivent les <a href="https://www.anthropic.com/legal/commercial-terms">conditions commerciales</a> d'Anthropic, qui excluent par défaut leur utilisation pour entraîner les modèles.</td></tr>
@@ -251,7 +302,8 @@
       <li><code>settings.ts</code> : réglages et autorisations, tout désactivé par défaut ;</li>
       <li><code>secureStore.ts</code> : le coffre chiffré de la clé ;</li>
       <li><code>boardPhoto.ts</code> : la comparaison de la lecture avec le projet ;</li>
-      <li><code>boardPhotoAi.ts</code> : l'appel à l'API avec le SDK officiel <code>@anthropic-ai/sdk</code>, chargé seulement à la première utilisation.</li>
+      <li><code>boardPhotoAi.ts</code> : l'appel à l'API avec le SDK officiel <code>@anthropic-ai/sdk</code>, chargé seulement à la première utilisation ;</li>
+      <li><code>provider.ts</code> et <code>photoAi.ts</code> : les fournisseurs compatibles OpenAI et les lectures du compteur et du plan.</li>
     </ul>
     <p>La réponse est contrainte par un schéma (sortie structurée) : rangées → appareils avec position, largeur, type, calibre, courbe, sensibilité, étiquette et niveau de confiance. Une nouvelle fonction IA doit avoir sa propre case d'autorisation, désactivée par défaut, et ne jamais envoyer de données personnelles du projet sans que l'utilisateur le sache.</p>
 
@@ -261,6 +313,7 @@
     <h2 id="raccourcis">Raccourcis</h2>
     <table>
       <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Enregistrer</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>S</kbd></td><td>Enregistrer sous</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Ouvrir</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>Imprimer / PDF</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Annuler / rétablir</td></tr>
@@ -280,7 +333,7 @@ npm run desktop    # application de bureau (Rust requis)</pre>
     <p>React + TypeScript + Vite, application de bureau avec Tauri. Code sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> : toute version modifiée distribuée ou proposée en ligne doit publier son code source. Contributions bienvenues sur le <a class="repo-link" href="#">dépôt</a>.</p>
   </article>
 </main>
-<footer>Voltaplan — gratuit et open source — <a href="https://github.com/sponsors/SebastienBatteur">soutenir le projet</a> (facultatif) — <a href="privacy.html">Confidentialité</a> — <a href="terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<footer>Voltaplan — gratuit et open source — <a href="https://github.com/sponsors/SebastienBatteur">soutenir le projet</a> (facultatif) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Confidentialité</a> — <a href="terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="site.js"></script>
 </body>
 </html>

@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Handleiding Voltaplan</title>
 <meta name="description" content="Handleiding van Voltaplan: eendraadschema, situatieschema, verdeelbord, AREI-controle, afdrukken, opslaan.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/guide.html">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/guide.html">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/guide.html">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/guide.html">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/guide.html">
 <link rel="icon" href="../icon.svg">
 <link rel="stylesheet" href="../style.css">
 </head>
@@ -13,11 +18,12 @@
   <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
   <nav class="links">
     <a href="guide.html">Handleiding</a>
+    <a href="faq.html">FAQ</a>
     <a href="#installer">Installeren</a>
     <a class="repo-link" href="#">Broncode</a>
     <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Voltaplan steunen via GitHub Sponsors (vrijblijvend)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Steunen</span></a>
     <a class="btn primary" href="../app/">Toepassing openen</a>
-    <span class="lang"><a href="../guide.html" data-lang="fr">FR</a><a href="guide.html" aria-current="true" data-lang="nl">NL</a><a href="../en/guide.html" data-lang="en">EN</a></span>
+    <span class="lang"><a href="../guide.html" data-lang="fr">FR</a><a href="guide.html" aria-current="true" data-lang="nl">NL</a><a href="../en/guide.html" data-lang="en">EN</a><a href="../de/guide.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
 <main class="doc">
@@ -31,6 +37,7 @@
     <a href="#tableau">Verdeelbord</a>
     <a href="#photo">Foto van het bord</a>
     <a href="#maj">Bijwerken</a>
+    <a href="#longueurs">Kabellengte</a>
     <a href="#materiel">Materiaallijst</a>
     <a href="#controle">AREI-controle</a>
     <a href="#calculs">Spanningsval en kortsluiting</a>
@@ -38,7 +45,7 @@
     <a href="#imprimer">Het dossier afdrukken</a>
     <a href="#sauver">Opslaan en openen</a>
     <a href="#nuage">Drive, OneDrive, Dropbox</a>
-    <a href="#trikker">Trikker</a>
+    <a href="#importer">Importeren uit ander programma</a>
     <a href="#ia">AI (optioneel)</a>
     <a href="#pays">Landen en reglementen</a>
     <a href="#raccourcis">Sneltoetsen</a>
@@ -49,15 +56,15 @@
     <h2 id="demarrer">Aan de slag</h2>
     <p>De eenvoudigste manier: <a href="../app/">de toepassing openen in de browser</a> (<span class="app-url">app/</span>). U kunt ze installeren als een gewone toepassing (pictogram „Installeren” in de adresbalk van Chrome of Edge) en daarna werkt ze ook zonder verbinding.</p>
     <ol>
-      <li><strong>Nieuw</strong> maakt een leeg project met een oorsprong (net), of <strong>Trikker importeren</strong> neemt een bestaand dossier over.</li>
-      <li>Vul het tabblad <strong>Project</strong> in: adres, installateur, spanning, EAN, type installatie (nieuw of bestaand).</li>
+      <li><strong>Nieuw project</strong> maakt een project in 4 korte stappen (zie hieronder), of <strong>Importeren uit ander programma</strong> neemt een bestaand dossier over (zie <a href="#importer">Importeren</a>).</li>
+      <li>Vul het tabblad <strong>Project</strong> in: adres, installateur, spanning, EAN, type installatie (nieuw of bestaand). <em>Typeplaatje van de meter lezen (foto)…</em> leest de spanning en het aantal fasen op een foto van het typeplaatje, op dit toestel, en stelt de voeding voor.</li>
       <li>Voeg verdeelbord, verliesstroomschakelaars, kringen en punten toe in de <strong>boomstructuur</strong> links; het eendraadschema tekent zichzelf.</li>
       <li>Plaats de punten op het <strong>Situatieschema</strong>, schik de toestellen in het <strong>Verdeelbord</strong> en klik daarna op <strong>⟳ Bijwerken</strong>.</li>
       <li>Verhelp wat de <strong>AREI-controle</strong> meldt en kies dan <strong>Afdrukken / PDF</strong>.</li>
     </ol>
     <p class="note">Voltaplan is een hulpmiddel: het vervangt noch de officiële tekst van het AREI (Boek 1), noch het oordeel van het erkend organisme.</p>
 
-    <p><strong>Mijn projecten</strong>: bij het openen toont Voltaplan de hoofdacties (nieuw project, bestaande installatie opnemen, bestand of cloud openen, Trikker importeren) en uw laatste projecten; één klik opent ze opnieuw. Terug via <em>Bestand → Mijn projecten (start)</em>. Een <strong>nieuw project</strong> maakt u in 4 korte stappen (type, adres en klant, installateur, voeding); elke stap is optioneel. Voor een nieuwe installatie kunt u vertrekken van een <strong>typewoning</strong>: verlichting, stopcontacten, kookfornuis, badkamer en wasmachine onder een 30 mA-differentieel en aarding staan al klaar; pas daarna aan.</p>
+    <p><strong>Mijn projecten</strong>: bij het openen toont Voltaplan de hoofdacties (<strong>Nieuw project</strong>, <strong>Een bestaande installatie opnemen</strong>, <strong>Een bestand openen</strong>, <strong>Openen vanuit de cloud of de browser</strong>, <strong>Importeren uit ander programma</strong>) en uw laatste projecten; één klik opent ze opnieuw. Terug via <em>Bestand → Mijn projecten (start)</em> of door op het logo te klikken. Een <strong>nieuw project</strong> maakt u in 4 korte stappen (type, adres en klant, installateur, voeding); elke stap is optioneel. Voor een nieuwe installatie kunt u vertrekken van een <strong>typewoning</strong>: verlichting, stopcontacten, kookfornuis, badkamer en wasmachine onder een 30 mA-differentieel en aarding staan al klaar; pas daarna aan.</p>
 
     <h2 id="installer">Installeren</h2>
     <table>
@@ -70,7 +77,7 @@
 
     <h2 id="ecran">Het scherm</h2>
     <ul>
-      <li><strong>Bovenbalk</strong>: menu <strong>Bestand</strong> (nieuw, openen, Trikker importeren, opslaan, opslaan als, afdrukken / PDF), knop Opslaan (blauw als er wijzigingen zijn), ⟳ Bijwerken, ongedaan maken / opnieuw, tabbladen, taal (FR, NL, EN).</li>
+      <li><strong>Bovenbalk</strong>: menu <strong>Bestand</strong> (Mijn projecten (start), Nieuw, Nieuwe opname (bestaande installatie), Openen…, Importeren uit ander programma…, Opslaan, Opslaan als…, Lokale versies…, Opname-assistent (experimenteel)…, Afdrukken / PDF), knop Opslaan (blauw als er wijzigingen zijn), ⟳ Bijwerken, ongedaan maken / opnieuw, tabbladen, ⚙ AI, taal (Frans, Nederlands, Engels, Duits). Op een klein scherm staan ongedaan maken, opnieuw, Bijwerken, AI en de taal in het menu „⋯”.</li>
       <li><strong>Tabbladen</strong>: Eendraadschema, Situatieschema, Verdeelbord, Materiaal, Project, AREI-controle (het rode cijfer = aantal non-conformiteiten).</li>
       <li><strong>Links</strong>: de boomstructuur van de installatie en de eigenschappen van het geselecteerde element. De knop ‹ verbergt de hele kolom (› toont ze opnieuw). Klik op de titel „Installatie” of „Eigenschappen” om dat deel in te klappen; sleep de scheidingslijn ertussen om de hoogte te verdelen, en de rechterrand van de kolom om ze breder te maken. De indeling wordt op deze computer onthouden.</li>
       <li><strong>Elementen</strong> (onder „Eigenschappen”): het palet. Op het eendraadschema, de boomstructuur of het bord: de elementen van het eendraadschema per familie (borden en beveiligingen, leidingen, verlichting, stopcontacten en toestellen, bediening, domotica en varia); een klik voegt het element toe onder het geselecteerde (grijs als het er niet onder kan). Op het plan: de werktuigen (muren, deuren, ramen, teksten, meubels per ruimte), elementen van het eendraadschema om bij de volgende klik te plaatsen, en <em>Nog niet op het plan</em>: wat nog geplaatst moet worden, per kring.</li>
@@ -80,7 +87,7 @@
 
     <h2 id="installation">De installatie beschrijven</h2>
     <p>De installatie is een boom: oorsprong → (teller) → beveiligingen → verdeelbord → verliesstroomschakelaars → automaten → leidingen → punten (contactdozen, schakelaars, lichtpunten, toestellen…).</p>
-    <p><strong>Een element toevoegen</strong> — op drie manieren, die enkel voorstellen wat onder het gekozen element kan worden aangesloten:</p>
+    <p><strong>Een element toevoegen</strong> — op meerdere manieren, die enkel voorstellen wat onder het gekozen element kan worden aangesloten:</p>
     <ol>
       <li><strong>Rechtsklik</strong> op een symbool van het eendraadschema (bv. een automaat) → „Toevoegen in” → Leiding;</li>
       <li>de <strong>＋</strong> aan het einde van een regel in de boomstructuur (zichtbaar bij aanwijzen of op de geselecteerde regel);</li>
@@ -92,7 +99,7 @@
     <p>Het nieuwe element wordt geselecteerd: vul de eigenschappen in. Voorbeeld voor een kring met contactdozen: rechtsklik op het verdeelbord → Beveiliging (automaat 20 A); vervolgens op die automaat → Leiding (VOB 3G2,5); daarna op de leiding → Contactdoos, zo vaak als nodig. Tot slot zet <strong>⟳ Bijwerken</strong> de automaat in het verdeelbord en de contactdozen op het situatieschema.</p>
     <ul>
       <li><strong>Beveiliging</strong>: toestel (automaat, verliesstroomschakelaar, differentiële automaat, smeltzekering, lastscheider), nominale stroom, polen, curve, kortsluitvermogen, gevoeligheid en type van de verliesstroomschakelaar, aantal modules, fabrikantreferentie, „oud gedeelte” (vóór 1/10/1981).</li>
-      <li><strong>Leiding</strong>: type (VOB, XVB…), doorsnede, aantal geleiders, in buis, plaatsing, <strong>lengte</strong> (nodig voor de berekeningen).</li>
+      <li><strong>Leiding</strong>: type (VOB, XVB…), doorsnede, aantal geleiders, in buis, plaatsing, <strong>lengte</strong> (voor de spanningsval en de materiaallijst; ingevuld, of geschat volgens het plan: zie <a href="#longueurs">Kabellengte</a>).</li>
       <li><strong>Locatie</strong>: de ruimte (bv. „Keuken”). Ze dient om de punten op het plan bij de naam van de ruimte te plaatsen.</li>
       <li><strong>AREI-nummering</strong> (3.1.2.1): kringen A, B, C…; punten A1, A2… in volgorde vanaf de beveiliging; een schakelaar krijgt het nummer van het punt dat hij bedient. Een letter kan worden opgelegd.</li>
     </ul>
@@ -105,7 +112,10 @@
       <li><strong>Muren</strong> (rechte hoeken, aan elkaar vastgeklikte uiteinden, maten), <strong>deuren</strong>, dubbele deuren, raamdeuren, <strong>schuiframen</strong>, <strong>ramen</strong>, <strong>namen van ruimtes</strong>, meerdere pagina's (verdiepingen).</li>
       <li><strong>Een deur of raam wijzigen</strong>: klik erop (de dagopening, de vleugel of de draaicirkel) en kies dan in het paneel: type (deur, dubbele deur, raamdeur, schuifraam, raam…), breedte, <em>Naar de andere kant openen</em> en <em>Scharnier aan de andere kant</em>; voor een schuifraam <em>Andersom schuiven</em>. Ergens anders klikken heft de selectie op.</li>
       <li><strong>Achtergrondplan</strong>: foto of PDF. <em>Op schaal zetten</em>: klik op twee punten en geef hun werkelijke afstand op. <em>Rechtzetten</em>: klik op de 4 hoeken van een gekende rechthoek op een schuin genomen foto. <em>Muren overtrekken</em>: automatische detectie van muren, deuren en ramen, na te kijken. <em>Achtergrond uitlijnen</em>: een recente foto over het plan leggen om de wijzigingen te zien.</li>
-      <li><strong>Meubilair</strong>: pictogrammen op schaal (bedden, zetel, keuken, sanitair…). Meubels die uit Trikker zijn geïmporteerd (afbeeldingen) kunt u ook selecteren: slepen om te verplaatsen, breedte, diepte, hoek, 90° draaien, dupliceren, verwijderen, of <em>Vervangen door een pictogram</em> (zelfde plaats en grootte).</li>
+      <li><strong>Ruimtenamen lezen</strong>: leest de namen van de ruimtes die op het achtergrondplan staan (op dit toestel, er wordt geen afbeelding verstuurd) en zet ze op het plan, na te kijken.</li>
+      <li><strong>Ruimte uitrusten</strong>: selecteer de naam van een ruimte (slaapkamer, keuken, badkamer…); Voltaplan stelt de gebruikelijke uitrusting van dat type ruimte voor, om aan te vinken, en het typemeubilair. De punten komen op hun plaats maar <strong>niet aangesloten</strong>: verbind ze daarna met hun kringen. Het is geen lijst uit het AREI, enkel een vertrekpunt (<kbd>Ctrl</kbd>+<kbd>Z</kbd> maakt ongedaan).</li>
+      <li><strong>Kabeltracés</strong>: tracés die uit een import komen (Condui) of volgens het eendraadschema zijn aangemaakt, worden in stippellijn getekend; automatisch aangemaakte tracés zijn bleker en moeten nog worden aangepast (zie <a href="#longueurs">Kabellengte</a>).</li>
+      <li><strong>Meubilair</strong>: pictogrammen op schaal (bedden, zetel, keuken, sanitair…). Meubels die als afbeeldingen uit een ander programma zijn geïmporteerd (Trikker) kunt u ook selecteren: slepen om te verplaatsen, breedte, diepte, hoek, 90° draaien, dupliceren, verwijderen, of <em>Vervangen door een pictogram</em> (zelfde plaats en grootte).</li>
       <li><strong>Elektrische symbolen</strong>: „Op plan plaatsen” vanuit de eigenschappen of de lijst <em>Nog niet op het plan</em> van het palet, of rechtsklik op het plan om er een nieuw toe te voegen; daarna slepen, draaien, verwijderen. Lichtpunten, tl-buizen, toestellen, motoren en vierkante elementen worden zonder aansluitstreepje getekend. Stopcontacten, schakelaars, drukknoppen, bellen en wandlampen houden hun streepje, <strong>automatisch naar de dichtste muur gedraaid</strong> (het volgt als ze of de muur verplaatst worden); „Naar de muren richten” past het toe op de elementen van een ingevoerd plan, en met de hand draaien stopt het automatisch richten van dat element.</li>
     </ul>
 
@@ -124,7 +134,7 @@
       <li>„Foto uitlijnen (rijen)”: klik voor elke rij op de linkerrand van de eerste module en daarna op het einde van de rij, op halve hoogte van de toestellen.</li>
       <li>„Schikken volgens de foto”: zonder AI spoort Voltaplan op elke rij de bezette modules op (een afdekplaatje is egaal, een lege rail donkerder) en de scheidingen tussen de toestellen, en plaatst er de toestellen van het project. Een toestel dat al geplaatst is (met de hand of door de AI) houdt zijn plaats als de foto daar een toestel toont; beveiligingen gaan vóór relais en domoticamodules. Daarna: eerst die van 2 modules of meer, daar waar de foto een toestel van die breedte toont; daarna die van één module, in volgorde, op de overige bezette modules. Wat geen plaats vindt, blijft in reserve, en plaatsen die op de foto bezet zijn zonder toestel in het project worden opgelijst, elk met een menu „Koppelen aan…” met alle elementen uit het eendraadschema van dit bord, of „＋ Nieuwe automaat”. Het is een voorstel: de foto zegt niets over type of nominale stroom; controleer en verplaats met de muis („Ongedaan maken” draait alles terug).</li>
       <li>„Vergelijken met de foto”: zonder AI meet Voltaplan de scheidingen tussen de toestellen en meldt de toestellen waarvan de breedte niet klopt (bv. 1 module in het project, 2 op de foto). De getekende toestellen worden doorzichtig, zodat u met het oog kunt vergelijken.</li>
-      <li>Optioneel leest de AI de nominale stromen, curves en gevoeligheden, plaatst de toestellen op hun plaats en vergelijkt ze met het project (zie <a href="#ia">AI</a>).</li>
+      <li>„Foto lezen”: zonder AI knipt een lokale lezing (op dit toestel, er wordt geen afbeelding verstuurd) de toestellen uit en leest de leesbare etiketten, nominale stromen en gevoeligheden; ze worden met een lage betrouwbaarheid voorgesteld, na te kijken. De lokale lezing is betrouwbaar voor gedrukte etiketten, minder voor de nominale stromen van kleine modules op een foto van het hele bord. Is de AI ingesteld en ontgrendeld, dan wordt dezelfde knop „Foto lezen (AI)”: de AI leest de nominale stromen, curves en gevoeligheden, plaatst de toestellen op hun plaats en vergelijkt ze met het project (zie <a href="#ia">AI</a>).</li>
     </ol>
 
     <h2 id="maj">Bijwerken (nieuwe installatie, toegevoegde kringen)</h2>
@@ -132,13 +142,23 @@
     <ul>
       <li>de nieuwe toestellen komen op de eerste vrije plaats in het verdeelbord, <strong>zonder de andere te verplaatsen</strong> (een bord dat nog nooit is ingedeeld, wordt volledig geschikt); is er geen plaats meer, dan wordt dat gemeld;</li>
       <li>de nieuwe punten komen op het situatieschema <strong>bij de naam van hun ruimte</strong>; de andere gaan naar een kolom „te plaatsen” links van het plan;</li>
+      <li>de <strong>kabellengte</strong> wordt geschat volgens het plan (zie <a href="#longueurs">Kabellengte</a>);</li>
       <li>er wordt een <strong>revisie</strong> aan het dossier toegevoegd met de lijst van de toegevoegde kringen (AREI 3.1.2: een uitbreiding moet op de plannen worden aangebracht);</li>
       <li>nummering, etiketten, materiaallijst en controle worden herberekend.</li>
     </ul>
     <p>Met „Ongedaan maken” in het resultaatvenster draait u alles in één keer terug.</p>
 
+    <h2 id="longueurs">Kabellengte</h2>
+    <p><strong>⟳ Bijwerken</strong> en de knop <strong>Lengtes schatten</strong> (tabblad Materiaal) schatten de lengte van elke kabel volgens het situatieschema: van het bord naar het eerste punt, daarna van punt naar punt in de volgorde van het schema, in rechte hoeken, met 10 % marge. Zet het bord op het plan: zonder bord wordt het traject vanaf het eerste punt geteld en is het te kort (dat wordt gemeld).</p>
+    <ul>
+      <li><strong>Stijgen en dalen</strong> volgens de montagehoogte: schakelaar en drukknop op handhoogte (1,10 m) gevoed vanuit het plafond, trekschakelaar bovenaan (2,30 m), laag stopcontact (0,25 m) gevoed van onderen, wandlamp op 1,90 m; verandering van verdieping wordt meegeteld.</li>
+      <li><strong>Kabeltracés</strong>: tracés uit Condui (van punt naar punt via de doorgangspunten) worden in stippellijn getekend en door de schatting gevolgd; het vertrek vanaf het bord, dat Condui niet tekent, blijft geschat. Bij een import zonder tracés (PDF, Trikker, Volter, Draadwijs, PlanElec, Eendraadschema, niet-getekende kringen van Condui) worden tracés in rechte hoeken aangemaakt volgens het eendraadschema, van het bord naar het eerste punt en daarna van punt naar punt; ze zijn bleker getekend en gemarkeerd als „aan te passen”.</li>
+      <li>Een geschatte lengte wordt in de eigenschappen gemarkeerd met <em>Lengte geschat volgens het plan</em> en in de materiaallijst met „≈”. <strong>Een ingevulde lengte wordt nooit vervangen</strong>, en ze invullen haalt de markering weg.</li>
+    </ul>
+    <p>Het AREI vereist de lengte van de leidingen op het schema enkel voor een niet-huishoudelijke installatie; voor een huishoudelijke installatie volstaan type, doorsnede, aantal geleiders en plaatsingswijze. De lengte dient vooral voor de berekening van de spanningsval en voor de materiaallijst.</p>
+
     <h2 id="materiel">Materiaallijst</h2>
-    <p>Tabblad <strong>Materiaal</strong>: het materiaal is per categorie gegroepeerd en opgeteld (stuks, kabelstukken en totale kabellengte). Het wordt omschreven volgens zijn <strong>kenmerken en Europese norm</strong> (bv. „Automaat 2P C20 A 3 kA — EN 60898-1”): fabrikantreferenties en zelfs gamma's verschillen van land tot land. Kabels behouden hun nationale benaming met het geharmoniseerde equivalent als dat bestaat (VOB ≈ H07V-U/R). Aan elk element kan een fabrikantreferentie worden toegevoegd. CSV-export voor Excel; pagina „Materiaallijst” in het afgedrukte dossier.</p>
+    <p>Tabblad <strong>Materiaal</strong>: het materiaal is per categorie gegroepeerd en opgeteld (stuks, kabelstukken en totale kabellengte). Het wordt omschreven volgens zijn <strong>kenmerken en Europese norm</strong> (bv. „Automaat 2P C20 A 3 kA — EN 60898-1”): fabrikantreferenties en zelfs gamma's verschillen van land tot land. Kabels behouden hun nationale benaming met het geharmoniseerde equivalent als dat bestaat (VOB ≈ H07V-U/R). Aan elk element kan een fabrikantreferentie worden toegevoegd. CSV-export voor een rekenblad; pagina „Materiaallijst” in het afgedrukte dossier. <strong>Lijst van de kringen (CSV)</strong>: letter, naam, beveiliging, verliesstroomschakelaar, kabel, aantal punten en ruimtes van elke kring, zoals in het PDF-dossier. <strong>Lengtes schatten</strong>: zie <a href="#longueurs">Kabellengte</a>.</p>
 
     <p>De knop <strong>Per ruimte</strong> ordent het materiaal per ruimte (volgens de plaats van elk element of de ruimte op het plan), handig voor de werf of een offerte.</p>
 
@@ -146,37 +166,43 @@
     <p><strong>Een hulpmiddel bij de controle</strong>: het vervangt de tekst van het AREI en de keuring door een erkend organisme niet. Elke vaststelling heeft een <strong>status</strong>, een <strong>gevaar</strong> (hoog, matig, laag) en, indien van toepassing, de vermelding <strong>blokkerend</strong>.</p>
     <table>
       <tr><th>Status</th><th>Betekenis</th></tr>
-      <tr><td>Niet conform</td><td>non-conformiteit met de toepasselijke editie van het AREI; blokkerend voor een nieuw deel, en voor een bestaand deel als het gevaar hoog is (aarding, differentieel, beveiliging van kabels…)</td></tr>
-      <tr><td>Ontbrekende gegevens</td><td>vereist gegeven ontbreekt (kaliber, doorsnede, installateur…); blokkerend voor een nieuw deel</td></tr>
+      <tr><td>Non-conformiteit vastgesteld</td><td>non-conformiteit met de toepasselijke editie van het AREI; blokkerend voor een nieuw deel, en voor een bestaand deel als het gevaar hoog is (aarding, differentieel, beveiliging van kabels…)</td></tr>
+      <tr><td>Onvoldoende informatie</td><td>vereist gegeven ontbreekt of is onbekend (kaliber, doorsnede, gevoeligheid…)</td></tr>
+      <tr><td>Mogelijke anomalie</td><td>op basis van een afgeleid of niet bevestigd gegeven (bijvoorbeeld een waarde gelezen op een foto)</td></tr>
+      <tr><td>Tegenstrijdige informatie</td><td>de tekening en een verklaring (of twee bronnen) komen niet overeen</td></tr>
       <tr><td>Waarschuwing</td><td>te onderzoeken punt (geschatte spanningsval, selectiviteit…)</td></tr>
-      <tr><td>Te controleren</td><td>controle ter plaatse of interpretatie (vochtige ruimte afgeleid uit de naam, laadpaal, fotovoltaïsch, metingen)</td></tr>
+      <tr><td>Manuele controle nodig</td><td>controle ter plaatse of interpretatie (vochtige ruimte afgeleid uit de naam, laadpaal, fotovoltaïsch, metingen)</td></tr>
       <tr><td>Aanbeveling</td><td>aanpassing aangeraden, niet vereist voor een bestaand deel</td></tr>
       <tr><td>Afwijking</td><td>vaststelling gedekt door een afwijking die u met reden hebt ingevoerd</td></tr>
     </table>
-    <p><strong>Editie van het AREI</strong>: tabblad Project, geef de <strong>uitvoeringsdatum</strong> op (« 1995 », « 2024-03-15 »). Vóór 1/10/1981: oud gedeelte; tot 31/5/2020: oud AREI (KB van 10 maart 1981); sinds 1/6/2020: Boek 1. Een installatie bestaat vaak uit meerdere generaties: in de eigenschappen van een bord of automaat passen <strong>Uitgevoerd op</strong> en <strong>Nieuw of bestaand deel</strong> de regels van die tijd alleen op dat deel toe (een kring die in 2024 aan een installatie van 1990 is toegevoegd, volgt Boek 1).</p>
+    <p><strong>Bestaande installatie</strong>: een element dat niet getekend is, wordt niet als afwezig in de echte installatie beschouwd. Een aardingsinstallatie, hoofddifferentieel of 30 mA-differentieel die niet getekend zijn, geven „Onvoldoende informatie”, niet blokkerend, met de knoppen <em>Aanwezig bevestigen</em>, <em>Afwezig bevestigen</em> en <em>Ik weet het niet</em>. Een bevestigde afwezigheid geeft opnieuw een non-conformiteit. Voor een nieuwe installatie blijft de tekening de referentie. De documentaire vereisten (vermeldingen in het dossier, niet ingevulde waarden) worden apart getoond, nooit als non-conformiteiten van de installatie.</p>
+    <p><strong>Editie van het AREI</strong>: tabblad Project, geef de <strong>uitvoeringsdatum</strong> op (« 1995 », « 2024-03-15 »). Vóór 1/10/1981: oud gedeelte; tot 31/5/2020: oud AREI (KB van 10 maart 1981); sinds 1/6/2020: Boek 1. Een installatie bestaat vaak uit meerdere generaties: in de eigenschappen van een bord of automaat passen <strong>Uitgevoerd op</strong> en <strong>Nieuw of bestaand deel</strong> de regels van die tijd alleen op dat deel toe (een kring die in 2024 aan een installatie van 1990 is toegevoegd, volgt Boek 1). Gedateerde wijzigingen van Boek 1 worden toegepast volgens de begindatum van de werken: bijvoorbeeld sinds 1/3/2025 stopcontacten van hoogstens 16 A met kinderbeveiliging (IPXX-D), behalve een stopcontact voor één welbepaald toestel.</p>
     <p><strong>Badkamer</strong>: geef <strong>Ruimte met bad of douche</strong> (ja / nee) op in de eigenschappen van de kring of het punt. Een veelzeggende naam (« badkamer », « douche ») is slechts een aanwijzing, gemeld als « Te controleren ».</p>
-    <p><strong>Afwijking</strong>: knop <strong>Afwijking…</strong> onder een vaststelling, met verplichte reden en referentie (artikel, pv van het erkend organisme). De vaststelling is niet langer blokkerend maar blijft zichtbaar, met haar reden, in het paneel en het dossier. De knoppen <strong>Eendraadschema</strong>, <strong>Plan</strong> en <strong>Bord</strong> van een vaststelling openen het element in die weergave.</p>
+    <p><strong>Afwijking</strong>: knop <strong>Afwijking…</strong> onder een vaststelling, met verplichte reden en referentie (artikel, pv van het erkend organisme). De vaststelling is niet langer blokkerend maar blijft zichtbaar, met haar reden, in het paneel en het dossier. De knoppen <strong>Eendraadschema</strong>, <strong>Plan</strong> en <strong>Bord</strong> van een vaststelling openen het element in die weergave. Als de correctie voor de hand ligt, stelt een knop onder de vaststelling ze voor (bijvoorbeeld „20 A kiezen”, „Contactdoos met kinderbeveiliging”, „Verliesstroomschakelaar type A”, „Onder de 30 mA plaatsen”); „Ongedaan maken” draait ze terug. Een ontbrekende vermelding in het dossier leidt naar het tabblad Project.</p>
     <p>Gecontroleerde regels, onder meer: verplichte vermeldingen, aarding en metingen, hoofddifferentieel en 30 mA (vochtige ruimten, wasmachine…), selectiviteit, doorsnede ↔ kaliber, aantal stopcontacten per kring, aparte kringen, kinderbeveiliging en aarding van stopcontacten, <strong>tweepolige automaten op een 3 × 230 V-net</strong>, spanningsval en kortsluiting. Details en punten die nog door een expert moeten worden bekeken staan in de <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">reglementaire dekking</a>.</p>
 
     <h2 id="calculs">Spanningsval en kortsluiting</h2>
-    <p>Onderaan het tabblad Controle geeft een tabel voor elke kring: lengte tot het verste punt, doorsnede, spanningsval, minimale kortsluitstroom en maximaal beveiligde lengte. Conventionele methode IEC 60364: koper ρ = 0,0225 Ω·mm²/m, stroom = nominale stroom van de beveiliging, 80 % van de spanning voor de kortsluiting; grenzen 3 % (verlichting) en 5 % (overige). Vul de <strong>lengte</strong> van elke leiding in om de waarden te krijgen.</p>
+    <p>Onderaan het tabblad Controle geeft een tabel voor elke kring: lengte tot het verste punt, doorsnede, spanningsval, minimale kortsluitstroom en maximaal beveiligde lengte. Conventionele methode IEC 60364 (een schatting, geen beveiligingsstudie): ρ = 0,0225 Ω·mm²/m voor koper (0,036 voor aluminium), stroom = nominale stroom van de beveiliging, 80 % van de spanning voor de kortsluiting; grenzen 3 % (verlichting) en 5 % (overige). Als alle verbruikers een vermogen hebben, wordt de spanningsval ook met de werkelijke stroom berekend. De <strong>lengte</strong> van elke leiding is nodig: ingevuld, of geschat volgens het plan (zie <a href="#longueurs">Kabellengte</a>).</p>
 
     <h2 id="mesures">Metingen</h2>
     <p>Tabblad Project: spreidingsweerstand van de aarding, isolatieweerstand, equipotentiale verbindingen, test van elke verliesstroomschakelaar (uitschakeltijd ≤ 300 ms, 500 ms voor een type „S”, beschermde kringen), datum en meettoestel. Ze worden gecontroleerd en afgedrukt op de pagina „Metingen”.</p>
 
     <h2 id="imprimer">Het dossier afdrukken</h2>
-    <p><strong>Afdrukken / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): kies eerst het <strong>soort document</strong>. <em>Werkdocument</em>: altijd afdrukbaar, ook met afwijkingen. <em>Keuringsdossier</em>: voor het erkend organisme; vermelding « ONTWERP — NIET CONFORM » zolang er blokkerende vaststellingen zijn. <em>Rapport van afwijkingen</em>: alle vaststellingen, de lijst van de kringen en de metingen. <em>Volledig technisch dossier</em>: alle delen. Daarna: A4 of A3 liggend en de delen (eendraadschema, plannen, borden, kringen, legende, metingen, materiaallijst, etiketten 1:1, vaststellingen). Elke pagina heeft het titelblok: soort document, versie en datum, installateur (naam, hoedanigheid, btw), adres, spanning, EAN, handtekeningvakken. Kies in het afdrukvenster « Opslaan als PDF » voor een vector-PDF. Druk etiketten af op 100 % (zonder « aanpassen aan pagina »).</p>
+    <p><strong>Afdrukken / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): kies eerst het <strong>soort document</strong>. <em>Werkdocument</em>: altijd afdrukbaar, ook met afwijkingen. <em>Keuringsdossier</em>: voor het erkend organisme; vermelding « ONTWERP — NON-CONFORMITEITEN TE BEHANDELEN », « ONTWERP — CONTROLES TE DOEN » of « ONTWERP — DOSSIER ONVOLLEDIG » zolang er punten te behandelen zijn. <em>Rapport van afwijkingen</em>: alle vaststellingen, de lijst van de kringen en de metingen. <em>Volledig technisch dossier</em>: alle delen. Daarna: A4 of A3 liggend en de delen (eendraadschema, plannen, borden, kringen, legende, metingen, materiaallijst, etiketten 1:1, vaststellingen). Elke pagina heeft het titelblok: soort document, dossiernummer, versie en datum, installateur (naam, hoedanigheid, btw), adres, spanning, EAN, handtekeningvakken. Kies in het afdrukvenster « Opslaan als PDF » voor een vector-PDF. Druk etiketten af op 100 % (zonder « aanpassen aan pagina »).</p>
 
     <p><strong>QR-etiketten voor de kast</strong>: 4 etiketten van 9 × 5,5 cm. Met een <strong>link naar het online dossier</strong> (tabblad Project, bv. een deellink van Drive of OneDrive) opent de QR-code dat dossier; zonder link bevat hij de essentie (adres, installateur, telefoon, dossiernummer), leesbaar zonder verbinding. Voltaplan host niets. <strong>Status</strong> van het dossier (tabblad Project): <em>Bezig</em>, <em>Klaar voor keuring</em> of <em>Gekeurd</em>.</p>
 
     <h2 id="sauver">Opslaan en openen</h2>
     <table>
       <tr><th>Locatie</th><th>Waarvoor</th></tr>
-      <tr><td>Dit toestel</td><td><code>.voltaplan</code>-bestand (leesbare JSON); met Chrome / Edge overschrijft „Opslaan” hetzelfde bestand</td></tr>
-      <tr><td>Browser</td><td>projecten bewaard in deze browser + <strong>automatisch concept</strong> om de 20 s, aangeboden bij het opnieuw openen</td></tr>
-      <tr><td>GitHub</td><td>bestand in een repository (versiegeschiedenis); persoonlijk token versleuteld met een wachtzin</td></tr>
+      <tr><td>Dit toestel</td><td><code>.voltaplan</code>-bestand; met Chrome / Edge overschrijft „Opslaan” hetzelfde bestand</td></tr>
+      <tr><td>Browser (onder „Andere locaties”)</td><td>projecten bewaard in deze browser + <strong>automatisch concept</strong> om de 20 s, aangeboden bij het opnieuw openen</td></tr>
+      <tr><td>GitHub (onder „Andere locaties”)</td><td>bestand in een repository (versiegeschiedenis); persoonlijk token versleuteld met een wachtzin</td></tr>
       <tr><td>Drive, OneDrive, Dropbox</td><td>zie hieronder</td></tr>
     </table>
+
+    <p><strong>Het <code>.voltaplan</code>-bestand</strong> is een gewoon ZIP-archief: het projectmodel in leesbare JSON (<code>project.json</code>), de originele foto's en PDF's ongewijzigd, en een LEESMIJ dat uitlegt hoe u de gegevens zonder Voltaplan terugvindt. Oudere projecten (één JSON-bestand) gaan nog altijd open. <em>Bestand → Lokale versies…</em> bewaart de laatste versies van elk project op dit toestel.</p>
+    <p><strong>Exporteren</strong> (Opslaan als… → Dit toestel): <em>Exporteren voor Trikker (.trik)</em>, <em>Exporteren naar Eendraadschema (.eds)</em>, <em>Exporteren naar formaat v1…</em> (voor oudere versies van Voltaplan) en, met Chrome of Edge op een computer, <em>Exporteren naar map…</em> (gewone bestanden in een map).</p>
 
     <h3 id="plusieurs">Met meerderen werken</h3>
     <p>Voltaplan heeft geen teamaccount: u deelt gewoon het projectbestand, bij voorkeur in een <strong>gedeelde map</strong> (Drive, OneDrive, Dropbox of een netwerkschijf), geopend met <em>Dit toestel</em> of de desktopapp. Eén persoon bewerkt tegelijk. Is het bestand elders gewijzigd sinds uw laatste opslag, dan <strong>overschrijft Voltaplan niets</strong>: u wordt verwittigd en uw versie blijft bewaard. Wie enkel moet lezen, krijgt de PDF van het dossier.</p>
@@ -190,11 +216,36 @@
     </ul>
     <p>Plak de ID in Voltaplan en kies dan „Projecten tonen” of „Hier opslaan”: er opent een venster van de dienst om u aan te melden. Het token blijft enkel tijdens de sessie in het geheugen. Voor een gepubliceerde versie kan de ID bij het compileren worden vastgelegd (<code>VITE_ONEDRIVE_CLIENT_ID</code>, <code>VITE_DROPBOX_CLIENT_ID</code>, <code>VITE_GOOGLE_CLIENT_ID</code>).</p>
 
-    <h2 id="trikker">Trikker</h2>
-    <p><strong>Trikker importeren (.trik)</strong> neemt schema, nummering, plan (muren, openingen, ruimtes, afbeeldingen), adressen en notities over. <strong>Opslaan als… → Dit toestel → Exporteren voor Trikker (.trik)</strong> maakt een Trikker-bestand (Windows-1252, zoals Trikker).</p>
+    <h2 id="importer">Importeren uit ander programma</h2>
+    <p>Eén enkele ingang: <strong>Bestand → Importeren uit ander programma…</strong>, of de kaart <strong>Importeren uit ander programma</strong> op het scherm Mijn projecten. Voltaplan herkent de bron <strong>aan de inhoud</strong> van het bestand, ongeacht de extensie:</p>
+    <table>
+      <tr><th>Bron</th><th>Wat wordt overgenomen</th></tr>
+      <tr><td>Voltaplan-project</td><td>alles (het bestand wordt gewoon geopend)</td></tr>
+      <tr><td>Trikker (<code>.trik</code>)</td><td>schema, nummering, plan (muren, openingen, ruimtes, afbeeldingen), adressen en notities</td></tr>
+      <tr><td>Volter (<code>.vschema</code>)</td><td>bord, verliesstroomschakelaars, automaten en kabels, punten, verdiepingen, muren, deuren, ramen, meubilair, EAN en net; wat Volter niet bewaart (meter, aarding) wordt gemeld</td></tr>
+      <tr><td>Eendraadschema (<code>.eds</code>)</td><td>aansluiting, borden, beveiligingen, kabels, punten en dossiergegevens; het situatieschema wordt niet overgenomen</td></tr>
+      <tr><td>Draadwijs</td><td>schema, plan, metingen, net, adres; de offerte wordt niet overgenomen</td></tr>
+      <tr><td>PlanElec Sketch</td><td>schema, kentekens, plan in meter en geplaatste symbolen</td></tr>
+      <tr><td>Condui (<code>.zip</code>-export)</td><td>aansluiting, borden, verliesstroomschakelaars, kringen, kabels, punten en bedieningen, plan per verdieping, kabeltracés; bijgevoegde documenten worden niet overgenomen</td></tr>
+      <tr><td>PDF-dossier van een ander programma</td><td>tabel van de kringen, onderborden, punten geteld via hun kentekens, plannen als achtergrondplan met muren, deuren en ramen gelezen uit de tekening, vooraanzicht van de borden, gegevens uit het titelblok, metingen</td></tr>
+    </table>
+    <ul>
+      <li><strong>PDF-dossier</strong>: gelezen in de browser, zonder verzending en zonder AI; dossiers in het Frans, Nederlands, Engels of Duits. Enkel PDF's <strong>met tekst</strong> worden gelezen: een gescande PDF of een PDF waarvan de tekst getekend is (afbeeldingen) wordt geweigerd met uitleg. Wat de tekst niet zegt (exact type van de punten, bedieningen…) wordt bij het openen gemeld.</li>
+      <li>Een <strong><code>.zip</code>-archief</strong> dat een van deze bestanden bevat, wordt geopend en het schemabestand erin wordt geïmporteerd.</li>
+      <li>Een <strong>niet herkend</strong> bestand wordt geweigerd met een bericht dat uitlegt waarom (schema van een niet herkend programma, of geen bestand met een elektrisch schema) en de herkende formaten opsomt.</li>
+      <li>Imports zonder kabeltracés krijgen tracés in rechte hoeken, aangemaakt volgens het eendraadschema, aan te passen (zie <a href="#longueurs">Kabellengte</a>).</li>
+      <li>Een geïmporteerd bestand verschijnt pas in „Recente projecten” nadat het is opgeslagen.</li>
+    </ul>
+    <p>Terug naar Trikker of Eendraadschema: <strong>Opslaan als… → Dit toestel → Exporteren voor Trikker (.trik)</strong> (Windows-1252, zoals Trikker) of <strong>Exporteren naar Eendraadschema (.eds)</strong>.</p>
 
     <h2 id="ia">AI (optioneel)</h2>
-    <p>Alles werkt zonder AI, ook „Schikken volgens de foto”, dat de afbeelding op uw eigen computer analyseert. De AI voegt vandaag maar één ding toe: <strong>de opschriften van de toestellen lezen</strong> op de foto van het bord (type, nominale stroom, curve, gevoeligheid, type verliesstroomschakelaar, etiket), en daarna de toestellen van het project op hun plaats zetten en vergelijken. Ze gebruikt de API van Anthropic (Claude-modellen), met <strong>uw eigen sleutel</strong>: Voltaplan heeft geen server en ziet uw foto's en uw sleutel nooit.</p>
+    <p>Alles werkt zonder AI, ook „Schikken volgens de foto” en de lokale lezingen (typeplaatje van de meter, ruimtenamen op het plan, „Foto lezen” bij het bord), die op uw toestel gebeuren zonder iets te versturen. De AI, standaard uitgeschakeld, kan die lezingen aanvullen; elk gebruik moet apart worden toegestaan:</p>
+    <ul>
+      <li><strong>Verdeelbord</strong>: de opschriften van de toestellen lezen op de foto van het bord (type, nominale stroom, curve, gevoeligheid, type verliesstroomschakelaar, etiket), en daarna de toestellen van het project op hun plaats zetten en vergelijken;</li>
+      <li><strong>Meter</strong>: spanning en fasen uit de foto van het typeplaatje, enkel als het lokale lezen niet alles las;</li>
+      <li><strong>Plan</strong>: elektrische symbolen en gemiste ruimtenamen, uit een foto of PDF van een plan, na het lokale lezen; ze worden als niet-aangesloten elementen geplaatst, te verbinden met hun kringen.</li>
+    </ul>
+    <p>De AI gebruikt de aanbieder die u kiest — standaard de API van Anthropic (Claude-modellen), een OpenAI-compatibele API, of een lokaal model —, met <strong>uw eigen sleutel</strong>: Voltaplan heeft geen server en ziet uw foto's en uw sleutel nooit.</p>
 
     <h3>1. Een API-sleutel van Anthropic aanvragen</h3>
     <ol>
@@ -211,25 +262,25 @@
       <li><strong>Model</strong>: standaard <code>claude-opus-5-5</code> (het nauwkeurigst om kleine opschriften te lezen). U kunt een ander Claude-model-ID invullen, sneller of goedkoper, maar dan is de lezing minder betrouwbaar.</li>
       <li><strong>Nieuwe sleutel</strong>: plak de sleutel <code>sk-ant-…</code>.</li>
       <li><strong>Wachtzin</strong> (minstens 8 tekens), en dan <strong>Versleutelen en bewaren</strong>.</li>
-      <li>Vink onder <strong>Wat de AI mag genereren</strong> de optie <strong>Indeling van de modules uit een foto van het bord</strong> aan. Standaard staat niets aangevinkt. De andere vakjes (plan uit een foto, eendraadschema uit een oud dossier, voorstellen tot correctie) zijn voorzien, maar nog niet actief.</li>
+      <li>Vink onder <strong>Wat de AI mag genereren</strong> de gewenste toepassingen aan: <strong>Indeling van de modules uit een foto van het bord</strong>, <strong>Meter</strong> (spanning en fasen uit de foto van het typeplaatje), <strong>Plan</strong> (ruimtenamen en elektrische symbolen). Standaard staat niets aangevinkt. De twee andere vakjes (eendraadschema uit een oud dossier, voorstellen om non-conformiteiten te verhelpen) zijn voorzien, maar worden nog niet gebruikt.</li>
     </ol>
 
     <h3>3. Een foto van het bord laten lezen</h3>
     <ol>
       <li>Tabblad <strong>Verdeelbord</strong>: importeer de foto en lijn ze <strong>uit</strong> (rij per rij) zoals beschreven in <a href="#photo">Foto van het bord</a>.</li>
-      <li>Klik op <strong>Foto lezen (AI)</strong>. Deze knop verschijnt enkel als de AI is ingeschakeld en toegestaan voor het verdeelbord.</li>
-      <li>Is de sleutel vergrendeld (bijvoorbeeld na het herladen van de pagina), dan is de knop „Foto lezen (AI)” grijs: klik op het hangslot 🔒 ernaast en geef de <strong>wachtzin</strong> in (of ga via ⚙ AI). Dat hoeft maar één keer per sessie. De knop <strong>⚙ AI</strong> rechtsboven wordt groen zolang de sleutel ontgrendeld is: de AI is klaar. Een teller toont de verstreken seconden tijdens het lezen.</li>
+      <li>Klik op <strong>Foto lezen (AI)</strong>. De knop heeft die naam wanneer de AI ingeschakeld, toegestaan voor het verdeelbord en klaar is; anders heet hij „Foto lezen” en doet hij de lokale lezing, zonder AI.</li>
+      <li>Is de sleutel vergrendeld (bijvoorbeeld na het herladen van de pagina), klik dan op het hangslot 🔒 naast de knop en geef de <strong>wachtzin</strong> in (of ga via ⚙ AI). Dat hoeft maar één keer per sessie. De knop <strong>⚙ AI</strong> rechtsboven wordt groen zolang de sleutel ontgrendeld is: de AI is klaar. Een teller toont de verstreken seconden tijdens het lezen.</li>
       <li>Voltaplan <strong>plaatst de toestellen van het project</strong> op de gelezen plaatsen, ook die in reserve: elk toestel op de foto krijgt het toestel uit het project dat er het best op lijkt (type, nominale stroom, gevoeligheid, curve, etiket, daarna de volgorde in de boomstructuur). De AI leest ook merk en model en meet de breedte op de liniaal: de gelezen breedte wordt die van het toestel (een compacte vierpolige kan 2 modules breed zijn) en het model vult de referentie in als die leeg is. Een toestel komt enkel op de plaats van een toestel van hetzelfde type (nooit een automaat op de plaats van een meter); wat geen plaats vindt, blijft in reserve. Relais, teleruptors, contactors, schakelklokken, transformatoren, meters en domoticamodules uit het eendraadschema tellen mee als toestellen van het verdeelbord wanneer « In het verdeelbord » is aangevinkt in hun eigenschappen (standaard aangevinkt voor relais en meters). Voor een toestel op de foto dat niet in het project staat, toont het menu « Koppelen aan… » in de lijst eerst gelijkaardige types, daarna alle andere elementen uit het eendraadschema van dit verdeelbord: kies er een en het wordt aangevinkt « In het verdeelbord », krijgt breedte en referentie, en komt op de gelezen plaats. Voor een automaat of verliesstroomschakelaar die niet in het eendraadschema staat, maakt « ＋ Nieuwe… » hem aan onder het verdeelbord met wat gelezen werd (kaliber, curve, breedte, referentie). Een geconnecteerde automaat achter de automaat van een kring (EARU…) maakt u aan met « ＋ In serie onder O »: beveiliging in serie in dezelfde kring, referentie overgenomen, geplaatst op de gelezen plaats. Identieke toestellen die de foto niet onderscheidt (bijvoorbeeld drie verliesstroomschakelaars 40 A 30 mA) worden in de volgorde van het eendraadschema geplaatst, van links naar rechts, tenzij het etiket van een verliesstroomschakelaar zijn kringen vermeldt (« A-F », « G H I J », « K tot M »): dan wordt hij gekoppeld aan de verliesstroomschakelaar uit het eendraadschema die die kringen beveiligt. Noteer die letters op de etiketten van uw verliesstroomschakelaars vóór de foto. Voor automaten is de kringletter op of onder het toestel (« H ») de beste aanwijzing; anders wordt het etiket woord per woord vergeleken (« STOPCONTACTEN I » gaat naar « Stopcontacten I », niet naar « Stopcontacten II »). De gelezen kenmerken vullen het eendraadschema aan: een lege waarde die met zekerheid gelezen is, wordt meteen overgenomen; een waarde die verschilt van het project, of met twijfel gelezen is, staat onder « Kenmerken gelezen op de foto, te bevestigen », met een knop <strong>Toepassen</strong> (of <strong>Alles toepassen</strong>). Het eendraadschema wordt nooit gewijzigd zonder uw akkoord. <kbd>Ctrl</kbd>+<kbd>Z</kbd> maakt ongedaan.</li>
       <li>Het resultaat toont daarna de verschillen met het project (ontbrekend toestel, breedte, type, nominale stroom, curve, gevoeligheid, onzekere lezing). <strong>Het is een automatische lezing die u moet controleren</strong>: bevestig elk toestel met zijn bolletje. Alleen de indeling verandert; de kenmerken van de toestellen worden nooit gewijzigd.</li>
     </ol>
 
     <h3>Andere aanbieders en lokale modellen</h3>
-    <p>In <strong>⚙ IA</strong>, <strong>Aanbieder</strong>: « Anthropic (Claude) » of « OpenAI-compatibele API ». Die laatste werkt met OpenAI (<code>https://api.openai.com/v1</code>), Gemini (OpenAI-compatibel eindpunt van Google), Mistral, en <strong>lokale modellen</strong> op uw computer: Ollama (<code>http://localhost:11434/v1</code>) of LM Studio (<code>http://localhost:1234/v1</code>). Met een lokaal model is <strong>geen sleutel nodig en verlaat niets de computer</strong>. Kies een model dat afbeeldingen kan lezen. De dienst die de foto ontvangt, wordt in de instellingen getoond vóór elke verzending. Bij elke aanbieder wordt het antwoord gecontroleerd: een onvolledig of fout antwoord wordt geweigerd en wijzigt niets.</p>
+    <p>In <strong>⚙ AI</strong>, <strong>Aanbieder</strong>: « Anthropic (Claude) » of « OpenAI-compatibele API ». Die laatste werkt met OpenAI (<code>https://api.openai.com/v1</code>), Gemini (OpenAI-compatibel eindpunt van Google), Mistral, en <strong>lokale modellen</strong> op uw computer: Ollama (<code>http://localhost:11434/v1</code>) of LM Studio (<code>http://localhost:1234/v1</code>). Met een lokaal model is <strong>geen sleutel nodig en verlaat niets de computer</strong>. Kies een model dat afbeeldingen kan lezen. De dienst die de foto ontvangt, wordt in de instellingen getoond vóór elke verzending. Bij elke aanbieder wordt het antwoord gecontroleerd: een onvolledig of fout antwoord wordt geweigerd en wijzigt niets.</p>
 
     <h3>Wat wordt verstuurd, en waarheen</h3>
     <table>
-      <tr><td>Verstuurd naar Anthropic</td><td>de uitgelijnde foto van het bord, het aantal rijen en modules per rij, en de taal van de interface. Verder niets: niet de naam of het adres van de klant, en niet de rest van het project.</td></tr>
-      <tr><td>Langs welke weg</td><td>rechtstreeks van uw browser (of de desktoptoepassing) naar <code>api.anthropic.com</code>, via HTTPS, zonder enige tussenpersoon.</td></tr>
+      <tr><td>Verstuurd naar de gekozen aanbieder</td><td>voor het bord: de uitgelijnde foto van het bord, het aantal rijen en modules per rij, en de taal van de interface; voor de meter of het plan (als u die toepassingen hebt aangevinkt): de foto van het typeplaatje of de afbeelding van het plan. Verder niets: niet de naam of het adres van de klant, en niet de rest van het project.</td></tr>
+      <tr><td>Langs welke weg</td><td>rechtstreeks van uw browser (of de desktoptoepassing) naar de aanbieder (<code>api.anthropic.com</code> voor Anthropic), via HTTPS, zonder enige tussenpersoon. Met een lokaal model verlaat niets de computer.</td></tr>
       <tr><td>Bewaarde sleutel</td><td>versleuteld (AES-GCM 256 bits, sleutel afgeleid van de wachtzin met PBKDF2-SHA-256) in de lokale opslag van deze browser of van de toepassing. <strong>Nooit</strong> in het <code>.voltaplan</code>-bestand, en ook niet in een bestand dat naar een klant of een erkend organisme wordt gestuurd.</td></tr>
       <tr><td>Wachtzin</td><td>wordt nergens bewaard. De ontsleutelde sleutel blijft in het geheugen tot u het tabblad of de toepassing sluit.</td></tr>
       <tr><td>Bij Anthropic</td><td>de gegevens die naar de API worden gestuurd, vallen onder de <a href="https://www.anthropic.com/legal/commercial-terms">commerciële voorwaarden</a> van Anthropic, die het gebruik ervan om modellen te trainen standaard uitsluiten.</td></tr>
@@ -240,7 +291,7 @@
       <li><strong>Wachtzin vergeten</strong>: de sleutel kan niet worden teruggehaald. Klik op <strong>Sleutel wissen</strong> en bewaar daarna een nieuwe.</li>
       <li><strong>Nieuwe sleutel</strong>: <strong>Sleutel wissen</strong>, en plak dan de nieuwe.</li>
       <li><strong>Gelekte sleutel</strong> (computer kwijt, sleutel per ongeluk gekopieerd): schakel hem uit in de Anthropic-console, onder <strong>API Keys</strong>. Hij werkt dan meteen nergens meer.</li>
-      <li><strong>Andere computer of andere browser</strong>: daar staat de sleutel niet. Stel hem opnieuw in; u kunt dezelfde sleutel hergebruiken of er een per werkpost aanmaken.</li>
+      <li><strong>Andere computer of andere browser</strong>: daar staat de sleutel niet. Breng de instellingen over (zie <a href="#ia-transfert">Andere toestellen</a>) of stel ze opnieuw in; u kunt dezelfde sleutel hergebruiken of er een per werkpost aanmaken.</li>
     </ul>
 
     <h3>Bij een fout</h3>
@@ -258,11 +309,12 @@
       <li><code>settings.ts</code>: instellingen en toestemmingen, standaard alles uitgeschakeld;</li>
       <li><code>secureStore.ts</code>: de versleutelde kluis voor de sleutel;</li>
       <li><code>boardPhoto.ts</code>: de vergelijking van de lezing met het project;</li>
-      <li><code>boardPhotoAi.ts</code>: de API-aanroep met de officiële SDK <code>@anthropic-ai/sdk</code>, die pas bij het eerste gebruik wordt geladen.</li>
+      <li><code>boardPhotoAi.ts</code>: de API-aanroep met de officiële SDK <code>@anthropic-ai/sdk</code>, die pas bij het eerste gebruik wordt geladen;</li>
+      <li><code>provider.ts</code> en <code>photoAi.ts</code>: de OpenAI-compatibele aanbieders en het lezen van meter en plan.</li>
     </ul>
     <p>Het antwoord is aan een schema gebonden (gestructureerde uitvoer): rijen → toestellen met positie, breedte, type, nominale stroom, curve, gevoeligheid, etiket en betrouwbaarheidsniveau. Een nieuwe AI-functie moet een eigen toestemmingsvakje hebben, standaard uitgeschakeld, en mag nooit persoonsgegevens uit het project versturen zonder dat de gebruiker het weet.</p>
 
-    <h3>Andere toestellen</h3>
+    <h3 id="ia-transfert">Andere toestellen</h3>
     <p>In de AI-instellingen, rubriek <strong>Andere toestellen</strong>: scan de <strong>QR-code</strong> met de telefoon, of <em>Link kopiëren</em> en plak hem op het andere toestel (<em>Ontvangen: link of code plakken</em>). De sleutel reist versleuteld; het andere toestel vraagt de geheime zin. Er wordt geen server gebruikt.</p>
 
     <h2 id="pays">Landen en reglementen</h2>
@@ -271,6 +323,7 @@
     <h2 id="raccourcis">Sneltoetsen</h2>
     <table>
       <tr><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td><td>Opslaan</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td><td>Opslaan als</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>O</kbd></td><td>Openen</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>Afdrukken / PDF</td></tr>
       <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Ongedaan maken / opnieuw</td></tr>
@@ -290,7 +343,7 @@ npm run desktop    # desktoptoepassing (Rust vereist)</pre>
     <p>React + TypeScript + Vite, desktoptoepassing met Tauri. Code onder licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a>: elke gewijzigde versie die verspreid of online aangeboden wordt, moet haar broncode publiceren. Bijdragen zijn welkom in de <a class="repo-link" href="#">repository</a>.</p>
   </article>
 </main>
-<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
+<footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
 <script src="../site.js"></script>
 </body>
 </html>

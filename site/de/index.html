@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voltaplan</title>
+<meta name="description" content="Kostenlose Open-Source-App für elektrische Pläne (einpoliger Plan, Lageplan, Verteiler) mit Prüfhilfe nach der belgischen RGIE, im Browser oder als Desktop-App.">
+<link rel="alternate" hreflang="fr" href="https://voltaplan.org/">
+<link rel="alternate" hreflang="nl" href="https://voltaplan.org/nl/">
+<link rel="alternate" hreflang="en" href="https://voltaplan.org/en/">
+<link rel="alternate" hreflang="de" href="https://voltaplan.org/de/">
+<link rel="alternate" hreflang="x-default" href="https://voltaplan.org/">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="./"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="guide.html">Anleitung</a>
+    <a href="faq.html">FAQ</a>
+    <a href="guide.html#installer">Installieren</a>
+    <a class="repo-link" href="#">Quellcode</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Voltaplan über GitHub Sponsors unterstützen (freiwillig)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Unterstützen</span></a>
+    <a class="btn primary" href="../app/">App öffnen</a>
+    <span class="lang"><a href="../" data-lang="fr">FR</a><a href="../nl/" data-lang="nl">NL</a><a href="../en/" data-lang="en">EN</a><a href="./" aria-current="true" data-lang="de">DE</a></span>
+  </nav>
+</div></header>
+<main>
+  <section class="hero">
+    <h1>Die elektrischen Unterlagen nach RGIE,<br>vom Plan bis zum Verteileretikett.</h1>
+    <p>Voltaplan zeichnet den einpoligen Plan, den Lageplan und den Verteiler einer Hausinstallation, prüft die Regeln der RGIE (belgische Vorschriften für elektrische Installationen) und druckt die Unterlagen für die zugelassene Prüfstelle. Kostenlos, Open Source, auf Französisch, Niederländisch, Englisch und Deutsch.</p>
+    <div class="actions">
+      <a class="btn primary" href="../app/">Im Browser öffnen</a>
+      <a class="btn" href="guide.html#installer">Auf dem Computer oder Telefon installieren</a>
+      <a class="btn" href="guide.html">Anleitung lesen</a>
+      <a class="btn" href="faq.html">Häufige Fragen</a>
+    </div>
+    <p class="note" style="font-size:15px;color:inherit">Für die Web-Version muss nichts installiert werden: Sie läuft in Chrome, Edge oder Firefox und danach auch offline. Ihre Projekte bleiben auf Ihrem Computer (oder in dem Speicherdienst, den Sie wählen); kein Voltaplan-Server erhält sie.</p>
+  </section>
+
+  <div class="grid">
+    <div class="card"><h3>Automatischer einpoliger Plan</h3><p>Von unten nach oben gezeichnet wie Abbildung 3.1 der RGIE, Symbole nach Tabelle 2.23, Nummerierung A1, A2… ab der Schutzeinrichtung.</p></div>
+    <div class="card"><h3>Maßstäblicher Lageplan</h3><p>Wände, Türen, Fenster, Möbel; Hintergrund aus Foto, PDF oder DXF des Architekten (maßstabsgerecht eingefügt); Wände automatisch nachgezeichnet.</p></div>
+    <div class="card"><h3>Verteiler per Drag-and-drop</h3><p>Hutschienen, tatsächliche Gerätebreite, Etiketten 1:1, Vergleich mit einem Foto des Verteilers.</p></div>
+    <div class="card"><h3>RGIE-Prüfung</h3><p>Blockierende Nichtkonformitäten für eine neue Installation, Hinweise zur Instandsetzung für eine bestehende, Spannungsfall und Kurzschluss.</p></div>
+    <div class="card"><h3>Materialliste</h3><p>Nach Eigenschaften und europäischen Normen, Mengen und Längen, nach Artikel oder nach Raum, CSV-Export für das Angebot.</p></div>
+    <div class="card"><h3>Leitungslängen aus dem Lageplan</h3><p>Geschätzt vom Verteiler bis zu den Punkten, mit Montagehöhen und Etagenwechseln; eingegebene Längen werden nie ersetzt.</p></div>
+    <div class="card"><h3>Unterlagen A4 / A3</h3><p>Vollständiges Schriftfeld, Legende, Messungen, Etiketten, Vektor-PDF. Entwurfsvermerk, solange blockierende Feststellungen offen sind. Prüfhilfe: keine Zertifizierung.</p></div>
+    <div class="card"><h3>Aus anderer Software importieren</h3><p>Trikker, Volter, Eendraadschema, Draadwijs, PlanElec, Condui oder PDF-Unterlagen: die Quelle wird automatisch erkannt. Export nach Trikker und Eendraadschema.</p></div>
+    <div class="card"><h3>Ihre Dateien, wo Sie wollen</h3><p>Dieser Computer, der Browser, GitHub, Google Drive, OneDrive oder Dropbox.</p></div>
+    <div class="card"><h3>Geführter Start</h3><p>Startseite „Meine Projekte“, Assistent in 4 Schritten und ein Musterhaus zum Anpassen: Sie beginnen nie mit einer leeren Seite.</p></div>
+    <div class="card"><h3>Farben und QR-Etiketten</h3><p>Eine Farbe pro Stromkreis im Lageplan und im einpoligen Plan; QR-Etiketten zum Aufkleben im Verteiler, ohne Hosting bei uns.</p></div>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h3>Ohne Konto, ohne Abo</h3><p>Alles ist kostenlos, auch das Speichern und das PDF der Unterlagen, ohne Wasserzeichen und ohne Projektbegrenzung.</p></div>
+    <div class="card"><h3>Offline</h3><p>Zeichnen, RGIE-Prüfung, Berechnungen und PDF-Unterlagen funktionieren ohne Internet, auf der Baustelle wie im Büro.</p></div>
+    <div class="card"><h3>Keine Reichweitenmessung</h3><p>Keine Telemetrie und kein Voltaplan-Server: Ihre Kundenunterlagen verlassen weder Ihre Geräte noch Ihre eigene Cloud.</p></div>
+  </div>
+
+  <section class="sponsor-card" id="soutenir">
+    <div class="sponsor-text"><h2><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg> Voltaplan unterstützen</h2><p>Voltaplan ist und bleibt <strong>vollständig kostenlos</strong>, ohne Werbung und ohne gesperrte Funktionen. Eine Spende ist <strong>freiwillig</strong> und schaltet nichts frei: Sie finanziert die Zeit für Entwicklung, Wartung und die Durchsicht der Vorschriften.</p></div>
+    <div class="sponsor-cta"><a class="btn sponsor big" href="https://github.com/sponsors/SebastienBatteur"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Sponsor auf GitHub werden</span></a><p class="muted small">Die Zahlung wird von GitHub auf dessen eigener Website abgewickelt. Diese Seite lädt keine Inhalte von GitHub.</p></div>
+  </section>
+  <p class="note">Voltaplan ist eine Hilfe. Es ersetzt weder den amtlichen Text der RGIE noch die Stellungnahme der zugelassenen Prüfstelle (Vinçotte, BTV, ACA…).</p>
+</main>
+<footer>Voltaplan — kostenlos und Open Source — <a href="https://github.com/sponsors/SebastienBatteur">Projekt unterstützen</a> (freiwillig) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Datenschutz</a> — <a href="terms.html">Nutzungsbedingungen</a> — Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Quellcode</a></footer>
+<script src="../site.js"></script>
+</body>
+</html>

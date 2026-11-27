@@ -8,6 +8,7 @@ import { MissingAssetsError } from '../io/projectData';
 import { RemoteAssetMismatchError } from '../format/folder';
 import { DesktopSaveError } from '../io/desktopSave';
 import { EdsError } from '../import/eendraadschema';
+import { I18nError } from '../i18n/error';
 
 type T = (k: string, p?: Record<string, string | number>) => string;
 
@@ -15,6 +16,8 @@ type T = (k: string, p?: Record<string, string | number>) => string;
 export function errorText(e: unknown, t: T): string {
   if (e instanceof ProjectFileError) return t('file.error.' + e.code, e.params);
   if (e instanceof EdsError) return t('eds.error.' + e.code, e.params);
+  // Import / ouverture (fichier d'un autre logiciel, PDF, archive) : message traduit
+  if (e instanceof I18nError) return t(e.key, e.params);
   // Destination pleine : disque de l'appareil, ou espace du service (version gardée, pas de reprise automatique)
   if (e instanceof StorageFullError) return e.where === 'device' ? t('storage.full.device') : t('storage.full.cloud', { where: e.where });
   if (e instanceof FileTooLargeError) return t('storage.tooLarge', { where: e.where, size: Math.ceil(e.size / 1048576), limit: Math.floor(e.limit / 1048576) });

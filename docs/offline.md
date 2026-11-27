@@ -8,8 +8,13 @@ l'application fonctionne sans Internet. L'application de bureau (Tauri) n'en a p
 
 Tout ce qui ne dépend pas d'un service extérieur, **y compris les fonctions jamais utilisées en ligne** :
 schéma unifilaire, plan de position, tableau, contrôle RGIE, calculs, nomenclature, impression du dossier,
-fonds de plan PDF (lecteur pdf.js et son « worker »), import et export Trikker et Eendraadschema,
-ouverture et enregistrement de fichiers sur l'appareil, projets gardés dans le navigateur.
+fonds de plan PDF (lecteur pdf.js et son « worker ») et DXF, imports des autres logiciels (Trikker, Volter,
+Eendraadschema, Draadwijs, PlanElec, Condui, dossier PDF) et exports Trikker et Eendraadschema, ouverture et
+enregistrement de fichiers sur l'appareil, projets gardés dans le navigateur.
+
+Exception : la **lecture locale des photos** (OCR, Tesseract en WebAssembly, ≈ 18 Mo, dossier `ocr/<version>/`)
+n'est pas copiée à l'installation. Elle est gardée dans un cache à part (`ocr-files`) à la première lecture, puis
+fonctionne hors ligne.
 
 Indisponible hors ligne (un repère « Hors ligne » s'affiche près du bouton IA) : l'IA (Anthropic, OpenAI,
 Gemini, Mistral ; un modèle local Ollama / LM Studio reste joignable s'il tourne sur la machine), GitHub,
@@ -19,10 +24,11 @@ Google Drive, OneDrive, Dropbox.
 
 - **À la construction** (`npm run build`), le greffon `voltaplan-sw` de `vite.config.ts` liste tous les fichiers
   écrits dans `dist/` (JS, CSS, morceaux chargés à la demande, lecteur PDF, icônes, manifeste, `index.html`,
-  `oauth.html` ; sauf `sw.js` et les `.map`), calcule une **version** (empreinte SHA-256 des noms et contenus,
+  `oauth.html` ; sauf `sw.js`, les `.map`, les métadonnées de provenance `build-info.json` et
+  `fingerprints.json`, et le moteur OCR `ocr/`), calcule une **version** (empreinte SHA-256 des noms et contenus,
   `src/sw/precache.ts`) et écrit `dist/sw.js` à partir du modèle `src/sw/sw.js`.
 - **Installation** : tous les fichiers de la liste sont copiés dans le cache `voltaplan-<version>`
-  (environ 2,8 Mo aujourd'hui). Si un seul fichier manque, l'installation échoue et sera retentée : jamais de
+  (environ 3,6 Mo, construction du 2026-11-26). Si un seul fichier manque, l'installation échoue et sera retentée : jamais de
   version à moitié en cache.
 - **Requêtes** : seules les lectures (GET) de la même origine, dans la portée de l'application, passent par le
   cache. Les appels à l'IA, à GitHub ou aux services en ligne (autres origines) ne sont jamais interceptés ni
@@ -30,7 +36,8 @@ Google Drive, OneDrive, Dropbox.
   - page de l'application : celle de la version installée (cohérente avec ses fichiers), réseau en secours ;
   - autres fichiers : copie de la version installée, sinon réseau, sans rien ajouter au cache.
 - **Activation** : les caches des autres versions de Voltaplan (`voltaplan-*`) sont supprimés ; plus
-  d'accumulation d'anciens fichiers.
+  d'accumulation d'anciens fichiers. Le cache OCR n'en fait pas partie : ses noms de fichiers contiennent la
+  version de tesseract.js.
 
 ## Mises à jour
 
@@ -79,7 +86,7 @@ ou non.
 - Application installée sur l'écran d'accueil : stockage séparé de celui de Safari [à vérifier].
 - `navigator.storage.persist()` et `estimate()` : disponibles dans les versions récentes de Safari
   [à vérifier : version minimale] ; sinon, l'information n'est simplement pas affichée.
-- La taille du cache (≈ 3 Mo) est bien en dessous des limites connues [à vérifier selon l'appareil].
+- La taille du cache (≈ 3,6 Mo, plus ≈ 18 Mo pour l'OCR après une première lecture) est bien en dessous des limites connues [à vérifier selon l'appareil].
 
 ## Vérifier
 

@@ -2,6 +2,19 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Traductions complètes, documentation et FAQ (2026-11-27)
+
+- Allemand complet : toutes les clés de l'interface (environ 1 380) traduites ; le test des traductions exige
+  désormais les mêmes clés en français, néerlandais, anglais et allemand.
+- Messages d'import et d'ouverture (Condui, Draadwijs, PlanElec, Volter, Trikker, dossier PDF, fichier inconnu,
+  archive) traduits dans les quatre langues au lieu d'être écrits en français dans le code (clés `imp.*`,
+  erreur `I18nError`). Les avertissements composés de plusieurs morceaux sont devenus des avertissements séparés.
+- Site : pages en allemand (accueil, guide, confidentialité, conditions ; la version française fait foi pour les
+  textes juridiques), nouvelle page « Questions fréquentes » en quatre langues, guides alignés sur l'application
+  (un seul Importer, longueur des câbles, IA, statuts du contrôle, mentions du dossier imprimé).
+- Documentation (README, CONTRIBUTING, PRIVACY, docs/) alignée sur le code.
+- Pied de page de l'application en allemand : liens vers les pages allemandes.
+
 ### Un seul « Importer » (2026-11-26)
 
 - Menu Fichier et accueil : un seul « Importer d'un autre logiciel… » au lieu d'une entrée par logiciel. La source

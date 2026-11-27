@@ -4,6 +4,7 @@ import { countPoints, detectSupply, findPlanPages, importPdfDossier, parseCable,
 import { interpretLabel } from '../src/assist/labels';
 import { ALLOWED_CHILDREN } from '../src/model/schema';
 import { computeNumbering, walk } from '../src/model/tree';
+import { frWarnings } from './warnText';
 
 const A4 = [{ width: 595, height: 842 }];
 /** Tableau fabriqué : une ligne d'en-têtes puis des lignes, colonnes aux abscisses données. */
@@ -111,7 +112,7 @@ describe('reprise d’un dossier PDF (texte)', () => {
     expect(nodes.find((n) => n.props.fixedLetter === 'F')!.children[0].children).toHaveLength(0);
     const num = computeNumbering(project.roots);
     expect(num.get(sub.children[0].children[0].children[1].id)).toBe('E-A2');
-    expect(warnings.some((w) => /à compléter/.test(w))).toBe(true);
+    expect(frWarnings(warnings).some((w) => /à compléter/.test(w))).toBe(true);
     for (const { node, parent } of walk(project.roots)) if (parent) expect(ALLOWED_CHILDREN[parent.kind], `${node.kind} sous ${parent.kind}`).toContain(node.kind);
   });
 
@@ -168,7 +169,7 @@ describe('reprise d’un dossier PDF (texte)', () => {
     const a1 = rez.symbols[0];
     expect(a1.autoRotate).toBe(true);
     expect(a1.pos.x).toBeLessThan(Math.round(110 * plans[0].mmPerPt));
-    expect(warnings.some((w) => /Échelle non indiquée sur le plan \(Étage\)/.test(w))).toBe(true);
+    expect(frWarnings(warnings).some((w) => /Échelle non indiquée sur le plan \(Étage\)/.test(w))).toBe(true);
   });
 
   // Texte extrait de vrais dossiers PDF (jamais dans le dépôt) : PDF_TEXT_SAMPLES=chemin1;chemin2 (format « x,y r= s= | texte »)

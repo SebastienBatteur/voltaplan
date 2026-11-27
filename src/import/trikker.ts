@@ -5,6 +5,9 @@
  */
 import type { Address, ElNode, NodeKind, PlanPage, Project, Pt, PropValue } from '../model/types';
 import { emptyProject, uid } from '../model/tree';
+import { Warnings } from './warnings';
+import type { MigrationWarning } from '../model/migrate';
+import { I18nError } from '../i18n/error';
 
 export const TAG_KIND: Record<string, NodeKind> = {
   Teller: 'meter',
@@ -201,7 +204,7 @@ function noteText(n: Element): string | undefined {
 interface Ctx {
   /** Ids Trikker des notes repliées dans la localisation de leur parent. */
   foldedNotes: Set<string>;
-  warnings: string[];
+  warnings: Warnings;
 }
 
 function convert(el: Element, ctx: Ctx): ElNode | null {
@@ -215,7 +218,7 @@ function convert(el: Element, ctx: Ctx): ElNode | null {
     children: [],
     source: { format: 'trikker', tag, attrs: a },
   };
-  if (!TAG_KIND[tag]) ctx.warnings.push(`Élément Trikker non reconnu importé comme « autre » : ${tag}`);
+  if (!TAG_KIND[tag]) ctx.warnings.add('imp.trikker.unknown', { tag });
 
   const notes: string[] = [];
   const collectNote = (n: Element) => {
@@ -250,7 +253,7 @@ function address(el: Element | undefined): Address {
 
 export interface TrikkerImportResult {
   project: Project;
-  warnings: string[];
+  warnings: MigrationWarning[];
 }
 
 /**
@@ -268,13 +271,13 @@ function cleanBase64(b64: string): string | null {
 }
 
 export function importTrikker(xml: string, fileName = 'Projet Trikker'): TrikkerImportResult {
-  if (hasDtd(xml)) throw new Error("Ce fichier n'est pas un fichier Trikker valide (déclaration DOCTYPE/ENTITY refusée).");
+  if (hasDtd(xml)) throw new I18nError('imp.trikker.dtd', undefined, "Ce fichier n'est pas un fichier Trikker valide (déclaration DOCTYPE/ENTITY refusée).");
   const doc = new DOMParser().parseFromString(xml, 'application/xml');
   const root = doc.documentElement;
   if (!root || root.tagName !== 'Document' || doc.getElementsByTagName('parsererror').length) {
-    throw new Error("Ce fichier n'est pas un fichier Trikker valide.");
+    throw new I18nError('imp.trikker.invalid', undefined, "Ce fichier n'est pas un fichier Trikker valide.");
   }
-  const ctx: Ctx = { foldedNotes: new Set(), warnings: [] };
+  const ctx: Ctx = { foldedNotes: new Set(), warnings: new Warnings() };
   const project = emptyProject();
   project.roots = [];
   project.loose = [];
@@ -356,7 +359,7 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
         case 'Figuur': {
           const raw = e.getAttribute('ImageAsBase64');
           const b64 = raw ? cleanBase64(raw) : null;
-          if (raw && !b64) ctx.warnings.push('Image de plan illisible ignorée.');
+          if (raw && !b64) ctx.warnings.add('imp.trikker.badImage');
           if (b64)
             page.images.push({
               center: pt(child(e, 'Center')),
@@ -368,7 +371,7 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
           break;
         }
         default:
-          ctx.warnings.push(`Élément de plan non reconnu ignoré : ${e.tagName}`);
+          ctx.warnings.add('imp.trikker.planUnknown', { tag: e.tagName });
       }
     }
     for (const gn of childEls(child(pg, 'GrondplanNodes'), 'GrondplanNode')) {
@@ -386,5 +389,5 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
 
   // Trikker ne sait pas si l'installation est neuve : on part sur « neuve » (règles les plus strictes),
   // l'utilisateur peut changer dans les infos du projet.
-  return { project, warnings: Array.from(new Set(ctx.warnings)) };
+  return { project, warnings: ctx.warnings.list() };
 }

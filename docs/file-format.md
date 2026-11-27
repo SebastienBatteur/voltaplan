@@ -8,6 +8,13 @@ Deux formats coexistent ; le type est reconnu par la **signature** du fichier, j
 | `{` (éventuellement précédé d'un BOM) | **v1 : JSON unique**, images intégrées en base64 | oui, indéfiniment | « Exporter au format v1 » seulement |
 | `<?xml` | Trikker (`.trik`) | import | export |
 
+« Importer d'un autre logiciel… » et « Ouvrir » reconnaissent aussi, d'après le contenu (`sniffFormat`,
+`src/io/projectData.ts`) : PDF (`%PDF-`, dossier d'un autre logiciel), Eendraadschema (`EDS`/`TXT` suivi de la
+version ; import, et export `.eds`), export Condui (ZIP avec `manifest.json` et `project.json`), JSON PlanElec
+Sketch, Volter et Draadwijs (d'après leur structure). Une archive ZIP qui n'est ni un projet Voltaplan ni un export
+Condui est un simple emballage : au plus 6 fichiers candidats y sont essayés. L'extension ne sert qu'en repli ; un
+fichier non reconnu est refusé. Ces imports créent un nouveau projet (jamais réécrits à leur emplacement).
+
 Les fichiers `.openrgie` (ancien nom de l'application) s'ouvrent toujours. Décisions : [ADR-0004](adr/0004-format-projet-v2-zip.md)
 (principe), [ADR-0006](adr/0006-format-v2-implementation.md) (implémentation) ; spécification :
 [SPEC-FORMAT-V2](strategie/SPEC-FORMAT-V2.md) ; mesures : [format-v2-performance.md](format-v2-performance.md).
@@ -35,7 +42,7 @@ JSON lisible, encodé en UTF-8 — la même structure en v1 et en v2 :
   "meta": { … },                // projet : client, adresse, installateur, alimentation, référentiel, dates, dérogations
   "roots": [ … ],               // arbre de l'installation : { id, kind, props, children, location?, source? }
   "loose": [ … ],               // éléments non raccordés
-  "plan": { "pages": [ … ], "width": 20000, "height": 15000 },   // millimètres
+  "plan": { "pages": [ … ], "width": 20000, "height": 15000 },   // millimètres ; pages[].wires : tracés de câbles
   "measurements": { … },        // terre, isolement, essais des différentiels (par id de nœud)
   "boards": { "<id du tableau>": { "slots": { "<id>": { "row": 0, "col": 0 } }, "photo": …, "checks": … } },
   "evidence": { … }             // dossier de preuves de l'assistant (facultatif ; dans l'archive : sources.json)

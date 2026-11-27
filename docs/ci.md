@@ -45,7 +45,9 @@ Dependabot, y compris un simple changement de documentation) coûtait environ 18
 
 - `npm ci` avec cache npm (`actions/setup-node`, `cache: npm`) ;
 - `npm run typecheck`, `npm run lint`, **tous** les tests Vitest (`npm test`, dont la matrice réglementaire
-  `test/rules.matrix.test.ts` : jamais filtrés ni réduits), `npm run build` ;
+  `test/rules.matrix.test.ts` : jamais filtrés ni réduits), `npm run build`, puis
+  `npm run provenance -- verify dist` (provenance de la version construite : voir
+  [architecture/build-provenance.md](architecture/build-provenance.md)) ; même vérification dans `ci-multi-os.yml` ;
 - `npm audit --audit-level=high --omit=dev` (dépendances livrées) ; la planification hebdomadaire détecte les
   vulnérabilités publiées entre deux modifications ;
 - l'artifact `voltaplan-web` (dossier `dist`) n'est plus déposé que sur main et en lancement manuel, gardé
@@ -96,7 +98,9 @@ matrice (Dependabot en ouvre plusieurs par semaine).
   Dependabot d'une autre dépendance (zustand, outils de développement…) n'entraîne donc pas les ~57 minutes
   d'une construction native.
 - `release.yml` : **portée inchangée** (4 cibles sur tag `v*` ou lancement manuel). Ajouts : `timeout-minutes`
-  et une concurrence **sans annulation** (une release brouillon interrompue serait incomplète).
+  et une concurrence **sans annulation** (une release brouillon interrompue serait incomplète). Sur un tag
+  seulement, un job Linux `web-provenance` construit la version web deux fois (compilation reproductible), vérifie
+  la provenance et joint l'archive web, les empreintes, le SBOM et les sommes SHA-256 à la release.
 
 ### Annulation des exécutions dépassées (`concurrency`)
 
@@ -126,7 +130,7 @@ publie donc toujours. La construction de Pages garde `npm test` comme garde-fou 
 | CodeQL | 30 min |
 | Pages `build` / `deploy` | 15 / 10 min |
 | Desktop « pertinence » / construction | 5 / 60 min |
-| Release | 90 min |
+| Release (construction / `web-provenance`) | 90 / 20 min |
 
 Sans limite, un job bloqué tourne jusqu'à 6 heures (360 minutes, soit 3 600 minutes facturées sur macOS
 [à vérifier]).
