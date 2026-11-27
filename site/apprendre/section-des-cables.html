@@ -44,21 +44,22 @@
 
 <h2 id="calibre">Le disjoncteur protège le câble</h2>
 <p>Le disjoncteur ne protège pas d’abord l’appareil branché : il protège <strong>le câble</strong>. Il doit couper avant que le câble ne chauffe trop. Son <a href="lexique.html#calibre">calibre</a> (16 A, 20 A…) ne doit donc jamais dépasser ce que la section supporte.</p>
-<p>Voltaplan utilise le tableau suivant, qui reprend des valeurs prudentes usuelles en Belgique pour du cuivre posé de façon courante, encastré sous tube :</p>
+<p>Pour les installations domestiques, le RGIE fixe lui-même le calibre maximal de la protection selon la section des conducteurs en cuivre (RGIE, 4.4.1.4, tableau 4.11). En voici les principales lignes :</p>
 <table>
-  <thead><tr><th>Section (mm²)</th><th>Calibre maximal du disjoncteur</th><th>Usage domestique typique</th></tr></thead>
+  <thead><tr><th>Section (mm²)</th><th>Calibre maximal du disjoncteur</th><th>Calibre maximal du fusible</th><th>Usage domestique typique</th></tr></thead>
   <tbody>
-    <tr><td>1,5</td><td>16 A</td><td>Éclairage, commandes</td></tr>
-    <tr><td>2,5</td><td>20 A</td><td>Prises, lave-linge, lave-vaisselle</td></tr>
-    <tr><td>4</td><td>25 A</td><td>Appareils puissants, circuits longs</td></tr>
-    <tr><td>6</td><td>32 A</td><td>Cuisinière, taque de cuisson, selon la puissance</td></tr>
-    <tr><td>10</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
-    <tr><td>16</td><td>63 A</td><td>Alimentation d’un tableau, liaison depuis le compteur</td></tr>
+    <tr><td>1,5</td><td>16 A</td><td>10 A</td><td>Éclairage, commandes</td></tr>
+    <tr><td>2,5</td><td>20 A</td><td>16 A</td><td>Prises, lave-linge, lave-vaisselle</td></tr>
+    <tr><td>4</td><td>25 A</td><td>20 A</td><td>Appareils puissants, circuits longs</td></tr>
+    <tr><td>6</td><td>40 A</td><td>32 A</td><td>Cuisinière, taque de cuisson, selon la puissance</td></tr>
+    <tr><td>10</td><td>63 A</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
+    <tr><td>16</td><td>80 A</td><td>63 A</td><td>Alimentation d’un tableau, liaison depuis le compteur</td></tr>
   </tbody>
 </table>
-<p>Ce ne sont pas des valeurs fixées telles quelles par le RGIE : ce sont des maxima prudents pour une pose courante. Le RGIE demande que la protection soit adaptée au courant admissible du câble, qui dépend du mode de pose. Un câble posé dans un isolant thermique, groupé avec beaucoup d’autres ou dans un local chaud évacue moins bien sa chaleur : il peut demander un calibre plus faible ou une section plus grande. La notice du fabricant et les tableaux de courant admissible font foi.</p>
+<p>Ces valeurs sont des <strong>maxima</strong>, pas des valeurs à atteindre. Le RGIE demande aussi que le courant admissible du câble suffise pour le circuit, et ce courant admissible dépend de l’isolant, de la construction du câble, du mode de pose et de la température ambiante (RGIE, 4.4.1.4). Un câble posé dans un isolant thermique, groupé avec beaucoup d’autres ou dans un local chaud évacue moins bien sa chaleur : il peut demander un calibre plus faible ou une section plus grande. Les tableaux de courant admissible et la notice du fabricant font alors foi.</p>
+<p>Les contrôles de Voltaplan sont, pour l’instant, plus prudents que ce tableau pour les grosses sections (32 A au plus sur du 6 mm², 50 A sur du 10 mm², 63 A sur du 16 mm²) : un calibre admis par le RGIE peut donc y être signalé.</p>
 <figure class="illu">
-  <svg viewBox="0 0 640 240" role="img" aria-label="Six sections de cuivre dessinées avec une surface proportionnelle : 1,5 mm² pour 16 A, 2,5 mm² pour 20 A, 4 mm² pour 25 A, 6 mm² pour 32 A, 10 mm² pour 50 A et 16 mm² pour 63 A, avec leur usage typique.">
+  <svg viewBox="0 0 640 240" role="img" aria-label="Six sections de cuivre dessinées avec une surface proportionnelle : 1,5 mm² pour 16 A, 2,5 mm² pour 20 A, 4 mm² pour 25 A, 6 mm² pour 40 A, 10 mm² pour 63 A et 16 mm² pour 80 A (calibre maximal du disjoncteur selon le RGIE, installations domestiques), avec leur usage typique.">
     <text class="m" x="15" y="30">Surface de cuivre d’un conducteur (à l’échelle)</text>
     <circle class="f-warn" cx="140" cy="95" r="9.8"/>
     <circle class="f-warn" cx="230" cy="95" r="12.6"/>
@@ -67,7 +68,7 @@
     <circle class="f-warn" cx="500" cy="95" r="25.3"/>
     <circle class="f-warn" cx="590" cy="95" r="32"/>
     <text class="m" x="15" y="165">Section</text>
-    <text class="m" x="15" y="190">Calibre max.</text>
+    <text class="m" x="15" y="190">Disj. max.</text>
     <text class="m" x="15" y="215">Usage</text>
     <text class="b" x="140" y="165" text-anchor="middle">1,5 mm²</text>
     <text class="b" x="230" y="165" text-anchor="middle">2,5 mm²</text>
@@ -78,9 +79,9 @@
     <text class="b t-acc" x="140" y="190" text-anchor="middle">16 A</text>
     <text class="b t-acc" x="230" y="190" text-anchor="middle">20 A</text>
     <text class="b t-acc" x="320" y="190" text-anchor="middle">25 A</text>
-    <text class="b t-acc" x="410" y="190" text-anchor="middle">32 A</text>
-    <text class="b t-acc" x="500" y="190" text-anchor="middle">50 A</text>
-    <text class="b t-acc" x="590" y="190" text-anchor="middle">63 A</text>
+    <text class="b t-acc" x="410" y="190" text-anchor="middle">40 A</text>
+    <text class="b t-acc" x="500" y="190" text-anchor="middle">63 A</text>
+    <text class="b t-acc" x="590" y="190" text-anchor="middle">80 A</text>
     <text class="m" x="140" y="215" text-anchor="middle">Éclairage</text>
     <text class="m" x="230" y="215" text-anchor="middle">Prises</text>
     <text class="m" x="320" y="215" text-anchor="middle">Gros appareils</text>
@@ -88,18 +89,18 @@
     <text class="m" x="500" y="215" text-anchor="middle">Sous-tableau</text>
     <text class="m" x="590" y="215" text-anchor="middle">Tableau</text>
   </svg>
-  <figcaption>Plus il y a de cuivre, plus le câble supporte de courant. Le calibre du disjoncteur ne dépasse jamais la valeur inscrite sous la section du câble qu’il protège (pose courante, encastrée sous tube).</figcaption>
+  <figcaption>Plus il y a de cuivre, plus le câble supporte de courant. Le calibre du disjoncteur ne dépasse jamais la valeur inscrite sous la section du câble qu’il protège (maximum du RGIE pour une habitation) ; le mode de pose peut imposer moins.</figcaption>
 </figure>
 
 <h2 id="minimum">Les minimums à connaître</h2>
 <ul>
-  <li><strong>1,5 mm²</strong> est la section minimale pour un circuit d’une installation domestique (éclairage, commandes).</li>
-  <li>Les <strong>circuits de prises</strong> se font en <strong>2,5 mm²</strong> au moins, protégés par 20 A au plus, avec <strong>8 points de prise au plus</strong> par circuit (une prise double compte pour un point).</li>
-  <li>Certains appareils demandent un <strong>circuit dédié</strong> : four, cuisinière, taque, lave-linge, sèche-linge, lave-vaisselle, chauffe-eau, pompe à chaleur, borne de recharge… La section dépend alors de leur puissance et de leur notice.</li>
+  <li>En principe, le RGIE interdit les conducteurs isolés de moins de <strong>2,5 mm²</strong> dans une installation fixe. Il admet <strong>1,5 mm²</strong> pour un circuit qui ne comporte aucune prise de courant, comme un circuit d’éclairage seul, et des sections plus faibles pour les circuits de commande, de signalisation et de mesure (RGIE, 5.2.1.2, tableau 5.1).</li>
+  <li>Tout circuit qui comporte une prise se fait donc en <strong>2,5 mm²</strong> au moins, protégé par 20 A au plus, avec <strong>8 socles de prise au plus</strong>, simples ou multiples : une prise double compte pour un (RGIE, 5.3.5.2 b). Un circuit qui mélange prises et éclairage suit les règles des prises.</li>
+  <li>Certains appareils exigent un <strong>circuit dédié</strong> : le RGIE cite le lave-linge, le lave-vaisselle, le sèche-linge, la cuisinière, la taque de cuisson, le four, le chauffage électrique fixe, et tout appareil à poste fixe de 2 600 W ou plus, ce qui concerne souvent un chauffe-eau, une pompe à chaleur ou une borne de recharge (RGIE, 5.2.1.2). La section dépend alors de leur puissance et de leur notice.</li>
 </ul>
 
 <h2 id="exemple">Exemple chiffré</h2>
-<p>Une bouilloire de 2 000 W branchée sur 230 V appelle un courant d’environ 2 000 ÷ 230 ≈ 8,7 A (voir <a href="puissance-energie.html">Puissance et énergie</a>). Un radiateur d’appoint de 2 000 W sur la même ligne double ce courant : environ 17,4 A. Sur un circuit de prises en 2,5 mm² protégé par 20 A, c’est encore acceptable. Ajoutez un fer à repasser de 2 000 W et le total dépasse 26 A : le disjoncteur finira par couper, et c’est exactement ce qu’on lui demande.</p>
+<p>Une bouilloire de 2 000 W branchée sur 230 V appelle un courant d’environ 2 000 ÷ 230 ≈ 8,7 A (voir <a href="puissance-energie.html">Puissance et énergie</a>). Un radiateur d’appoint de 2 000 W sur la même ligne double ce courant : environ 17,4 A. Sur un circuit de prises en 2,5 mm² protégé par 20 A, c’est encore acceptable. Ajoutez un fer à repasser de 2 000 W et le total dépasse 26 A : le disjoncteur coupera, d’autant plus vite que la surcharge est forte (une surcharge légère peut durer plusieurs minutes avant le déclenchement, ce que le câble est prévu pour supporter). C’est exactement ce qu’on lui demande.</p>
 <p>La bonne réaction n’est jamais de mettre un disjoncteur de 25 A sur ce câble, mais de répartir les appareils puissants sur d’autres circuits.</p>
 
 <h2 id="longueur">La longueur compte aussi</h2>
@@ -108,25 +109,25 @@
 <h2 id="voltaplan">Ce que vérifie Voltaplan</h2>
 <p>Dans <a href="../app/">Voltaplan</a>, chaque canalisation porte sa section, et chaque disjoncteur son calibre. Le contrôle signale :</p>
 <ul>
-  <li>un câble protégé par un calibre plus élevé que celui du tableau ci-dessus (par exemple 1,5 mm² sous 20 A) ;</li>
-  <li>une section inférieure à 1,5 mm² ;</li>
+  <li>un câble protégé par un calibre trop élevé pour sa section (par exemple 1,5 mm² sous 20 A), avec les valeurs plus prudentes indiquées plus haut pour les grosses sections ;</li>
+  <li>une section inférieure à 1,5 mm² sur un circuit d’utilisation ;</li>
   <li>un circuit de prises en dessous de 2,5 mm², ou avec plus de 8 points ;</li>
   <li>un appareil qui devrait avoir son propre circuit mais partage le sien ;</li>
   <li>une chute de tension trop forte ou une longueur trop grande pour la protection, quand la longueur des câbles est connue ou estimée d’après le plan.</li>
 </ul>
 <p>Ces vérifications aident à repérer une erreur ; elles ne remplacent pas le contrôle de l’installation par un <a href="controle-organisme-agree.html">organisme agréé</a>. Et avant de remplacer un câble ou un disjoncteur, coupez le courant et vérifiez l’absence de tension.</p>
-  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La section est la surface du cuivre d’un conducteur, en mm² : plus elle est grande, plus le câble supporte de courant.</li><li>C’est le <strong>disjoncteur</strong> qui protège le câble : son calibre ne doit jamais dépasser ce que la section supporte.</li><li>Correspondances usuelles : 1,5 mm² → 16 A, 2,5 mm² → 20 A, 4 mm² → 25 A, 6 mm² → 32 A, 10 mm² → 50 A.</li><li>Circuits de prises : 2,5 mm² au minimum, 8 points de prise au plus par circuit.</li><li>Un circuit long peut demander une section plus grande à cause de la chute de tension.</li></ul></section>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La section est la surface du cuivre d’un conducteur, en mm² : plus elle est grande, plus le câble supporte de courant.</li><li>C’est le <strong>disjoncteur</strong> qui protège le câble : son calibre ne doit jamais dépasser ce que la section supporte.</li><li>Maxima du RGIE pour un disjoncteur dans une habitation : 1,5 mm² → 16 A, 2,5 mm² → 20 A, 4 mm² → 25 A, 6 mm² → 40 A, 10 mm² → 63 A. Le mode de pose peut imposer moins.</li><li>Circuits avec des prises : 2,5 mm² au minimum, 8 prises (simples ou multiples) au plus par circuit.</li><li>Un circuit long peut demander une section plus grande à cause de la chute de tension.</li></ul></section>
   <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
-    <details><summary>Peut-on mettre un disjoncteur de 20 A sur du 1,5 mm² ?</summary><div>Non. Le câble pourrait chauffer au-delà de ce qu’il supporte sans que le disjoncteur déclenche. Avec du 1,5 mm², le calibre usuel maximal est 16 A. Si le disjoncteur saute trop souvent, il faut répartir les appareils sur plusieurs circuits, pas augmenter le calibre.</div></details>
-    <details><summary>Pourquoi les prises demandent-elles du 2,5 mm² ?</summary><div>Un circuit de prises peut alimenter des appareils puissants (bouilloire, aspirateur, radiateur d’appoint). Le 2,5 mm² permet un disjoncteur de 20 A, adapté à cet usage. Voltaplan signale un circuit de prises en section plus faible.</div></details>
+    <details><summary>Peut-on mettre un disjoncteur de 20 A sur du 1,5 mm² ?</summary><div>Non. Le câble pourrait chauffer au-delà de ce qu’il supporte sans que le disjoncteur déclenche. Dans une installation domestique, le RGIE limite le disjoncteur à 16 A sur du 1,5 mm² (RGIE, 4.4.1.4). Si le disjoncteur saute trop souvent, il faut répartir les appareils sur plusieurs circuits, pas augmenter le calibre.</div></details>
+    <details><summary>Pourquoi les prises demandent-elles du 2,5 mm² ?</summary><div>C’est une obligation du RGIE : un conducteur isolé de moins de 2,5 mm² n’est admis que dans un circuit sans prise de courant (RGIE, 5.2.1.2). La raison est pratique : on ne sait pas ce qui sera branché (bouilloire, aspirateur, radiateur d’appoint), et le 2,5 mm² admet un disjoncteur de 20 A. Voltaplan signale un circuit de prises en section plus faible.</div></details>
     <details><summary>Mettre une section plus grosse que nécessaire, est-ce un problème ?</summary><div>Non pour la sécurité : un câble plus gros chauffe moins et la chute de tension est plus faible. Il coûte plus cher et se tire moins facilement dans les tubes, et les bornes des appareils doivent accepter cette section.</div></details>
   </section>
-  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Voltaplan, règles de contrôle (fichier src/rules/be/rgie.ts du code source) : correspondance section ↔ calibre maximal, valeurs prudentes pour une pose encastrée sous tube.</li></ul></section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>RGIE, Livre 1 : sous-section 4.4.1.4 et tableau 4.11 (calibre maximal en fonction de la section, installations domestiques, p. 116-117) ; sous-section 5.2.1.2 et tableau 5.1 (sections minimales et circuits dédiés, p. 128-130) ; sous-section 5.3.5.2 b (huit socles par circuit, p. 167).</li><li>Voltaplan, règles de contrôle (fichier src/rules/be/rgie.ts du code source) : correspondance section ↔ calibre maximal.</li></ul></section>
   </article>
   <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="types-de-cables.html">← Les types de câbles (XVB, VOB…)</a><a class="next" href="chute-de-tension.html">La chute de tension →</a></nav>
   <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li><li><a href="chute-de-tension.html">La chute de tension</a><span>Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li></ul></section>
   <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câbles et conducteurs</h2><ul class="learn-list"><li><a href="couleurs-des-fils.html">Les couleurs des fils</a><span>Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="chute-de-tension.html">La chute de tension</a><span>Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.</span></li><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li></ul></section>
-  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler par un organisme agréé toute installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple).</p>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié, et un exercice réussi n’est pas un contrôle de conformité. Avant toute intervention : coupez le circuit au tableau, empêchez qu’on le remette en service pendant le travail, et vérifiez l’absence de tension avec un appareil adapté. Une installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple), est contrôlée par un organisme agréé avant sa mise en usage.</p>
 </main>
 <footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="../site.js"></script>

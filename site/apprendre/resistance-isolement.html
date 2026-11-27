@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
 <title>Résistance d’isolement : principe et valeurs — Voltaplan</title>
-<meta name="description" content="Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.">
+<meta name="description" content="Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur le RGIE exige.">
 <link rel="canonical" href="https://voltaplan.org/apprendre/resistance-isolement.html">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"La résistance d’isolement","description":"Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/resistance-isolement.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"La résistance d’isolement","description":"Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur le RGIE exige.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/resistance-isolement.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"La résistance d’isolement","item":"https://voltaplan.org/apprendre/resistance-isolement.html"}]}</script>
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Voltaplan">
 <meta property="og:title" content="Résistance d’isolement : principe et valeurs — Voltaplan">
-<meta property="og:description" content="Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.">
+<meta property="og:description" content="Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur le RGIE exige.">
 <meta property="og:url" content="https://voltaplan.org/apprendre/resistance-isolement.html">
 <meta property="og:locale" content="fr_BE">
 <meta name="twitter:card" content="summary">
@@ -72,7 +72,16 @@
   <figcaption>Hors tension, l’appareil applique une tension d’essai entre des conducteurs qui ne devraient jamais se toucher, ici les conducteurs actifs et la terre (on mesure aussi entre phase et neutre). Un bon isolant ne laisse passer qu’un courant de fuite minuscule : la résistance, en MΩ, est élevée.</figcaption>
 </figure>
 <h2 id="valeur">Quelle valeur ?</h2>
-<p>Dans Voltaplan, la résistance d’isolement s’encode dans l’onglet Projet, en MΩ. L’application la juge ainsi :</p>
+<p>Le RGIE fixe la règle : pour chaque circuit, les appareils d’utilisation étant déconnectés, la résistance d’isolement en ohms doit valoir au moins 1 000 fois la tension d’essai en volts. La mesure se fait en courant continu, sous une tension d’essai qui dépend du circuit (RGIE, 6.4.5.1, tableau 6.1) :</p>
+<table>
+  <thead><tr><th>Circuit</th><th>Tension d’essai (continu)</th><th>Résistance minimale</th></tr></thead>
+  <tbody>
+    <tr><td>Très basse tension alimentée par un transformateur de sécurité</td><td>250 V</td><td>250 kΩ (0,25 MΩ)</td></tr>
+    <tr><td>Jusqu’à 500 V (les circuits 230 V et 400 V d’une maison)</td><td>500 V</td><td>500 kΩ (0,5 MΩ)</td></tr>
+    <tr><td>De 500 V à 1 000 V</td><td>1 000 V</td><td>1 000 kΩ (1 MΩ)</td></tr>
+  </tbody>
+</table>
+<p>Dans Voltaplan, la résistance d’isolement s’encode dans l’onglet Projet, en MΩ, et l’application applique le seuil des circuits 230 V et 400 V :</p>
 <table>
   <thead><tr><th>Valeur encodée</th><th>Ce qu’affiche Voltaplan</th></tr></thead>
   <tbody>
@@ -98,11 +107,12 @@
 <p>Plus grave, une fuite peut mettre sous tension une partie métallique accessible, ou chauffer localement et abîmer davantage l’isolant. Un défaut entre phase et neutre peut aussi évoluer en <a href="lexique.html#court-circuit">court-circuit</a>. D’où l’intérêt de mesurer avant la mise en service, et chaque fois qu’un doute apparaît.</p>
 
 <h2 id="mesure">Qui mesure, et comment ?</h2>
-<p>La mesure d’isolement se fait avec un <strong>appareil dédié</strong> (un mesureur d’isolement, souvent intégré à un testeur d’installation), par l’installateur ou l’organisme agréé. Ce n’est pas une mesure à improviser :</p>
+<p>La mesure d’isolement se fait avec un <strong>appareil dédié</strong> (un mesureur d’isolement, souvent intégré à un testeur d’installation, capable de fournir la tension d’essai avec un courant de 1 à 5 mA), par l’installateur et, lors du contrôle, par l’organisme agréé (RGIE, 6.4.5.1). Ce n’est pas une mesure à improviser :</p>
 <ul>
-  <li>l’installation doit être coupée et l’absence de tension vérifiée ;</li>
+  <li>l’installation doit être coupée, protégée contre une remise sous tension, et l’absence de tension vérifiée ;</li>
   <li>la tension d’essai est plus élevée que celle du réseau : elle peut endommager les appareils électroniques restés branchés (variateurs, détecteurs, alimentations, box internet) ;</li>
-  <li>certains éléments (parafoudre, appareils fixes) doivent être isolés pour ne pas fausser le résultat ;</li>
+  <li>les appareils d’utilisation sont déconnectés, et certains éléments (parafoudre, par exemple) isolés, pour ne pas fausser le résultat ;</li>
+  <li>la tension d’essai reste présente un instant sur les conducteurs après la mesure (effet de condensateur) : l’appareil doit les décharger avant qu’on y touche ;</li>
   <li>il faut savoir interpréter une valeur faible et la localiser.</li>
 </ul>
 <p>Pour localiser un défaut, l’électricien mesure circuit par circuit, puis tronçon par tronçon, en ouvrant les boîtes de dérivation jusqu’à isoler la partie en cause.</p>
@@ -110,7 +120,7 @@
 
 <h2 id="voltaplan">Dans Voltaplan</h2>
 <p>La valeur encodée apparaît dans le dossier imprimé, page « Mesures et essais », avec l’exigence et le résultat. Tant que la résistance d’isolement (ou la résistance de terre) n’est pas encodée, <a href="../app/">Voltaplan</a> affiche « Mesures non encodées ». Ce sont des valeurs relevées par l’installateur : le contrôle de conformité reste réalisé par l’organisme agréé (voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>).</p>
-  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La résistance d’isolement mesure la qualité de la séparation entre les conducteurs, et entre les conducteurs et la terre.</li><li>Elle s’exprime en <strong>mégohms</strong> (MΩ) : plus elle est élevée, mieux c’est.</li><li>Voltaplan considère comme insuffisante une valeur <strong>inférieure à 0,5 MΩ</strong> (exigence affichée : ≥ 0,5 MΩ).</li><li>Humidité, câble écrasé ou percé, appareil défectueux font baisser l’isolement.</li><li>La mesure se fait hors tension, avec un appareil dédié, par une personne compétente.</li></ul></section>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La résistance d’isolement mesure la qualité de la séparation entre les conducteurs, et entre les conducteurs et la terre.</li><li>Elle s’exprime en <strong>mégohms</strong> (MΩ) : plus elle est élevée, mieux c’est.</li><li>Pour un circuit en 230 V ou 400 V, le RGIE exige <strong>au moins 0,5 MΩ</strong>, mesurés sous 500 V continu, appareils déconnectés ; Voltaplan signale toute valeur inférieure.</li><li>Humidité, câble écrasé ou percé, appareil défectueux font baisser l’isolement.</li><li>La mesure se fait hors tension, avec un appareil dédié, par une personne compétente.</li></ul></section>
   <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
     <details><summary>Un mauvais isolement fait-il sauter le différentiel ?</summary><div>Souvent, oui : un défaut d’isolement vers la terre laisse fuir du courant, et le différentiel coupe quand cette fuite devient trop importante. Un différentiel qui déclenche par temps humide est un indice classique.</div></details>
     <details><summary>Peut-on mesurer l’isolement avec un multimètre ?</summary><div>Non. Un multimètre mesure avec une tension très faible et ne révèle pas un isolant qui cède sous tension. La mesure d’isolement se fait avec un appareil spécifique, qui applique une tension d’essai continue.</div></details>
@@ -121,7 +131,7 @@
   <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="continuite.html">← La mesure de continuité</a><a class="next" href="resistance-de-terre.html">La résistance de dispersion de la terre →</a></nav>
   <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a><span>Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.</span></li><li><a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a><span>Installation neuve, modification ou vente : à quoi sert le contrôle par un organisme agréé, quels documents préparer et quelles mesures sont faites.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li></ul></section>
   <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Contrôles, mesures et pannes</h2><ul class="learn-list"><li><a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a><span>Installation neuve, modification ou vente : à quoi sert le contrôle par un organisme agréé, quels documents préparer et quelles mesures sont faites.</span></li><li><a href="continuite.html">La mesure de continuité</a><span>À quoi sert la mesure de continuité des conducteurs de protection et des liaisons équipotentielles, comment elle fonctionne et ce qui la fait échouer.</span></li><li><a href="resistance-de-terre.html">La résistance de dispersion de la terre</a><span>Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.</span></li><li><a href="test-differentiel.html">Tester un différentiel</a><span>Le bouton test d’un différentiel, l’essai au testeur et le temps de déclenchement : ce que chaque essai vérifie et ce que Voltaplan attend.</span></li><li><a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a><span>Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.</span></li><li><a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a><span>Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.</span></li></ul></section>
-  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler par un organisme agréé toute installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple).</p>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié, et un exercice réussi n’est pas un contrôle de conformité. Avant toute intervention : coupez le circuit au tableau, empêchez qu’on le remette en service pendant le travail, et vérifiez l’absence de tension avec un appareil adapté. Une installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple), est contrôlée par un organisme agréé avant sa mise en usage.</p>
 </main>
 <footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="../site.js"></script>

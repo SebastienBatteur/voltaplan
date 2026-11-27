@@ -2,6 +2,17 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Apprendre : audit réglementaire et technique complet (2026-11-27)
+
+- Les 54 articles, 58 schémas, 12 exercices, le simulateur, le lexique et l'encadré commun relus affirmation par
+  affirmation contre le RGIE, Livre 1, version 07 : 1 739 affirmations vérifiées, anomalies P0 1, P1 41, P2 136, P3 142
+  dans les articles (lexique : P2 11, P3 28), presque toutes corrigées. Rapport : `docs/audit/APPRENDRE-RGIE-AUDIT-2026.md`.
+- Corrections majeures : tableau 4.11 du RGIE (section → calibre, fusible et disjoncteur), 2,5 mm² en règle générale,
+  circuits dédiés obligatoires, type A obligatoire, le 30 mA n'est pas une garantie, bleu réservé au neutre, séparation
+  TBTS, consignation (empêcher la remise sous tension) dans toutes les procédures, symbole du point lumineux.
+- Simulateur : bleu hors neutre et contact de télérupteur ou de détecteur sur le neutre refusés.
+- 10 anomalies du moteur réglementaire de l'application documentées avec corrections et tests proposés (non modifié).
+
 ### Apprendre : précisions réglementaires (2026-11-27)
 
 Vérifiées dans le texte officiel du RGIE, Livre 1, version 07 (15/09/2026), à la suite d'une relecture externe :

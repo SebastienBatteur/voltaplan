@@ -42,13 +42,13 @@
 <p>Le plan de position sert à <strong>retrouver</strong> les éléments sur place. Lors du contrôle, l’organisme agréé y repère chaque prise et chaque point lumineux ; plus tard, un électricien y voit quel circuit dessert une pièce avant d’intervenir. Associé au <a href="lire-unifilaire.html">schéma unifilaire</a>, il permet de répondre à une question très concrète : « quel disjoncteur dois-je couper pour travailler sur cette prise ? »</p>
 
 <h2 id="contenu">Ce qu’on y dessine</h2>
-<p>Le plan représente chaque niveau de la maison, vu du dessus, avec les murs, les portes et les fenêtres. On y place, avec les symboles du tableau 2.23 du RGIE :</p>
+<p>Pour le RGIE, un plan situe les éléments <strong>à l’échelle</strong> (chapitre 2.12). En pratique, il représente chaque niveau de la maison, vu du dessus, avec les murs, les portes et les fenêtres. Le plan de position d’une installation domestique indique au moins la position des éléments suivants, déjà mentionnés sur l’unifilaire (RGIE, 3.1.2.3 a), avec les symboles du tableau 2.23 :</p>
 <ul>
   <li>le ou les <a href="lexique.html#tableau-electrique">tableaux</a> ;</li>
-  <li>les boîtes de dérivation ;</li>
+  <li>les boîtes de connexion et de dérivation ;</li>
   <li>les socles de prise de courant ;</li>
   <li>les points lumineux et les appliques ;</li>
-  <li>les interrupteurs et boutons-poussoirs ;</li>
+  <li>les interrupteurs, boutons-poussoirs et unités de commande ;</li>
   <li>les appareils fixes (four, taque, chauffe-eau, lave-linge…) ;</li>
   <li>les sources (panneaux solaires, onduleur…).</li>
 </ul>
@@ -58,7 +58,7 @@
 <p>Le lien entre les deux schémas, c’est le <strong>repère</strong>. Chaque point lumineux, socle de prise et unité de commande porte, sur le plan, la lettre de son circuit et son numéro d’ordre, exactement comme sur l’unifilaire (3.1.2.1) : A1, A2, B1… Un interrupteur porte le numéro du point qu’il commande.</p>
 <p>Exemple : dans le salon, trois prises marquées C1, C2, C3 et un point lumineux D1 avec, près de la porte, un interrupteur marqué D1. On sait immédiatement que les prises sont sur le circuit C et la lumière sur le circuit D, et qu’il faut couper le disjoncteur D pour changer le luminaire.</p>
 <figure class="illu">
-  <svg viewBox="0 0 640 335" role="img" aria-label="Plan de position simplifié d’un salon vu du dessus : trois prises C1, C2 et C3 posées sur trois murs et tournées vers leur mur, un point lumineux D1 au centre du plafond et, près de la porte, un interrupteur marqué D1.">
+  <svg viewBox="0 0 640 335" role="img" aria-label="Plan de position simplifié d’un salon vu du dessus : trois prises C1, C2 et C3 posées sur trois murs et tournées vers leur mur, un point lumineux D1 (une croix) au centre du plafond et, près de la porte, un interrupteur marqué D1.">
     <path d="M360 300 H60 V40 H460 V300 H420"/>
     <rect class="box" x="180" y="35" width="100" height="10"/>
     <line class="thin" x1="180" y1="40" x2="280" y2="40"/>
@@ -73,8 +73,7 @@
     <text class="b" x="425" y="154" text-anchor="end">C2</text>
     <path d="M60 230 H75 M75 215 V245 M87 242 A12 12 0 0 1 87 218"/>
     <text class="b" x="95" y="234">C3</text>
-    <circle cx="260" cy="160" r="12"/>
-    <path d="M251.5 151.5 L268.5 168.5 M251.5 168.5 L268.5 151.5"/>
+    <path d="M251 151 L269 169 M251 169 L269 151"/>
     <text class="b" x="280" y="152">D1</text>
     <path d="M320 300 V285"/>
     <circle cx="320" cy="279" r="6"/>
@@ -103,18 +102,19 @@
 <p>Le plan n’a pas besoin de montrer le trajet des câbles dans les murs. Le dessiner peut toutefois aider, par exemple pour savoir où ne pas percer ; dans ce cas, signalez qu’il s’agit d’un trajet indicatif.</p>
 
 <h2 id="existant">Une installation existante</h2>
-<p>Pour une maison déjà construite, le plan se fait par un relevé : on parcourt chaque pièce, on note chaque prise, interrupteur et point lumineux, puis on identifie son circuit en coupant les disjoncteurs un par un. Ce travail prend du temps, mais il produit un document précieux pour toute la vie de la maison. Notez au passage les anomalies visibles (prise sans terre, boîte ouverte), à signaler à un électricien.</p>
+<p>Pour une maison déjà construite, le plan se fait par un relevé : on parcourt chaque pièce, on note chaque prise, interrupteur et point lumineux, puis on identifie son circuit en coupant les disjoncteurs un par un et en vérifiant avec un testeur ou une lampe quelle prise ou quel point s’éteint, sans rien démonter. Ce travail prend du temps, mais il produit un document précieux pour toute la vie de la maison. Notez au passage les anomalies visibles (prise sans terre, boîte ouverte), à signaler à un électricien.</p>
+<p>Pour les parties d’installation réalisées avant le 1<sup>er</sup> octobre 1981, le RGIE admet un plan simplifié : il montre au moins les prises, les interrupteurs, les points lumineux et les appareils fixes, sans repérage obligatoire ni correspondance exigée avec l’unifilaire (RGIE, 8.2.1). Dès qu’on refait ou étend l’installation de façon importante, les règles complètes s’appliquent à la partie concernée.</p>
 
 <h2 id="a-jour">Un plan qui suit l’installation</h2>
-<p>Le RGIE demande que les schémas et plans portent un numéro, une version et une date (3.1.2). Quand l’installation change (circuit ajouté, mur abattu, cuisine déplacée), le plan doit être mis à jour pour montrer la situation existante, et la nouvelle version datée. Un plan qui ne correspond plus à la réalité est trompeur : il peut faire croire qu’une prise est sur un circuit coupé alors qu’elle est toujours sous tension.</p>
-<p>Avant toute intervention, même avec un plan à jour, coupez le circuit au tableau et vérifiez l’absence de tension.</p>
+<p>Le RGIE demande que les schémas et plans portent un numéro, une version et une date (3.1.2), et que toute modification ou extension soit reportée sur le plan de position, qui donne « à tout moment, la situation existante » (3.1.2.1). Même une petite modification, pour laquelle un nouvel unifilaire n’est pas obligatoire, se reporte donc sur le plan, avec une nouvelle version datée. Un plan qui ne correspond plus à la réalité est trompeur : il peut faire croire qu’une prise est sur un circuit coupé alors qu’elle est toujours sous tension.</p>
+<p>Avant toute intervention, même avec un plan à jour, coupez le circuit au tableau, empêchez sa remise en service et vérifiez l’absence de tension sur place.</p>
 
 <h2 id="voltaplan">Le plan de position dans Voltaplan</h2>
 <p>Dans <a href="../app/">Voltaplan</a>, l’onglet Plan permet de dessiner les murs, portes et fenêtres, ou de poser un fond de plan (photo, PDF, fichier DXF) mis à l’échelle à partir de deux points et d’une cote. Les éléments de l’unifilaire se placent sur le plan avec leur symbole, et portent automatiquement le même repère (A1, A2…) ; les prises et interrupteurs s’orientent vers le mur le plus proche. Un élément ajouté depuis le plan est aussi ajouté à l’unifilaire.</p>
 <p>Quelques aides pratiques : une couleur par circuit pour voir d’un coup d’œil quelle prise dépend de quel disjoncteur (le dossier imprimé reste en noir), plusieurs pages pour les étages, et l’estimation de la longueur des câbles d’après le plan, utile pour la <a href="chute-de-tension.html">chute de tension</a> et la liste du matériel.</p>
   <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Le plan de position montre <strong>où</strong> se trouve chaque élément ; l’unifilaire montre <strong>comment</strong> il est raccordé.</li><li>Chaque point porte le même repère que sur l’unifilaire : lettre du circuit et numéro (A1, A2…).</li><li>Un interrupteur porte le numéro du point qu’il commande.</li><li>On y place le tableau, les boîtes, les prises, les points lumineux, les interrupteurs, les appareils fixes et les sources.</li><li>Le plan doit suivre l’installation : toute modification y est reportée, avec une nouvelle version datée.</li></ul></section>
   <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
-    <details><summary>Faut-il un plan d’architecte pour faire le plan de position ?</summary><div>Non. Un croquis à l’échelle, propre et lisible, suffit s’il montre les pièces, les murs, portes et fenêtres, et l’emplacement de chaque élément. Un plan existant (PDF, photo, fichier DXF) peut servir de fond pour gagner du temps.</div></details>
+    <details><summary>Faut-il un plan d’architecte pour faire le plan de position ?</summary><div>Non. Le RGIE définit un plan comme une représentation à l’échelle : un relevé à l’échelle, propre et lisible, suffit s’il montre les pièces, les murs, portes et fenêtres, et l’emplacement de chaque élément. Un plan existant (PDF, photo, fichier DXF) peut servir de fond pour gagner du temps.</div></details>
     <details><summary>Les disjoncteurs apparaissent-ils sur le plan de position ?</summary><div>Le plan montre l’emplacement du tableau, pas le détail des protections : celles-ci sont sur l’unifilaire. La figure 3.2 du RGIE, son exemple officiel de plan de position, n’en dessine aucune.</div></details>
     <details><summary>Faut-il un plan par étage ?</summary><div>C’est la solution la plus lisible : une page par niveau (cave, rez-de-chaussée, étage, grenier), avec les mêmes repères que l’unifilaire.</div></details>
   </section>
@@ -123,7 +123,7 @@
   <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="lire-unifilaire.html">← Lire un schéma unifilaire</a><a class="next" href="symboles-electriques.html">Les symboles électriques →</a></nav>
   <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="lire-unifilaire.html">Lire un schéma unifilaire</a><span>Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.</span></li><li><a href="symboles-electriques.html">Les symboles électriques</a><span>Prise, interrupteur, point lumineux, disjoncteur, différentiel : les symboles électriques des schémas belges, et quand une légende est nécessaire.</span></li><li><a href="dossier-installation.html">Le dossier de l’installation</a><span>Unifilaire, plans de position, légende, mentions obligatoires : ce que contient le dossier d’une installation électrique belge et comment le préparer.</span></li><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li></ul></section>
   <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Tableau et schémas</h2><ul class="learn-list"><li><a href="lire-unifilaire.html">Lire un schéma unifilaire</a><span>Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.</span></li><li><a href="symboles-electriques.html">Les symboles électriques</a><span>Prise, interrupteur, point lumineux, disjoncteur, différentiel : les symboles électriques des schémas belges, et quand une légende est nécessaire.</span></li><li><a href="organiser-tableau.html">Organiser le tableau électrique</a><span>Différentiel général, différentiels 30 mA, disjoncteurs, réserve et étiquettes : comment organiser un tableau électrique belge clair, sûr et facile à dépanner.</span></li><li><a href="dossier-installation.html">Le dossier de l’installation</a><span>Unifilaire, plans de position, légende, mentions obligatoires : ce que contient le dossier d’une installation électrique belge et comment le préparer.</span></li></ul></section>
-  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler par un organisme agréé toute installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple).</p>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié, et un exercice réussi n’est pas un contrôle de conformité. Avant toute intervention : coupez le circuit au tableau, empêchez qu’on le remette en service pendant le travail, et vérifiez l’absence de tension avec un appareil adapté. Une installation neuve, ainsi que toute modification ou extension importante (un circuit ajouté, par exemple), est contrôlée par un organisme agréé avant sa mise en usage.</p>
 </main>
 <footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="../site.js"></script>
