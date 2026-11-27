@@ -8,9 +8,9 @@
  *  - Ancien RGIE : arrêté royal du 10 mars 1981 (installations domestiques), remplacé le 1er juin 2020.
  *  - Installations antérieures au 1er octobre 1981 : « parties anciennes », régime propre aux installations existantes.
  *
- * Les numéros d'articles ne sont indiqués que lorsqu'ils ont été vérifiés dans le texte officiel. Toutes les règles
- * sont pour l'instant marquées `needsReview` : leur interprétation (seuils, applicabilité aux installations
- * existantes, gravité) doit être confirmée par un expert (organisme agréé). Voir docs/audit/REGULATORY-COVERAGE.md.
+ * Les références vérifiées, la nature de chaque exigence, ses tests et son statut de validation sont dans le registre
+ * (src/regulations/be/requirements.ts, ADR-0009), pas ici. Toutes les règles sont marquées `needsReview` : leur
+ * interprétation doit être confirmée par un spécialiste (aucune validation humaine à ce jour).
  * La gravité (`hazard`) est une appréciation de Voltaplan, pas une classification du RGIE.
  */
 import type { Edition, RuleMeta } from '../types';
@@ -48,7 +48,6 @@ const r = (id: string, m: Omit<RuleMeta, 'id' | 'source' | 'needsReview'> & { so
   id,
   source: LIVRE1,
   needsReview: true,
-  tests: 'test/rules.matrix.test.ts',
   ...m,
 });
 
@@ -77,7 +76,7 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     r('R-DOC-NOT-DRAWN', { kind: 'missingData', hazard: 'none', ...DOC }),
     // Terre, isolement, liaisons, essais
     r('R-EARTH-MISSING', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
-    r('R-EARTH-VALUE', { kind: 'nonCompliance', hazard: 'high', ...PHY, article: '4.2.3.2', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-EARTH-VALUE', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-EARTH-30', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     r('R-INSULATION', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-BONDING', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
@@ -95,14 +94,14 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     r('R-RCD30', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-RCD30-MAX', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     r('R-RCD30-DATE', { kind: 'missingData', hazard: 'high', ...PHY }),
-    r('R-RCD-TYPE-A', { kind: 'nonCompliance', hazard: 'medium', ...PHY, article: '5.3.5.3 a', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-RCD-TYPE-A', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     r('R-CABLE-IZ', { kind: 'manualCheck', hazard: 'medium', ...PHY }),
-    r('R-RCD-HEAD-RATING', { kind: 'nonCompliance', hazard: 'medium', ...PHY, article: '5.3.5.3 a', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-RCD-HEAD-RATING', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
     // Canalisations
     r('R-CABLE-SECTION-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
     r('R-CABLE-DATA-MISSING', { kind: 'missingData', hazard: 'medium', ...DOC }),
     r('R-CABLE-MIN', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
-    r('R-CABLE-PROT', { kind: 'nonCompliance', hazard: 'high', ...PHY, article: '4.4.1.4 (tableau 4.11)', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-CABLE-PROT', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     r('R-CABLE-NO-OVERCURRENT', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
     // Prises et circuits
     r('R-SOCKET-EARTH', { kind: 'nonCompliance', hazard: 'high', ...PHY }),
@@ -110,9 +109,9 @@ export const BE_RULES: Record<string, RuleMeta> = Object.fromEntries(
     // non-conformité certaine (audit 2026).
     r('R-SOCKET-CHILD', { kind: 'manualCheck', hazard: 'medium', ...PHY }),
     r('R-SOCKET-IPXXD', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
-    r('R-SOCKET-MAX', { kind: 'nonCompliance', hazard: 'low', ...PHY, article: '5.3.5.2 b', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-SOCKET-MAX', { kind: 'nonCompliance', hazard: 'low', ...PHY }),
     r('R-SOCKET-SECTION', { kind: 'nonCompliance', hazard: 'medium', ...PHY }),
-    r('R-DEDICATED-CIRCUIT', { kind: 'nonCompliance', hazard: 'low', ...PHY, article: '5.2.1.2 ; 7.22.3', verifiedOn: '2026-11-27', tests: 'test/rules.rgie2026.test.ts' }),
+    r('R-DEDICATED-CIRCUIT', { kind: 'nonCompliance', hazard: 'low', ...PHY }),
     r('R-CIRCUIT-NAME', { kind: 'recommendation', hazard: 'none', ...DOC }),
     r('R-WETROOM-NAME', { kind: 'manualCheck', hazard: 'high', ...PHY }),
     // Installations particulières : vérification manuelle (règles non encore automatisées)

@@ -97,13 +97,11 @@ export interface Edition {
 }
 
 /**
- * Traçabilité d'une règle. Les champs non vérifiés restent vides : aucune référence n'est inventée.
+ * Comportement d'une règle. Références, nature, tests et validation : registre (src/regulations/be/requirements.ts).
  * `needsReview` signale une interprétation à confirmer par un expert (organisme agréé, SPF Économie).
  */
 export interface RuleMeta {
   id: string;
-  /** Article ou sous-section officielle, quand elle a été vérifiée. */
-  article?: string;
   /** Nature du constat produit par la règle. */
   kind: 'nonCompliance' | 'missingData' | 'warning' | 'manualCheck' | 'recommendation' | 'info';
   hazard: Hazard;
@@ -114,13 +112,9 @@ export interface RuleMeta {
   existing?: FindingStatus;
   /** Source officielle (texte légal, page du SPF Économie…). */
   source?: string;
-  /** Date de dernière vérification réglementaire (ISO). */
-  verifiedOn?: string;
   needsReview?: boolean;
   /** Jamais bloquant (donnée utile mais non exigée pour la réception, ex. pouvoir de coupure). */
   neverBlocking?: boolean;
-  /** Fichier de test qui couvre la règle. */
-  tests?: string;
   /** Exigence documentaire (dossier, schéma) ou physique (installation). Par défaut : physique. */
   requirement?: Requirement;
 }
