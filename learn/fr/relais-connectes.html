@@ -1,0 +1,77 @@
+<!--
+{
+  "title": "Relais et modules connectés",
+  "pageTitle": "Relais connecté derrière l’interrupteur : neutre, câblage — Voltaplan",
+  "description": "Installer un relais connecté derrière un interrupteur ou un module sur rail DIN : pourquoi le neutre est nécessaire, câblage, limites de courant et erreurs.",
+  "rubrique": "domotique",
+  "order": 2,
+  "related": ["domotique-introduction", "simple-allumage", "telerupteur", "tubes-et-boites"],
+  "retenir": [
+    "Un relais connecté a besoin d’être alimenté en permanence : il lui faut la <strong>phase</strong> et, presque toujours, le <strong>neutre</strong> dans la boîte.",
+    "L’interrupteur existant devient une simple entrée de commande ; c’est le relais qui alimente la lampe.",
+    "Le courant commuté ne doit jamais dépasser celui indiqué par le fabricant du module, et le circuit garde son disjoncteur adapté à la section.",
+    "Au tableau, les modules sur rail DIN remplacent ou complètent les télérupteurs quand les circuits sont câblés en étoile."
+  ],
+  "faq": [
+    { "q": "Il n’y a pas de neutre dans ma boîte d’interrupteur. Que faire ?", "a": "Il existe des modules « sans neutre », qui prélèvent un petit courant à travers la lampe. Ils imposent souvent une puissance minimale et peuvent faire scintiller certaines LED. L’alternative est de placer le module au point lumineux, où le neutre est présent, ou de tirer un neutre jusqu’à la boîte." },
+    { "q": "Faut-il garder l’interrupteur existant ?", "a": "C’est conseillé. Relié à l’entrée du module, il continue d’allumer et d’éteindre la lampe même sans réseau. Un bouton-poussoir convient aussi, à condition de régler le module en conséquence." },
+    { "q": "Un relais connecté peut-il commander un chauffe-eau ou un radiateur ?", "a": "Seulement si son courant admissible le permet, avec une marge. Pour les fortes charges, on utilise plutôt le module pour piloter la bobine d’un contacteur au tableau, qui supporte le courant." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de relais connectés et de modules sur rail DIN (schémas de raccordement, courants admissibles)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le relais connecté est la porte d’entrée la plus simple de la <a href="lexique.html#domotique">domotique</a> : un petit module glissé derrière un interrupteur ou au point lumineux, qui permet de commander la lampe à la fois par l’interrupteur habituel, par une application et par des scénarios. Sa pose demande pourtant de bien comprendre ce qui se passe dans la boîte.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un relais connecté contient trois éléments : une alimentation électronique, un circuit de communication (radio ou filaire) et un <a href="lexique.html#relais">relais</a>, c’est-à-dire un contact commandé électriquement. L’interrupteur ne coupe plus directement la lampe : il est relié à une <strong>entrée</strong> du module, qui détecte son changement de position et ferme ou ouvre le contact.</p>
+<p>Comme l’électronique doit écouter en permanence le réseau et l’interrupteur, le module est <strong>alimenté en continu</strong>, même lampe éteinte. C’est la grande différence avec un <a href="simple-allumage.html">simple allumage</a>, où l’interrupteur n’a besoin que de la phase.</p>
+
+<h2 id="neutre">Pourquoi le neutre est nécessaire</h2>
+<p>Pour être alimenté, le module doit être branché entre la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>, comme n’importe quel appareil. Or, dans beaucoup d’installations, la boîte d’interrupteur ne contient que deux fils : la phase qui arrive et le <a href="lexique.html#retour-lampe">retour lampe</a> qui repart. Le neutre va directement du tableau ou de la boîte de dérivation au luminaire.</p>
+<p>Trois solutions existent :</p>
+<ul>
+  <li><strong>amener un neutre</strong> dans la boîte d’interrupteur, si un tube permet d’y tirer un conducteur bleu supplémentaire ;</li>
+  <li><strong>placer le module au point lumineux</strong> ou dans la <a href="lexique.html#boite-de-derivation">boîte de dérivation</a>, où phase et neutre sont présents ; l’interrupteur commande alors le module à distance par le retour lampe existant ;</li>
+  <li><strong>utiliser un module sans neutre</strong>, qui s’alimente par un faible courant traversant la lampe. Il exige souvent une puissance minimale de charge et peut provoquer un léger scintillement des LED ; le fabricant fournit parfois un accessoire (dit « bypass ») pour y remédier.</li>
+</ul>
+
+<h2 id="raccordement">Le raccordement type</h2>
+<p>Les bornes varient selon les fabricants, mais on retrouve presque toujours la même logique :</p>
+<table>
+  <thead><tr><th>Borne du module</th><th>Raccordée à</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>L (alimentation)</td><td>Phase du circuit</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>N</td><td>Neutre du circuit</td><td>Bleu</td></tr>
+    <tr><td>Entrée (S, SW…)</td><td>Borne de sortie de l’interrupteur ; l’autre borne de l’interrupteur reçoit la phase</td><td>Noir ou gris</td></tr>
+    <tr><td>Sortie (O, Q…)</td><td>Borne L de la lampe</td><td>Noir ou gris</td></tr>
+  </tbody>
+</table>
+<p>La terre (vert-jaune) ne passe pas par le module : elle va directement au luminaire. Sur certains modèles, l’entrée doit recevoir une phase ; sur d’autres, elle accepte un contact sec ou une très basse tension. Lisez toujours la notice : une erreur d’entrée peut détruire le module.</p>
+<p>Avant toute intervention, coupez le circuit au tableau et vérifiez l’absence de tension sur tous les fils de la boîte.</p>
+
+<h2 id="limites">Respecter les limites du module</h2>
+<ul>
+  <li><strong>Courant admissible</strong> : chaque module indique un courant maximal, souvent différent selon le type de charge. Les LED et les transformateurs électroniques provoquent un fort pic de courant à l’allumage ; les moteurs aussi. Gardez de la marge.</li>
+  <li><strong>Protection du circuit</strong> : le module ne remplace pas le <a href="disjoncteur.html">disjoncteur</a>. Le circuit reste protégé selon la section : 16 A au plus en 1,5 mm². Un module de 10 A sur un circuit de prises de 20 A ne peut donc pas commander toute la charge que le circuit autorise.</li>
+  <li><strong>Chaleur</strong> : un module enfermé dans une boîte avec plusieurs connecteurs chauffe. Une boîte profonde laisse de la place et facilite le rangement des fils (voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>).</li>
+  <li><strong>Fortes charges</strong> : pour un chauffe-eau ou un chauffage électrique, le module pilote plutôt la bobine d’un <a href="lexique.html#contacteur">contacteur</a> au tableau, dimensionné pour le courant réel.</li>
+</ul>
+
+<h2 id="rail-din">Les modules sur rail DIN</h2>
+<p>La même électronique existe en format modulaire, à fixer sur le rail du <a href="lexique.html#tableau-electrique">tableau électrique</a>. Les relais sont alors regroupés au tableau, à côté des <a href="telerupteur.html">télérupteurs</a> qu’ils remplacent ou complètent. Cette approche suppose un câblage <strong>en étoile</strong> : chaque point lumineux et chaque groupe de prises a son propre câble vers le tableau, et les boutons ont leurs propres conducteurs de commande.</p>
+<p>Avantages : pas de chaleur ni d’encombrement dans les boîtes murales, un accès facile pour le dépannage, et un schéma clair. Inconvénient : il faut prévoir ce câblage dès les travaux, ce qui est rarement possible en rénovation légère.</p>
+
+<h2 id="schemas">Sur les schémas</h2>
+<p>Un relais ajouté modifie le fonctionnement du circuit : il doit apparaître sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, avec le circuit qu’il commande, et la position du module sur le <a href="plan-de-position.html">plan de position</a> quand il est caché dans une boîte. Le prochain intervenant saura ainsi pourquoi une lampe reste alimentée alors que l’interrupteur est ouvert. Et comme pour toute modification, une installation neuve ou modifiée est contrôlée par un organisme agréé.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Prendre le retour lampe pour un neutre</strong> : le module semble ne pas fonctionner, ou la lampe reste allumée faiblement. Identifiez chaque fil avant de raccorder.</li>
+  <li><strong>Mélanger deux circuits</strong> : prendre la phase d’un circuit et le neutre d’un autre peut faire déclencher un différentiel, et rend la coupure d’un circuit incomplète.</li>
+  <li><strong>Supprimer l’interrupteur</strong> : sans commande locale, une panne du réseau sans fil laisse la pièce dans le noir.</li>
+  <li><strong>Utiliser un fil bleu comme commande</strong> : le bleu est réservé au neutre, même pour quelques centimètres.</li>
+</ul>

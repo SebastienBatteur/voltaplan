@@ -1,0 +1,71 @@
+<!--
+{
+  "title": "Organiser le tableau électrique",
+  "pageTitle": "Organiser son tableau électrique (différentiels, circuits) — Voltaplan",
+  "description": "Différentiel général, différentiels 30 mA, disjoncteurs, réserve et étiquettes : comment organiser un tableau électrique belge clair, sûr et facile à dépanner.",
+  "rubrique": "schemas",
+  "order": 4,
+  "related": ["differentiel", "disjoncteur", "lire-unifilaire", "differentiel-qui-saute"],
+  "retenir": [
+    "Ordre habituel : arrivée, différentiel général (300 mA au plus), différentiels 30 mA, puis les disjoncteurs de chaque circuit.",
+    "Installation neuve : prises, éclairage, salle de bain, lave-linge, sèche-linge et lave-vaisselle derrière un 30 mA ; au plus 8 circuits par 30 mA (RGIE 4.2.4.3 b).",
+    "Répartissez les circuits d’une même zone sur plusieurs différentiels : un déclenchement ne plonge pas toute la maison dans le noir.",
+    "Chaque disjoncteur porte une étiquette avec son repère et son usage, identique au schéma.",
+    "Gardez des modules libres en réserve pour les ajouts futurs."
+  ],
+  "faq": [
+    { "q": "Combien de circuits peut-on mettre derrière un différentiel 30 mA ?", "a": "Dans une installation dont le tableau est fait ou refait depuis le 1er juin 2023, huit circuits terminaux au plus par différentiel 30 mA. Moins de circuits par différentiel, c’est aussi moins de circuits coupés quand il déclenche." },
+    { "q": "Peut-on mettre un différentiel 30 mA derrière un autre 30 mA ?", "a": "Ce n’est pas utile : en cas de défaut, les deux risquent de déclencher ensemble. En aval d’un différentiel, on place un différentiel plus sensible (30 mA derrière 300 mA), ou on utilise un différentiel sélectif (type S) en amont." },
+    { "q": "Faut-il laisser de la place libre dans le tableau ?", "a": "C’est vivement conseillé : une borne de recharge, une pompe à chaleur ou des panneaux solaires demandent souvent de nouveaux circuits. Sans réserve, il faut ajouter un coffret ou refaire une partie du tableau." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan, règles de contrôle (src/rules/be/rgie.ts) et guide d’utilisation : différentiels, circuits dédiés, disposition du tableau." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <a href="lexique.html#tableau-electrique">tableau électrique</a> est le cœur de l’installation : tous les circuits y prennent naissance, et c’est là qu’on coupe le courant avant d’intervenir. Un tableau bien organisé est plus sûr, plus facile à dépanner et plus simple à faire évoluer. Voici comment le structurer et le documenter.</p>
+
+<h2 id="structure">La structure d’un tableau</h2>
+<p>Un tableau domestique se lit comme un arbre, dans le même ordre que le <a href="lire-unifilaire.html">schéma unifilaire</a> :</p>
+<ol>
+  <li><strong>L’arrivée</strong>, depuis le compteur.</li>
+  <li><strong>Le différentiel général</strong>, d’une sensibilité de 300 mA au plus, qui protège toute l’installation.</li>
+  <li><strong>Les différentiels 30 mA</strong>, chacun en tête d’un groupe de circuits.</li>
+  <li><strong>Les disjoncteurs</strong>, un par circuit, avec un calibre adapté à la section du câble (voir <a href="section-des-cables.html">La section des câbles</a>).</li>
+</ol>
+<p>Les appareils se fixent sur des rails normalisés (rails DIN). Leur largeur se compte en <strong>modules</strong> de 17,5 mm : un disjoncteur occupe un ou deux modules selon la gamme, un différentiel quatre pôles en occupe quatre.</p>
+
+<h2 id="differentiels">Quels circuits derrière un 30 mA ?</h2>
+<p>Dans une installation neuve, les circuits suivants sont placés derrière un <a href="differentiel.html">différentiel</a> de 30 mA :</p>
+<ul>
+  <li>les <strong>prises de courant</strong> et l’<strong>éclairage</strong> (pour les installations commencées depuis le 1<sup>er</sup> juin 2023) ;</li>
+  <li>les circuits d’une <strong>salle de bain</strong> ou d’un local avec douche ;</li>
+  <li>le <strong>lave-linge</strong>, le <strong>sèche-linge</strong> et le <strong>lave-vaisselle</strong>, avec un différentiel de type A plutôt que AC.</li>
+</ul>
+<p>Depuis la même date, un différentiel 30 mA protège au plus <strong>huit circuits</strong> (RGIE 4.2.4.3 b). En pratique, une maison compte donc souvent deux, trois ou quatre différentiels 30 mA.</p>
+<p>Attention à la <strong>sélectivité</strong> : un différentiel placé derrière un autre doit être plus sensible (30 mA derrière 300 mA). Deux 30 mA l’un derrière l’autre déclencheraient ensemble.</p>
+
+<h2 id="repartir">Répartir intelligemment</h2>
+<p>Quand un différentiel déclenche, il coupe tous ses circuits. Pour limiter la gêne, on répartit couramment :</p>
+<ul>
+  <li>l’<strong>éclairage d’un même étage</strong> sur deux différentiels, pour qu’il reste de la lumière si l’un déclenche ;</li>
+  <li>le <strong>congélateur</strong> ou le frigo de façon à ne pas le couper avec un circuit à risque de défaut (extérieur, buanderie) ;</li>
+  <li>les <strong>circuits extérieurs</strong> (jardin, terrasse), plus exposés à l’humidité, sur un différentiel qui ne coupe pas l’essentiel de la maison.</li>
+</ul>
+<p>Les appareils puissants ont leur <strong>circuit dédié</strong> : four, cuisinière ou taque, lave-linge, sèche-linge, lave-vaisselle, chauffe-eau, pompe à chaleur, chaudière, borne de recharge. En <a href="alternatif-mono-tri.html">triphasé</a>, on répartit aussi les circuits entre les trois phases pour équilibrer la charge.</p>
+<p>Sur un réseau 3 × 230 V (sans neutre), les disjoncteurs doivent être bipolaires : les deux conducteurs du circuit sont des phases et doivent être coupés.</p>
+
+<h2 id="ordre">Un ordre lisible</h2>
+<p>Une disposition claire suit l’arbre : sur chaque rangée, un différentiel 30 mA suivi de ses disjoncteurs, puis quelques modules de réserve en fin de rangée. Le général et ce qui n’est pas sous 30 mA se placent sur la rangée principale. On lit ainsi le tableau de gauche à droite et de haut en bas comme on lit le schéma.</p>
+<p>Gardez <strong>des modules libres</strong> : une borne de recharge, une pompe à chaleur, des panneaux solaires ou un circuit domotique viendront peut-être s’ajouter.</p>
+
+<h2 id="etiquettes">Les étiquettes</h2>
+<p>Chaque disjoncteur et chaque différentiel porte une étiquette avec son <strong>repère</strong> (la lettre du circuit, A, B, C…) et son <strong>usage</strong> (« Prises cuisine », « Éclairage étage »). Ces repères sont les mêmes que sur l’unifilaire et sur le <a href="plan-de-position.html">plan de position</a> : on retrouve en quelques secondes quel disjoncteur couper pour une prise donnée.</p>
+<p>Une étiquette manuscrite effacée ou des noms vagues (« Divers », « Prises 2 ») font perdre du temps en cas de panne, et peuvent faire couper le mauvais circuit. Après la coupure, vérifiez toujours l’absence de tension avant d’intervenir.</p>
+
+<h2 id="voltaplan">Organiser le tableau avec Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, l’onglet Tableau montre les rangées et les appareils à leur largeur réelle en modules. « Disposition automatique » range le tableau comme décrit plus haut : une rangée par différentiel 30 mA suivi de ses disjoncteurs, la réserve en fin de rangée. Vous pouvez ensuite déplacer les appareils à la souris, ou caler une photo du tableau existant pour comparer.</p>
+<p>Le contrôle signale notamment un circuit qui devrait être derrière un 30 mA, un différentiel 30 mA qui protège plus de huit circuits, deux différentiels sans sélectivité, un appareil qui partage son circuit alors qu’il devrait en avoir un dédié, ou un circuit sans nom. Les étiquettes du tableau s’impriment à l’échelle 1:1, prêtes à découper.</p>
+<p>Le tableau, comme le reste de l’installation, est vérifié par un <a href="controle-organisme-agree.html">organisme agréé</a> lors du contrôle.</p>

@@ -1,0 +1,66 @@
+<!--
+{
+  "title": "Préparer le câblage pour la domotique",
+  "pageTitle": "Préparer le câblage d’une maison pour la domotique — Voltaplan",
+  "description": "Construire ou rénover en pensant à la domotique : neutre dans chaque boîte, câblage en étoile, boîtes profondes, gaines de réserve, réseau, grand tableau.",
+  "rubrique": "domotique",
+  "order": 5,
+  "related": ["tubes-et-boites", "organiser-tableau", "bus-knx", "plan-de-position"],
+  "retenir": [
+    "Amenez un <strong>neutre dans chaque boîte d’interrupteur</strong> : c’est la condition de base pour presque tous les modules domotiques.",
+    "Le câblage <strong>en étoile</strong> (chaque point relié au tableau) laisse le choix entre télérupteurs, modules sur rail DIN et bus.",
+    "Boîtes profondes, tubes de réserve et tableau surdimensionné coûtent peu pendant les travaux et beaucoup après.",
+    "Prévoyez le réseau informatique : un câble jusqu’à l’emplacement de la passerelle ou du serveur, et des tubes vers les pièces.",
+    "Tout ce qui est posé doit figurer sur le plan de position et le schéma unifilaire."
+  ],
+  "faq": [
+    { "q": "Je ne sais pas encore quel système domotique choisir. Que prévoir ?", "a": "Un câblage en étoile vers le tableau, un neutre dans chaque boîte d’interrupteur, des boîtes profondes, un tube supplémentaire vide vers chaque point de commande et un tableau avec beaucoup de place libre. Avec cette préparation, vous pourrez installer des télérupteurs aujourd’hui et passer plus tard à des modules sur rail DIN, à un bus ou à du sans-fil." },
+    { "q": "Le câblage en étoile coûte-t-il beaucoup plus cher ?", "a": "Il demande plus de câble et plus de place au tableau, mais pas forcément beaucoup plus de main-d’œuvre dans une construction neuve, où les tubes sont posés avant les enduits. Le surcoût est faible comparé à l’ouverture des murs plus tard." },
+    { "q": "Faut-il tirer un câble bus même si je pars sur du sans-fil ?", "a": "Ce n’est pas obligatoire. Un tube vide vers chaque point de commande permet d’en ajouter un plus tard. Certains préfèrent poser directement le câble bus, peu coûteux, pour garder la possibilité d’un système filaire." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de matériel domotique et de boîtes d’encastrement." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La <a href="lexique.html#domotique">domotique</a> s’installe facilement… si le câblage a été pensé pour elle. Pendant une construction ou une rénovation lourde, quelques choix simples (un neutre de plus, une boîte plus profonde, un tube vide) évitent de devoir ouvrir les murs dans cinq ans. Voici ce qu’il faut prévoir, quel que soit le système choisi ensuite.</p>
+
+<h2 id="neutre">Un neutre dans chaque boîte d’interrupteur</h2>
+<p>C’est la règle la plus importante. Les <a href="relais-connectes.html">relais connectés</a>, les variateurs électroniques, les interrupteurs à détection et beaucoup de boutons connectés ont besoin d’être alimentés en permanence, donc d’avoir la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>. Dans une installation traditionnelle, la boîte d’interrupteur ne reçoit que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a>.</p>
+<p>Tirez donc systématiquement un conducteur bleu jusqu’à chaque boîte de commande, même si l’interrupteur posé aujourd’hui n’en a pas besoin. Le neutre reste en attente dans un connecteur, isolé, prêt pour un futur module. Il doit appartenir au même circuit que la phase présente dans la boîte : mélanger le neutre d’un circuit et la phase d’un autre provoque des déclenchements de différentiel et rend la coupure incomplète.</p>
+
+<h2 id="etoile">Le câblage en étoile</h2>
+<p>Dans un câblage traditionnel, les circuits passent de boîte en boîte : la phase va de l’interrupteur à la lampe, puis à la lampe suivante. Dans un câblage <strong>en étoile</strong>, chaque point lumineux (ou chaque groupe de points commandés ensemble) a son propre câble jusqu’au <a href="lexique.html#tableau-electrique">tableau électrique</a>, et chaque bouton a ses propres conducteurs de commande vers le tableau.</p>
+<p>L’intérêt : tous les organes de puissance sont au tableau. Aujourd’hui, des <a href="telerupteur.html">télérupteurs</a> et des boutons-poussoirs ; demain, des modules sur rail DIN ou des actionneurs de <a href="bus-knx.html">bus</a>, sans toucher aux murs. Le dépannage est aussi plus simple : tout se mesure au tableau.</p>
+<p>Le câblage en étoile reste soumis aux règles habituelles : chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), et les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), avec au plus 8 circuits par différentiel de 30 mA. Les retours qui partent d’une même commande appartiennent au circuit de leur protection : ne mélangez pas des circuits différents dans un même câble sans y avoir réfléchi.</p>
+
+<h2 id="boites">Des boîtes profondes</h2>
+<p>Un module domotique mesure souvent deux centimètres d’épaisseur ou plus. Dans une boîte d’encastrement standard déjà remplie de fils et de connecteurs, il ne rentre pas, ou il est écrasé contre les conducteurs et chauffe. Posez des <strong>boîtes profondes</strong> pour les interrupteurs et les points de commande, et des boîtes de dérivation assez grandes pour accueillir un module. Voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>.</p>
+
+<h2 id="tubes">Des tubes de réserve</h2>
+<p>Un tube vide posé aujourd’hui est le moyen le moins cher de garder des options. Prévoyez en particulier :</p>
+<ul>
+  <li>un tube supplémentaire vers chaque point de commande, pour un futur câble bus ou un conducteur de commande ;</li>
+  <li>des tubes vers les fenêtres, pour des <a href="volets-domotique.html">volets motorisés</a> ou des contacts d’ouverture ;</li>
+  <li>des tubes vers le plafond des pièces principales, pour un détecteur de présence ou une sonde ;</li>
+  <li>un tube vers l’extérieur (portail, éclairage de jardin, borne de recharge) et vers le grenier ;</li>
+  <li>un tube vers le compteur, pour relier plus tard le port de données du compteur numérique.</li>
+</ul>
+<p>Laissez un tire-fil dans chaque tube vide : il servira à y tirer le câble plus tard.</p>
+
+<h2 id="reseau">Le réseau informatique</h2>
+<p>La domotique moderne vit aussi sur le réseau : passerelles sans fil, serveur Home Assistant, interface du bus, onduleur photovoltaïque, borne de recharge. Prévoyez :</p>
+<ul>
+  <li>un emplacement technique, près du tableau ou dans une armoire, avec quelques prises et un câble réseau vers le routeur ;</li>
+  <li>des câbles réseau (catégorie 6 ou plus) en étoile vers les pièces de vie, le bureau, les points d’accès Wi-Fi au plafond ;</li>
+  <li>des câbles réseau séparés des câbles 230 V, dans leurs propres tubes.</li>
+</ul>
+
+<h2 id="tableau">Un tableau assez grand</h2>
+<p>Modules sur rail DIN, alimentation de bus, contacteurs, passerelles : un tableau domotique se remplit vite. Prévoyez nettement plus de rangées que nécessaire aujourd’hui et un espace pour le câblage des commandes. Voir <a href="organiser-tableau.html">Organiser le tableau électrique</a>.</p>
+
+<h2 id="documenter">Documenter ce qui est posé</h2>
+<p>Un tube vide ou un neutre en attente qu’on ne retrouve plus ne sert à rien. Reportez chaque boîte, chaque tube de réserve et chaque câble réseau sur le <a href="plan-de-position.html">plan de position</a>, et repérez les câbles aux deux extrémités. Le <a href="lire-unifilaire.html">schéma unifilaire</a> montre les circuits, avec leurs télérupteurs, relais ou actionneurs. Une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> sur la base de ces documents.</p>
+<p>Et comme toujours : coupez le courant et vérifiez l’absence de tension avant d’intervenir dans une boîte ou au tableau.</p>

@@ -1,0 +1,76 @@
+<!--
+{
+  "title": "La résistance et la loi d’Ohm",
+  "pageTitle": "La résistance et la loi d’Ohm (U = R × I) — Voltaplan",
+  "description": "La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.",
+  "rubrique": "bases",
+  "order": 4,
+  "related": ["courant", "puissance-energie", "chute-de-tension", "resistance-isolement"],
+  "retenir": [
+    "La résistance (R) mesure la difficulté du courant à passer ; elle s’exprime en <strong>ohms</strong> (Ω).",
+    "Loi d’Ohm : <strong>U = R × I</strong>, donc I = U ÷ R et R = U ÷ I.",
+    "Un câble résiste d’autant plus qu’il est <strong>long</strong> et <strong>fin</strong> : c’est l’origine de la chute de tension.",
+    "Une résistance quasi nulle entre phase et neutre, c’est un court-circuit : le courant devient énorme.",
+    "On mesure une résistance uniquement sur un circuit <strong>hors tension</strong>."
+  ],
+  "faq": [
+    { "q": "Pourquoi un câble trop fin chauffe-t-il ?", "a": "Parce que sa résistance est plus élevée. La chaleur produite dans un conducteur vaut R × I² : à courant égal, un câble deux fois plus résistant chauffe deux fois plus. C’est pour cela que la section se choisit selon le courant du circuit." },
+    { "q": "La loi d’Ohm marche-t-elle pour une lampe LED ou un chargeur ?", "a": "Pas directement. Elle décrit bien les résistances, les câbles et les appareils de chauffage. Une LED, un chargeur ou un moteur ont un comportement plus complexe : leur courant ne suit pas simplement la tension. Pour eux, on raisonne plutôt avec la puissance indiquée sur l’étiquette." },
+    { "q": "Que mesure-t-on avec un ohmmètre sur une installation ?", "a": "La continuité des conducteurs (une résistance très faible, par exemple celle du fil de terre) et, avec un appareil spécial, la résistance d’isolement entre conducteurs, qui doit au contraire être très élevée. Ces mesures se font toujours circuit coupé." }
+  ],
+  "sources": [
+    { "label": "Manuels d’électrotechnique de base (loi d’Ohm, résistivité du cuivre, effet Joule)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Pourquoi une bouilloire chauffe-t-elle, pourquoi un long câble fait-il baisser la tension, pourquoi un court-circuit fait-il sauter le disjoncteur en un éclair ? Tout cela s’explique par la <a href="lexique.html#resistance">résistance</a> et par une formule très simple, la loi d’Ohm, qui relie tension, courant et résistance.</p>
+
+<h2 id="resistance">Qu’est-ce que la résistance ?</h2>
+<p>La résistance, notée <strong>R</strong>, mesure la difficulté qu’a le courant à traverser un matériau. Elle s’exprime en <a href="lexique.html#ohm">ohms</a> (symbole Ω, la lettre grecque oméga). Dans l’image de l’eau, c’est l’étroitesse du tuyau : un tuyau fin et long freine davantage le débit qu’un tuyau large et court.</p>
+<p>Ordres de grandeur :</p>
+<ul>
+  <li>quelques centièmes à quelques dixièmes d’ohm pour un fil de cuivre de la maison ;</li>
+  <li>quelques dizaines d’ohms pour l’élément chauffant d’une bouilloire ou d’un radiateur ;</li>
+  <li>des millions d’ohms (mégohms, MΩ) pour un bon isolant entre deux conducteurs.</li>
+</ul>
+
+<h2 id="loi-ohm">La loi d’Ohm : U = R × I</h2>
+<p>Pour un conducteur ou une résistance, la tension, le courant et la résistance sont liés par :</p>
+<p><strong>U = R × I</strong> &nbsp; (volts = ohms × ampères)</p>
+<p>On l’utilise dans les trois sens :</p>
+<ul>
+  <li><strong>I = U ÷ R</strong> : à tension égale, plus la résistance est faible, plus le courant est fort ;</li>
+  <li><strong>R = U ÷ I</strong> : on déduit la résistance d’une mesure de tension et de courant ;</li>
+  <li><strong>U = R × I</strong> : la tension « consommée » par une résistance traversée par un courant.</li>
+</ul>
+<p>Avec l’eau : à pression égale, un tuyau étroit laisse passer moins de débit. Mais l’analogie a une limite ici aussi : dans un fil électrique, la résistance transforme l’énergie en <strong>chaleur</strong>, ce qu’un tuyau ne fait pas de façon sensible.</p>
+
+<h2 id="bouilloire">Exemple 1 : la bouilloire</h2>
+<p>Une bouilloire de 2 000 W sous 230 V appelle environ 8,7 A (voir <a href="courant.html">Le courant</a>). Sa résistance chauffante vaut donc :</p>
+<p>R = U ÷ I = 230 ÷ 8,7 ≈ <strong>26 Ω</strong></p>
+<p>Si on branchait cette même résistance sur 115 V, le courant serait divisé par deux (4,35 A), et la puissance par quatre : l’eau mettrait quatre fois plus de temps à chauffer. C’est pour cela qu’un appareil doit être utilisé à sa tension nominale.</p>
+
+<h2 id="cable">Exemple 2 : la résistance d’un câble</h2>
+<p>La résistance d’un fil dépend de trois choses : le matériau, la longueur et la <a href="lexique.html#section">section</a>. Pour le cuivre, on retient une résistivité d’environ 0,0175 Ω pour un fil de 1 m de long et de 1 mm² de section. D’où la formule :</p>
+<p>R ≈ 0,0175 × longueur (m) ÷ section (mm²)</p>
+<p>Prenons un circuit en 1,5 mm² long de 20 m. Le courant fait l’aller par la phase et le retour par le neutre, soit 40 m de fil :</p>
+<p>R ≈ 0,0175 × 40 ÷ 1,5 ≈ <strong>0,47 Ω</strong></p>
+<p>Si ce circuit porte 10 A, la tension perdue dans le câble vaut U = R × I = 0,47 × 10 ≈ <strong>4,7 V</strong>. L’appareil au bout ne reçoit plus que 225 V environ. C’est la <a href="lexique.html#chute-de-tension">chute de tension</a> ; on la réduit avec un câble plus gros ou plus court. Voir <a href="chute-de-tension.html">La chute de tension</a>.</p>
+<p>La résistance augmente aussi avec la température : un câble chaud conduit un peu moins bien.</p>
+
+<h2 id="court-circuit">Exemple 3 : le court-circuit</h2>
+<p>Dans un <a href="lexique.html#court-circuit">court-circuit</a>, la phase touche le neutre sans appareil entre les deux. Il ne reste que la résistance des câbles et du réseau, quelques dixièmes d’ohm. Avec 0,5 Ω au total :</p>
+<p>I = U ÷ R = 230 ÷ 0,5 = <strong>460 A</strong></p>
+<p>C’est des dizaines de fois le courant normal d’un circuit. Le <a href="disjoncteur.html">disjoncteur</a> doit couper en une fraction de seconde, avant que les câbles ne soient endommagés. Plus la résistance de la boucle est faible, plus ce courant est élevé.</p>
+
+<h2 id="corps">Exemple 4 : le corps humain</h2>
+<p>Le corps humain conduit le courant, avec une résistance qui varie beaucoup : plus élevée avec une peau sèche, bien plus faible avec une peau mouillée ou une large surface de contact. Retenons un ordre de grandeur de 1 000 Ω. Sous 230 V :</p>
+<p>I = 230 ÷ 1 000 = <strong>0,23 A</strong>, soit 230 mA</p>
+<p>C’est bien au-dessus des quelques dizaines de milliampères qui peuvent être mortels. C’est la raison d’être des <a href="differentiel.html">différentiels</a> de 30 mA et de la <a href="lexique.html#terre">terre</a>, et la raison pour laquelle on travaille toujours hors tension.</p>
+
+<h2 id="chaleur">Résistance et chaleur</h2>
+<p>Toute résistance traversée par un courant chauffe. La puissance transformée en chaleur vaut <strong>P = R × I²</strong> (effet Joule). Le carré compte : doubler le courant multiplie la chaleur par quatre. Dans le câble de l’exemple 2, à 10 A : 0,47 × 10 × 10 ≈ 47 W perdus en chaleur le long des murs. À 20 A, ce serait près de 190 W : c’est pour cela qu’un câble de 1,5 mm² est limité à 16 A.</p>
+
+<h2 id="mesurer">Mesurer une résistance</h2>
+<p>On mesure une résistance avec un ohmmètre (ou un multimètre en position Ω), qui envoie lui-même un petit courant. La mesure se fait donc <strong>toujours sur un circuit coupé et vérifié hors tension</strong>, sinon l’appareil peut être détruit et la mesure est fausse. Sur une installation, on vérifie ainsi la <a href="continuite.html">continuité</a> des conducteurs de protection et, avec un appareil spécial, la <a href="resistance-isolement.html">résistance d’isolement</a>.</p>

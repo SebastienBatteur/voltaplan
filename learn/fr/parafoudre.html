@@ -1,0 +1,80 @@
+<!--
+{
+  "title": "Le parafoudre",
+  "pageTitle": "Le parafoudre : principe, utilité, installation — Voltaplan",
+  "description": "Comment un parafoudre protège vos appareils contre les surtensions de la foudre et du réseau, quand il est utile, et comment il se place dans le tableau.",
+  "rubrique": "protections",
+  "order": 7,
+  "related": ["mise-a-la-terre", "organiser-tableau", "disjoncteur", "domotique-introduction"],
+  "retenir": [
+    "Le parafoudre protège les <strong>appareils</strong> contre les surtensions brèves et violentes (foudre, manœuvres sur le réseau).",
+    "Il dérive la surtension vers la <strong>terre</strong> : sans bonne mise à la terre, il ne peut pas jouer son rôle.",
+    "Il ne remplace ni le disjoncteur ni le différentiel, qui protègent contre d’autres défauts.",
+    "Il est surtout intéressant en zone exposée, avec une ligne aérienne, ou quand la maison contient beaucoup d’électronique (domotique, pompe à chaleur, panneaux solaires).",
+    "Il s’use : un voyant ou une fenêtre indique quand la cartouche doit être remplacée."
+  ],
+  "faq": [
+    { "q": "Le parafoudre est-il obligatoire en Belgique ?", "a": "Le RGIE demande que les personnes et les biens soient protégés contre les surtensions (foudre, manœuvres sur le réseau) « d’après les règles de l’art », sans dresser de liste des maisons où un parafoudre serait obligatoire. Le besoin dépend donc de la situation et de l’exposition de l’installation. Demandez à votre installateur ou à l’organisme agréé ce qui s’applique chez vous ; dans beaucoup de maisons, c’est surtout un choix de protection du matériel." },
+    { "q": "Une multiprise « parafoudre » suffit-elle ?", "a": "Elle protège localement les appareils qui y sont branchés, comme un complément. Elle ne protège pas le reste de l’installation et elle est peu efficace contre une surtension importante arrivant par le réseau. Un parafoudre au tableau protège l’ensemble ; les deux peuvent se compléter." },
+    { "q": "Le parafoudre protège-t-il contre un coup de foudre direct sur la maison ?", "a": "Non, pas à lui seul. La protection contre un impact direct relève d’un paratonnerre (installation extérieure de protection contre la foudre). Le parafoudre limite les surtensions qui arrivent par les câbles." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de parafoudres modulaires (types, raccordement, signalisation de fin de vie)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un orage passe, et le lendemain la box internet, la télévision ou la carte électronique de la chaudière ne fonctionnent plus. Ces pannes sont souvent dues à une <strong>surtension</strong> : une hausse brutale et très brève de la tension sur le réseau. Le <strong>parafoudre</strong> est l’appareil, placé au tableau, qui limite ces surtensions avant qu’elles n’atteignent vos appareils.</p>
+
+<h2 id="surtension">D’où viennent les surtensions ?</h2>
+<p>La <a href="lexique.html#tension">tension</a> du réseau est normalement de 230 V entre phase et neutre. Une surtension transitoire est un pic qui peut atteindre plusieurs milliers de volts, pendant quelques millionièmes de seconde. Ses causes principales :</p>
+<ul>
+  <li><strong>la foudre</strong>, qui tombe sur une ligne aérienne ou près du bâtiment : même à distance, elle induit une surtension dans les câbles ;</li>
+  <li><strong>les manœuvres sur le réseau</strong> : enclenchement de grosses charges, commutations du gestionnaire de réseau.</li>
+</ul>
+<p>Ce pic est trop bref pour faire réagir un <a href="disjoncteur.html">disjoncteur</a> ou un <a href="differentiel.html">différentiel</a>, qui surveillent le courant et non la tension. Il suffit pourtant à détruire les composants électroniques, de plus en plus nombreux dans une maison.</p>
+
+<h2 id="principe">Le principe du parafoudre</h2>
+<p>Le <a href="lexique.html#parafoudre">parafoudre</a> est raccordé entre les conducteurs actifs (phases et neutre) et la <a href="lexique.html#terre">terre</a>. En temps normal, il se comporte comme un circuit ouvert : il ne laisse passer aucun courant et ne consomme rien. Dès que la tension dépasse un certain seuil, il devient conducteur en une fraction de microseconde et dérive la surtension vers la terre. La tension qui arrive aux appareils reste ainsi limitée à un niveau qu’ils supportent. Une fois le pic passé, il redevient isolant.</p>
+<p>Conséquence directe : <strong>un parafoudre sans bonne terre ne sert à rien</strong>, puisque c’est par elle qu’il évacue l’énergie. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
+
+<h2 id="types">Les types de parafoudres</h2>
+<p>On classe couramment les parafoudres en trois types, selon l’énergie qu’ils peuvent écouler et l’endroit où on les place :</p>
+<table>
+  <thead><tr><th>Type</th><th>Rôle</th><th>Où</th></tr></thead>
+  <tbody>
+    <tr><td>Type 1</td><td>Écouler une très forte énergie, liée à un impact de foudre proche</td><td>Tête d’installation, notamment pour un bâtiment équipé d’un paratonnerre</td></tr>
+    <tr><td>Type 2</td><td>Protection générale contre les surtensions transmises par le réseau</td><td>Tableau principal (le cas le plus courant en habitation)</td></tr>
+    <tr><td>Type 3</td><td>Protection fine, au plus près d’appareils sensibles</td><td>Sous-tableau, prise ou boîtier à proximité de l’appareil</td></tr>
+  </tbody>
+</table>
+<p>Il existe aussi des parafoudres pour les lignes téléphoniques, de données ou d’antenne : une surtension peut entrer par là aussi.</p>
+
+<h2 id="quand">Quand est-ce utile ?</h2>
+<p>Un parafoudre est particulièrement intéressant :</p>
+<ul>
+  <li>dans une région ou un site exposé aux orages, en hauteur ou isolé ;</li>
+  <li>quand le bâtiment est alimenté par une <strong>ligne aérienne</strong> ;</li>
+  <li>quand le bâtiment possède un paratonnerre (le parafoudre de type 1 est alors à étudier) ;</li>
+  <li>quand la maison contient du matériel coûteux ou indispensable : <a href="domotique-introduction.html">domotique</a>, pompe à chaleur, onduleur photovoltaïque, alarme, matériel médical, informatique de télétravail.</li>
+</ul>
+<p>Dans une maison raccordée en souterrain, en ville, le risque est plus faible, mais pas nul : le choix reste une question de coût du parafoudre face à la valeur du matériel protégé. Le RGIE demande une protection contre les surtensions « d’après les règles de l’art », sans fixer de cas précis ; l’installateur ou l’<a href="lexique.html#organisme-agree">organisme agréé</a> vous dira ce qui s’applique à votre installation.</p>
+
+<h2 id="installation">Dans le tableau</h2>
+<p>Le parafoudre de type 2 se présente comme un module de tableau, placé en tête de l’installation. Quelques points de mise en œuvre courants :</p>
+<ul>
+  <li>il est précédé d’une <strong>protection</strong> (disjoncteur ou fusible, selon les indications du fabricant), pour l’isoler s’il arrive en fin de vie ;</li>
+  <li>ses conducteurs de raccordement, en particulier vers la barrette de terre, sont <strong>les plus courts possible</strong> : chaque centimètre de câble réduit son efficacité ;</li>
+  <li>il porte un <strong>témoin de fin de vie</strong> : après avoir écoulé plusieurs surtensions, sa cartouche s’use et doit être remplacée.</li>
+</ul>
+<p>Sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, le parafoudre apparaît comme un appareil du tableau principal, relié à la terre. Voir aussi <a href="organiser-tableau.html">Organiser un tableau</a>.</p>
+
+<h2 id="limites">Ce qu’il ne fait pas</h2>
+<ul>
+  <li>Il ne protège pas contre les surcharges ni les courts-circuits (c’est le disjoncteur).</li>
+  <li>Il ne protège pas les personnes contre l’électrisation (c’est le différentiel avec la terre).</li>
+  <li>Il ne protège pas contre un impact direct de la foudre sur le bâtiment (c’est le rôle d’un paratonnerre).</li>
+  <li>Il ne corrige pas une surtension durable, par exemple due à une coupure du neutre sur le réseau.</li>
+</ul>
+<p>L’ajout d’un parafoudre est une modification du tableau : faites-la réaliser par un électricien, installation hors tension et absence de tension vérifiée, puis faites contrôler l’installation modifiée.</p>

@@ -1,0 +1,86 @@
+<!--
+{
+  "title": "Boutons-poussoirs et télérupteur",
+  "pageTitle": "Câbler un télérupteur et ses boutons-poussoirs — Voltaplan",
+  "description": "Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.",
+  "rubrique": "cablages",
+  "order": 5,
+  "exercise": "telerupteur",
+  "related": ["va-et-vient-trois-points", "minuterie", "relais-connectes", "organiser-tableau"],
+  "retenir": [
+    "Un télérupteur est un <strong>relais à mémoire</strong> : chaque impulsion sur sa bobine fait basculer son contact, d’allumé à éteint ou l’inverse.",
+    "Les boutons-poussoirs se branchent <strong>en parallèle</strong> : chacun ne demande que deux conducteurs, la phase et le retour vers la bobine.",
+    "Deux circuits distincts : la <strong>commande</strong> (boutons → bobine A1-A2) et la <strong>puissance</strong> (contact → lampe).",
+    "Au-delà de trois points de commande, il est plus simple et souvent moins coûteux qu’un va-et-vient avec inverseurs.",
+    "Le télérupteur garde son état : la lampe reste allumée jusqu’au prochain appui, contrairement à une minuterie."
+  ],
+  "faq": [
+    { "q": "Mon télérupteur claque mais la lampe ne s’allume pas : que vérifier ?", "a": "Si le télérupteur claque, la commande fonctionne : la bobine reçoit bien les impulsions. Le problème est du côté du contact ou de la lampe : phase absente sur l’entrée du contact, retour lampe débranché, lampe ou driver hors service. Coupez le circuit avant toute vérification." },
+    { "q": "Peut-on utiliser des boutons-poussoirs lumineux avec un télérupteur ?", "a": "Oui, mais avec prudence : le petit courant qui traverse les voyants passe par la bobine. Au-delà d’un certain nombre de voyants, indiqué par le fabricant du télérupteur, la bobine peut vibrer ou rester collée. La notice donne ce nombre maximal." },
+    { "q": "La lampe s’allume ou s’éteint toute seule de temps en temps : pourquoi ?", "a": "Un bouton-poussoir défectueux ou humide, ou de longs câbles de commande qui captent des parasites, peuvent provoquer des impulsions intempestives. Débranchez les boutons un à un pour trouver le coupable, courant coupé à chaque intervention." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie (symboles du schéma unifilaire)." },
+    { "label": "Documentation des fabricants de télérupteurs (bornes A1, A2, tensions de bobine, nombre de poussoirs lumineux)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <a href="lexique.html#telerupteur">télérupteur</a> commande une lampe depuis autant d’endroits que vous voulez, avec de simples <a href="lexique.html#bouton-poussoir">boutons-poussoirs</a>. Un appui allume, l’appui suivant éteint, quel que soit le bouton. C’est la solution habituelle pour les couloirs, les halls et les escaliers à partir de trois ou quatre points de commande.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un télérupteur est un <a href="lexique.html#relais">relais</a> d’un genre particulier : il a une <strong>mémoire mécanique</strong>. Il comporte :</p>
+<ul>
+  <li>une <strong>bobine</strong> (bornes A1 et A2) : quand elle reçoit une impulsion de courant, elle attire un mécanisme ;</li>
+  <li>un <strong>contact</strong> (bornes 1 et 2, ou d’autres repères selon le fabricant) : à chaque impulsion, le mécanisme le fait basculer. Ouvert, il se ferme ; fermé, il s’ouvre. Il reste ensuite dans cette position sans consommer de courant.</li>
+</ul>
+<p>Les boutons-poussoirs, eux, ne ferment le circuit que pendant l’appui : relâchés, ils s’ouvrent d’eux-mêmes. Ils ne commandent donc pas la lampe directement, mais envoient une brève impulsion à la bobine.</p>
+
+<h2 id="deux-circuits">Deux circuits : commande et puissance</h2>
+<p>Le montage se comprend mieux en deux parties.</p>
+<ul>
+  <li><strong>Le circuit de commande</strong> : la <a href="lexique.html#phase">phase</a> va à une borne de chaque bouton-poussoir ; l’autre borne de chaque bouton est reliée à A1 ; A2 est reliée au <a href="lexique.html#neutre">neutre</a>. Appuyer sur n’importe quel bouton alimente la bobine.</li>
+  <li><strong>Le circuit de puissance</strong> : la phase arrive sur l’entrée du contact ; la sortie du contact part vers la lampe (c’est le retour lampe) ; neutre et terre vont directement à la lampe.</li>
+</ul>
+<p>Les boutons sont en <strong>parallèle</strong> : chacun relie la phase au fil de commande de la bobine. Il n’y a ni navette, ni ordre à respecter entre eux.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → chaque bouton-poussoir et entrée du contact</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Retour bobine (commande)</td><td>Chaque bouton → borne A1</td><td>Noir ou gris</td></tr>
+    <tr><td>Neutre</td><td>Tableau → borne A2 et lampe</td><td>Bleu</td></tr>
+    <tr><td>Retour lampe</td><td>Sortie du contact → lampe</td><td>Noir ou gris</td></tr>
+    <tr><td>Terre</td><td>Tableau → point lumineux</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Relier le neutre à la borne A2 de la bobine.</li>
+  <li>Amener la phase à une borne de chaque bouton-poussoir.</li>
+  <li>Relier l’autre borne de chaque bouton à la borne A1 (fil de commande commun à tous les boutons).</li>
+  <li>Amener la phase à l’entrée du contact, et relier la sortie du contact à la lampe.</li>
+  <li>Amener le neutre et la terre à la lampe.</li>
+  <li>Remettre le courant et essayer chaque bouton : un appui allume, le suivant éteint.</li>
+</ol>
+<p>Dans l’exercice ci-dessous, la suite d’appuis est vérifiée : bouton 1 (allume), bouton 2 (éteint), bouton 2 (allume), bouton 1 (éteint). Un bouton qui alimenterait la lampe directement ne passe pas : la lampe s’éteindrait dès qu’on le relâche.</p>
+
+<h2 id="pourquoi">Pourquoi il remplace le va-et-vient</h2>
+<p>Avec un va-et-vient, chaque point de commande supplémentaire demande un <a href="lexique.html#inverseur">inverseur</a>, raccordé par quatre <a href="lexique.html#navette">navettes</a> (deux qui arrivent, deux qui repartent). Pour cinq points dans un long couloir : deux va-et-vient, trois inverseurs et des navettes tout du long.</p>
+<p>Avec un télérupteur, les cinq points sont cinq boutons-poussoirs identiques, reliés chacun par deux conducteurs au même couple de fils (phase et commande). Ajouter un point plus tard revient à piquer un bouton de plus sur ces deux fils, sans rien changer aux autres. C’est pour cela qu’on choisit couramment le télérupteur à partir de trois ou quatre points de commande. Voir aussi <a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus</a>.</p>
+
+<h2 id="ou-placer">Où placer le télérupteur ?</h2>
+<p>Le plus souvent, le télérupteur est un appareil modulaire fixé sur un rail du <a href="organiser-tableau.html">tableau électrique</a>, à côté du disjoncteur du circuit. Il existe aussi des modèles à encastrer dans une boîte, derrière un bouton ou près de la lampe. Au tableau, il est accessible et facile à remplacer ; son petit claquement à chaque commutation n’y dérange personne.</p>
+<p>La bobine fonctionne le plus souvent en 230 V, mais il existe des télérupteurs à bobine basse tension, alimentée par un transformateur de sécurité (<a href="lexique.html#tbts">TBTS</a>) : les boutons ne sont alors pas en 230 V. Suivez la notice pour la tension de bobine. Le contact, lui, coupe toujours la phase de la lampe. Beaucoup de modèles ont aussi un levier en façade pour commuter à la main, utile pour essayer le circuit de puissance.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Boutons en série</strong> au lieu d’en parallèle : il faudrait appuyer sur tous les boutons à la fois.</li>
+  <li><strong>Lampe branchée sur le circuit de commande</strong> : elle ne s’allume que pendant l’appui.</li>
+  <li><strong>A2 oubliée</strong> : la bobine n’est jamais alimentée, le télérupteur reste muet.</li>
+  <li><strong>Trop de poussoirs lumineux</strong> : leur petit courant permanent peut faire vibrer ou coller la bobine ; respectez le nombre indiqué par le fabricant.</li>
+</ul>
+<p>Le télérupteur est aussi la porte d’entrée de la commande centralisée et des <a href="relais-connectes.html">relais connectés</a>. Pour une lampe qui s’éteint seule après quelques minutes, voir <a href="minuterie.html">La minuterie d’escalier</a>. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

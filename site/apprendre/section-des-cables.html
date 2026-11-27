@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Section des câbles : 1,5 ou 2,5 mm², quel disjoncteur ? — Voltaplan</title>
+<meta name="description" content="1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/section-des-cables.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"La section des câbles","description":"1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/section-des-cables.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"La section des câbles","item":"https://voltaplan.org/apprendre/section-des-cables.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Section des câbles : 1,5 ou 2,5 mm², quel disjoncteur ? — Voltaplan">
+<meta property="og:description" content="1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/section-des-cables.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#cables">Câbles et conducteurs</a></nav>
+  <article>
+  <h1>La section des câbles</h1>
+  <p class="lead">La <strong>section</strong> d’un câble, c’est la surface de cuivre de chaque conducteur, exprimée en millimètres carrés (mm²). Elle détermine le courant que le câble peut transporter sans chauffer dangereusement. Choisir la section, c’est donc d’abord choisir le bon <a href="disjoncteur.html">disjoncteur</a> pour la protéger.</p>
+
+<h2 id="pourquoi">Pourquoi un câble chauffe</h2>
+<p>Le cuivre a une petite <a href="resistance-loi-ohm.html">résistance</a>. Quand un <a href="lexique.html#courant">courant</a> le traverse, une partie de l’énergie se transforme en chaleur. Plus le courant est fort et plus le conducteur est fin, plus il chauffe. Au-delà d’une certaine température, l’isolant vieillit vite, se ramollit, et peut finir par provoquer un court-circuit ou un départ de feu.</p>
+<p>Un conducteur plus gros offre plus de cuivre au passage du courant : il chauffe moins pour le même courant. C’est pourquoi un circuit qui alimente une taque de cuisson utilise une section plus grande qu’un circuit d’éclairage.</p>
+
+<h2 id="calibre">Le disjoncteur protège le câble</h2>
+<p>Le disjoncteur ne protège pas d’abord l’appareil branché : il protège <strong>le câble</strong>. Il doit couper avant que le câble ne chauffe trop. Son <a href="lexique.html#calibre">calibre</a> (16 A, 20 A…) ne doit donc jamais dépasser ce que la section supporte.</p>
+<p>Voltaplan utilise le tableau suivant, qui reprend des valeurs prudentes usuelles en Belgique pour du cuivre posé de façon courante, encastré sous tube :</p>
+<table>
+  <thead><tr><th>Section (mm²)</th><th>Calibre maximal du disjoncteur</th><th>Usage domestique typique</th></tr></thead>
+  <tbody>
+    <tr><td>1,5</td><td>16 A</td><td>Éclairage, commandes</td></tr>
+    <tr><td>2,5</td><td>20 A</td><td>Prises, lave-linge, lave-vaisselle</td></tr>
+    <tr><td>4</td><td>25 A</td><td>Appareils puissants, circuits longs</td></tr>
+    <tr><td>6</td><td>32 A</td><td>Cuisinière, taque de cuisson, selon la puissance</td></tr>
+    <tr><td>10</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
+    <tr><td>16</td><td>63 A</td><td>Alimentation d’un tableau, liaison depuis le compteur</td></tr>
+  </tbody>
+</table>
+<p>Ces valeurs sont des maxima pour une pose courante. Un câble posé dans un isolant thermique, groupé avec beaucoup d’autres ou dans un local chaud évacue moins bien sa chaleur : il peut demander un calibre plus faible ou une section plus grande. La notice du fabricant et les tableaux de courant admissible font foi.</p>
+
+<h2 id="minimum">Les minimums à connaître</h2>
+<ul>
+  <li><strong>1,5 mm²</strong> est la section minimale pour un circuit d’une installation domestique (éclairage, commandes).</li>
+  <li>Les <strong>circuits de prises</strong> se font en <strong>2,5 mm²</strong> au moins, protégés par 20 A au plus, avec <strong>8 points de prise au plus</strong> par circuit (une prise double compte pour un point).</li>
+  <li>Certains appareils demandent un <strong>circuit dédié</strong> : four, cuisinière, taque, lave-linge, sèche-linge, lave-vaisselle, chauffe-eau, pompe à chaleur, borne de recharge… La section dépend alors de leur puissance et de leur notice.</li>
+</ul>
+
+<h2 id="exemple">Exemple chiffré</h2>
+<p>Une bouilloire de 2 000 W branchée sur 230 V appelle un courant d’environ 2 000 ÷ 230 ≈ 8,7 A (voir <a href="puissance-energie.html">Puissance et énergie</a>). Un radiateur d’appoint de 2 000 W sur la même ligne double ce courant : environ 17,4 A. Sur un circuit de prises en 2,5 mm² protégé par 20 A, c’est encore acceptable. Ajoutez un fer à repasser de 2 000 W et le total dépasse 26 A : le disjoncteur finira par couper, et c’est exactement ce qu’on lui demande.</p>
+<p>La bonne réaction n’est jamais de mettre un disjoncteur de 25 A sur ce câble, mais de répartir les appareils puissants sur d’autres circuits.</p>
+
+<h2 id="longueur">La longueur compte aussi</h2>
+<p>Un câble long a plus de résistance : la tension disponible au bout baisse. C’est la <a href="chute-de-tension.html">chute de tension</a>. Sur un circuit très long (un garage au fond du jardin, un grand étage), il faut parfois passer à la section supérieure même si le calibre ne l’exige pas. Une grande longueur peut aussi empêcher le disjoncteur de déclencher assez vite en cas de court-circuit lointain.</p>
+
+<h2 id="voltaplan">Ce que vérifie Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, chaque canalisation porte sa section, et chaque disjoncteur son calibre. Le contrôle signale :</p>
+<ul>
+  <li>un câble protégé par un calibre plus élevé que celui du tableau ci-dessus (par exemple 1,5 mm² sous 20 A) ;</li>
+  <li>une section inférieure à 1,5 mm² ;</li>
+  <li>un circuit de prises en dessous de 2,5 mm², ou avec plus de 8 points ;</li>
+  <li>un appareil qui devrait avoir son propre circuit mais partage le sien ;</li>
+  <li>une chute de tension trop forte ou une longueur trop grande pour la protection, quand la longueur des câbles est connue ou estimée d’après le plan.</li>
+</ul>
+<p>Ces vérifications aident à repérer une erreur ; elles ne remplacent pas le contrôle de l’installation par un <a href="controle-organisme-agree.html">organisme agréé</a>. Et avant de remplacer un câble ou un disjoncteur, coupez le courant et vérifiez l’absence de tension.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La section est la surface du cuivre d’un conducteur, en mm² : plus elle est grande, plus le câble supporte de courant.</li><li>C’est le <strong>disjoncteur</strong> qui protège le câble : son calibre ne doit jamais dépasser ce que la section supporte.</li><li>Correspondances usuelles : 1,5 mm² → 16 A, 2,5 mm² → 20 A, 4 mm² → 25 A, 6 mm² → 32 A, 10 mm² → 50 A.</li><li>Circuits de prises : 2,5 mm² au minimum, 8 points de prise au plus par circuit.</li><li>Un circuit long peut demander une section plus grande à cause de la chute de tension.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Peut-on mettre un disjoncteur de 20 A sur du 1,5 mm² ?</summary><div>Non. Le câble pourrait chauffer au-delà de ce qu’il supporte sans que le disjoncteur déclenche. Avec du 1,5 mm², le calibre usuel maximal est 16 A. Si le disjoncteur saute trop souvent, il faut répartir les appareils sur plusieurs circuits, pas augmenter le calibre.</div></details>
+    <details><summary>Pourquoi les prises demandent-elles du 2,5 mm² ?</summary><div>Un circuit de prises peut alimenter des appareils puissants (bouilloire, aspirateur, radiateur d’appoint). Le 2,5 mm² permet un disjoncteur de 20 A, adapté à cet usage. Voltaplan signale un circuit de prises en section plus faible.</div></details>
+    <details><summary>Mettre une section plus grosse que nécessaire, est-ce un problème ?</summary><div>Non pour la sécurité : un câble plus gros chauffe moins et la chute de tension est plus faible. Il coûte plus cher et se tire moins facilement dans les tubes, et les bornes des appareils doivent accepter cette section.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Voltaplan, règles de contrôle (fichier src/rules/be/rgie.ts du code source) : correspondance section ↔ calibre maximal, valeurs prudentes pour une pose encastrée sous tube.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="types-de-cables.html">← Les types de câbles (XVB, VOB…)</a><a class="next" href="chute-de-tension.html">La chute de tension →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li><li><a href="chute-de-tension.html">La chute de tension</a><span>Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câbles et conducteurs</h2><ul class="learn-list"><li><a href="couleurs-des-fils.html">Les couleurs des fils</a><span>Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="chute-de-tension.html">La chute de tension</a><span>Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.</span></li><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

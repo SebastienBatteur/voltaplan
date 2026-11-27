@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Puissance et énergie : watts, kWh et consommation — Voltaplan</title>
+<meta name="description" content="Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/puissance-energie.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Puissance et énergie (W, kWh)","description":"Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/puissance-energie.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Puissance et énergie (W, kWh)","item":"https://voltaplan.org/apprendre/puissance-energie.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Puissance et énergie : watts, kWh et consommation — Voltaplan">
+<meta property="og:description" content="Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/puissance-energie.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#bases">Les bases de l’électricité</a></nav>
+  <article>
+  <h1>Puissance et énergie (W, kWh)</h1>
+  <p class="lead">Watt, kilowatt, kilowattheure : ces unités figurent sur chaque appareil et sur chaque facture, et on les confond souvent. La <a href="lexique.html#puissance">puissance</a> dit à quelle vitesse un appareil consomme ; l’<a href="lexique.html#energie">énergie</a> dit combien il a consommé au bout du compte. La première sert à dimensionner l’installation, la seconde à comprendre la facture.</p>
+
+<h2 id="puissance">La puissance : P = U × I</h2>
+<p>La puissance, notée <strong>P</strong>, se mesure en <a href="lexique.html#watt">watts</a> (W) ; 1 kilowatt (kW) = 1 000 W. Elle indique combien d’énergie un appareil transforme chaque seconde : en chaleur pour un radiateur, en lumière pour une lampe, en mouvement pour un moteur.</p>
+<p>En électricité, elle se calcule simplement :</p>
+<p><strong>P = U × I</strong> &nbsp; (watts = volts × ampères)</p>
+<p>Dans l’image de l’eau, c’est comme une roue à aubes : elle tourne d’autant plus fort que la pression (la tension) et le débit (le courant) sont élevés. Une forte pression sans débit, ou un gros débit sans pression, ne fait rien tourner.</p>
+<p>La formule se retourne pour trouver le courant : <strong>I = P ÷ U</strong>. C’est le calcul le plus utile en pratique.</p>
+<table>
+  <thead><tr><th>Appareil (230 V)</th><th>Puissance</th><th>Courant (I = P ÷ U)</th></tr></thead>
+  <tbody>
+    <tr><td>Lampe LED</td><td>8 W</td><td>0,035 A</td></tr>
+    <tr><td>Bouilloire</td><td>2 000 W</td><td>8,7 A</td></tr>
+    <tr><td>Lave-linge en chauffe</td><td>2 200 W</td><td>9,6 A</td></tr>
+    <tr><td>Radiateur électrique</td><td>2 500 W</td><td>10,9 A</td></tr>
+  </tbody>
+</table>
+<p>Avec la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, on obtient deux autres formes : P = R × I² et P = U² ÷ R. La première explique pourquoi un câble chauffe davantage quand le courant augmente.</p>
+
+<h2 id="circuit">Additionner les puissances d’un circuit</h2>
+<p>Les appareils branchés sur un même circuit s’additionnent. Sur un circuit de prises protégé à 20 A, la puissance maximale vaut 230 × 20 = <strong>4 600 W</strong>. Une bouilloire (2 000 W), un grille-pain (900 W) et un micro-ondes (1 200 W) font 4 100 W : ça passe. Ajoutez un radiateur de 2 000 W et le disjoncteur finira par couper. C’est pour cela que les gros appareils (four, lave-linge, lave-vaisselle) ont souvent leur propre circuit.</p>
+
+<h2 id="energie">L’énergie : puissance × durée</h2>
+<p>L’énergie consommée dépend de la puissance <strong>et</strong> du temps de fonctionnement :</p>
+<p><strong>E = P × t</strong></p>
+<p>Avec la puissance en kilowatts et la durée en heures, on obtient des <a href="lexique.html#kilowattheure">kilowattheures</a> (kWh), l’unité de la facture. Un appareil de 1 kW qui fonctionne pendant 1 heure consomme 1 kWh ; un appareil de 100 W pendant 10 heures aussi.</p>
+
+<h2 id="exemples">Calculs concrets</h2>
+<p><strong>La bouilloire</strong></p>
+<p>Une bouilloire de 2 000 W (2 kW) chauffe un litre d’eau en 3 minutes environ, soit 0,05 heure :</p>
+<p>E = 2 kW × 0,05 h = <strong>0,1 kWh</strong> par utilisation.</p>
+<p>À raison de trois utilisations par jour, cela fait 0,3 kWh par jour, environ 110 kWh par an.</p>
+<p><strong>La lampe LED</strong></p>
+<p>Une lampe LED de 8 W allumée 5 heures par jour :</p>
+<p>8 W × 5 h = 40 Wh par jour, soit 40 × 365 ≈ 14 600 Wh ≈ <strong>15 kWh par an</strong>.</p>
+<p>Une ancienne ampoule à incandescence de 60 W, qui éclaire à peu près autant, consommerait 60 × 5 × 365 ≈ <strong>110 kWh par an</strong> : plus de sept fois plus.</p>
+<p><strong>Les veilles</strong></p>
+<p>Un décodeur qui consomme 5 W en veille, jour et nuit : 5 W × 24 h × 365 ≈ <strong>44 kWh par an</strong>. Discret, mais bien plus que la lampe LED de l’exemple précédent.</p>
+<p><strong>Le coût</strong></p>
+<p>Pour passer au coût, on multiplie par le prix du kWh indiqué sur votre facture. Par exemple, avec un prix hypothétique de 0,30 € par kWh, la lampe LED coûte environ 4,40 € par an et l’ampoule de 60 W environ 33 €. Le prix réel varie selon le contrat, le fournisseur et la période.</p>
+
+<h2 id="compteur">Ce que compte le compteur</h2>
+<p>Le <a href="lexique.html#compteur">compteur</a> additionne l’énergie consommée, en kWh. Selon le contrat, il peut compter séparément les heures pleines et les heures creuses (jour et nuit), ou l’énergie injectée par des panneaux solaires. Pour connaître la consommation d’un appareil, relevez le compteur avant et après son utilisation, ou utilisez une prise wattmètre.</p>
+
+<h2 id="raccordement">Puissance du raccordement</h2>
+<p>Le raccordement de la maison a lui aussi une puissance maximale, fixée par le calibre du disjoncteur de branchement. Par exemple, un raccordement monophasé de 40 A sous 230 V permet 230 × 40 = 9 200 VA, soit 9,2 kVA. On parle en VA (voltampères) plutôt qu’en watts pour les raisons expliquées dans <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>. Les différentes formules de raccordement sont détaillées sur la page <a href="https://sbg-energy.com/raccordement-mono-tri">raccordement mono ou tri</a>.</p>
+
+<h2 id="dimensionner">Puissance pour dimensionner, énergie pour payer</h2>
+<p>Retenez la distinction : la puissance (donc le courant) détermine la <a href="section-des-cables.html">section des câbles</a> et le calibre des <a href="disjoncteur.html">disjoncteurs</a> ; l’énergie détermine la facture. Un appareil de 3 000 W utilisé dix minutes par jour coûte peu, mais il exige un circuit capable de porter 13 A.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La <strong>puissance</strong> (W) dit à quelle vitesse un appareil consomme ; l’<strong>énergie</strong> (kWh) dit combien il a consommé au total.</li><li>P = U × I : une bouilloire de 2 000 W en 230 V appelle environ 8,7 A.</li><li>Énergie = puissance × durée : 2 000 W pendant 3 minutes = 0,1 kWh.</li><li>Une lampe LED de 8 W allumée 5 heures par jour consomme environ 15 kWh par an, contre 110 kWh pour une ampoule de 60 W.</li><li>Le compteur compte des kWh ; le câble et le disjoncteur, eux, se dimensionnent sur la puissance (le courant).</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Quelle est la différence entre kW et kWh ?</summary><div>Le kW est une puissance, une vitesse de consommation à un instant donné. Le kWh est une quantité d’énergie : un appareil de 1 kW qui fonctionne pendant une heure consomme 1 kWh. On paie l’énergie (les kWh) ; le câble et le disjoncteur doivent supporter la puissance (les kW, donc le courant).</div></details>
+    <details><summary>Un appareil puissant consomme-t-il forcément beaucoup ?</summary><div>Pas forcément : tout dépend de la durée. Une bouilloire de 2 000 W utilisée 3 minutes consomme 0,1 kWh, autant qu’une lampe LED de 8 W allumée plus de 12 heures. À l’inverse, un petit appareil en veille toute l’année finit par compter.</div></details>
+    <details><summary>Comment connaître la consommation réelle d’un appareil ?</summary><div>La puissance indiquée sur l’étiquette est un maximum. Pour connaître la consommation réelle, on peut brancher l’appareil sur une prise wattmètre pendant quelques jours, ou relever le compteur avant et après son utilisation.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Manuels d’électrotechnique de base (puissance, énergie, effet Joule).</li><li><a href="https://sbg-energy.com/unites-electriques">Unités électriques (W, kW, Wh, kWh, VA) : sbg-energy.com</a></li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="resistance-loi-ohm.html">← La résistance et la loi d’Ohm</a><a class="next" href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="courant.html">Le courant (I, en ampères)</a><span>Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a><span>Courant alternatif à 50 Hz, monophasé 230 V, réseaux belges 3 × 230 V sans neutre et 3N × 400 V, puissance en triphasé, cos φ et voltampères expliqués.</span></li><li><a href="section-des-cables.html">La section des câbles</a><span>1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Les bases de l’électricité</h2><ul class="learn-list"><li><a href="electricite-c-est-quoi.html">Qu’est-ce que l’électricité ?</a><span>L’électricité expliquée simplement : électrons, circuit fermé, tension, courant et puissance, avec l’analogie de l’eau et ses limites. Le point de départ.</span></li><li><a href="tension.html">La tension (U, en volts)</a><span>La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.</span></li><li><a href="courant.html">Le courant (I, en ampères)</a><span>Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a><span>Courant alternatif à 50 Hz, monophasé 230 V, réseaux belges 3 × 230 V sans neutre et 3N × 400 V, puissance en triphasé, cos φ et voltampères expliqués.</span></li><li><a href="serie-et-parallele.html">Circuits en série et en parallèle</a><span>Série ou parallèle : ce qui change pour la tension et le courant, pourquoi les lampes et les prises d’une maison sont en parallèle, et où l’on trouve la série.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

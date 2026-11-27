@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Le différentiel saute : trouver la cause pas à pas — Voltaplan</title>
+<meta name="description" content="Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/differentiel-qui-saute.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le différentiel saute : que faire ?","description":"Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/differentiel-qui-saute.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le différentiel saute : que faire ?","item":"https://voltaplan.org/apprendre/differentiel-qui-saute.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Le différentiel saute : trouver la cause pas à pas — Voltaplan">
+<meta property="og:description" content="Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/differentiel-qui-saute.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#controles">Contrôles, mesures et pannes</a></nav>
+  <article>
+  <h1>Le différentiel saute : que faire ?</h1>
+  <p class="lead">Le courant s’est coupé dans une partie de la maison, et au tableau, c’est le <a href="lexique.html#differentiel">différentiel</a> qui est en bas. Vous le relevez, il retombe aussitôt, ou il tient une heure puis saute à nouveau. Avant d’appeler un électricien, une démarche simple permet souvent de trouver la cause, sans ouvrir quoi que ce soit.</p>
+
+<h2 id="comprendre">Ce que signifie un différentiel qui saute</h2>
+<p>Le différentiel coupe quand une partie du courant ne revient pas par le neutre : elle s’échappe vers la terre, à travers un isolant abîmé, de l’eau ou une personne. Le déclenchement n’est donc pas une panne du différentiel : c’est le signe qu’il a détecté une <strong>fuite</strong>. Voir <a href="differentiel.html">Le différentiel</a>.</p>
+<p><strong>Ne jamais contourner, ponter ou remplacer un différentiel par un modèle moins sensible</strong> pour faire cesser les déclenchements. Une fuite qui fait sauter un 30 mA peut, le jour où quelqu’un touche l’appareil en défaut, provoquer une <a href="lexique.html#electrisation">électrisation</a> grave.</p>
+
+<h2 id="identifier">D’abord, identifier ce qui a sauté</h2>
+<p>Au tableau, repérez l’appareil en position basse :</p>
+<ul>
+  <li>un <strong>différentiel</strong> porte un bouton test (« T ») et une sensibilité en mA (30 mA, 300 mA) ; quand il saute, tous les circuits placés derrière lui sont coupés ;</li>
+  <li>un <strong>disjoncteur</strong> ne protège qu’un circuit et porte un calibre en ampères (C16, C20) : dans ce cas, voyez plutôt <a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a></li>
+</ul>
+<p>Un tableau bien repéré facilite beaucoup cette étape. Voir <a href="organiser-tableau.html">Organiser le tableau</a>.</p>
+
+<h2 id="appareils">Étape 1 : débrancher les appareils</h2>
+<p>Dans la grande majorité des cas, la fuite vient d’un appareil branché. Procédez ainsi :</p>
+<ol>
+  <li><strong>Débranchez tous les appareils</strong> des pièces concernées : retirez les fiches des prises (éteindre l’appareil ne suffit pas toujours). Pour les appareils raccordés en fixe, laissez-les pour l’étape suivante.</li>
+  <li><strong>Relevez le différentiel.</strong></li>
+  <li>S’il tient, <strong>rebranchez les appareils un par un</strong>, en les mettant en marche, et attendez un peu entre chaque.</li>
+  <li>Quand le différentiel saute, le dernier appareil rebranché est le suspect. Vérifiez en le rebranchant seul.</li>
+</ol>
+<p>Les appareils qui chauffent de l’eau ou de l’air sont souvent en cause : lave-linge, lave-vaisselle, bouilloire, four, chauffe-eau, sèche-linge. Leur résistance chauffante peut se fissurer et laisser fuir le courant. Un appareil suspect ne doit plus être utilisé avant d’avoir été réparé ou remplacé.</p>
+
+<h2 id="circuits">Étape 2 : remonter circuit par circuit</h2>
+<p>Si le différentiel saute alors qu’aucun appareil n’est branché, la fuite se trouve sur un circuit fixe ou sur un appareil raccordé en permanence. Au tableau, sans rien démonter :</p>
+<ol>
+  <li><strong>Abaissez tous les disjoncteurs</strong> situés sous le différentiel.</li>
+  <li><strong>Relevez le différentiel.</strong></li>
+  <li><strong>Relevez les disjoncteurs un par un.</strong></li>
+  <li>Quand le différentiel saute, le dernier disjoncteur relevé indique le <a href="lexique.html#circuit">circuit</a> en cause. Laissez-le abaissé et remettez les autres.</li>
+</ol>
+<p>Vous retrouvez ainsi le courant dans le reste de la maison, et vous savez où chercher. Si le différentiel refuse de se réarmer même avec tous les disjoncteurs abaissés, le défaut est en amont ou dans le différentiel lui-même : c’est le moment d’appeler un électricien.</p>
+
+<h2 id="causes">Les causes fréquentes</h2>
+<table>
+  <thead><tr><th>Symptôme</th><th>Cause probable</th></tr></thead>
+  <tbody>
+    <tr><td>Saute par temps de pluie, de brouillard ou la nuit</td><td>Humidité dans une prise, un luminaire ou une boîte extérieure ; cave ou garage humide.</td></tr>
+    <tr><td>Saute quand un appareil chauffe</td><td>Résistance chauffante défectueuse (lave-linge, chauffe-eau, four).</td></tr>
+    <tr><td>Saute après des travaux</td><td>Câble percé par une vis ou un clou, fil mal raccordé, neutre en contact avec la terre dans une boîte.</td></tr>
+    <tr><td>Saute pendant un orage</td><td>Surtension sur le réseau ; un <a href="parafoudre.html">parafoudre</a> peut en limiter les effets.</td></tr>
+    <tr><td>Saute « de temps en temps », sans logique</td><td>Trop d’appareils électroniques derrière le même différentiel : leurs petites fuites normales s’additionnent.</td></tr>
+  </tbody>
+</table>
+<p>Une fuite par l’isolant se mesure : c’est la <a href="resistance-isolement.html">résistance d’isolement</a>. L’électricien la mesure circuit par circuit pour localiser précisément le défaut.</p>
+
+<h2 id="electricien">Quand appeler un électricien</h2>
+<ul>
+  <li>Le différentiel ne se réarme pas, même tous les disjoncteurs abaissés.</li>
+  <li>Le défaut se trouve sur un circuit fixe : il faut ouvrir des prises, des boîtes ou le tableau.</li>
+  <li>Une prise, un interrupteur ou le tableau présente des traces de brûlure, une odeur ou de l’eau.</li>
+  <li>Le différentiel ne déclenche plus quand vous appuyez sur son bouton test (voir <a href="test-differentiel.html">Tester un différentiel</a>).</li>
+  <li>Les déclenchements reviennent sans que vous trouviez de cause.</li>
+</ul>
+<p>Toute intervention sur l’installation se fait après avoir <strong>coupé le courant et vérifié l’absence de tension</strong>. Ouvrir le tableau expose à des pièces qui restent sous tension même quand le différentiel est coupé : laissez ce travail à une personne compétente.</p>
+
+<h2 id="eviter">Limiter les déclenchements à l’avenir</h2>
+<p>Dans une installation bien conçue, les circuits sont répartis sur plusieurs différentiels 30 mA, au plus 8 circuits par différentiel dans une installation neuve (RGIE, 4.2.4.3 b). Un défaut ne coupe alors qu’une partie de la maison. Si toute votre installation dépend d’un seul différentiel qui saute souvent, parlez-en à un électricien.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Un différentiel qui saute signale une <strong>fuite de courant</strong> : il fait son travail, il ne faut jamais le contourner.</li><li>Commencez par <strong>débrancher tous les appareils</strong> du groupe concerné, puis rebranchez-les un par un.</li><li>Si le défaut persiste sans appareil, cherchez le <strong>circuit</strong> en cause en abaissant puis relevant les disjoncteurs un à un.</li><li>Humidité (prises extérieures, salle de bain) et appareils chauffants (chauffe-eau, lave-linge, four) sont les causes les plus fréquentes.</li><li>Dès qu’il faut ouvrir le tableau, une boîte ou une prise, faites appel à un électricien.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Le différentiel saute la nuit ou quand il pleut : pourquoi ?</summary><div>L’humidité est la cause la plus probable : une prise ou un luminaire extérieur, une boîte de dérivation mal étanche, une cave humide. La fuite apparaît quand l’eau pénètre, puis disparaît en séchant. Notez quand le déclenchement se produit : c’est un indice précieux pour l’électricien.</div></details>
+    <details><summary>Puis-je remplacer mon différentiel 30 mA par un 300 mA pour qu’il saute moins ?</summary><div>Non. Le 30 mA est là pour protéger les personnes ; un 300 mA ne les protège pas de la même façon. Il faut trouver et supprimer la fuite, pas réduire la protection.</div></details>
+    <details><summary>Mon différentiel saute sans raison apparente depuis des années : est-il défectueux ?</summary><div>C’est possible, mais plus rarement qu’on le croit. Souvent, trop d’appareils électroniques sont regroupés derrière le même différentiel, et leurs petites fuites normales s’additionnent. Un électricien peut le vérifier par mesure et, si besoin, répartir les circuits.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants de dispositifs différentiels.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="test-differentiel.html">← Tester un différentiel</a><a class="next" href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ? →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="differentiel.html">Le différentiel (30 mA, 300 mA)</a><span>Comment fonctionne un différentiel, pourquoi 300 mA en tête et 30 mA pour certains circuits en Belgique, et ce que signifient les types AC, A, F et B.</span></li><li><a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a><span>Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.</span></li><li><a href="resistance-isolement.html">La résistance d’isolement</a><span>Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.</span></li><li><a href="test-differentiel.html">Tester un différentiel</a><span>Le bouton test d’un différentiel, l’essai au testeur et le temps de déclenchement : ce que chaque essai vérifie et ce que Voltaplan attend.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Contrôles, mesures et pannes</h2><ul class="learn-list"><li><a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a><span>Installation neuve, modification ou vente : à quoi sert le contrôle par un organisme agréé, quels documents préparer et quelles mesures sont faites.</span></li><li><a href="continuite.html">La mesure de continuité</a><span>À quoi sert la mesure de continuité des conducteurs de protection et des liaisons équipotentielles, comment elle fonctionne et ce qui la fait échouer.</span></li><li><a href="resistance-isolement.html">La résistance d’isolement</a><span>Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.</span></li><li><a href="resistance-de-terre.html">La résistance de dispersion de la terre</a><span>Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.</span></li><li><a href="test-differentiel.html">Tester un différentiel</a><span>Le bouton test d’un différentiel, l’essai au testeur et le temps de déclenchement : ce que chaque essai vérifie et ce que Voltaplan attend.</span></li><li><a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a><span>Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

@@ -2,6 +2,18 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Apprendre l'électricité : cours, exercices de câblage et lexique (2026-11-27)
+
+- Nouvelle section du site `apprendre/` (en français) : 54 articles en 8 rubriques (bases, câbles, protections,
+  contrôles et pannes, câblages, volets et ouvrants, domotique, tableau et schémas) et un lexique de 152 mots.
+- 12 exercices de câblage interactifs (simple et double allumage, va-et-vient, inverseur, télérupteur, détecteur,
+  prises, volet, ouvrant motorisé…) : fils de couleur, commandes manœuvrables, vérification par simulation (court-
+  circuit, interrupteur sur le neutre, terre, couleurs, moteur alimenté dans les deux sens) ; toute solution juste est
+  acceptée. Sous chaque exercice, le schéma unifilaire dessiné par le moteur de Voltaplan.
+- Pages produites par `npm run learn:build` à partir de `learn/` ; `npm run learn:check` refuse toute référence au
+  RGIE non vérifiée dans le texte officiel. Tests `test/learn.test.ts` ; documentation `docs/apprendre.md`.
+- Lien « Apprendre » dans le menu et le pied des pages françaises, encart sur l'accueil.
+
 ### Référencement du site, lot 1 : bases techniques (2026-11-27)
 
 - Plus de redirection automatique de l'accueil selon la langue du navigateur (les moteurs voyaient l'accueil

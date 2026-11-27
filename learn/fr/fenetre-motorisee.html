@@ -1,0 +1,77 @@
+<!--
+{
+  "title": "Fenêtres, coupoles et ouvrants motorisés",
+  "pageTitle": "Câbler une coupole ou fenêtre motorisée (exercice) — Voltaplan",
+  "description": "Câbler une coupole, une fenêtre de toit ou un ouvrant à moteur deux sens avec une commande ouvrir / fermer : même principe que le volet, exercice et unifilaire.",
+  "rubrique": "volets",
+  "order": 4,
+  "exercise": "fenetre-motorisee",
+  "related": ["volet-roulant", "moteur-de-volet", "commande-groupee-volets", "volets-domotique"],
+  "retenir": [
+    "Un ouvrant à moteur 230 V à deux sens se câble comme un volet : phase vers la commande, une sortie « ouvrir », une sortie « fermer », neutre et terre directs.",
+    "La commande doit être <strong>verrouillée</strong> : jamais ouvrir et fermer en même temps.",
+    "Beaucoup de fenêtres de toit et d’ouvrants fonctionnent en très basse tension, avec leur propre boîtier de commande : la notice du fabricant prime.",
+    "Un ouvrant qui se ferme seul peut pincer : capteur de pluie, sécurité anti-pincement et commande visible sont à prévoir."
+  ],
+  "faq": [
+    { "q": "Peut-on commander une coupole avec un interrupteur ordinaire ?", "a": "Pas un moteur à deux sens : il faut une commande à deux sorties verrouillées (ouvrir, fermer), comme pour un volet. Un interrupteur simple ne commanderait qu’un sens, et un double interrupteur permettrait d’alimenter les deux à la fois." },
+    { "q": "Ma fenêtre de toit motorisée n’a que deux fils : comment la raccorder ?", "a": "C’est souvent un moteur en très basse tension continue, où le sens dépend de la polarité. Il se raccorde à l’alimentation ou au boîtier de commande prévu par le fabricant, jamais directement au 230 V." },
+    { "q": "La coupole peut-elle se fermer toute seule quand il pleut ?", "a": "Oui, avec un capteur de pluie raccordé à un boîtier de commande ou à un module domotique. C’est utile pour une coupole de salle de bain ou de cage d’escalier qu’on oublie ouverte." }
+  ],
+  "sources": [
+    { "label": "Notices des fabricants de coupoles, fenêtres de toit et moteurs d’ouvrants." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Une coupole sur un toit plat, une fenêtre de toit hors de portée, un ouvrant en haut d’une véranda : on les motorise pour les ouvrir et les fermer d’un geste. Quand le moteur fonctionne en 230 V avec deux sens, le câblage est <strong>le même que pour un <a href="volet-roulant.html">volet roulant</a></strong> : seuls les mots changent, « ouvrir » et « fermer » au lieu de « monter » et « descendre ».</p>
+
+<h2 id="types">Les types d’ouvrants motorisés</h2>
+<ul>
+  <li><strong>Coupole</strong> (ou lanterneau) sur toit plat : un vérin ou un moteur à chaîne soulève le dôme. Fréquent en salle de bain, cage d’escalier ou couloir.</li>
+  <li><strong>Fenêtre de toit</strong> : moteur intégré au châssis, souvent fourni avec un boîtier de commande et une télécommande.</li>
+  <li><strong>Ouvrant de façade ou de véranda</strong> : moteur à chaîne ou à bras fixé sur le dormant, pour la ventilation.</li>
+  <li><strong>Store extérieur ou intérieur</strong> sur une fenêtre : moteur tubulaire comme celui d’un volet.</li>
+</ul>
+<p>Deux grandes familles d’alimentation coexistent. Certains moteurs fonctionnent en <strong>230 V</strong>, avec deux fils de sens, un neutre et une terre, comme un moteur de volet. D’autres fonctionnent en <a href="lexique.html#tbts">très basse tension</a> (souvent en courant continu) : le sens dépend alors de la polarité des deux fils, et le moteur se raccorde à l’alimentation ou au boîtier du fabricant. Cet article et son exercice traitent du premier cas.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Le moteur possède deux entrées : l’une le fait tourner dans le sens « ouvrir », l’autre dans le sens « fermer ». Il a un <a href="lexique.html#neutre">neutre</a> commun et un fil de terre. La commande reçoit la <a href="lexique.html#phase">phase</a> et l’envoie soit vers « ouvrir », soit vers « fermer », soit nulle part (arrêt). En fin de course, le moteur s’arrête de lui-même : arrivé en position ouverte ou fermée, son <a href="lexique.html#fin-de-course">fin de course</a> coupe l’enroulement correspondant.</p>
+<p>Dans l’exercice, le moteur porte les bornes « montée » et « descente » d’un moteur de volet : la montée correspond ici à « ouvrir », la descente à « fermer ». Sur un vrai moteur, le repérage dépend du fabricant : vérifiez la notice, et essayez avant de régler les fins de course.</p>
+
+<h2 id="boite">Passer par une boîte de dérivation</h2>
+<p>Une coupole est souvent loin de sa commande : la commande est au mur, à hauteur de main, et le moteur au plafond. On tire donc le câble du tableau jusqu’à une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> au plafond, d’où partent un câble vers la commande et un câble vers le moteur. Dans la boîte :</p>
+<table>
+  <thead><tr><th>Connexion</th><th>Relie</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Arrivée du tableau → commande (borne L)</td><td>Brun</td></tr>
+    <tr><td>Ouvrir</td><td>Commande (sortie ouvrir) → moteur (sens ouvrir)</td><td>Noir</td></tr>
+    <tr><td>Fermer</td><td>Commande (sortie fermer) → moteur (sens fermer)</td><td>Gris</td></tr>
+    <tr><td>Neutre</td><td>Arrivée → moteur</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Arrivée → moteur (et commande si elle a une borne de terre)</td><td>Vert-jaune</td></tr>
+  </tbody>
+</table>
+<p>Chaque connexion se fait avec un connecteur dans la boîte. Le neutre et la terre ne passent pas par la commande ; on peut néanmoins les amener dans la boîte de la commande pour la remplacer plus tard par un module connecté.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Dans la boîte, relier la phase de l’arrivée au fil qui monte vers la borne L de la commande.</li>
+  <li>Relier les sorties ouvrir et fermer de la commande aux fils de sens du moteur, chacune par sa propre connexion.</li>
+  <li>Relier le neutre de l’arrivée au neutre du moteur, et la terre de l’arrivée à la terre du moteur.</li>
+  <li>Remettre le courant, essayer ouvrir et fermer, et échanger les deux fils de sens (hors tension) si le moteur tourne à l’envers.</li>
+  <li>Régler les fins de course selon la notice.</li>
+</ol>
+
+<h2 id="erreurs">Les erreurs à éviter</h2>
+<ul>
+  <li><strong>Ouvrir et fermer alimentés ensemble</strong> : avec un double interrupteur, ou en reliant par erreur les deux fils de sens dans la boîte. Le moteur force dans les deux sens et chauffe. Dans l’exercice, la vérification l’affiche : « Moteur de la coupole reçoit montée et descente en même temps : le moteur peut être endommagé ».</li>
+  <li><strong>Un moteur très basse tension raccordé au 230 V</strong> : il est détruit immédiatement, et l’isolation n’est pas prévue pour cette tension.</li>
+  <li><strong>Deux ouvrants en parallèle</strong> sur la même commande, sans accord du fabricant : voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</li>
+  <li><strong>Terre oubliée</strong> sur un moteur qui en a une.</li>
+</ul>
+
+<h2 id="securite">Sécurité d’usage</h2>
+<p>Un ouvrant motorisé exerce une force réelle. Placez la commande à un endroit d’où l’on voit l’ouvrant, pour ne pas fermer sur une main ou un objet. Beaucoup de moteurs ont une sécurité anti-pincement ou un arrêt sur effort ; ne la désactivez pas. Un capteur de pluie, raccordé à un boîtier de commande ou à un module domotique, ferme la coupole automatiquement en cas d’averse (voir <a href="volets-domotique.html">Volets et domotique</a>).</p>
+<p>Les exutoires de désenfumage obéissent à des règles propres et dépassent le cadre de cet article. Pour une installation neuve ou modifiée, le contrôle par un organisme agréé reste obligatoire.</p>

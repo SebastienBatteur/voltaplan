@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Contacteur jour/nuit du chauffe-eau électrique — Voltaplan</title>
+<meta name="description" content="Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/contacteur-jour-nuit.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le contacteur jour/nuit du chauffe-eau","description":"Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/contacteur-jour-nuit.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le contacteur jour/nuit du chauffe-eau","item":"https://voltaplan.org/apprendre/contacteur-jour-nuit.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Contacteur jour/nuit du chauffe-eau électrique — Voltaplan">
+<meta property="og:description" content="Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/contacteur-jour-nuit.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#cablages">Câblages de l’éclairage et des prises</a></nav>
+  <article>
+  <h1>Le contacteur jour/nuit du chauffe-eau</h1>
+  <p class="lead">Un chauffe-eau électrique consomme beaucoup, mais il n’a pas besoin de chauffer au moment où l’on se douche : il suffit que l’eau soit chaude quand on en a besoin. Avec un compteur à deux tarifs, on le fait donc chauffer pendant les heures creuses. C’est le rôle du <strong>contacteur jour/nuit</strong>, placé dans le tableau électrique.</p>
+
+<h2 id="pourquoi">Pourquoi un contacteur ?</h2>
+<p>Un chauffe-eau électrique courant a une <a href="lexique.html#puissance">puissance</a> de l’ordre de 2 000 à 3 000 W. À 2 400 W, il tire environ 10 A (2 400 ÷ 230). Il chauffe parfois plusieurs heures d’affilée : sur une année, cela fait beaucoup de <a href="lexique.html#kilowattheure">kilowattheures</a>. Les faire passer au tarif heures creuses réduit la facture, sans rien changer au confort.</p>
+<p>Il faut donc un appareil qui alimente le chauffe-eau seulement quand le tarif bas est actif. Un interrupteur manuel ne conviendrait pas : personne ne veut se lever pour l’enclencher. Le <a href="lexique.html#contacteur">contacteur</a> fait ce travail automatiquement, à partir d’un signal.</p>
+
+<h2 id="principe">Le principe du contacteur</h2>
+<p>Un contacteur ressemble à un <a href="lexique.html#relais">relais</a> de grande taille :</p>
+<ul>
+  <li>une <strong>bobine</strong> (bornes souvent marquées A1 et A2) : quand elle est alimentée, elle attire les contacts ;</li>
+  <li>des <strong>contacts de puissance</strong> qui ferment le circuit du chauffe-eau.</li>
+</ul>
+<p>La bobine consomme très peu ; les contacts, eux, laissent passer tout le courant du chauffe-eau. Un petit signal commande ainsi un gros appareil. La différence avec le <a href="telerupteur.html">télérupteur</a> : le contacteur n’a pas de mémoire. Il reste fermé tant que la bobine est alimentée et s’ouvre dès que le signal disparaît.</p>
+
+<h2 id="signal">D’où vient le signal ?</h2>
+<p>Le signal « heures creuses » est donné par le gestionnaire de réseau. Selon le <a href="lexique.html#compteur">compteur</a> et l’époque de l’installation, il arrive de différentes façons : un récepteur séparé à côté du compteur, un contact intégré au compteur, ou un relais du compteur communicant. Dans tous les cas, ce contact sert à alimenter (ou couper) la bobine du contacteur.</p>
+<p>Cette partie de l’installation dépend du compteur, du tarif souscrit et des règles du gestionnaire de réseau. Elle change parfois lors du remplacement d’un ancien compteur par un compteur communicant. Ne la modifiez pas vous-même : faites appel à un électricien, et en cas de doute, au gestionnaire de réseau. Pour comprendre les compteurs communicants en général, vous pouvez consulter <a href="https://sbg-energy.com/compteur-communicant">cette page d’explication sur le compteur communicant</a>.</p>
+
+<h2 id="selecteur">Auto, marche forcée, arrêt</h2>
+<p>Beaucoup de contacteurs modulaires prévus pour cet usage ont un petit sélecteur en façade :</p>
+<table>
+  <thead><tr><th>Position</th><th>Effet</th><th>Quand l’utiliser</th></tr></thead>
+  <tbody>
+    <tr><td>Auto</td><td>Le chauffe-eau chauffe seulement quand le signal est présent</td><td>En temps normal</td></tr>
+    <tr><td>Marche forcée (I)</td><td>Le chauffe-eau est alimenté en permanence, quel que soit le tarif</td><td>Ponctuellement, quand l’eau chaude manque (invités, retour de vacances)</td></tr>
+    <tr><td>Arrêt (0)</td><td>Le chauffe-eau n’est jamais alimenté</td><td>Absence prolongée, entretien</td></tr>
+  </tbody>
+</table>
+<p>Sur certains modèles, la marche forcée revient seule en position auto ; sur d’autres, il faut y penser. Une marche forcée oubliée fait chauffer l’eau au tarif plein. Les positions exactes dépendent du fabricant : la notice et le marquage en façade font foi.</p>
+
+<h2 id="circuit">Le circuit du chauffe-eau</h2>
+<p>Le chauffe-eau a son <strong>propre circuit</strong> au tableau, qui passe par les contacts du contacteur :</p>
+<ul>
+  <li>un <a href="disjoncteur.html">disjoncteur</a> dont le calibre correspond à la section du câble et à la puissance de l’appareil (par exemple 2,5 mm² et 20 A au plus, ou 1,5 mm² et 16 A au plus, selon la puissance et la notice) ;</li>
+  <li>un différentiel en amont, comme pour tout circuit ;</li>
+  <li>un conducteur de protection vert-jaune raccordé à la cuve, qui est métallique ;</li>
+  <li>le contacteur, avec un courant nominal suffisant pour le chauffe-eau.</li>
+</ul>
+<p>Le thermostat du chauffe-eau continue de jouer son rôle : quand l’eau a atteint la température réglée, il coupe la résistance, même si le contacteur est fermé. Le contacteur décide <em>quand</em> le chauffe-eau peut chauffer ; le thermostat décide <em>s’il</em> en a besoin.</p>
+
+<h2 id="securite">Précautions</h2>
+<ul>
+  <li><strong>Couper le bon circuit</strong> et vérifier l’absence de tension avant toute intervention sur le chauffe-eau : la bobine du contacteur et le chauffe-eau peuvent être alimentés par des circuits différents.</li>
+  <li><strong>Un chauffe-eau qui ne chauffe pas n’est pas forcément hors tension</strong> : le contacteur peut se fermer à tout moment quand le signal arrive.</li>
+  <li><strong>Repérer le contacteur</strong> dans le tableau, avec une étiquette claire. Voir <a href="organiser-tableau.html">Organiser le tableau électrique</a>.</li>
+</ul>
+<p>Une installation neuve ou modifiée doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>
+
+<h2 id="autres-usages">D’autres façons de piloter le chauffe-eau</h2>
+<p>Le même contacteur peut être commandé par autre chose que le signal du compteur : une horloge, un module domotique, ou un gestionnaire qui chauffe l’eau quand des panneaux solaires produisent plus que la maison ne consomme. Le principe électrique ne change pas : un contact commande la bobine, la bobine ferme le circuit du chauffe-eau.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Le contacteur est un <strong>interrupteur commandé</strong> : une petite bobine actionne des contacts capables de couper un gros appareil.</li><li>Le signal qui commande la bobine vient du <strong>compteur</strong> (ou d’un récepteur séparé), selon le compteur et le tarif.</li><li>Le chauffe-eau est sur un <strong>circuit dédié</strong>, avec un disjoncteur et une section adaptés à sa puissance.</li><li>Beaucoup de contacteurs ont une position <strong>auto</strong>, une <strong>marche forcée</strong> et un <strong>arrêt</strong>.</li><li>Le raccordement côté compteur dépend du gestionnaire de réseau : laissez-le à un professionnel.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Mon chauffe-eau ne chauffe plus la nuit : que vérifier ?</summary><div>Regardez d’abord la position du sélecteur du contacteur (auto, marche forcée, arrêt) et le disjoncteur du circuit. Si la marche forcée chauffe l’eau mais pas la position auto, le signal de commande n’arrive peut-être plus : c’est fréquent après un changement de compteur. Faites vérifier le raccordement par un électricien ou le gestionnaire de réseau.</div></details>
+    <details><summary>Le compteur communicant change-t-il quelque chose ?</summary><div>Il peut changer la façon dont le signal heures creuses est donné : certains compteurs ont un contact ou un relais prévu pour cela, et le raccordement de l’ancien récepteur doit parfois être adapté lors du remplacement. Renseignez-vous auprès de votre gestionnaire de réseau ou d’un électricien.</div></details>
+    <details><summary>Faut-il un contacteur si je n’ai qu’un tarif simple ?</summary><div>Non, le chauffe-eau peut alors être alimenté en permanence et réglé par son thermostat. Le contacteur reste utile pour piloter le chauffe-eau avec une horloge ou une production solaire, mais c’est un autre réglage.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants de contacteurs modulaires et de chauffe-eau électriques.</li><li><a href="https://sbg-energy.com/compteur-communicant">SBG Energy : le compteur communicant (explications générales).</a></li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="sonnette.html">← La sonnette et son transformateur</a><span></span></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li><li><a href="telerupteur.html">Boutons-poussoirs et télérupteur</a><span>Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.</span></li><li><a href="organiser-tableau.html">Organiser le tableau électrique</a><span>Différentiel général, différentiels 30 mA, disjoncteurs, réserve et étiquettes : comment organiser un tableau électrique belge clair, sûr et facile à dépanner.</span></li><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câblages de l’éclairage et des prises</h2><ul class="learn-list"><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="double-allumage.html">Le double allumage</a><span>Un interrupteur double pour commander deux lampes séparément : bornes, retours lampe, couleurs, variantes et exercice de câblage interactif.</span></li><li><a href="va-et-vient.html">Le va-et-vient</a><span>Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.</span></li><li><a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus (inverseur)</a><span>Allumer une lampe depuis trois endroits ou plus : rôle de l’inverseur sur les navettes, câblage, erreurs et quand préférer le télérupteur.</span></li><li><a href="telerupteur.html">Boutons-poussoirs et télérupteur</a><span>Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.</span></li><li><a href="minuterie.html">La minuterie d’escalier</a><span>La minuterie allume pour une durée réglable puis éteint seule : principe, câblage avec boutons-poussoirs, réglages et différence avec le télérupteur.</span></li><li><a href="detecteur-de-mouvement.html">Le détecteur de mouvement</a><span>Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.</span></li><li><a href="variateur.html">Le variateur de lumière</a><span>Remplacer un interrupteur par un variateur : variateur 2 fils ou 3 fils, compatibilité avec les LED, charge minimale, clignotements et erreurs à éviter.</span></li><li><a href="prise-de-courant.html">La prise de courant</a><span>Câbler des prises de courant en Belgique : terre obligatoire, 2,5 mm² et 20 A, 8 points par circuit, 30 mA, obturateurs, repiquage ou boîte de dérivation.</span></li><li><a href="prise-commandee.html">La prise commandée par un interrupteur</a><span>Allumer une lampe sur pied depuis l’interrupteur de la porte : câbler une prise commandée, choisir la section et l’interrupteur, éviter les erreurs.</span></li><li><a href="sonnette.html">La sonnette et son transformateur</a><span>Comment fonctionne une sonnette filaire : transformateur de sécurité, très basse tension, bouton-poussoir et sonnerie, câblage pas à pas et pannes courantes.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

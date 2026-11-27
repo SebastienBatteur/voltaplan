@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Circuits en série et en parallèle : lampes et prises — Voltaplan</title>
+<meta name="description" content="Série ou parallèle : ce qui change pour la tension et le courant, pourquoi les lampes et les prises d’une maison sont en parallèle, et où l’on trouve la série.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/serie-et-parallele.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Circuits en série et en parallèle","description":"Série ou parallèle : ce qui change pour la tension et le courant, pourquoi les lampes et les prises d’une maison sont en parallèle, et où l’on trouve la série.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/serie-et-parallele.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Circuits en série et en parallèle","item":"https://voltaplan.org/apprendre/serie-et-parallele.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Circuits en série et en parallèle : lampes et prises — Voltaplan">
+<meta property="og:description" content="Série ou parallèle : ce qui change pour la tension et le courant, pourquoi les lampes et les prises d’une maison sont en parallèle, et où l’on trouve la série.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/serie-et-parallele.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#bases">Les bases de l’électricité</a></nav>
+  <article>
+  <h1>Circuits en série et en parallèle</h1>
+  <p class="lead">Dès qu’un circuit comporte plus d’un élément, il faut savoir comment ils sont reliés entre eux : <strong>en série</strong>, l’un après l’autre, ou <strong>en parallèle</strong>, côte à côte. Ce choix change tout : la tension que reçoit chaque appareil, le courant dans les câbles, et ce qui se passe quand un élément tombe en panne. Une installation domestique utilise les deux, chacun à sa place.</p>
+
+<h2 id="serie">Le montage en série</h2>
+<p>En série, les éléments sont reliés bout à bout, sur <strong>un seul chemin</strong>. Le courant qui sort du premier entre dans le deuxième, et ainsi de suite. Trois conséquences :</p>
+<ul>
+  <li>le <strong>même courant</strong> traverse tous les éléments ;</li>
+  <li>la <strong>tension se partage</strong> entre eux : la somme de leurs tensions est égale à la tension d’alimentation ;</li>
+  <li>si un élément s’ouvre (ampoule grillée, fil coupé), <strong>tout s’arrête</strong>.</li>
+</ul>
+<p>Avec l’image de l’eau, c’est un seul tuyau qui traverse plusieurs robinets à la suite : il suffit d’en fermer un pour que l’eau ne coule plus nulle part.</p>
+<p>Les <a href="lexique.html#resistance">résistances</a> en série s’additionnent : <strong>R = R1 + R2 + …</strong> Plus on en ajoute, plus le courant diminue.</p>
+
+<h2 id="exemple-serie">Exemple : deux lampes en série</h2>
+<p>Prenons deux ampoules à incandescence identiques de 60 W, prévues pour 230 V. Chacune a une résistance d’environ 880 Ω à chaud (R = U² ÷ P = 230 × 230 ÷ 60). En série sur 230 V :</p>
+<ul>
+  <li>chaque ampoule ne reçoit que la moitié de la tension, 115 V ;</li>
+  <li>le courant est divisé par deux, environ 0,13 A au lieu de 0,26 A ;</li>
+  <li>chacune ne dissipe plus qu’environ un quart de sa puissance : elles éclairent faiblement.</li>
+</ul>
+<p>Ce calcul est approché (la résistance d’un filament change avec sa température), mais la conclusion est claire : des lampes en série ne fonctionnent pas normalement sur le réseau. Avec des lampes LED, le résultat est encore moins prévisible, car leur électronique ne se comporte pas comme une simple résistance.</p>
+
+<h2 id="parallele">Le montage en parallèle</h2>
+<p>En parallèle, chaque élément est relié directement aux deux conducteurs d’alimentation. Il y a <strong>plusieurs chemins</strong> :</p>
+<ul>
+  <li>chaque branche reçoit <strong>toute la tension</strong> (230 V) ;</li>
+  <li>chaque appareil appelle son propre courant, et les <strong>courants s’additionnent</strong> dans les conducteurs communs ;</li>
+  <li>si une branche s’ouvre, <strong>les autres continuent</strong> de fonctionner.</li>
+</ul>
+<p>Avec l’eau, c’est une conduite principale sur laquelle on branche plusieurs robinets : chacun reçoit la pleine pression et s’ouvre ou se ferme indépendamment, mais la conduite principale porte le débit total.</p>
+<p>En parallèle, la résistance totale diminue quand on ajoute des branches : <strong>1/R = 1/R1 + 1/R2 + …</strong> Deux résistances identiques en parallèle font moitié moins. Par exemple, deux bouilloires de 26 Ω branchées ensemble équivalent à 13 Ω : le circuit porte alors 230 ÷ 13 ≈ 17,7 A.</p>
+
+<h2 id="maison">Pourquoi la maison est câblée en parallèle</h2>
+<p>Toutes les lampes et toutes les <a href="lexique.html#prise-de-courant">prises de courant</a> d’une maison sont branchées en parallèle entre la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>. C’est la seule solution raisonnable :</p>
+<ul>
+  <li>chaque appareil reçoit les 230 V pour lesquels il est conçu, quel que soit le nombre d’appareils branchés ;</li>
+  <li>on peut allumer la cuisine sans allumer le salon, brancher un aspirateur sans éteindre le frigo ;</li>
+  <li>une lampe grillée ou un appareil débranché ne coupe pas le reste du circuit.</li>
+</ul>
+<p>Sur un circuit de prises, les prises sont donc reliées l’une à l’autre (phase avec phase, neutre avec neutre, terre avec terre) et chacune reçoit 230 V. Voir <a href="prise-de-courant.html">La prise de courant</a>. De même, quand un interrupteur commande plusieurs lampes, celles-ci sont en parallèle sur le même <a href="lexique.html#retour-lampe">retour lampe</a> : voir <a href="simple-allumage.html">Le simple allumage</a>.</p>
+<p>Revers de la médaille : les courants s’additionnent. Un circuit de prises qui alimente une bouilloire (8,7 A), un grille-pain (3,9 A) et un micro-ondes (5,2 A) porte près de 18 A. C’est ce courant total que le <a href="disjoncteur.html">disjoncteur</a> surveille.</p>
+
+<h2 id="serie-maison">Où trouve-t-on la série à la maison ?</h2>
+<p>La série n’a pas disparu : elle sert chaque fois qu’un élément doit <strong>commander ou protéger</strong> tout ce qui se trouve après lui.</p>
+<ul>
+  <li>L’<a href="lexique.html#interrupteur">interrupteur</a> est en série avec la lampe : ouvert, il coupe le seul chemin du courant.</li>
+  <li>Le <a href="lexique.html#disjoncteur">disjoncteur</a> et le fusible sont en série avec le circuit qu’ils protègent : quand ils s’ouvrent, tout le circuit est coupé.</li>
+  <li>Le <a href="lexique.html#differentiel">différentiel</a> est en série avec les circuits placés derrière lui.</li>
+  <li>Les câbles eux-mêmes sont en série avec les appareils : leur résistance prend une petite part de la tension, c’est la chute de tension.</li>
+</ul>
+
+<h2 id="mesures">Série, parallèle et mesures</h2>
+<p>Les appareils de mesure suivent la même logique : le voltmètre se branche <strong>en parallèle</strong> sur ce qu’on mesure (voir <a href="tension.html">La tension</a>), l’ampèremètre classique <strong>en série</strong> (voir <a href="courant.html">Le courant</a>). Un <a href="lexique.html#court-circuit">court-circuit</a>, enfin, n’est rien d’autre qu’un chemin en parallèle de résistance presque nulle : presque tout le courant s’y engouffre, et le disjoncteur doit couper.</p>
+
+<h2 id="schema">Sur un schéma</h2>
+<p>Sur un <a href="lire-unifilaire.html">schéma unifilaire</a>, les points d’un même circuit (prises, points lumineux) sont dessinés les uns après les autres le long du câble. Ce dessin ne signifie pas qu’ils sont en série : électriquement, ils sont tous en parallèle. Et comme toujours, avant de modifier un circuit, <strong>coupez le courant et vérifiez l’absence de tension</strong>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>En <strong>série</strong>, un seul chemin : le même courant traverse tout, les tensions se partagent, et si un élément s’ouvre, tout s’arrête.</li><li>En <strong>parallèle</strong>, plusieurs chemins : chaque branche reçoit toute la tension, et les courants s’additionnent.</li><li>Les lampes et les prises d’une maison sont en parallèle : chacune reçoit 230 V et fonctionne indépendamment.</li><li>L’interrupteur, le disjoncteur et le différentiel sont en série avec ce qu’ils commandent ou protègent.</li><li>Plus on ajoute d’appareils en parallèle, plus le courant total du circuit augmente : c’est ce que surveille le disjoncteur.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Pourquoi toute la guirlande s’éteint-elle quand une ampoule grille ?</summary><div>Parce que les ampoules de certaines guirlandes sont montées en série : le courant traverse chacune à la suite. Une ampoule grillée ouvre le circuit et plus aucun courant ne passe. Dans une maison, les lampes sont en parallèle, donc une lampe grillée n’éteint pas les autres.</div></details>
+    <details><summary>Brancher une multiprise, c’est mettre des appareils en série ?</summary><div>Non, une multiprise met les appareils en parallèle : chacun reçoit 230 V. Mais leurs courants s’additionnent dans le cordon et dans la prise murale. Une multiprise qui alimente un radiateur et une bouilloire peut ainsi dépasser ce qu’elle supporte et chauffer.</div></details>
+    <details><summary>Peut-on brancher deux lampes de 115 V en série sur du 230 V ?</summary><div>C’est une mauvaise idée. Le partage de la tension n’est égal que si les deux lampes sont identiques, et si l’une grille, l’autre s’éteint aussi. Utilisez toujours des appareils prévus pour la tension du réseau.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Manuels d’électrotechnique de base (associations de résistances, lois des circuits).</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="alternatif-mono-tri.html">← Courant alternatif, monophasé et triphasé</a><span></span></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="prise-de-courant.html">La prise de courant</a><span>Câbler des prises de courant en Belgique : terre obligatoire, 2,5 mm² et 20 A, 8 points par circuit, 30 mA, obturateurs, repiquage ou boîte de dérivation.</span></li><li><a href="lire-unifilaire.html">Lire un schéma unifilaire</a><span>Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Les bases de l’électricité</h2><ul class="learn-list"><li><a href="electricite-c-est-quoi.html">Qu’est-ce que l’électricité ?</a><span>L’électricité expliquée simplement : électrons, circuit fermé, tension, courant et puissance, avec l’analogie de l’eau et ses limites. Le point de départ.</span></li><li><a href="tension.html">La tension (U, en volts)</a><span>La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.</span></li><li><a href="courant.html">Le courant (I, en ampères)</a><span>Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li><li><a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a><span>Courant alternatif à 50 Hz, monophasé 230 V, réseaux belges 3 × 230 V sans neutre et 3N × 400 V, puissance en triphasé, cos φ et voltampères expliqués.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

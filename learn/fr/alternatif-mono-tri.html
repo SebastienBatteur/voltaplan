@@ -1,0 +1,84 @@
+<!--
+{
+  "title": "Courant alternatif, monophasé et triphasé",
+  "pageTitle": "Courant alternatif, monophasé et triphasé en Belgique — Voltaplan",
+  "description": "Courant alternatif à 50 Hz, monophasé 230 V, réseaux belges 3 × 230 V sans neutre et 3N × 400 V, puissance en triphasé, cos φ et voltampères expliqués.",
+  "rubrique": "bases",
+  "order": 6,
+  "related": ["tension", "puissance-energie", "couleurs-des-fils", "organiser-tableau"],
+  "retenir": [
+    "Le courant du réseau est <strong>alternatif</strong> : il change de sens 100 fois par seconde (50 Hz).",
+    "Le <strong>monophasé</strong> utilise deux conducteurs actifs (phase et neutre, ou deux phases) entre lesquels il y a 230 V.",
+    "En Belgique, deux réseaux coexistent : <strong>3N × 400 V</strong> (trois phases et un neutre) et <strong>3 × 230 V</strong> (trois phases, sans neutre).",
+    "En triphasé, P = √3 × U × I × cos φ : 16 A par phase donnent environ 11 kW en 3N × 400 V, mais seulement 6,4 kW en 3 × 230 V.",
+    "Le cos φ relie la puissance réelle (W) à la puissance apparente (VA) qui charge les câbles."
+  ],
+  "faq": [
+    { "q": "Comment savoir si mon réseau est en 3 × 230 V ou en 3N × 400 V ?", "a": "L’indication figure souvent sur le compteur ou sur le disjoncteur de branchement, et votre gestionnaire de réseau peut vous la donner. Un électricien peut aussi mesurer : en 3N × 400 V, on trouve 230 V entre une phase et le neutre et 400 V entre deux phases ; en 3 × 230 V, 230 V entre deux phases et environ 133 V entre une phase et la terre." },
+    { "q": "Ai-je besoin du triphasé à la maison ?", "a": "Pas toujours. Le triphasé devient utile pour de fortes puissances : borne de recharge rapide, pompe à chaleur importante, gros atelier. Pour un logement courant, un raccordement monophasé suffit souvent. Le choix dépend de la puissance totale et des appareils prévus." },
+    { "q": "Pourquoi la tension est-elle alternative et pas continue ?", "a": "Parce que le courant alternatif se transforme très facilement : des transformateurs élèvent la tension pour le transport sur de longues distances, avec peu de pertes, puis l’abaissent à 230 V près des habitations. Les alternateurs des centrales produisent d’ailleurs naturellement du courant alternatif." }
+  ],
+  "sources": [
+    { "label": "Manuels d’électrotechnique (courant alternatif, systèmes triphasés, facteur de puissance)." },
+    { "label": "Raccordement monophasé ou triphasé : sbg-energy.com", "url": "https://sbg-energy.com/raccordement-mono-tri" },
+    { "label": "Le réseau 3 × 230 V sans neutre : sbg-energy.com", "url": "https://sbg-energy.com/3x230-sans-neutre" },
+    { "label": "La fréquence de 50 Hz : sbg-energy.com", "url": "https://sbg-energy.com/frequence-50hz" }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Une pile donne un courant qui circule toujours dans le même sens. Le réseau électrique, lui, fournit un courant <a href="lexique.html#alternatif">alternatif</a>, distribué en <a href="lexique.html#monophase">monophasé</a> ou en <a href="lexique.html#triphase">triphasé</a>. En Belgique, deux types de réseaux coexistent, et la différence compte pour choisir un appareil, une borne de recharge ou une protection.</p>
+
+<h2 id="alternatif">Continu et alternatif</h2>
+<p>En courant <strong>continu</strong> (piles, batteries, panneaux solaires avant l’onduleur), la tension garde toujours le même signe et le courant circule dans un seul sens. En courant <strong>alternatif</strong>, la tension oscille régulièrement entre une valeur positive et une valeur négative, en passant par zéro : le courant change de sens à chaque alternance.</p>
+<p>Le réseau européen fonctionne à une <a href="lexique.html#frequence">fréquence</a> de <strong>50 Hz</strong> : la tension fait 50 cycles complets par seconde, donc change de sens 100 fois par seconde. Un cycle dure 20 millisecondes. La page <a href="https://sbg-energy.com/frequence-50hz">fréquence de 50 Hz</a> explique comment cette valeur est maintenue sur tout le réseau.</p>
+<p>Pourquoi l’alternatif ? Parce qu’il se transforme facilement : un transformateur élève la tension pour transporter l’énergie sur de longues distances avec peu de pertes, puis l’abaisse près des habitations. Le 230 V est une valeur efficace ; la tension monte en fait jusqu’à environ 325 V à chaque alternance (voir <a href="tension.html">La tension</a>).</p>
+
+<h2 id="monophase">Le monophasé</h2>
+<p>Un circuit monophasé utilise deux conducteurs actifs entre lesquels on dispose de 230 V. C’est le cas de toutes les prises et de l’éclairage d’une maison. Selon le réseau, ces deux conducteurs sont :</p>
+<ul>
+  <li>une <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a> (réseau 3N × 400 V) ;</li>
+  <li>deux phases (réseau 3 × 230 V, sans neutre).</li>
+</ul>
+<p>Pour l’appareil branché, cela ne change rien : il reçoit 230 V. Pour l’installation, si : avec deux phases, les deux conducteurs sont sous tension par rapport à la terre.</p>
+
+<h2 id="triphase">Le triphasé</h2>
+<p>Le triphasé utilise trois phases, notées L1, L2 et L3. Leurs tensions ont la même valeur, mais elles sont décalées d’un tiers de cycle : quand l’une est à son maximum, les deux autres sont en train de descendre ou de monter. La tension <strong>entre deux phases</strong> est plus grande que celle entre une phase et le point neutre, d’un facteur √3 (environ 1,73).</p>
+<p>Ce décalage a deux grands avantages : on transporte davantage de puissance avec peu de conducteurs supplémentaires, et on crée facilement un champ tournant qui fait démarrer les moteurs triphasés sans artifice.</p>
+
+<h2 id="reseaux-belges">Les deux réseaux belges</h2>
+<table>
+  <thead><tr><th></th><th>3N × 400 V</th><th>3 × 230 V</th></tr></thead>
+  <tbody>
+    <tr><td>Conducteurs</td><td>3 phases + neutre</td><td>3 phases, sans neutre</td></tr>
+    <tr><td>Entre deux phases</td><td>400 V</td><td>230 V</td></tr>
+    <tr><td>Entre une phase et le neutre</td><td>230 V</td><td>pas de neutre</td></tr>
+    <tr><td>Entre une phase et la terre</td><td>environ 230 V</td><td>environ 133 V</td></tr>
+    <tr><td>Monophasé 230 V obtenu par</td><td>une phase + le neutre</td><td>deux phases</td></tr>
+  </tbody>
+</table>
+<p>Le 3N × 400 V est le standard le plus répandu en Europe. Le 3 × 230 V, sans neutre, est encore très présent dans de nombreuses communes belges. Ses particularités sont détaillées sur la page <a href="https://sbg-energy.com/3x230-sans-neutre">3 × 230 V sans neutre</a>.</p>
+<p>Conséquence pratique en 3 × 230 V : il n’y a pas de neutre au potentiel de la terre, les deux conducteurs d’un circuit monophasé sont des phases. On utilise donc des protections qui coupent les deux conducteurs, et un appareil triphasé prévu pour 400 V entre phases ne peut pas y être branché tel quel. Vérifiez toujours la compatibilité indiquée par le fabricant.</p>
+
+<h2 id="puissance-tri">La puissance en triphasé</h2>
+<p>En monophasé, P = U × I × cos φ (le cos φ est expliqué plus bas ; il vaut 1 pour un appareil de chauffage). En triphasé équilibré, on utilise la tension entre phases :</p>
+<p><strong>P = √3 × U × I × cos φ</strong> &nbsp; (√3 ≈ 1,73)</p>
+<p>Comparons deux raccordements triphasés de 16 A par phase, avec cos φ = 1 :</p>
+<ul>
+  <li>en 3N × 400 V : 1,73 × 400 × 16 ≈ <strong>11 000 W</strong> (11 kW) ;</li>
+  <li>en 3 × 230 V : 1,73 × 230 × 16 ≈ <strong>6 400 W</strong> (6,4 kW).</li>
+</ul>
+<p>C’est pour cela qu’une borne de recharge de 11 kW, courante en 3N × 400 V, ne délivre pas la même puissance sur un réseau 3 × 230 V. Les choix de raccordement sont expliqués sur la page <a href="https://sbg-energy.com/raccordement-mono-tri">raccordement mono ou tri</a>.</p>
+<p>Dans une installation triphasée, on répartit les circuits monophasés sur les trois phases pour qu’elles soient chargées de façon équilibrée. Voir <a href="organiser-tableau.html">Organiser le tableau</a>.</p>
+
+<h2 id="cos-phi">Le cos φ et les voltampères</h2>
+<p>Pour un radiateur ou une bouilloire, le courant suit exactement la tension : P = U × I. Pour un moteur, un transformateur ou certains appareils électroniques, le courant est légèrement décalé par rapport à la tension. Une partie du courant fait des allers-retours sans produire de travail utile.</p>
+<p>On distingue alors :</p>
+<ul>
+  <li>la <strong>puissance apparente</strong> S = U × I, en voltampères (VA) : c’est ce que doivent porter les câbles et les protections ;</li>
+  <li>la <strong>puissance active</strong> P = U × I × cos φ, en watts (W) : celle qui chauffe, éclaire ou fait tourner.</li>
+</ul>
+<p>Le <strong>cos φ</strong> (facteur de puissance) est compris entre 0 et 1. Exemple : un moteur qui appelle 5 A sous 230 V représente 230 × 5 = 1 150 VA. Avec un cos φ de 0,8, il ne fournit que 1 150 × 0,8 = 920 W de puissance active. Le câble, lui, porte bien 5 A. C’est pourquoi la puissance d’un raccordement ou d’un transformateur s’exprime en VA ou en kVA : 9,2 kVA pour un raccordement monophasé de 40 A en 230 V.</p>
+
+<h2 id="securite">Et la sécurité ?</h2>
+<p>Quel que soit le réseau, chaque conducteur actif peut être dangereux. En 3 × 230 V, n’imaginez pas qu’un des deux fils d’un circuit monophasé est « inoffensif » : ce sont deux phases. Avant toute intervention, <strong>coupez le circuit au tableau et vérifiez l’absence de tension</strong> sur tous les conducteurs.</p>

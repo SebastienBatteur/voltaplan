@@ -1,0 +1,75 @@
+<!--
+{
+  "title": "Le simple allumage",
+  "pageTitle": "Câbler un simple allumage (schéma et exercice) — Voltaplan",
+  "description": "Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.",
+  "rubrique": "cablages",
+  "order": 1,
+  "exercise": "simple-allumage",
+  "related": ["double-allumage", "va-et-vient", "couleurs-des-fils"],
+  "retenir": [
+    "L’interrupteur coupe toujours la <strong>phase</strong>, jamais le neutre : la lampe éteinte n’est plus sous tension.",
+    "Le neutre (bleu) et la terre (vert-jaune) vont directement à la lampe, sans passer par l’interrupteur.",
+    "Le fil entre l’interrupteur et la lampe s’appelle le <strong>retour lampe</strong>.",
+    "Plusieurs lampes commandées ensemble se branchent en parallèle sur le même retour."
+  ],
+  "faq": [
+    { "q": "Peut-on brancher deux lampes sur un seul interrupteur ?", "a": "Oui. Les lampes se branchent en parallèle : chacune reçoit le retour lampe et le neutre, et chacune est reliée à la terre. L’interrupteur les allume et les éteint ensemble." },
+    { "q": "Pourquoi la lampe reste-t-elle légèrement allumée quand l’interrupteur est ouvert ?", "a": "C’est fréquent avec certaines lampes LED : un faible courant passe par les capacités des câbles, ou par le voyant lumineux d’un interrupteur. Si l’interrupteur coupe bien la phase, la lampe n’est pas dangereuse, mais un interrupteur sans voyant ou une lampe compatible règle souvent le problème." },
+    { "q": "Faut-il couper le disjoncteur pour changer une ampoule ?", "a": "C’est la bonne pratique. Même quand l’interrupteur coupe la phase, une erreur de câblage est toujours possible : coupez le circuit au tableau avant toute intervention." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le simple allumage est le montage de base de l’éclairage : <strong>un interrupteur</strong>, à un seul endroit, allume et éteint <strong>une ou plusieurs lampes</strong>. C’est le premier circuit à savoir câbler, et tous les autres montages (double allumage, va-et-vient, télérupteur) en reprennent le principe.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Une lampe s’allume quand elle est reliée à la fois à la <a href="lexique.html#phase">phase</a> et au <a href="lexique.html#neutre">neutre</a> : le courant entre par l’une et ressort par l’autre. L’interrupteur est placé <strong>sur la phase</strong>, entre le tableau et la lampe. Fermé, il laisse passer le courant ; ouvert, il l’interrompt.</p>
+<p>On coupe la phase et non le neutre pour une raison de sécurité : si l’interrupteur coupait le neutre, la lampe éteinte resterait reliée à la phase. Toucher la douille en changeant l’ampoule pourrait alors provoquer une électrisation.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → interrupteur (borne L)</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Retour lampe</td><td>Interrupteur (borne 1) → lampe (borne L)</td><td>Noir, gris ou brun ; jamais bleu ni vert-jaune</td></tr>
+    <tr><td>Neutre</td><td>Tableau → lampe (borne N)</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → lampe (borne de terre)</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Le vert-jaune est réservé au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> (la terre) : on ne l’utilise jamais pour autre chose. Le bleu est réservé au neutre. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+
+<h2 id="materiel">Le matériel</h2>
+<ul>
+  <li>Un <strong>interrupteur simple</strong> (dit unipolaire) : deux bornes, souvent marquées L (arrivée de la phase) et 1 ou une flèche (départ vers la lampe).</li>
+  <li>Un <strong>point lumineux</strong> : une boîte au plafond ou au mur, avec des bornes pour la lampe ou le luminaire.</li>
+  <li>Du <strong>câble</strong> : sur un circuit d’éclairage domestique, on utilise couramment du 1,5 mm², protégé par un disjoncteur de 16 A au plus. Voir <a href="section-des-cables.html">La section des câbles</a>.</li>
+  <li>Des <strong>connecteurs</strong> (bornes à levier ou à enfichage) dans une boîte de dérivation, quand plusieurs fils doivent être reliés.</li>
+</ul>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li>Amener la <strong>phase</strong> (brun) du tableau à la borne L de l’interrupteur.</li>
+  <li>Relier la borne 1 de l’interrupteur à la borne L de la lampe : c’est le <strong>retour lampe</strong> (noir ou gris).</li>
+  <li>Amener le <strong>neutre</strong> (bleu) du tableau directement à la borne N de la lampe.</li>
+  <li>Amener la <strong>terre</strong> (vert-jaune) à la borne de terre du point lumineux, même si la lampe actuelle n’en a pas besoin : un futur luminaire métallique en aura besoin.</li>
+  <li>Remettre le courant et essayer.</li>
+</ol>
+
+<h2 id="plusieurs-lampes">Plusieurs lampes sur le même interrupteur</h2>
+<p>Pour allumer plusieurs lampes ensemble (par exemple deux appliques), on les branche <a href="serie-et-parallele.html">en parallèle</a> : le retour lampe va à chaque lampe, le neutre aussi, et chaque point lumineux reçoit la terre. Chaque lampe reçoit ainsi toute la tension du réseau (230 V). En série, au contraire, elles se partageraient la tension et éclaireraient faiblement.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Interrupteur sur le neutre</strong> : la lampe s’allume et s’éteint normalement, mais elle reste sous tension une fois éteinte. L’erreur ne se voit pas à l’usage, d’où l’intérêt de la vérifier.</li>
+  <li><strong>Phase reliée directement au neutre</strong> (par exemple en reliant les deux bornes de l’arrivée à l’interrupteur) : c’est un <a href="lexique.html#court-circuit">court-circuit</a> dès que l’interrupteur se ferme, et le disjoncteur déclenche.</li>
+  <li><strong>Terre oubliée</strong> sur un luminaire métallique : en cas de défaut, la carcasse peut devenir dangereuse au toucher.</li>
+  <li><strong>Couleurs détournées</strong> : un fil bleu utilisé comme retour lampe trompe la personne qui interviendra plus tard.</li>
+</ul>
+
+<h2 id="tableau">Côté tableau</h2>
+<p>Le circuit d’éclairage est protégé au tableau par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section du câble, et par un <a href="differentiel.html">différentiel</a>. Dans une installation neuve en Belgique, les circuits d’éclairage sont placés derrière un différentiel de 30 mA depuis le 1<sup>er</sup> juin 2023 (RGIE, 4.2.4.3 b).</p>

@@ -1,0 +1,95 @@
+<!--
+{
+  "title": "Le disjoncteur saute : que faire ?",
+  "pageTitle": "Le disjoncteur saute : surcharge ou court-circuit ? — Voltaplan",
+  "description": "Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.",
+  "rubrique": "controles",
+  "order": 7,
+  "related": ["surcharge-court-circuit", "disjoncteur", "differentiel-qui-saute", "puissance-energie"],
+  "retenir": [
+    "Un disjoncteur saute pour deux raisons : une <strong>surcharge</strong> (trop d’appareils) ou un <strong>court-circuit</strong>.",
+    "Surcharge : il saute après un moment ; court-circuit : il saute instantanément, souvent quand on allume ou branche quelque chose.",
+    "Débranchez les appareils, réarmez, puis rebranchez un par un pour trouver le coupable.",
+    "Ne remplacez jamais un disjoncteur par un calibre plus élevé : il est choisi pour protéger la <strong>section du câble</strong>.",
+    "S’il saute sans aucun appareil branché, le défaut est dans l’installation : appelez un électricien."
+  ],
+  "faq": [
+    { "q": "Mon disjoncteur saute quand j’allume la bouilloire et le radiateur ensemble : est-ce normal ?", "a": "Oui, si les deux sont sur le même circuit : leurs puissances s’additionnent et dépassent ce que le circuit peut fournir. Branchez-les sur des circuits différents. Si cela arrive souvent, un électricien peut ajouter un circuit." },
+    { "q": "Puis-je mettre un disjoncteur de 20 A à la place du 16 A qui saute ?", "a": "Seulement si le câble du circuit le permet. Dans Voltaplan, un câble de 1,5 mm² est protégé par 16 A au plus, et un câble de 2,5 mm² par 20 A au plus. Un calibre trop fort laisserait le câble chauffer sans couper : c’est un risque d’incendie." },
+    { "q": "Le disjoncteur saute quand une ampoule grille : pourquoi ?", "a": "Avec certaines ampoules anciennes, la rupture du filament peut provoquer un bref court-circuit dans l’ampoule. Remplacez l’ampoule et réarmez. Si cela se répète avec des ampoules neuves, faites vérifier le luminaire." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan : correspondance entre section des câbles et calibre maximal des disjoncteurs." },
+    { "label": "Documentation des fabricants de disjoncteurs." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Une pièce est plongée dans le noir, une prise ne fonctionne plus, et au tableau une manette est en position basse. Si c’est un <a href="lexique.html#disjoncteur">disjoncteur</a>, il a détecté un courant trop fort sur son circuit. Avant de le relever, prenez une minute pour comprendre pourquoi : la cause se trouve souvent du côté des appareils branchés.</p>
+
+<h2 id="identifier">Disjoncteur ou différentiel ?</h2>
+<p>Commencez par repérer ce qui a sauté :</p>
+<ul>
+  <li>un <strong>disjoncteur</strong> protège un seul <a href="lexique.html#circuit">circuit</a> ; il porte un <a href="lexique.html#calibre">calibre</a> en ampères, par exemple C16 ou C20 ;</li>
+  <li>un <strong>différentiel</strong> protège un groupe de circuits ; il porte une sensibilité en mA et un bouton test. S’il saute, la cause est une fuite de courant : voyez <a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a></li>
+</ul>
+<p>Les deux causes sont différentes, et la démarche aussi.</p>
+
+<h2 id="deux-causes">Deux causes : surcharge ou court-circuit</h2>
+<p>Un disjoncteur contient deux protections :</p>
+<ul>
+  <li>contre la <a href="lexique.html#surcharge">surcharge</a> : le courant dépasse un peu le calibre pendant un certain temps. Le disjoncteur laisse passer quelques instants, voire quelques minutes, puis coupe pour éviter que le câble ne chauffe ;</li>
+  <li>contre le <a href="lexique.html#court-circuit">court-circuit</a> : la phase touche directement le neutre (ou la terre), le courant devient énorme, et le disjoncteur coupe instantanément.</li>
+</ul>
+<p>Voir <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a> pour le détail.</p>
+<table>
+  <thead><tr><th>Ce que vous observez</th><th>Cause probable</th></tr></thead>
+  <tbody>
+    <tr><td>Saute après quelques minutes de fonctionnement, quand plusieurs gros appareils tournent</td><td>Surcharge</td></tr>
+    <tr><td>Saute à l’instant où vous branchez ou allumez un appareil précis</td><td>Court-circuit dans l’appareil ou son cordon</td></tr>
+    <tr><td>Saute dès que vous le relevez, sans rien de branché</td><td>Court-circuit dans l’installation fixe</td></tr>
+    <tr><td>Saute au démarrage d’un moteur (pompe, compresseur, outil)</td><td>Fort courant de démarrage ; voir <a href="courbes-disjoncteur.html">Les courbes des disjoncteurs</a></td></tr>
+  </tbody>
+</table>
+
+<h2 id="surcharge">En cas de surcharge</h2>
+<p>Un circuit protégé par un disjoncteur de 16 A sous 230 V peut fournir environ 230 × 16 = 3 680 W. Branchez sur ce même circuit une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W : 4 000 W, soit plus de 17 A. Le disjoncteur finit par couper, et c’est exactement ce qu’on attend de lui. Voir <a href="puissance-energie.html">Puissance et énergie</a>.</p>
+<ol>
+  <li>Éteignez ou débranchez une partie des appareils du circuit.</li>
+  <li>Relevez le disjoncteur.</li>
+  <li>Répartissez les gros consommateurs sur des circuits différents (une autre pièce, une autre prise du tableau).</li>
+</ol>
+<p>Si la surcharge se répète, c’est que l’installation ne correspond plus à vos usages. La solution est d’ajouter un circuit, pas de « renforcer » le disjoncteur.</p>
+
+<h2 id="court-circuit">En cas de court-circuit</h2>
+<ol>
+  <li><strong>Débranchez tous les appareils</strong> du circuit concerné (retirez les fiches).</li>
+  <li><strong>Relevez le disjoncteur.</strong></li>
+  <li>S’il tient, <strong>rebranchez les appareils un par un</strong>. Celui qui le fait sauter est en cause : ne l’utilisez plus avant réparation.</li>
+  <li>Examinez son cordon et sa fiche : un câble écrasé sous un meuble, pincé dans une porte ou abîmé par un animal est une cause fréquente.</li>
+</ol>
+<p>Si le disjoncteur saute même sans aucun appareil branché, le court-circuit se trouve dans l’installation : une prise ou un interrupteur endommagé, un fil desserré dans une boîte, un câble percé lors d’un perçage, de l’eau dans un luminaire. Ne relevez pas le disjoncteur à répétition : chaque court-circuit abîme un peu plus les conducteurs et les contacts. Laissez-le abaissé et faites appel à un électricien.</p>
+
+<h2 id="calibre">Ne jamais augmenter le calibre</h2>
+<p>Le disjoncteur ne protège pas d’abord les appareils : il protège le <strong>câble</strong> contre l’échauffement. Son calibre est donc choisi selon la <a href="lexique.html#section">section</a> du câble. Les valeurs utilisées par Voltaplan :</p>
+<table>
+  <thead><tr><th>Section du câble</th><th>Calibre maximal</th></tr></thead>
+  <tbody>
+    <tr><td>1,5 mm²</td><td>16 A</td></tr>
+    <tr><td>2,5 mm²</td><td>20 A</td></tr>
+    <tr><td>4 mm²</td><td>25 A</td></tr>
+    <tr><td>6 mm²</td><td>32 A</td></tr>
+    <tr><td>10 mm²</td><td>50 A</td></tr>
+  </tbody>
+</table>
+<p>Remplacer un 16 A qui saute par un 25 A sur un câble de 1,5 mm², c’est laisser le câble chauffer dans le mur sans que rien ne coupe : un risque d’incendie. De même, on ne bloque jamais la manette d’un disjoncteur et on ne le shunte pas. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
+
+<h2 id="electricien">Quand appeler un électricien</h2>
+<ul>
+  <li>Le disjoncteur saute sans aucun appareil branché.</li>
+  <li>Il refuse de se réarmer, ou il est chaud, noirci, ou il grésille.</li>
+  <li>Une prise, un interrupteur ou une boîte présente des traces de brûlure ou une odeur.</li>
+  <li>Les surcharges sont fréquentes et un nouveau circuit semble nécessaire.</li>
+</ul>
+<p>Toute intervention sur l’installation se fait après avoir <strong>coupé le courant et vérifié l’absence de tension</strong>. L’ouverture du tableau, des prises ou des boîtes est un travail pour une personne compétente. Et si l’installation est modifiée (nouveau circuit, nouveau tableau), elle devra être contrôlée par un organisme agréé : voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>

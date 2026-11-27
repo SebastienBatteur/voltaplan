@@ -1,0 +1,75 @@
+<!--
+{
+  "title": "Les bus filaires (KNX et autres)",
+  "pageTitle": "Le bus KNX expliqué : câble, alimentation, programmation — Voltaplan",
+  "description": "Comment fonctionne un bus domotique filaire comme KNX : câble bus dédié, alimentation en très basse tension, adresses, programmation et règles de pose.",
+  "rubrique": "domotique",
+  "order": 3,
+  "related": ["domotique-introduction", "preparer-cablage-domotique", "organiser-tableau", "volets-domotique"],
+  "retenir": [
+    "Un bus relie tous les boutons, capteurs et actionneurs par un <strong>même câble</strong> de communication, séparé du câblage 230 V.",
+    "En KNX, le bus est alimenté en très basse tension (environ 30 V continu) par une alimentation dédiée au tableau.",
+    "Les actionneurs (relais, variateurs, commandes de volets) sont au tableau ; chaque circuit de puissance part en étoile vers son point.",
+    "Rien ne fonctionne sans <strong>programmation</strong> : il faut conserver le projet et les adresses, qui font partie du dossier de l’installation.",
+    "Les circuits de puissance suivent toutes les règles du RGIE : disjoncteur adapté à la section, différentiel, terre."
+  ],
+  "faq": [
+    { "q": "Peut-on faire passer le câble bus dans le même tube que les câbles 230 V ?", "a": "Cela dépend de l’isolation du câble bus et des consignes du fabricant. En pratique, on garde des tubes séparés et on évite de mélanger les conducteurs dans les boîtes : c’est plus simple à contrôler et à dépanner." },
+    { "q": "Que se passe-t-il si l’alimentation du bus tombe en panne ?", "a": "Les boutons et les capteurs ne communiquent plus, et les actionneurs gardent en général leur dernier état ou adoptent l’état prévu dans leur paramétrage. C’est pourquoi l’alimentation du bus est un appareil de qualité, placé au tableau et protégé par son propre disjoncteur." },
+    { "q": "Faut-il un professionnel pour programmer une installation KNX ?", "a": "La programmation se fait avec un logiciel dédié et demande une formation. Beaucoup de particuliers confient cette étape à un intégrateur. L’essentiel est de récupérer le fichier du projet à la fin du chantier." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation de l’association KNX et des fabricants d’appareils KNX (câble bus, alimentation, topologie)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Dans une installation classique, chaque interrupteur est relié par des fils 230 V à la lampe qu’il commande. Avec un <a href="lexique.html#bus">bus</a> filaire, tous les boutons, capteurs et modules sont reliés par un <strong>seul câble de communication</strong>, et ce sont des messages qui circulent. Le plus répandu des bus ouverts est <a href="lexique.html#knx">KNX</a>, une norme internationale suivie par de nombreux fabricants.</p>
+
+<h2 id="principe">Le principe du bus</h2>
+<p>Imaginez une conversation sur une ligne partagée. Quand vous appuyez sur un bouton, celui-ci envoie sur le bus un court message : « allumer le groupe salon ». Tous les appareils l’entendent, mais seul l’actionneur concerné, au tableau, ferme le relais du circuit du salon. Le bouton ne transporte jamais le courant de la lampe.</p>
+<p>Deux familles d’appareils sont reliées au bus :</p>
+<ul>
+  <li>les <strong>capteurs</strong> : boutons-poussoirs, détecteurs de présence, sondes de température, stations météo, contacts de fenêtre ;</li>
+  <li>les <strong>actionneurs</strong> : modules de relais, variateurs, commandes de <a href="volets-domotique.html">volets</a>, vannes de chauffage. Ils sont le plus souvent sur rail DIN au tableau.</li>
+</ul>
+<p>En KNX, l’intelligence est répartie : chaque appareil a sa propre électronique et connaît son rôle. Il n’y a pas d’automate central indispensable ; un appareil en panne n’empêche pas les autres de fonctionner.</p>
+
+<h2 id="alimentation">L’alimentation du bus</h2>
+<p>Le bus KNX est alimenté en <a href="lexique.html#tbts">très basse tension de sécurité</a>, aux environs de 30 V continu, par une <strong>alimentation dédiée</strong> installée au <a href="lexique.html#tableau-electrique">tableau électrique</a>. Cette tension sert à la fois à transmettre les messages et à alimenter l’électronique des boutons et des capteurs. Les actionneurs, eux, commutent le 230 V des circuits de puissance.</p>
+<p>L’alimentation est elle-même un appareil 230 V : elle est raccordée sur un circuit protégé par un <a href="disjoncteur.html">disjoncteur</a>, souvent en même temps qu’un éventuel serveur ou une passerelle. Une même alimentation ne sert qu’un nombre limité d’appareils ; une grande installation est découpée en plusieurs lignes, chacune avec son alimentation, reliées par des coupleurs.</p>
+
+<h2 id="cable">Le câble bus</h2>
+<p>Le bus utilise un câble spécifique, à paires torsadées, souvent reconnaissable à sa gaine verte. Il contient habituellement deux paires : une paire (rouge pour le plus, noir pour le moins) sert au bus, l’autre reste en réserve. Quelques règles de pose courantes :</p>
+<ul>
+  <li><strong>pas de boucle</strong> : le bus se câble en ligne, en arbre ou en étoile, mais on ne referme jamais le câble sur lui-même ;</li>
+  <li><strong>longueur limitée</strong> par ligne et distance limitée entre l’alimentation et les appareils, selon les valeurs du fabricant ;</li>
+  <li><strong>séparation du 230 V</strong> : en pratique, tubes distincts et conducteurs non mélangés dans les boîtes, sauf si les consignes du fabricant et l’isolation du câble le permettent ;</li>
+  <li><strong>repérage</strong> : le câble bus doit pouvoir être distingué des câbles de téléphone ou de réseau informatique, pour éviter qu’un futur intervenant y branche autre chose.</li>
+</ul>
+
+<h2 id="puissance">Les circuits de puissance</h2>
+<p>Avec un bus, chaque point de commande est relié au bus, et chaque point lumineux, groupe de prises commandées ou volet est relié <strong>en étoile</strong> au tableau, par son propre câble 230 V jusqu’à la sortie de l’actionneur. Ces circuits restent des circuits ordinaires : le disjoncteur est adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), et la terre accompagne chaque câble.</p>
+<p>Chaque sortie d’actionneur a un courant maximal : un module de relais 10 A ne commande pas un four de 3 500 W. Pour les fortes charges, l’actionneur pilote un <a href="lexique.html#contacteur">contacteur</a>. Le <a href="lire-unifilaire.html">schéma unifilaire</a> doit montrer ces actionneurs et les circuits qu’ils commandent ; voir aussi <a href="organiser-tableau.html">Organiser le tableau électrique</a>, car un tableau domotique demande beaucoup de place.</p>
+
+<h2 id="programmation">La programmation</h2>
+<p>Une installation KNX neuve ne fait rien tant qu’elle n’est pas programmée. On utilise un logiciel spécifique (ETS, édité par l’association KNX) pour :</p>
+<ol>
+  <li>donner à chaque appareil une <strong>adresse physique</strong>, qui l’identifie sur le bus ;</li>
+  <li>créer des <strong>adresses de groupe</strong>, qui relient une fonction (« lumière cuisine ») aux boutons qui la commandent et à la sortie qui l’exécute ;</li>
+  <li>régler les <strong>paramètres</strong> : durée d’une minuterie, comportement au retour du courant, temps de course d’un volet.</li>
+</ol>
+<p>Le fichier du projet est précieux : sans lui, modifier l’installation revient presque à tout reprogrammer. Demandez-le à la fin du chantier et rangez-le avec le <a href="dossier-installation.html">dossier de l’installation</a>, avec la liste des adresses.</p>
+
+<h2 id="autres-systemes">Les autres systèmes filaires</h2>
+<p>KNX n’est pas le seul bus. Citons, sans les comparer :</p>
+<ul>
+  <li><strong>DALI</strong>, un bus spécialisé dans la commande et la variation de l’éclairage, fréquent dans les bureaux ;</li>
+  <li><strong>Modbus</strong>, très utilisé pour lire des compteurs, des onduleurs ou des pompes à chaleur ;</li>
+  <li>des <strong>systèmes propres à un fabricant</strong> (par exemple Niko Home Control ou Loxone), avec leur propre câble de bus et leur propre outil de configuration.</li>
+</ul>
+<p>Le principe est le même : un câble de communication en très basse tension, des actionneurs au tableau et des circuits de puissance en étoile. Ce qui change, c’est l’ouverture : avec un système ouvert, des appareils de marques différentes cohabitent et n’importe quel intégrateur formé peut reprendre l’installation.</p>
+
+<h2 id="securite">Sécurité</h2>
+<p>Le bus lui-même est en très basse tension, mais les actionneurs et les circuits de puissance sont en 230 V. Coupez les circuits concernés au tableau et vérifiez l’absence de tension avant d’intervenir. Une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>, qui demandera des schémas où figurent les actionneurs.</p>

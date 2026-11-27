@@ -1,0 +1,86 @@
+<!--
+{
+  "title": "Le double allumage",
+  "pageTitle": "Câbler un double allumage (schéma et exercice) — Voltaplan",
+  "description": "Un interrupteur double pour commander deux lampes séparément : bornes, retours lampe, couleurs, variantes et exercice de câblage interactif.",
+  "rubrique": "cablages",
+  "order": 2,
+  "exercise": "double-allumage",
+  "related": ["simple-allumage", "va-et-vient", "couleurs-des-fils", "serie-et-parallele"],
+  "retenir": [
+    "Un interrupteur double, ce sont deux interrupteurs simples dans un même boîtier, avec une <strong>arrivée de phase commune</strong>.",
+    "Chaque touche a son propre <strong>retour lampe</strong> : il faut donc trois conducteurs entre l’interrupteur et les lampes (phase, retour 1, retour 2), plus le neutre et la terre côté lampes.",
+    "Le neutre et la terre vont directement aux lampes, sans passer par l’interrupteur.",
+    "Les retours se distinguent par leur couleur (noir, gris) ou par un repère : jamais en bleu ni en vert-jaune."
+  ],
+  "faq": [
+    { "q": "Quelle différence entre un interrupteur double et un double va-et-vient ?", "a": "L’interrupteur double commande deux circuits depuis un seul endroit. Le double va-et-vient réunit deux va-et-vient dans un même boîtier : chaque touche commande sa lampe depuis deux endroits, avec deux navettes par touche." },
+    { "q": "Peut-on commander une lampe et un ventilateur avec un interrupteur double ?", "a": "Oui, c’est un usage courant, par exemple dans une salle de bain ou un WC : une touche pour l’éclairage, l’autre pour l’extracteur. Le principe est le même, le ventilateur prend la place de la seconde lampe ; vérifiez sa notice, certains modèles demandent une alimentation permanente en plus." },
+    { "q": "Faut-il deux disjoncteurs pour un double allumage ?", "a": "Non. Les deux lampes sont en général sur le même circuit d’éclairage, protégé par un seul disjoncteur au tableau. L’interrupteur double sépare seulement la commande." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants d’appareillage (interrupteurs doubles, bornes et repérage)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le double allumage permet de commander <strong>deux lampes, ou deux groupes de lampes, séparément</strong> depuis un même endroit, avec un seul boîtier : l’interrupteur double. On le trouve partout où deux éclairages se partagent un même mur : plafonnier et appliques d’un salon, éclairage général et spots d’une cuisine, lampe et ventilateur d’une salle de bain.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un interrupteur double, c’est deux <a href="lexique.html#interrupteur">interrupteurs</a> simples réunis sous une même plaque, avec deux touches. À l’intérieur, les deux interrupteurs partagent la même arrivée de <a href="lexique.html#phase">phase</a> : on n’amène donc qu’un seul fil de phase. Chaque touche a ensuite sa propre sortie, qui part vers « sa » lampe.</p>
+<p>Le montage n’est rien d’autre que deux <a href="simple-allumage.html">simples allumages</a> côte à côte. Si vous savez câbler un simple allumage, vous savez câbler un double allumage : il suffit de ne pas mélanger les deux sorties.</p>
+
+<h2 id="bornes">Les bornes de l’interrupteur double</h2>
+<p>Un interrupteur double a en général trois bornes :</p>
+<ul>
+  <li><strong>L</strong> (ou une borne marquée d’une flèche entrante) : l’arrivée de phase, commune aux deux touches. Sur certains modèles, il y a deux bornes L reliées entre elles à l’intérieur ; on n’en utilise qu’une, ou l’autre sert à repartir vers un autre appareil.</li>
+  <li><strong>1</strong> : la sortie de la touche 1, vers la lampe 1.</li>
+  <li><strong>2</strong> : la sortie de la touche 2, vers la lampe 2.</li>
+</ul>
+<p>Le marquage varie d’un fabricant à l’autre (L, 1, 2 ou des flèches, parfois un petit schéma au dos de l’appareil). En cas de doute, la notice ou le schéma imprimé sur le mécanisme fait foi.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → interrupteur (borne L)</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Retour lampe 1</td><td>Interrupteur (borne 1) → lampe 1 (borne L)</td><td>Noir</td></tr>
+    <tr><td>Retour lampe 2</td><td>Interrupteur (borne 2) → lampe 2 (borne L)</td><td>Gris (ou noir repéré)</td></tr>
+    <tr><td>Neutre</td><td>Tableau → lampe 1 → lampe 2</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → chaque point lumineux</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Les deux fils qui sortent de l’interrupteur sont des <a href="lexique.html#retour-lampe">retours lampe</a>. Utiliser deux couleurs différentes (noir et gris, par exemple) évite de les confondre dans la boîte du plafond, et aide la personne qui interviendra dans dix ans. Le bleu reste réservé au neutre et le vert-jaune à la terre : voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li>Amener la <strong>phase</strong> (brun) à la borne L de l’interrupteur double.</li>
+  <li>Relier la borne 1 à la borne L de la lampe 1 (retour noir).</li>
+  <li>Relier la borne 2 à la borne L de la lampe 2 (retour gris).</li>
+  <li>Amener le <strong>neutre</strong> (bleu) à la lampe 1, puis de la lampe 1 à la lampe 2, ou de la <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> à chacune.</li>
+  <li>Amener la <strong>terre</strong> (vert-jaune) à chaque point lumineux.</li>
+  <li>Remettre le courant et essayer chaque touche séparément, puis les deux ensemble.</li>
+</ol>
+<p>Dans l’exercice ci-dessous, les quatre combinaisons sont vérifiées : tout éteint, touche 1 seule, touche 2 seule, les deux touches.</p>
+
+<h2 id="cables">Combien de conducteurs entre l’interrupteur et les lampes ?</h2>
+<p>Entre l’interrupteur et la boîte du plafond, il faut au moins <strong>trois conducteurs</strong> : la phase et les deux retours. Le neutre n’a rien à faire dans l’interrupteur : il va directement aux lampes. Côté lampes, chaque point lumineux reçoit son retour, le neutre et la terre.</p>
+<p>Avec des fils tirés sous tube, on choisit librement les couleurs : un brun, un noir, un gris. Avec un câble, choisissez-en un dont les couleurs permettent de garder le bleu pour le neutre et le vert-jaune pour la terre. Voir <a href="types-de-cables.html">Les types de câbles</a> et <a href="tubes-et-boites.html">Tubes et boîtes</a>.</p>
+
+<h2 id="variantes">Les variantes</h2>
+<ul>
+  <li><strong>Deux groupes de lampes</strong> : chaque touche peut commander plusieurs lampes, branchées <a href="serie-et-parallele.html">en parallèle</a> sur son retour. Par exemple, la touche 1 pour trois spots de 5 W au-dessus du plan de travail, la touche 2 pour le plafonnier.</li>
+  <li><strong>Lampe et ventilateur</strong> : la seconde touche commande l’extracteur d’une salle de bain. Certains extracteurs à temporisation demandent en plus une phase permanente : suivez la notice.</li>
+  <li><strong>Double va-et-vient</strong> : deux <a href="va-et-vient.html">va-et-vient</a> dans un même boîtier, pour commander deux lampes depuis deux endroits. Chaque touche a alors son commun et ses deux navettes.</li>
+</ul>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Retours inversés</strong> : la touche de gauche allume la lampe de droite. Ce n’est pas dangereux, mais c’est déroutant ; repérez les fils avant de fermer les boîtes.</li>
+  <li><strong>Neutre passé par l’interrupteur</strong> : une touche couperait le neutre au lieu de la phase, et la lampe éteinte resterait sous tension.</li>
+  <li><strong>Phase sur une borne de sortie</strong> : la touche correspondante n’a plus d’effet et l’autre lampe ne s’allume jamais.</li>
+  <li><strong>Terre oubliée</strong> sur l’un des deux points lumineux, souvent le second, ajouté après coup.</li>
+</ul>
+<p>Comme pour tout circuit d’éclairage, le contrôle d’une installation neuve ou modifiée est réalisé par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

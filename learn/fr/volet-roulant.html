@@ -1,0 +1,82 @@
+<!--
+{
+  "title": "Câbler un volet roulant",
+  "pageTitle": "Câbler un volet roulant (schéma et exercice) — Voltaplan",
+  "description": "Câbler une commande de volet et un moteur tubulaire : montée, descente, neutre et terre, couleurs des fils, erreurs à éviter, exercice et unifilaire.",
+  "rubrique": "volets",
+  "order": 1,
+  "exercise": "volet-roulant",
+  "related": ["moteur-de-volet", "commande-groupee-volets", "double-allumage", "symboles-electriques"],
+  "retenir": [
+    "Un moteur de volet a <strong>deux entrées de phase</strong> (montée et descente), un neutre commun et une terre.",
+    "La commande de volet envoie la phase <strong>soit</strong> vers la montée, <strong>soit</strong> vers la descente, jamais vers les deux.",
+    "Le neutre (bleu) et la terre (vert-jaune) vont directement au moteur, sans passer par la commande.",
+    "On n’utilise pas un double interrupteur ordinaire : rien n’empêcherait d’alimenter les deux sens en même temps.",
+    "Un seul moteur par commande, sauf indication contraire du fabricant."
+  ],
+  "faq": [
+    { "q": "Peut-on remplacer la commande de volet par un double interrupteur ?", "a": "Non. Un double interrupteur permet d’enfoncer les deux touches en même temps : le moteur recevrait la phase sur la montée et sur la descente, ce qui peut l’endommager. Une commande de volet est verrouillée, mécaniquement ou électriquement, pour qu’un seul sens soit alimenté à la fois." },
+    { "q": "Le volet descend quand j’appuie sur montée : que faire ?", "a": "Les deux fils de sens du moteur sont simplement inversés. Coupez le circuit, vérifiez l’absence de tension, puis échangez les fils raccordés aux bornes montée et descente de la commande (ou dans la boîte de raccordement du moteur)." },
+    { "q": "Faut-il un circuit séparé pour les volets ?", "a": "Ce n’est pas obligatoire dans une maison : les volets sont souvent raccordés sur un circuit d’éclairage ou sur un circuit dédié en 1,5 mm² protégé par un disjoncteur de 16 A au plus. Un circuit dédié facilite la commande centralisée et le dépannage." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Notices de raccordement des fabricants de moteurs tubulaires et de commandes de volets." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un <a href="lexique.html#volet-roulant">volet roulant</a> électrique se commande avec <strong>une commande de volet</strong> à deux touches : l’une fait monter le tablier, l’autre le fait descendre. Le câblage ressemble à un <a href="double-allumage.html">double allumage</a>, avec une différence essentielle : les deux sorties ne doivent <strong>jamais</strong> être alimentées en même temps.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Le moteur d’un volet roulant est un moteur tubulaire caché dans l’axe d’enroulement. Il possède deux enroulements, un par sens de rotation, et un neutre commun. Pour le faire tourner, on envoie la <a href="lexique.html#phase">phase</a> sur l’entrée « montée » ou sur l’entrée « descente » ; le <a href="lexique.html#neutre">neutre</a> reste toujours raccordé.</p>
+<p>La commande de volet joue le rôle d’aiguillage : elle reçoit la phase sur sa borne L et la renvoie vers l’une de ses deux sorties. Au repos (position arrêt), aucune sortie n’est alimentée et le moteur ne tourne pas. Arrivé en haut ou en bas, le moteur s’arrête tout seul grâce à ses <a href="lexique.html#fin-de-course">fins de course</a>, même si vous maintenez la touche. Voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → commande (borne L)</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Montée</td><td>Commande (sortie ▲) → moteur (montée)</td><td>Noir, gris ou brun</td></tr>
+    <tr><td>Descente</td><td>Commande (sortie ▼) → moteur (descente)</td><td>Noir, gris ou brun, différent de la montée si possible</td></tr>
+    <tr><td>Neutre</td><td>Tableau → moteur (N)</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → moteur (terre)</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Entre la commande et le moteur, il faut donc <strong>quatre conducteurs</strong> : montée, descente, neutre et terre. Le moteur est livré avec son propre câble, que l’on raccorde dans une boîte, souvent près du caisson du volet. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+
+<h2 id="materiel">Le matériel</h2>
+<ul>
+  <li>Une <strong>commande de volet</strong> : interrupteur à deux touches verrouillées ou à bascule à trois positions (montée, arrêt, descente). Ses bornes sont souvent marquées L, ▲ et ▼, ou L, 1 et 2.</li>
+  <li>Un <strong>moteur tubulaire</strong> adapté au poids et à la taille du tablier. Pour un volet de maison, la puissance électrique est couramment de l’ordre de 100 à 250 W, soit environ 0,5 à 1 A sous 230 V.</li>
+  <li>Du <strong>câble</strong> : 3 conducteurs (phase, neutre, terre) jusqu’à la commande si le neutre et la terre y passent, et 4 conducteurs de la commande vers le moteur. Sur un circuit protégé par un disjoncteur de 16 A, on utilise du 1,5 mm². Voir <a href="section-des-cables.html">La section des câbles</a>.</li>
+  <li>Une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> accessible près du volet, pour raccorder le câble du moteur.</li>
+</ul>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li>Amener la <strong>phase</strong> (brun) du tableau à la borne L de la commande.</li>
+  <li>Relier la sortie montée de la commande au fil de montée du moteur (par exemple en noir).</li>
+  <li>Relier la sortie descente de la commande au fil de descente du moteur (par exemple en gris).</li>
+  <li>Amener le <strong>neutre</strong> (bleu) directement au neutre du moteur.</li>
+  <li>Raccorder la <strong>terre</strong> (vert-jaune) au fil vert-jaune du moteur.</li>
+  <li>Remettre le courant et essayer : si le volet descend quand vous appuyez sur montée, coupez le courant et échangez les deux fils de sens.</li>
+</ol>
+<p>Les fins de course se règlent ensuite selon la notice du moteur (vis de réglage ou procédure avec un câble ou un outil de réglage). Ne laissez jamais le moteur forcer en butée.</p>
+
+<h2 id="deux-sens">Pourquoi jamais les deux sens à la fois</h2>
+<p>Si la phase arrive en même temps sur la montée et sur la descente, les deux enroulements travaillent l’un contre l’autre. Le moteur ne tourne pas ou à peine, il chauffe, et son condensateur ou ses enroulements peuvent être détruits. Voilà pourquoi une commande de volet est <strong>verrouillée</strong> : appuyer sur une touche libère l’autre, ou une bascule ne peut occuper qu’une position.</p>
+<p>Dans l’exercice ci-dessous, essayez par exemple de relier la phase directement aux deux bornes de sens du moteur, ou de ponter les deux sorties de la commande : la vérification affiche alors « Moteur du volet reçoit montée et descente en même temps : le moteur peut être endommagé ». Dans une vraie installation, rien ne vous préviendrait.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Double interrupteur ordinaire</strong> à la place d’une commande de volet : les deux touches peuvent être enfoncées ensemble, avec le risque décrit ci-dessus.</li>
+  <li><strong>Deux moteurs en parallèle</strong> sur la même commande : sauf mention du fabricant, c’est déconseillé. Voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</li>
+  <li><strong>Commande placée sur le neutre</strong> : le moteur reste sous tension même à l’arrêt.</li>
+  <li><strong>Terre oubliée</strong> : le câble du moteur comporte un fil vert-jaune ; il doit être raccordé à la terre de l’installation.</li>
+  <li><strong>Sortie de la commande reliée au neutre</strong> par erreur : dès qu’on appuie sur cette touche, la phase rejoint directement le neutre. C’est un <a href="lexique.html#court-circuit">court-circuit</a>, et le disjoncteur déclenche.</li>
+</ul>
+
+<h2 id="tableau">Côté tableau et schéma</h2>
+<p>Le circuit est protégé au tableau par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section du câble, et se trouve derrière un <a href="differentiel.html">différentiel</a>. Sur le schéma unifilaire, la commande de volet se dessine comme un interrupteur portant deux petites flèches opposées, et le moteur comme un cercle marqué M. Voir <a href="symboles-electriques.html">Les symboles électriques</a>. Une installation neuve ou modifiée doit être contrôlée par un organisme agréé.</p>

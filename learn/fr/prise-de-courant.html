@@ -1,0 +1,84 @@
+<!--
+{
+  "title": "La prise de courant",
+  "pageTitle": "Câbler une prise de courant (schéma et exercice) — Voltaplan",
+  "description": "Câbler des prises de courant en Belgique : terre obligatoire, 2,5 mm² et 20 A, 8 points par circuit, 30 mA, obturateurs, repiquage ou boîte de dérivation.",
+  "rubrique": "cablages",
+  "order": 9,
+  "exercise": "prise-de-courant",
+  "related": ["prise-commandee", "section-des-cables", "differentiel", "mise-a-la-terre"],
+  "retenir": [
+    "Chaque prise reçoit la <strong>phase</strong>, le <strong>neutre</strong> et la <strong>terre</strong> ; la terre (vert-jaune) n’est jamais facultative.",
+    "Un circuit de prises est en <strong>2,5 mm²</strong> au moins, protégé par un disjoncteur de <strong>20 A</strong> au plus.",
+    "Au plus <strong>8 points de prise</strong> par circuit ; une prise double ou triple compte pour un seul point.",
+    "En neuf, les circuits de prises sont derrière un différentiel de <strong>30 mA</strong>, et les prises de 16 A ont des obturateurs (IPXX-D) depuis le 1<sup>er</sup> mars 2025.",
+    "Les prises se branchent en parallèle : par repiquage d’une prise à l’autre, ou depuis une boîte de dérivation."
+  ],
+  "faq": [
+    { "q": "Une prise double compte-t-elle pour un ou deux points ?", "a": "Pour un seul point. Une prise multiple (double, triple) dans une même boîte compte pour un point dans la limite de 8 points par circuit, comme l’indique aussi la vérification de Voltaplan." },
+    { "q": "Peut-on brancher une prise en repiquage sur une autre prise ?", "a": "Oui, c’est courant : la seconde prise est alimentée depuis les bornes de la première. Les bornes doivent accepter deux conducteurs (beaucoup de prises ont des bornes doubles prévues pour cela) et être bien serrées, car elles transportent le courant de toutes les prises suivantes." },
+    { "q": "Peut-on encore installer une prise sans terre ?", "a": "Non. Une prise sans contact de terre est un défaut relevé lors du contrôle. Si une ancienne prise n’a pas de terre, il faut amener un conducteur de protection vert-jaune jusqu’à elle, ou la supprimer." },
+    { "q": "Combien d’appareils peut-on brancher sur un circuit de prises ?", "a": "C’est la puissance totale qui compte : un circuit protégé par 20 A supporte au plus environ 4 600 W en même temps (20 A × 230 V). Une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W y passent ; ajoutez un four de 2 500 W et le disjoncteur déclenchera." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan : règles d’aide au contrôle pour les prises (terre, section, nombre de points, obturateurs)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La <a href="lexique.html#prise-de-courant">prise de courant</a> est le point le plus utilisé de la maison. La câbler n’est pas difficile ; ce qui demande de l’attention, ce sont les règles autour d’elle : la terre, la section du câble, le nombre de prises par circuit et la protection au tableau.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Une prise met à disposition la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a> : l’appareil branché se trouve entre les deux et reçoit 230 V. La prise belge (type E) a en plus une <strong>broche de terre</strong> qui entre dans la fiche de l’appareil. Elle relie la carcasse métallique des appareils (lave-linge, grille-pain, ordinateur fixe…) au <a href="lexique.html#conducteur-de-protection">conducteur de protection</a>.</p>
+<p>Si un fil se détache à l’intérieur d’un appareil et touche sa carcasse, le courant de défaut part à la terre et le <a href="differentiel.html">différentiel</a> coupe le circuit. Sans terre, la carcasse resterait sous tension, jusqu’à ce que quelqu’un la touche. C’est pourquoi toute prise doit avoir un contact de terre raccordé.</p>
+
+<h2 id="fils">Les trois fils</h2>
+<table>
+  <thead><tr><th>Fil</th><th>Borne de la prise</th><th>Couleur</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>L (ou repère du fabricant)</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Neutre</td><td>N</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Borne de terre (symbole ⏚), reliée à la broche</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Pour une prise ordinaire, l’ordre phase / neutre n’empêche pas l’appareil de fonctionner, mais respectez le marquage du fabricant et gardez la même habitude dans toute l’installation : c’est plus clair pour la personne qui interviendra ensuite. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+
+<h2 id="circuit">Le circuit de prises : section, calibre, nombre de points</h2>
+<ul>
+  <li><strong>Section</strong> : un circuit de prises est câblé en <a href="lexique.html#section">section</a> de 2,5 mm² au moins (par exemple un câble XVB 3G2,5).</li>
+  <li><strong>Protection</strong> : un disjoncteur de 20 A au plus pour du 2,5 mm². Le calibre protège le câble : un câble trop fin derrière un disjoncteur trop gros pourrait chauffer sans que rien ne coupe. Voir <a href="section-des-cables.html">La section des câbles</a>.</li>
+  <li><strong>Nombre de points</strong> : au plus <strong>8 points de prise</strong> par circuit. Une prise double ou triple, dans une même boîte, compte pour <strong>un</strong> point. Une cuisine avec six prises doubles et deux simples atteint donc déjà la limite.</li>
+</ul>
+<p>Le nombre de points ne dit rien de la puissance. Sur 20 A, on peut tirer environ 4 600 W en même temps. Les gros appareils (lave-linge, sèche-linge, lave-vaisselle, four) sont en pratique placés chacun sur un circuit qui leur est réservé, pour ne pas faire déclencher le circuit de la cuisine dès que tout tourne.</p>
+
+<h2 id="protections">Différentiel 30 mA et obturateurs</h2>
+<p>Dans une installation neuve en Belgique, les circuits de prises sont placés derrière un différentiel de 30 mA depuis le 1<sup>er</sup> juin 2023, avec au plus 8 circuits par différentiel 30 mA (RGIE, 4.2.4.3 b).</p>
+<p>Depuis le 1<sup>er</sup> mars 2025, les prises de 16 A au plus doivent offrir une protection <strong>IPXX-D</strong> : des obturateurs (la « sécurité enfant ») ferment les alvéoles tant qu’une fiche n’est pas enfoncée (RGIE, 5.3.5.2 a). Une exception existe pour une prise réservée à un appareil précis. En pratique, les prises vendues aujourd’hui en ont presque toutes ; vérifiez-le si vous réutilisez du vieux matériel. Voir aussi l’<a href="lexique.html#indice-de-protection">indice de protection</a>.</p>
+
+<h2 id="cablage">Repiquage ou boîte de dérivation</h2>
+<p>Les prises d’un même circuit sont branchées <a href="serie-et-parallele.html">en parallèle</a> : chacune reçoit la phase, le neutre et la terre. Deux façons de faire :</p>
+<ul>
+  <li><strong>En repiquage</strong> : le câble arrive à la première prise, et un second câble repart de ses bornes vers la prise suivante. C’est simple et économique en câble. Il faut des bornes qui acceptent deux conducteurs et un serrage soigné, car les bornes de la première prise transportent le courant de toutes les suivantes.</li>
+  <li><strong>Depuis une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a></strong> : le câble du tableau arrive dans une boîte, et un câble part vers chaque prise. Les raccordements se font avec des connecteurs (à levier ou à enfichage). Une prise peut alors être remplacée sans toucher aux autres.</li>
+</ul>
+<p>Les deux méthodes donnent le même circuit électrique ; l’exercice ci-dessous accepte l’une comme l’autre.</p>
+
+<h2 id="etapes">Câbler une prise pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté, sur chaque fil.</li>
+  <li>Dénuder les conducteurs sur la longueur indiquée par le fabricant (souvent marquée au dos de la prise).</li>
+  <li>Raccorder d’abord la <strong>terre</strong> (vert-jaune), puis le neutre (bleu) et la phase (brun).</li>
+  <li>Pour un repiquage, insérer le second conducteur de chaque couleur dans la même borne ou dans la borne double prévue.</li>
+  <li>Tirer légèrement sur chaque fil pour vérifier qu’il tient, ranger les fils sans les plier brutalement, fixer la prise.</li>
+  <li>Remettre le courant et vérifier la prise avec un testeur de prise ou un appareil.</li>
+</ol>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Terre non raccordée</strong>, ou fil vert-jaune utilisé comme phase : un danger invisible à l’usage.</li>
+  <li><strong>Prises ajoutées sur un circuit d’éclairage en 1,5 mm²</strong> : le câble est trop fin pour une prise protégée par 20 A.</li>
+  <li><strong>Trop de points sur un circuit</strong> : plus de 8, une prise double comptant pour un.</li>
+  <li><strong>Fil mal serré</strong> dans une borne de repiquage : il chauffe et peut faire fondre la prise ; toutes les prises suivantes s’arrêtent si le contact se rompt.</li>
+</ul>
+<p>Une installation neuve ou modifiée doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>

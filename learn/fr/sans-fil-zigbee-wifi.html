@@ -1,0 +1,71 @@
+<!--
+{
+  "title": "Zigbee, Z-Wave, Wi-Fi : le sans-fil",
+  "pageTitle": "Zigbee, Z-Wave, Wi-Fi, Thread, Matter : le sans-fil — Voltaplan",
+  "description": "Zigbee, Z-Wave, Wi-Fi, Thread et Matter expliqués : maillage, piles, portée, forces et limites de chaque protocole sans fil pour la domotique.",
+  "rubrique": "domotique",
+  "order": 4,
+  "related": ["relais-connectes", "scenarios-home-assistant", "domotique-introduction", "volets-domotique"],
+  "retenir": [
+    "Les appareils sans fil communiquent par radio, mais les relais restent branchés sur le 230 V et obéissent aux mêmes règles que tout circuit.",
+    "Zigbee, Z-Wave et Thread forment un <strong>réseau maillé</strong> : les appareils alimentés par le secteur relaient les messages des autres.",
+    "Le Wi-Fi est simple à mettre en place, mais consomme plus et charge le routeur ; beaucoup d’appareils dépendent d’un service en ligne.",
+    "Matter est une couche commune qui fonctionne au-dessus du Wi-Fi et de Thread, pour faire coopérer des appareils de marques différentes.",
+    "Les capteurs sur pile ne relaient pas : il faut des appareils secteur bien répartis pour un réseau fiable."
+  ],
+  "faq": [
+    { "q": "Quel protocole choisir pour une maison existante ?", "a": "Il n’y a pas de réponse unique. Un réseau maillé (Zigbee, Z-Wave ou Thread) convient bien à de nombreux capteurs sur pile et à des relais répartis dans la maison. Le Wi-Fi convient à quelques appareils isolés. L’important est de choisir une passerelle ou un logiciel qui fonctionne localement et de rester cohérent." },
+    { "q": "Combien de temps durent les piles des capteurs ?", "a": "Cela varie beaucoup selon l’appareil, le protocole et la fréquence des messages : de quelques mois à plusieurs années. Un logiciel domotique peut afficher le niveau des piles et prévenir avant qu’un capteur ne s’arrête." },
+    { "q": "Les ondes des appareils domotiques sont-elles dangereuses ?", "a": "Ces appareils émettent à faible puissance et la plupart du temps brièvement. Ils sont soumis aux mêmes règles européennes que les autres équipements radio. Si vous préférez limiter les ondes, une solution filaire reste possible pour les fonctions principales." }
+  ],
+  "sources": [
+    { "label": "Documentation des fabricants et des organismes qui publient ces protocoles (Connectivity Standards Alliance pour Zigbee et Matter, Z-Wave Alliance, Thread Group)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le sans-fil a rendu la <a href="lexique.html#domotique">domotique</a> accessible aux maisons existantes : pas de saignée, pas de câble bus, un module derrière l’interrupteur et un capteur collé au mur. Mais « sans fil » ne veut pas dire « sans règles » : chaque protocole a ses forces et ses limites, et le 230 V reste du 230 V.</p>
+
+<h2 id="ce-qui-est-sans-fil">Ce qui est vraiment sans fil</h2>
+<p>Seule la <strong>commande</strong> passe par radio. Un <a href="relais-connectes.html">relais connecté</a> reste raccordé à la phase et au neutre, et il alimente la lampe par un fil. Le circuit garde son <a href="disjoncteur.html">disjoncteur</a> adapté à la <a href="lexique.html#section">section</a> et son <a href="differentiel.html">différentiel</a>. Les seuls appareils totalement sans fil sont ceux qui fonctionnent sur pile : boutons, détecteurs, sondes de température, contacts de fenêtre.</p>
+
+<h2 id="maillage">Le réseau maillé</h2>
+<p>Dans un réseau en étoile, chaque appareil parle directement à la passerelle : s’il est trop loin, il n’est pas entendu. Dans un <strong>réseau maillé</strong>, les appareils alimentés par le secteur servent de relais radio : le message d’un capteur au fond du jardin passe par un module de la cuisine, puis par une prise connectée du salon, avant d’atteindre la passerelle. Si un chemin disparaît, le réseau en trouve un autre.</p>
+<p>Conséquence pratique : <strong>les appareils sur pile ne relaient pas</strong>, pour économiser leur énergie. Un réseau composé uniquement de capteurs sur pile, loin de la passerelle, sera fragile. On répartit donc des appareils secteur (relais, prises, ampoules connectées) dans la maison, en particulier entre la passerelle et les zones éloignées.</p>
+
+<h2 id="protocoles">Les principaux protocoles</h2>
+<table>
+  <thead><tr><th>Protocole</th><th>Fréquence</th><th>Réseau</th><th>Points forts</th><th>Limites</th></tr></thead>
+  <tbody>
+    <tr><td>Zigbee</td><td>2,4 GHz</td><td>Maillé, avec un coordinateur</td><td>Très répandu, faible consommation, nombreux capteurs sur pile</td><td>Même bande que le Wi-Fi ; compatibilité entre marques parfois partielle</td></tr>
+    <tr><td>Z-Wave</td><td>Bande des 868 MHz en Europe</td><td>Maillé, avec un contrôleur</td><td>Peu de concurrence radio, bonne portée à travers les murs, certification d’interopérabilité</td><td>Choix d’appareils plus restreint, prix souvent plus élevés</td></tr>
+    <tr><td>Wi-Fi</td><td>2,4 GHz (parfois 5 GHz)</td><td>Étoile autour du routeur</td><td>Pas de passerelle à acheter, installation immédiate</td><td>Consommation élevée (peu d’appareils sur pile), charge le routeur, dépendance fréquente à un service en ligne</td></tr>
+    <tr><td>Thread</td><td>2,4 GHz</td><td>Maillé, avec un routeur de bordure</td><td>Faible consommation, réseau basé sur IP, conçu pour Matter</td><td>Plus récent ; demande un routeur de bordure (souvent intégré à une enceinte ou une box)</td></tr>
+  </tbody>
+</table>
+<p>Le <a href="lexique.html#zigbee">Zigbee</a> et le Z-Wave ont chacun besoin d’une <strong>passerelle</strong> (ou d’une clé radio branchée sur un petit ordinateur) qui traduit leurs messages pour votre logiciel ou votre application. Il existe aussi des appareils Bluetooth, surtout pour des usages de proximité.</p>
+
+<h2 id="matter">Matter : une langue commune</h2>
+<p>Matter n’est pas une nouvelle radio : c’est une <strong>couche commune</strong> qui fonctionne par-dessus le Wi-Fi, Thread ou un câble réseau. Un appareil Matter peut être commandé par plusieurs écosystèmes à la fois (par exemple l’application d’un fabricant, un assistant vocal et Home Assistant), et le pilotage se fait en local, sans passer obligatoirement par Internet. Les fonctions disponibles dépendent des types d’appareils prévus par la norme et de la version prise en charge : vérifiez que la fonction qui vous intéresse est bien couverte.</p>
+
+<h2 id="piles">Les piles</h2>
+<p>Les capteurs sans fil utilisent des piles bouton ou des piles bâton. Leur durée dépend de l’appareil et de son usage : un contact de porte qui envoie un message par jour dure bien plus longtemps qu’un détecteur qui signale chaque passage. Quelques bonnes pratiques :</p>
+<ul>
+  <li>surveiller le niveau des piles dans le logiciel domotique et programmer une alerte ;</li>
+  <li>garder un stock des modèles utilisés ;</li>
+  <li>préférer un appareil secteur pour une fonction importante (alarme, détection de fuite d’eau) quand c’est possible ;</li>
+  <li>déposer les piles usagées dans un point de collecte.</li>
+</ul>
+
+<h2 id="fiabilite">Fiabilité et bonnes pratiques</h2>
+<ul>
+  <li><strong>Gardez une commande locale</strong> : l’interrupteur relié au relais doit allumer la lampe même si la passerelle ou le réseau est hors service.</li>
+  <li><strong>Placez la passerelle au centre</strong> de la maison, loin du tableau métallique et à distance du routeur Wi-Fi pour limiter les interférences sur la bande des 2,4 GHz.</li>
+  <li><strong>Limitez le nombre d’écosystèmes</strong> : trois applications et trois passerelles compliquent le dépannage.</li>
+  <li><strong>Préférez le local</strong> : un appareil qui ne fonctionne qu’à travers un serveur distant peut cesser de fonctionner si le service ferme. Voir <a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a>.</li>
+  <li><strong>Sécurisez le réseau</strong> : mot de passe solide pour le Wi-Fi, mises à jour régulières, et un réseau séparé pour les objets connectés si votre routeur le permet.</li>
+</ul>
+
+<h2 id="installation">Installation et contrôle</h2>
+<p>Poser un module sans fil derrière un interrupteur reste une intervention sur le 230 V : coupez le circuit au tableau et vérifiez l’absence de tension. Les relais ajoutés doivent figurer sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, et une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>.</p>

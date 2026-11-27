@@ -1,0 +1,76 @@
+<!--
+{
+  "title": "Le détecteur de mouvement",
+  "pageTitle": "Câbler un détecteur de mouvement (2 ou 3 fils) — Voltaplan",
+  "description": "Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.",
+  "rubrique": "cablages",
+  "order": 7,
+  "exercise": "detecteur-de-mouvement",
+  "related": ["minuterie", "simple-allumage", "scenarios-home-assistant", "couleurs-des-fils"],
+  "retenir": [
+    "Un détecteur de mouvement remplace l’interrupteur : il allume la lampe quand il voit bouger une source de chaleur, puis l’éteint après une durée réglable.",
+    "Le modèle <strong>3 fils</strong> reçoit la phase, le neutre, et renvoie la phase vers la lampe par sa sortie : il demande un neutre à son emplacement.",
+    "Le modèle <strong>2 fils</strong> se branche à la place d’un interrupteur simple, sans neutre, mais il est plus délicat avec les petites charges LED.",
+    "Les réglages habituels : durée d’allumage, seuil de luminosité, sensibilité ou portée."
+  ],
+  "faq": [
+    { "q": "Mon détecteur 2 fils fait clignoter ou luire les LED : pourquoi ?", "a": "Un détecteur 2 fils s’alimente par un petit courant qui traverse la lampe, même éteinte. Avec des LED de faible puissance, ce courant suffit à les faire luire ou clignoter. Respectez la charge minimale indiquée par le fabricant ; certains proposent un module de compensation à placer près de la lampe. Sinon, un détecteur 3 fils règle le problème, à condition d’avoir un neutre." },
+    { "q": "Peut-on forcer l’éclairage allumé avec un détecteur ?", "a": "Oui. Beaucoup de détecteurs ont une position de marche forcée ou une entrée pour bouton-poussoir. On peut aussi placer un interrupteur en parallèle sur la sortie du détecteur, entre la phase et le retour lampe, pour allumer en permanence : suivez la notice du détecteur." },
+    { "q": "Quelle différence entre détecteur de mouvement et détecteur de présence ?", "a": "Les deux utilisent souvent le même principe infrarouge. Le détecteur de présence est plus sensible : il perçoit de petits mouvements, comme une personne assise à un bureau. Le détecteur de mouvement convient aux lieux de passage : allée, garage, couloir." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de détecteurs (raccordement 2 fils et 3 fils, charges minimales et maximales, réglages)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <a href="lexique.html#detecteur-de-mouvement">détecteur de mouvement</a> allume l’éclairage quand quelqu’un passe et l’éteint seul quand il n’y a plus personne. On l’installe dans une allée, devant une porte d’entrée, dans un garage, une cave ou un couloir. Électriquement, il prend la place de l’<a href="lexique.html#interrupteur">interrupteur</a>.</p>
+
+<h2 id="principe">Comment il détecte</h2>
+<p>La plupart des détecteurs domestiques sont à <strong>infrarouge passif</strong> : un capteur, derrière une lentille à facettes, perçoit le rayonnement de chaleur des personnes et des animaux. Il ne réagit pas à une chaleur immobile, mais à une source de chaleur qui <strong>se déplace</strong> d’une zone à l’autre de son champ. Il détecte donc mieux une personne qui passe devant lui qu’une personne qui marche droit vers lui.</p>
+<p>Quand il détecte un mouvement, le détecteur ferme un contact interne qui alimente la lampe. Il la laisse allumée pendant la durée réglée, et relance cette durée tant qu’il voit du mouvement. À la fin, il l’éteint.</p>
+
+<h2 id="trois-fils">Le détecteur 3 fils</h2>
+<p>C’est le modèle le plus simple à comprendre, et celui de l’exercice ci-dessous. Il a trois bornes :</p>
+<table>
+  <thead><tr><th>Borne</th><th>Rôle</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>L</td><td>Arrivée de la phase, qui alimente le détecteur et son contact</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>N</td><td>Neutre : alimente l’électronique du détecteur</td><td>Bleu</td></tr>
+    <tr><td>Sortie (souvent marquée d’une flèche, L’ ou R)</td><td>Phase commutée vers la lampe : c’est le retour lampe</td><td>Noir ou gris</td></tr>
+  </tbody>
+</table>
+<p>La lampe reçoit le retour depuis la sortie du détecteur, le <a href="lexique.html#neutre">neutre</a> et la terre. Le détecteur coupe ainsi la <a href="lexique.html#phase">phase</a>, comme un interrupteur. Le point clé est qu’il faut un neutre à l’emplacement du détecteur : à prévoir dès le câblage, en amenant jusqu’à lui la phase, le neutre et le retour lampe (et la terre si son boîtier en demande une).</p>
+<p>Attention : le détecteur ne commute que s’il est alimenté. Sans neutre, il reste inerte. L’exercice le simule : tant que L et N ne sont pas correctement reliés, le mouvement n’allume rien.</p>
+
+<h2 id="deux-fils">Le détecteur 2 fils</h2>
+<p>Le détecteur 2 fils se branche exactement à la place d’un interrupteur simple : la phase arrive sur une borne, le retour lampe part de l’autre. Pas besoin de neutre, ce qui le rend pratique en rénovation, quand on remplace un interrupteur existant.</p>
+<p>Pour alimenter son électronique, il laisse passer un petit courant permanent à travers la lampe, même éteinte. Avec une lampe à incandescence, ce courant ne se voyait pas. Avec des LED de faible puissance, il peut les faire luire ou clignoter. Les fabricants indiquent donc une <strong>charge minimale</strong>, par exemple quelques watts, et proposent parfois un module de compensation à placer en parallèle sur la lampe. Lisez la notice avant d’acheter : c’est la source d’ennuis la plus fréquente.</p>
+<p>En résumé : si vous avez un neutre au point de commande, préférez le 3 fils ; sinon, choisissez un 2 fils compatible avec vos LED.</p>
+
+<h2 id="reglages">Les réglages</h2>
+<ul>
+  <li><strong>Durée</strong> : de quelques secondes à plusieurs minutes selon le modèle. Pour une allée, une à deux minutes suffisent souvent.</li>
+  <li><strong>Seuil de luminosité</strong> (en lux) : en dessous de ce seuil seulement, le détecteur allume. On évite ainsi d’allumer en plein jour.</li>
+  <li><strong>Sensibilité ou portée</strong> : à réduire si le détecteur se déclenche pour un chat, des branches au vent ou les voitures de la rue.</li>
+</ul>
+<p>Réglez de jour la portée et l’orientation, puis le seuil de luminosité à la tombée de la nuit.</p>
+
+<h2 id="installation">Où et comment l’installer</h2>
+<ul>
+  <li><strong>Hauteur et orientation</strong> : respectez la hauteur conseillée par le fabricant, et orientez-le pour que l’on passe <em>devant</em> lui plutôt que vers lui.</li>
+  <li><strong>Extérieur</strong> : choisissez un modèle avec un <a href="lexique.html#indice-de-protection">indice de protection</a> adapté à la pluie, et une boîte de raccordement étanche.</li>
+  <li><strong>Plusieurs détecteurs</strong> pour une même lampe : selon les modèles, on relie leurs sorties en parallèle, ou on utilise un système maître et esclaves. La notice indique ce qui est permis.</li>
+  <li><strong>Charge maximale</strong> : la puissance de lampes admise figure sur la notice, souvent plus faible pour les LED que pour les lampes classiques.</li>
+</ul>
+
+<h2 id="etapes">Câbler un détecteur 3 fils pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Raccorder la phase (brun) à la borne L du détecteur et le neutre (bleu) à sa borne N.</li>
+  <li>Relier la sortie du détecteur à la borne L de la lampe (retour noir ou gris).</li>
+  <li>Amener le neutre et la terre (vert-jaune) à la lampe.</li>
+  <li>Remettre le courant et passer devant le détecteur.</li>
+</ol>
+<p>Le détecteur se combine bien avec la <a href="minuterie.html">minuterie</a> et la domotique, où il sert aussi de capteur de présence : voir <a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a>. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

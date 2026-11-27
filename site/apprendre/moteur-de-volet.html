@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Moteur de volet roulant : fils, fins de course — Voltaplan</title>
+<meta name="description" content="Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/moteur-de-volet.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le moteur de volet et ses fins de course","description":"Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/moteur-de-volet.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le moteur de volet et ses fins de course","item":"https://voltaplan.org/apprendre/moteur-de-volet.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Moteur de volet roulant : fils, fins de course — Voltaplan">
+<meta property="og:description" content="Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/moteur-de-volet.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#volets">Volets roulants et ouvrants motorisés</a></nav>
+  <article>
+  <h1>Le moteur de volet et ses fins de course</h1>
+  <p class="lead">Dans l’axe d’un volet roulant électrique se cache un <strong>moteur tubulaire</strong>. Vu de l’extérieur, c’est un simple tube d’où sort un câble à quatre fils. Comprendre ces quatre fils et le rôle des <a href="lexique.html#fin-de-course">fins de course</a> permet de raccorder un volet correctement, de le régler, et de comprendre pourquoi certaines erreurs le détruisent.</p>
+
+<h2 id="interieur">Ce qu’il y a dans le tube</h2>
+<p>Un moteur tubulaire de volet classique contient :</p>
+<ul>
+  <li>un <strong>moteur électrique</strong> monophasé à deux enroulements, un par sens de rotation, avec un neutre commun ;</li>
+  <li>un <strong>condensateur</strong> qui aide le moteur à démarrer et fixe son sens de rotation ;</li>
+  <li>un <strong>réducteur</strong> qui ralentit la rotation et augmente la force, pour soulever un tablier de plusieurs kilos ;</li>
+  <li>un <strong>frein</strong> qui maintient le volet en place quand le moteur est à l’arrêt ;</li>
+  <li>les <strong>fins de course</strong>, qui coupent le moteur en position haute et basse ;</li>
+  <li>souvent une <strong>protection thermique</strong> qui coupe le moteur s’il chauffe trop, après une longue série de manœuvres.</li>
+</ul>
+<p>Pour un volet de maison, la puissance électrique est couramment de l’ordre de 100 à 250 W, soit un courant d’environ 0,5 à 1 A sous 230 V : bien moins qu’une bouilloire de 2 000 W.</p>
+
+<h2 id="quatre-fils">Les quatre fils</h2>
+<table>
+  <thead><tr><th>Fil</th><th>Rôle</th><th>Couleur fréquente sur le câble du moteur</th></tr></thead>
+  <tbody>
+    <tr><td>Phase montée</td><td>Reçoit la <a href="lexique.html#phase">phase</a> pour faire tourner le moteur dans un sens</td><td>Souvent brun ou noir</td></tr>
+    <tr><td>Phase descente</td><td>Reçoit la phase pour l’autre sens</td><td>Souvent noir ou brun (l’autre des deux)</td></tr>
+    <tr><td>Neutre commun</td><td>Retour du courant, pour les deux sens</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td><a href="lexique.html#conducteur-de-protection">Conducteur de protection</a>, relié au corps du moteur</td><td>Vert-jaune</td></tr>
+  </tbody>
+</table>
+<p>Ces couleurs sont celles que l’on rencontre <strong>souvent</strong>, pas une règle : certains fabricants utilisent d’autres couleurs ou numérotent les fils. La notice du moteur fait foi. Le bleu reste le neutre et le vert-jaune reste la terre, comme partout dans l’installation (voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>).</p>
+<p>Le fil brun ne fait pas toujours monter le volet : tout dépend du côté où le moteur est glissé dans l’axe. Monté à gauche, il tourne dans un sens ; monté à droite, le même fil le fait tourner dans l’autre. C’est pourquoi on essaie après raccordement, et on échange les deux fils de sens si nécessaire, toujours hors tension.</p>
+
+<h2 id="fins-de-course">Les fins de course</h2>
+<p>Un fin de course est un dispositif qui <strong>coupe l’enroulement d’un sens</strong> quand le volet atteint sa position extrême. En haut, le fin de course de montée s’ouvre : le moteur s’arrête, même si la touche montée reste enfoncée. La descente, elle, reste possible. En bas, c’est l’inverse.</p>
+<p>On rencontre deux familles :</p>
+<ul>
+  <li><strong>Fins de course mécaniques</strong> : deux vis ou molettes sur la tête du moteur, que l’on tourne pour avancer ou reculer le point d’arrêt.</li>
+  <li><strong>Fins de course électroniques</strong> : le moteur compte les tours ou détecte une butée ; le réglage se fait par une suite d’appuis, avec un câble de réglage ou un outil du fabricant.</li>
+</ul>
+<p>Un fin de course mal réglé fait forcer le moteur contre le linteau ou écrase le tablier au sol. Il se règle à la mise en service, selon la notice.</p>
+
+<h2 id="deux-sens">Pourquoi jamais les deux sens en même temps</h2>
+<p>Si la phase arrive à la fois sur le fil de montée et sur le fil de descente, les deux enroulements reçoivent la tension en même temps, et le condensateur, normalement placé entre les deux, est court-circuité. Le moteur ne sait pas dans quel sens tourner : il grogne, reste bloqué ou tourne mal, et chauffe. Selon la durée, le condensateur ou les enroulements peuvent être détruits.</p>
+<p>C’est pourquoi on commande un volet avec une <strong>commande de volet verrouillée</strong>, jamais avec un double interrupteur ordinaire dont on pourrait enfoncer les deux touches. Les fabricants recommandent aussi souvent de marquer un court arrêt avant de changer de sens. Dans l’exercice de l’article <a href="volet-roulant.html">Câbler un volet roulant</a>, la vérification signale cette erreur si le moteur reçoit les deux sens.</p>
+<p>Le même phénomène explique pourquoi on ne branche pas deux moteurs en parallèle sur une seule commande : par le condensateur de l’un, l’autre peut recevoir la tension sur ses deux sens. Voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</p>
+
+<h2 id="raccordement">Raccordement et sécurité</h2>
+<ul>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avant de toucher au câble du moteur.</li>
+  <li>Raccorder dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> qui reste accessible : on aura besoin d’y revenir pour un réglage ou un remplacement.</li>
+  <li>Raccorder la <a href="lexique.html#terre">terre</a> : le corps du moteur est métallique.</li>
+  <li>Ne pas rallonger ou couper le câble du moteur n’importe où : certains câbles sont débrochables, et la notice indique comment les remplacer.</li>
+</ul>
+<p>Les moteurs radio ou à commande intégrée n’ont pas toujours quatre fils : ils reçoivent souvent une alimentation permanente (phase, neutre, terre) et reçoivent les ordres par radio ou par un bus. Voir <a href="volets-domotique.html">Volets et domotique</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Un moteur tubulaire a <strong>4 fils</strong> : phase montée, phase descente, neutre commun et terre.</li><li>Les couleurs des fils du moteur sont <strong>souvent</strong> brun et noir pour les sens, bleu pour le neutre, vert-jaune pour la terre : vérifiez toujours la notice.</li><li>Les <strong>fins de course</strong> arrêtent le moteur en haut et en bas ; ils se règlent à l’installation.</li><li>Alimenter les deux sens en même temps peut détruire le moteur : la commande doit l’empêcher.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Comment savoir quel fil fait monter le volet ?</summary><div>Cela dépend du côté où le moteur est monté dans l’axe : le même fil fait monter le volet à gauche et descendre à droite. On raccorde, on essaie, et si le sens est inversé on coupe le courant et on échange les deux fils de sens.</div></details>
+    <details><summary>Mon volet s’arrête trop tôt ou force en bas : est-ce électrique ?</summary><div>C’est presque toujours un réglage des fins de course. La méthode dépend du moteur (vis de réglage, procédure par appuis, outil du fabricant) : suivez sa notice. Un moteur qui force en butée s’use vite et peut abîmer le tablier.</div></details>
+    <details><summary>Le moteur ne repart pas après plusieurs montées et descentes : est-il en panne ?</summary><div>Pas forcément. Beaucoup de moteurs tubulaires ont une protection thermique qui les coupe après un usage prolongé. Il suffit souvent d’attendre qu’il refroidisse ; si le problème revient à chaque usage, faites vérifier le moteur.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Notices de raccordement et de réglage des fabricants de moteurs tubulaires.</li><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="volet-roulant.html">← Câbler un volet roulant</a><a class="next" href="commande-groupee-volets.html">Commander plusieurs volets ensemble →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="volet-roulant.html">Câbler un volet roulant</a><span>Câbler une commande de volet et un moteur tubulaire : montée, descente, neutre et terre, couleurs des fils, erreurs à éviter, exercice et unifilaire.</span></li><li><a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a><span>Commander plusieurs volets roulants d’un seul geste : pourquoi ne pas mettre deux moteurs en parallèle, relais de centralisation et modules de commande.</span></li><li><a href="couleurs-des-fils.html">Les couleurs des fils</a><span>Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.</span></li><li><a href="mise-a-la-terre.html">La mise à la terre</a><span>À quoi sert la terre d’une installation, boucle de terre ou piquet, rôle du sectionneur de terre et de la barrette, et valeurs de résistance de terre à viser.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Volets roulants et ouvrants motorisés</h2><ul class="learn-list"><li><a href="volet-roulant.html">Câbler un volet roulant</a><span>Câbler une commande de volet et un moteur tubulaire : montée, descente, neutre et terre, couleurs des fils, erreurs à éviter, exercice et unifilaire.</span></li><li><a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a><span>Commander plusieurs volets roulants d’un seul geste : pourquoi ne pas mettre deux moteurs en parallèle, relais de centralisation et modules de commande.</span></li><li><a href="fenetre-motorisee.html">Fenêtres, coupoles et ouvrants motorisés</a><span>Câbler une coupole, une fenêtre de toit ou un ouvrant à moteur deux sens avec une commande ouvrir / fermer : même principe que le volet, exercice et unifilaire.</span></li><li><a href="volets-domotique.html">Volets et domotique</a><span>Rendre ses volets roulants connectés : modules derrière la commande, scénarios, capteurs de vent et de soleil, et câblage à prévoir (neutre et terre en boîte).</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

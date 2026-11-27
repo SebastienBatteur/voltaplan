@@ -1,0 +1,85 @@
+<!--
+{
+  "title": "Tester un différentiel",
+  "pageTitle": "Tester un différentiel : bouton test et mesure — Voltaplan",
+  "description": "Le bouton test d’un différentiel, l’essai au testeur et le temps de déclenchement : ce que chaque essai vérifie et ce que Voltaplan attend.",
+  "rubrique": "controles",
+  "order": 5,
+  "related": ["differentiel", "differentiel-qui-saute", "controle-organisme-agree", "organiser-tableau"],
+  "retenir": [
+    "Le <strong>bouton test</strong> vérifie que le mécanisme du différentiel fonctionne ; il est à actionner régulièrement.",
+    "Il ne mesure ni la sensibilité réelle ni le temps de déclenchement : c’est le rôle d’un <strong>appareil de mesure</strong>.",
+    "Dans Voltaplan, le différentiel doit déclencher à son courant nominal en <strong>300 ms au plus</strong> (500 ms pour un différentiel sélectif « S »).",
+    "Un différentiel qui ne déclenche pas à l’essai doit être vérifié ou remplacé.",
+    "L’organisme agréé teste chaque différentiel lors du contrôle."
+  ],
+  "faq": [
+    { "q": "À quelle fréquence appuyer sur le bouton test ?", "a": "Régulièrement, selon la fréquence indiquée dans la notice du fabricant. Le bouton fait travailler le mécanisme, qui peut se gripper s’il ne sert jamais. Prévenez les occupants : les circuits concernés seront coupés un instant." },
+    { "q": "Le différentiel ne se réarme pas après le test : que faire ?", "a": "Abaissez puis relevez franchement la manette. S’il refuse de rester enclenché alors qu’aucun appareil n’est en défaut, faites appel à un électricien : le différentiel ou un circuit en aval doit être examiné." },
+    { "q": "Pourquoi mon différentiel ne coupe-t-il pas quand j’appuie sur test ?", "a": "C’est un signe de défaillance : il pourrait ne pas couper non plus lors d’un vrai défaut. Faites-le vérifier et, si nécessaire, remplacer par un électricien, sans tarder." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de dispositifs différentiels." },
+    { "label": "Voltaplan : règles sur l’essai des différentiels et page « Mesures et essais » du dossier imprimé." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <a href="lexique.html#differentiel">différentiel</a> est la protection qui sauve des vies en cas de contact avec une pièce sous tension. Encore faut-il qu’il fonctionne le jour où on en a besoin. Il existe deux façons de le tester : le <strong>bouton test</strong>, à la portée de chacun, et l’<strong>essai à l’appareil de mesure</strong>, fait par l’installateur et par l’organisme agréé.</p>
+
+<h2 id="rappel">Rappel : ce que fait un différentiel</h2>
+<p>Un différentiel compare en permanence le courant qui part par la <a href="lexique.html#phase">phase</a> et celui qui revient par le <a href="lexique.html#neutre">neutre</a>. S’il en manque une partie, c’est qu’elle s’échappe ailleurs, vers la terre ou à travers une personne. Dès que cette différence atteint sa sensibilité (30 mA ou 300 mA, par exemple), il coupe. Voir <a href="differentiel.html">Le différentiel</a>.</p>
+<p>Dans une installation neuve en Belgique, on trouve un différentiel général de 300 mA au plus, et des différentiels de 30 mA pour les circuits de prises, d’éclairage, de la salle de bain, du lave-linge… (RGIE, 4.2.4.3 b).</p>
+
+<h2 id="bouton">Le bouton test</h2>
+<p>Chaque différentiel porte un bouton marqué « T » ou « Test ». En appuyant dessus, vous créez volontairement une petite fuite interne : le différentiel doit déclencher immédiatement, et tous les circuits qu’il protège sont coupés.</p>
+<ol>
+  <li>Prévenez les occupants et arrêtez les appareils sensibles (ordinateur en cours d’utilisation, par exemple).</li>
+  <li>Appuyez brièvement sur le bouton test.</li>
+  <li>La manette doit basculer en position basse.</li>
+  <li>Relevez la manette pour réarmer.</li>
+  <li>Remettez à l’heure les appareils qui en ont besoin (four, réveil).</li>
+</ol>
+<p>Le bouton test vérifie que <strong>le mécanisme de coupure fonctionne</strong>. Un différentiel qui n’est jamais sollicité peut se gripper : le tester régulièrement, comme le recommandent les fabricants, le maintient en état. Si la manette ne bascule pas, le différentiel doit être vérifié par un électricien sans attendre.</p>
+
+<h2 id="limites">Ce que le bouton ne dit pas</h2>
+<p>Le bouton test simule une fuite fixe, à l’intérieur de l’appareil. Il ne vérifie pas :</p>
+<ul>
+  <li>que le différentiel déclenche <strong>au bon courant</strong> (par exemple 30 mA, et pas 60 mA) ;</li>
+  <li>qu’il déclenche <strong>assez vite</strong> ;</li>
+  <li>que l’installation en aval est correctement reliée à la terre.</li>
+</ul>
+<p>Pour cela, il faut un essai à l’appareil de mesure.</p>
+
+<h2 id="mesure">L’essai à l’appareil de mesure</h2>
+<p>L’installateur et l’organisme agréé utilisent un testeur de différentiels (souvent intégré à un testeur d’installation). Branché sur une prise ou sur un circuit protégé, l’appareil crée une fuite contrôlée vers la terre, d’une valeur précise, et mesure deux choses :</p>
+<ul>
+  <li>le <strong>courant</strong> auquel le différentiel déclenche ;</li>
+  <li>le <strong>temps de déclenchement</strong>, en millisecondes (ms), au courant nominal différentiel (la sensibilité inscrite sur l’appareil).</li>
+</ul>
+<p>Cet essai se fait sous tension : il est réservé à une personne compétente qui dispose du bon matériel.</p>
+
+<h2 id="valeurs">Les valeurs attendues dans Voltaplan</h2>
+<p>Voltaplan vérifie que chaque différentiel déclenche à son courant nominal différentiel dans le temps prescrit :</p>
+<table>
+  <thead><tr><th>Différentiel</th><th>Temps de déclenchement maximal (Voltaplan)</th></tr></thead>
+  <tbody>
+    <tr><td>Différentiel ordinaire (30 mA, 300 mA…)</td><td>300 ms</td></tr>
+    <tr><td>Différentiel sélectif (marqué « S »)</td><td>500 ms</td></tr>
+  </tbody>
+</table>
+<p>Un différentiel sélectif est volontairement retardé : placé en tête d’installation, il laisse aux différentiels de 30 mA situés en dessous le temps de couper les premiers. Ainsi, un défaut sur un circuit ne prive pas toute la maison de courant.</p>
+<p>Exemple : un différentiel 30 mA qui déclenche en 25 ms est conforme. Un différentiel 300 mA ordinaire qui met 420 ms est trop lent : Voltaplan affiche « Temps de déclenchement trop long : 420 ms (maximum 300 ms) » et conseille de le remplacer.</p>
+
+<h2 id="voltaplan">Encoder les essais dans Voltaplan</h2>
+<p>Dans l’onglet Projet de <a href="../app/">Voltaplan</a>, chaque différentiel dessiné dans le schéma a sa ligne d’essai : temps de déclenchement en ms et résultat (conforme ou non conforme).</p>
+<ul>
+  <li>Sans essai noté, l’application indique que l’essai et le temps de déclenchement restent à vérifier sur place.</li>
+  <li>Un essai noté « non conforme » est signalé comme une non-conformité, avec le conseil de remplacer ou vérifier le différentiel, puis de refaire l’essai.</li>
+  <li>Un temps supérieur au maximum est, lui aussi, signalé.</li>
+</ul>
+<p>Le dossier imprimé reprend chaque différentiel sur la page « Mesures et essais », avec les circuits qu’il protège, le temps mesuré et l’exigence. Ces valeurs préparent le contrôle ; c’est l’organisme agréé qui fait l’essai officiel (voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>).</p>
+
+<h2 id="echec">Si l’essai échoue</h2>
+<p>Un différentiel qui ne déclenche pas, ou trop tard, ne protège plus correctement. Il doit être remplacé par un appareil équivalent (même sensibilité, même type, calibre adapté) par un électricien. N’essayez jamais de le contourner en attendant : sans lui, un contact avec une pièce sous tension peut être mortel. Si au contraire votre différentiel déclenche trop souvent, voyez <a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a></p>

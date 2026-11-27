@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Chute de tension dans un câble : calcul simple — Voltaplan</title>
+<meta name="description" content="Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/chute-de-tension.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"La chute de tension","description":"Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/chute-de-tension.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"La chute de tension","item":"https://voltaplan.org/apprendre/chute-de-tension.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Chute de tension dans un câble : calcul simple — Voltaplan">
+<meta property="og:description" content="Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/chute-de-tension.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#cables">Câbles et conducteurs</a></nav>
+  <article>
+  <h1>La chute de tension</h1>
+  <p class="lead">Branchez une perceuse au bout d’une rallonge de 50 mètres : elle tourne un peu moins vite qu’à côté du tableau. La raison est la <strong>chute de tension</strong> : le câble lui-même consomme une partie de la tension. Cet article explique d’où elle vient, comment l’estimer avec une formule simple, et comment Voltaplan la vérifie pour chaque circuit.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un conducteur en cuivre n’est pas parfait : il a une petite <a href="resistance-loi-ohm.html">résistance</a>. D’après la loi d’Ohm, un courant qui traverse une résistance provoque une différence de tension à ses bornes (U = R × I). Une partie des 230 V du tableau reste donc « dans le câble », et l’appareil au bout reçoit un peu moins.</p>
+<p>Cette perte dépend de trois choses :</p>
+<ul>
+  <li>la <strong>longueur</strong> du câble : plus il est long, plus sa résistance est grande ;</li>
+  <li>la <a href="lexique.html#section">section</a> : plus elle est petite, plus la résistance est grande ;</li>
+  <li>le <strong>courant</strong> : plus l’appareil est puissant, plus la perte est forte.</li>
+</ul>
+
+<h2 id="formule">La formule simple</h2>
+<p>Pour un circuit monophasé en 230 V, la <a href="lexique.html#chute-de-tension">chute de tension</a> s’estime ainsi :</p>
+<p><strong>ΔU = 2 × ρ × L × I ÷ S</strong></p>
+<ul>
+  <li>ΔU : chute de tension, en volts ;</li>
+  <li>2 : le courant fait l’aller par la phase et le retour par le neutre ;</li>
+  <li>ρ (rhô) : la résistivité du cuivre, environ <strong>0,0225 Ω·mm²/m</strong> à sa température de service (le cuivre froid est un peu meilleur, mais un câble en service chauffe) ;</li>
+  <li>L : la longueur du câble, en mètres (une seule fois, pas aller-retour) ;</li>
+  <li>I : le courant, en ampères ;</li>
+  <li>S : la section, en mm².</li>
+</ul>
+<p>On exprime souvent le résultat en pour cent de la tension : ΔU % = 100 × ΔU ÷ 230.</p>
+
+<h2 id="exemples">Deux exemples chiffrés</h2>
+<p><strong>Une bouilloire de 2 000 W</strong> au bout d’un circuit de prises en 2,5 mm², à 30 mètres du tableau. Le courant vaut environ 2 000 ÷ 230 ≈ 8,7 A. La chute est de 2 × 0,0225 × 30 × 8,7 ÷ 2,5 ≈ 4,7 V, soit environ 2 % de 230 V.</p>
+<p><strong>Le même circuit, chargé jusqu’au calibre</strong> de son disjoncteur (20 A) : 2 × 0,0225 × 30 × 20 ÷ 2,5 = 10,8 V, soit 4,7 %. C’est le cas le plus défavorable : le circuit transporte tout ce que sa protection autorise.</p>
+<p>Ces exemples montrent les deux leviers : la chute est <strong>proportionnelle à la longueur</strong> (60 mètres donneraient le double) et <strong>inversement proportionnelle à la section</strong> (du 4 mm² au lieu du 2,5 la réduirait de plus d’un tiers).</p>
+
+<h2 id="cumul">La chute s’additionne depuis le compteur</h2>
+<p>Le courant d’un circuit ne part pas du disjoncteur : il vient du compteur, passe par la liaison vers le tableau, parfois par l’alimentation d’un sous-tableau. Chacun de ces câbles a sa propre chute de tension, qui s’ajoute à celle du circuit. Un sous-tableau dans un garage éloigné, alimenté par un câble déjà long, laisse moins de marge à ses circuits.</p>
+
+<h2 id="voltaplan">Ce que calcule Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, dès que la longueur des câbles est connue, l’onglet Contrôle calcule pour chaque circuit :</p>
+<ul>
+  <li>la <strong>chute au calibre</strong> de la protection, sur le trajet le plus défavorable du circuit (le point le plus éloigné) : c’est le calcul prudent, toujours disponible ;</li>
+  <li>la <strong>chute cumulée depuis le compteur</strong>, en ajoutant les câbles connus en amont (liaison vers le tableau, alimentation d’un sous-tableau) ;</li>
+  <li>la <strong>chute avec le courant réel</strong>, quand la puissance de chaque appareil du circuit est saisie : chaque tronçon de câble porte alors seulement le courant des appareils situés après lui.</li>
+</ul>
+<p>Voltaplan compare le résultat à 3 % pour un circuit d’éclairage seul et à 5 % pour les autres usages, valeurs de référence de l’annexe G de l’IEC 60364-5-52 reprises dans sa documentation. Si le calcul au calibre dépasse la limite mais que le calcul avec les puissances saisies reste en dessous, le circuit n’est pas déclaré en défaut, mais une information rappelle qu’il ne le reste que tant que les charges ne dépassent pas ces puissances.</p>
+<p>Les longueurs peuvent être saisies, ou <strong>estimées d’après le plan de position</strong> : trajet à angles droits le long des murs, montées et descentes selon la hauteur de chaque point, 10 % de marge. Une longueur estimée est marquée « ≈ ».</p>
+<p>Ces calculs sont des <strong>estimations par la méthode conventionnelle</strong>. Ils aident à repérer un circuit trop long ou une section trop faible, mais ne remplacent ni une étude complète ni l’avis de l’<a href="controle-organisme-agree.html">organisme agréé</a>.</p>
+
+<h2 id="remedes">Que faire si la chute est trop forte ?</h2>
+<ul>
+  <li><strong>Augmenter la section</strong> : passer de 2,5 à 4 mm², par exemple, sur un circuit long.</li>
+  <li><strong>Raccourcir le trajet</strong> : un câble qui fait le tour de la maison peut souvent passer plus directement.</li>
+  <li><strong>Partager le circuit en deux</strong> : chaque moitié transporte moins de courant sur moins de longueur.</li>
+  <li><strong>Rapprocher la source</strong> : un sous-tableau près des circuits éloignés, alimenté par un câble de forte section.</li>
+</ul>
+<p>Une chute excessive va souvent de pair avec un autre problème : en cas de court-circuit au bout d’un très long câble, le courant de défaut peut rester trop faible pour faire déclencher le disjoncteur instantanément. Voltaplan calcule aussi cette longueur maximale protégée. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Le câble a une résistance : une partie de la tension se perd en chemin, et d’autant plus que le câble est long et fin.</li><li>Formule simple en monophasé : ΔU = 2 × ρ × L × I ÷ S (ρ ≈ 0,0225 Ω·mm²/m pour le cuivre en service).</li><li>Doubler la longueur double la chute ; doubler la section la divise par deux.</li><li>Voltaplan calcule la chute depuis le compteur jusqu’au point le plus éloigné, au calibre du disjoncteur ou avec les puissances saisies.</li><li>Remèdes : section plus grande, circuit plus court, ou circuit partagé en deux.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Une chute de tension est-elle dangereuse ?</summary><div>Pas directement, mais elle signale un circuit trop long ou trop fin : les appareils reçoivent moins de tension (moteurs qui peinent, éclairage moins efficace) et le câble dissipe de l’énergie en chaleur. Un circuit très long peut aussi empêcher le disjoncteur de couper assez vite en cas de court-circuit à son extrémité.</div></details>
+    <details><summary>Pourquoi multiplier par 2 dans la formule ?</summary><div>Le courant fait l’aller par la phase et le retour par le neutre : il parcourt deux fois la longueur du câble. En triphasé équilibré, on utilise √3 (environ 1,73) au lieu de 2.</div></details>
+    <details><summary>Faut-il connaître la longueur exacte des câbles ?</summary><div>Une bonne estimation suffit pour repérer un problème. Voltaplan peut estimer chaque longueur d’après le plan de position (trajet le long des murs, montées et descentes, 10 % de marge) ; une longueur mesurée et saisie est toujours prioritaire.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Voltaplan, documentation des calculs (docs/calc.md) : méthode conventionnelle de l’IEC 60364-5-52, annexe G, résistivité du cuivre en service 0,0225 Ω·mm²/m.</li><li>IEC 60364-5-52 (Installations électriques à basse tension, choix et mise en œuvre des canalisations), annexe G.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="section-des-cables.html">← La section des câbles</a><a class="next" href="tubes-et-boites.html">Tubes, gaines et boîtes →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="section-des-cables.html">La section des câbles</a><span>1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="tension.html">La tension (U, en volts)</a><span>La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.</span></li><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câbles et conducteurs</h2><ul class="learn-list"><li><a href="couleurs-des-fils.html">Les couleurs des fils</a><span>Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li><li><a href="section-des-cables.html">La section des câbles</a><span>1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.</span></li><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

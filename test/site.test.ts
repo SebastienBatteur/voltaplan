@@ -10,11 +10,13 @@ const read = (rel: string) => readFileSync(join(SITE, rel), 'utf8');
 const pages = htmlFiles(SITE).map((rel) => ({ rel, html: read(rel) }));
 const indexable = pages.filter((p) => !/<meta name="robots" content="[^"]*noindex/.test(p.html));
 const one = (html: string, re: RegExp) => re.exec(html)?.[1] ?? null;
+/** Section « Apprendre » : en français seulement (pas de versions linguistiques). */
+const frOnly = (rel: string) => rel.startsWith('apprendre/');
 const urlOf = (rel: string) => BASE + rel.replace(/(^|\/)index\.html$/, '$1');
 
 describe('site public : référencement', () => {
-  it('a les 20 pages indexables attendues (5 pages × 4 langues)', () => {
-    expect(indexable.length).toBe(20);
+  it('a les 20 pages indexables attendues (5 pages × 4 langues) hors section Apprendre', () => {
+    expect(indexable.filter((p) => !frOnly(p.rel)).length).toBe(20);
   });
 
   it.each(indexable.map((p) => [p.rel, p.html]))('%s : titre, description, H1, canonical, hreflang, Open Graph', (rel, html) => {
@@ -25,8 +27,11 @@ describe('site public : référencement', () => {
     expect(html.match(/<h1[\s>]/g)?.length, 'un seul H1').toBe(1);
     expect(one(html, /<link rel="canonical" href="([^"]*)">/)).toBe(urlOf(rel));
     const alt = [...html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)].map((m) => m[1]);
-    expect(alt.sort()).toEqual(['de', 'en', 'fr', 'nl', 'x-default']);
-    expect(html).toContain(`hreflang="${one(html, /<html lang="([^"]+)"/)}" href="${urlOf(rel)}"`);
+    if (frOnly(rel)) expect(alt).toEqual([]);
+    else {
+      expect(alt.sort()).toEqual(['de', 'en', 'fr', 'nl', 'x-default']);
+      expect(html).toContain(`hreflang="${one(html, /<html lang="([^"]+)"/)}" href="${urlOf(rel)}"`);
+    }
     expect(one(html, /<meta property="og:title" content="([^"]*)">/)).toBe(title!.replace(/"/g, '&quot;'));
     expect(one(html, /<meta property="og:url" content="([^"]*)">/)).toBe(urlOf(rel));
   });

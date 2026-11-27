@@ -1,0 +1,95 @@
+<!--
+{
+  "title": "Le va-et-vient",
+  "pageTitle": "Câbler un va-et-vient (schéma et exercice) — Voltaplan",
+  "description": "Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.",
+  "rubrique": "cablages",
+  "order": 3,
+  "exercise": "va-et-vient",
+  "related": ["va-et-vient-trois-points", "telerupteur", "simple-allumage", "tubes-et-boites"],
+  "retenir": [
+    "Un va-et-vient commande une lampe depuis <strong>deux endroits</strong> : chaque interrupteur inverse l’état de la lampe.",
+    "Chaque interrupteur a un <strong>commun</strong> et deux autres bornes ; les deux fils qui relient ces bornes d’un interrupteur à l’autre sont les <strong>navettes</strong>.",
+    "La phase arrive au commun du premier interrupteur ; le retour lampe part du commun du second.",
+    "Croiser les deux navettes ne change rien : le montage fonctionne aussi.",
+    "Au-delà de deux points de commande, on ajoute un inverseur, ou on passe au télérupteur."
+  ],
+  "faq": [
+    { "q": "Peut-on utiliser un interrupteur va-et-vient comme interrupteur simple ?", "a": "Oui. En n’utilisant que le commun et l’une des deux autres bornes, un va-et-vient fonctionne comme un interrupteur simple. C’est pratique quand on veut prévoir un futur second point de commande." },
+    { "q": "La lampe ne s’allume que dans certaines positions des interrupteurs : pourquoi ?", "a": "C’est presque toujours un commun mal identifié : la phase ou le retour lampe est branché sur une borne de navette. Repérez le commun sur chaque interrupteur (notice, marquage, ou mesure au testeur de continuité, courant coupé) et refaites les raccordements." },
+    { "q": "Combien de fils faut-il entre les deux interrupteurs ?", "a": "Deux navettes au minimum. Selon le cheminement, on y ajoute la phase ou le retour lampe, par exemple quand les deux interrupteurs sont alimentés depuis la même boîte : on tire alors un câble ou des fils à trois conducteurs." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants d’appareillage (interrupteurs va-et-vient, repérage des bornes)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <a href="lexique.html#va-et-vient">va-et-vient</a> permet d’allumer et d’éteindre une même lampe depuis <strong>deux endroits</strong> : en haut et en bas d’un escalier, aux deux portes d’un salon, à l’entrée d’une chambre et près du lit. Chaque interrupteur inverse l’état de la lampe, quelle que soit la position de l’autre.</p>
+
+<h2 id="vocabulaire">Le vocabulaire : commun, navettes, retour lampe</h2>
+<p>Un interrupteur va-et-vient n’est pas un interrupteur qui « ouvre » ou « ferme » : c’est un <strong>aiguillage</strong>. Il a trois bornes :</p>
+<ul>
+  <li>le <strong>commun</strong> (souvent marqué C, L ou d’un repère particulier) : la borne qui est toujours reliée à l’une des deux autres ;</li>
+  <li>deux bornes de sortie (1 et 2, ou deux flèches) : selon la position de la touche, le commun est relié à la borne 1 ou à la borne 2.</li>
+</ul>
+<p>Les deux fils qui relient les bornes 1 et 2 du premier interrupteur aux bornes 1 et 2 du second s’appellent les <a href="lexique.html#navette">navettes</a>. Le fil qui part du commun du second interrupteur vers la lampe est le <a href="lexique.html#retour-lampe">retour lampe</a>, comme dans un <a href="simple-allumage.html">simple allumage</a>.</p>
+
+<h2 id="principe">Comment ça marche</h2>
+<p>La <a href="lexique.html#phase">phase</a> arrive au commun du premier interrupteur. Selon sa position, elle part sur la navette 1 ou sur la navette 2. Au bout, le second interrupteur relie son commun soit à la navette 1, soit à la navette 2. La lampe s’allume quand les deux interrupteurs « choisissent » la même navette, et s’éteint dans le cas contraire.</p>
+<table>
+  <thead><tr><th>Interrupteur 1</th><th>Interrupteur 2</th><th>Lampe</th></tr></thead>
+  <tbody>
+    <tr><td>Position 1</td><td>Position 1</td><td>Allumée</td></tr>
+    <tr><td>Position 1</td><td>Position 2</td><td>Éteinte</td></tr>
+    <tr><td>Position 2</td><td>Position 1</td><td>Éteinte</td></tr>
+    <tr><td>Position 2</td><td>Position 2</td><td>Allumée</td></tr>
+  </tbody>
+</table>
+<p>Quel que soit l’état de départ, basculer l’un ou l’autre interrupteur change l’état de la lampe. Si l’on croise les navettes (borne 1 vers borne 2), le tableau est simplement inversé : le montage fonctionne tout aussi bien. L’exercice ci-dessous accepte d’ailleurs les deux.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → commun de l’interrupteur 1</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Navettes (2)</td><td>Bornes 1 et 2 de l’interrupteur 1 → bornes 1 et 2 de l’interrupteur 2</td><td>Noir et gris, par exemple</td></tr>
+    <tr><td>Retour lampe</td><td>Commun de l’interrupteur 2 → lampe (borne L)</td><td>Noir, gris ou brun</td></tr>
+    <tr><td>Neutre</td><td>Tableau → lampe</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → point lumineux</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Le <a href="lexique.html#neutre">neutre</a> ne passe jamais par les interrupteurs : il va directement à la lampe.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Repérer le <strong>commun</strong> de chaque interrupteur (marquage ou notice).</li>
+  <li>Amener la phase au commun de l’interrupteur 1.</li>
+  <li>Tirer les deux navettes entre les bornes 1 et 2 des deux interrupteurs.</li>
+  <li>Relier le commun de l’interrupteur 2 à la borne L de la lampe.</li>
+  <li>Amener le neutre et la terre à la lampe.</li>
+  <li>Remettre le courant et essayer les quatre combinaisons.</li>
+</ol>
+
+<h2 id="variantes">Les variantes de câblage</h2>
+<p>Le schéma électrique est toujours le même, mais le chemin des fils dépend de l’emplacement des boîtes :</p>
+<ul>
+  <li><strong>En chaîne</strong> : la phase va du tableau à l’interrupteur 1, les navettes vont à l’interrupteur 2, et le retour lampe part de l’interrupteur 2 vers la lampe. C’est le montage de l’exercice.</li>
+  <li><strong>Tout dans la boîte du plafond</strong> : la phase, le neutre et la terre arrivent dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> près de la lampe. De cette boîte partent vers chaque interrupteur trois conducteurs : vers le premier, la phase et les deux navettes ; vers le second, les deux navettes et le retour lampe. Les navettes se raccordent entre elles dans la boîte.</li>
+  <li><strong>Lampe entre les deux interrupteurs</strong> : fréquent dans un couloir. Les navettes passent alors par la boîte de la lampe, où elles sont simplement prolongées.</li>
+</ul>
+<p>Quelle que soit la variante, raccordez les fils dans des boîtes accessibles, avec des connecteurs adaptés : voir <a href="tubes-et-boites.html">Tubes et boîtes</a>.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Commun mal repéré</strong> : la phase ou le retour lampe arrive sur une borne de navette. La lampe ne fonctionne alors que dans certaines positions, ou un seul interrupteur la commande.</li>
+  <li><strong>Neutre envoyé dans les interrupteurs</strong> : les interrupteurs commutent alors le neutre au lieu de la phase, et la lampe éteinte peut rester sous tension. Le neutre va directement à la lampe.</li>
+  <li><strong>Phase et neutre réunis</strong> par erreur dans le même connecteur : c’est un <a href="lexique.html#court-circuit">court-circuit</a>, et le disjoncteur déclenche à la remise sous tension.</li>
+  <li><strong>Navettes en bleu</strong> : le montage fonctionne, mais ce fil sous tension passe pour un neutre.</li>
+</ul>
+
+<h2 id="plus-de-points">Et pour trois endroits ou plus ?</h2>
+<p>Pour un troisième point de commande, on insère un <a href="lexique.html#inverseur">inverseur</a> sur les navettes : voir <a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus</a>. Au-delà, le <a href="telerupteur.html">télérupteur</a> et ses boutons-poussoirs deviennent plus simples à câbler.</p>
+<p>Dans un schéma unifilaire, le va-et-vient est dessiné comme deux interrupteurs en chaîne avant le point lumineux. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

@@ -1,0 +1,64 @@
+<!--
+{
+  "title": "La mesure de continuité",
+  "pageTitle": "Mesure de continuité de la terre et des liaisons — Voltaplan",
+  "description": "À quoi sert la mesure de continuité des conducteurs de protection et des liaisons équipotentielles, comment elle fonctionne et ce qui la fait échouer.",
+  "rubrique": "controles",
+  "order": 2,
+  "related": ["mise-a-la-terre", "liaisons-equipotentielles", "controle-organisme-agree", "resistance-loi-ohm"],
+  "retenir": [
+    "La mesure de continuité vérifie que le <strong>conducteur de protection</strong> relie bien chaque prise et chaque masse à la barrette de terre.",
+    "Elle porte aussi sur les <strong>liaisons équipotentielles</strong> (eau, gaz, chauffage, éléments métalliques).",
+    "Elle se fait <strong>hors tension</strong>, avec un appareil qui mesure de très faibles résistances.",
+    "Une valeur élevée ou une absence de continuité signale un fil coupé, une borne desserrée ou une liaison oubliée.",
+    "Une prise qui « marche » peut très bien avoir une terre interrompue : seule la mesure le révèle."
+  ],
+  "faq": [
+    { "q": "Un testeur de prise à voyants suffit-il ?", "a": "Il donne une indication rapide sur le branchement d’une prise, mais ne remplace pas une mesure de continuité : il ne dit pas si la liaison est de bonne qualité, ni si les masses métalliques et les liaisons équipotentielles sont bien raccordées." },
+    { "q": "Pourquoi mesurer quand tout fonctionne ?", "a": "Parce que le conducteur de protection ne sert qu’en cas de défaut. Les appareils fonctionnent normalement sans lui : une terre coupée reste invisible jusqu’au jour où elle devrait protéger quelqu’un." },
+    { "q": "Peut-on faire cette mesure soi-même ?", "a": "Elle demande un appareil de mesure adapté, une installation hors tension et de savoir interpréter le résultat. Elle est faite par l’installateur et, lors du contrôle, par l’organisme agréé." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan : vérification « Liaisons équipotentielles » et page « Mesures et essais » du dossier imprimé." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La terre ne protège que si le fil qui y mène est intact du début à la fin. La <strong>mesure de <a href="lexique.html#continuite">continuité</a></strong> vérifie justement cela : que chaque prise, chaque luminaire métallique et chaque canalisation reliée à la terre l’est vraiment, par un chemin électrique de faible résistance.</p>
+
+<h2 id="pourquoi">Pourquoi cette mesure ?</h2>
+<p>Dans une installation, le <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> (le fil vert-jaune) relie la borne de terre de chaque prise et de chaque point lumineux à la barrette de terre du tableau, puis à la prise de terre du bâtiment. En temps normal, aucun courant n’y circule.</p>
+<p>Son rôle apparaît en cas de défaut : si un fil de <a href="lexique.html#phase">phase</a> touche la carcasse métallique d’un lave-linge, le courant de défaut s’écoule par le conducteur de protection. Le <a href="differentiel.html">différentiel</a> détecte cette fuite et coupe. Si le fil vert-jaune est interrompu quelque part, la carcasse reste sous tension, et c’est la personne qui la touche qui offre un chemin vers la terre. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
+<p>Comme rien ne circule dans ce fil en usage normal, une coupure ne se remarque pas. La lampe s’allume, la prise alimente l’aspirateur. D’où la nécessité de le mesurer.</p>
+
+<h2 id="quoi">Ce qui est vérifié</h2>
+<ul>
+  <li><strong>Les conducteurs de protection des circuits</strong> : entre la barrette de terre et la borne de terre de chaque prise, de chaque point lumineux, de chaque appareil fixe de <a href="lexique.html#classe-i">classe I</a> (un appareil à carcasse métallique reliée à la terre).</li>
+  <li><strong>Les <a href="liaisons-equipotentielles.html">liaisons équipotentielles</a></strong> : les fils qui relient à la terre les canalisations métalliques d’eau, de gaz, de chauffage et certains éléments de la structure. Elles évitent qu’une différence de tension apparaisse entre deux parties métalliques qu’on peut toucher en même temps.</li>
+  <li><strong>Les liaisons locales</strong>, par exemple dans une salle de bain, quand elles existent.</li>
+</ul>
+
+<h2 id="principe">Le principe de la mesure</h2>
+<p>La mesure se fait <strong>installation hors tension</strong>. L’appareil utilisé (un ohmmètre pour faibles résistances, souvent intégré aux testeurs d’installation) fait circuler un petit courant entre deux points, par exemple la barrette de terre et la borne de terre d’une prise, et en déduit la <a href="lexique.html#resistance">résistance</a> du chemin, selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>.</p>
+<p>Un bon conducteur de protection a une résistance très faible : quelques fractions d’<a href="lexique.html#ohm">ohm</a> pour un circuit domestique. La valeur dépend de la longueur et de la section du fil : un fil de 2,5 mm² sur 30 m présente une résistance plus faible qu’un fil de 1,5 mm² de même longueur. Le contrôleur juge le résultat selon l’installation ; ce qui compte surtout, c’est qu’il n’y ait <strong>ni coupure, ni valeur anormalement élevée</strong> par rapport aux autres points.</p>
+<p>Un multimètre ordinaire en position « bip » ne donne qu’une indication grossière : il peut sonner à travers une connexion médiocre. Les appareils de mesure d’installation sont conçus pour ce travail et compensent la résistance de leurs propres cordons.</p>
+
+<h2 id="causes">Ce qui fait échouer la mesure</h2>
+<table>
+  <thead><tr><th>Constat</th><th>Causes fréquentes</th></tr></thead>
+  <tbody>
+    <tr><td>Pas de continuité du tout</td><td>Fil vert-jaune non raccordé dans une boîte ou à la prise, fil coupé lors d’un perçage, borne de terre oubliée sur un luminaire.</td></tr>
+    <tr><td>Résistance plus élevée que sur les autres points</td><td>Borne mal serrée, connecteur mal enfoncé, fil oxydé, raccord par la vis d’une boîte métallique au lieu d’une vraie connexion.</td></tr>
+    <tr><td>Canalisation non reliée</td><td>Liaison équipotentielle oubliée après le remplacement d’un compteur d’eau ou d’une partie de tuyauterie, collier desserré ou corrodé.</td></tr>
+    <tr><td>Masse non reliée</td><td>Luminaire métallique, radiateur électrique fixe ou chauffe-eau dont la terre n’a pas été raccordée.</td></tr>
+  </tbody>
+</table>
+<p>Un cas classique : le remplacement d’un tronçon de tuyau métallique par du tuyau en matière synthétique. Les canalisations situées au-delà ne sont plus reliées à la terre par la tuyauterie elle-même ; il faut parfois revoir les liaisons équipotentielles.</p>
+
+<h2 id="corriger">Corriger un défaut de continuité</h2>
+<p>La recherche se fait de proche en proche, en partant du point en défaut vers le tableau : boîtes de dérivation, bornes, connecteurs. Toute intervention se fait après avoir <strong>coupé le courant et vérifié l’absence de tension</strong>. Une fois le défaut corrigé, la mesure est refaite pour confirmer.</p>
+<p>N’utilisez jamais le conducteur de protection pour autre chose, et n’utilisez jamais le neutre comme terre : ce sont deux conducteurs distincts, aux rôles différents. Voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+
+<h2 id="controle">Lors du contrôle</h2>
+<p>L’organisme agréé mesure la continuité des conducteurs de protection et des liaisons équipotentielles en même temps que la terre, l’isolement et les différentiels (voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>). Dans <a href="../app/">Voltaplan</a>, l’onglet Projet permet de noter si les liaisons équipotentielles sont conformes. Tant que ce point n’est pas renseigné, l’application indique qu’une vérification sur place est nécessaire ; s’il est noté « non conforme », elle le signale comme une non-conformité, avec ce conseil : raccorder les éléments conducteurs (eau, gaz, chauffage, structure) à la barrette de terre avec la section requise.</p>

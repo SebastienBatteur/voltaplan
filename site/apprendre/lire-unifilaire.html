@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Lire un schéma unifilaire belge (RGIE) — Voltaplan</title>
+<meta name="description" content="Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/lire-unifilaire.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Lire un schéma unifilaire","description":"Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/lire-unifilaire.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Lire un schéma unifilaire","item":"https://voltaplan.org/apprendre/lire-unifilaire.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Lire un schéma unifilaire belge (RGIE) — Voltaplan">
+<meta property="og:description" content="Comment lire le schéma unifilaire d’une installation belge : sens de lecture, tableau, différentiels, circuits A, B, C, points A1, A2 et étiquettes des câbles.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/lire-unifilaire.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#schemas">Tableau et schémas</a></nav>
+  <article>
+  <h1>Lire un schéma unifilaire</h1>
+  <p class="lead">Le <a href="lexique.html#schema-unifilaire">schéma unifilaire</a> est la carte d’identité électrique d’une maison : il montre, depuis le compteur, chaque protection du tableau, chaque circuit et chaque point qu’il alimente. C’est le premier document que regarde l’organisme agréé lors du contrôle, et le plus utile pour comprendre une installation sans ouvrir les murs.</p>
+
+<h2 id="un-seul-trait">Un seul trait par circuit</h2>
+<p>Un circuit réel contient trois fils ou plus : phase, neutre, terre, parfois des retours. Les dessiner tous rendrait le schéma illisible. L’unifilaire représente donc chaque canalisation par <strong>un seul trait</strong>. Un petit repère sur le trait (une barre oblique suivie d’un chiffre) indique le nombre de conducteurs.</p>
+<p>Ce schéma ne montre donc pas <em>comment</em> câbler un interrupteur, mais <em>ce qui</em> est raccordé à quoi : quelle protection alimente quel câble, et quels points se trouvent sur ce câble. Le câblage détaillé de chaque montage fait l’objet de la rubrique consacrée aux câblages.</p>
+
+<h2 id="sens">Le sens de lecture : de bas en haut</h2>
+<p>En Belgique, l’unifilaire se dessine habituellement <strong>de bas en haut</strong>, comme dans la figure 3.1 du RGIE, son exemple officiel de schéma unifilaire. On le lit donc en partant du bas :</p>
+<ol>
+  <li>l’<strong>origine</strong> de l’installation (le coffret de branchement et le compteur), avec la tension et la nature du courant, par exemple « 2 x 230V ~ 50Hz » ;</li>
+  <li>la liaison vers le <strong>tableau</strong>, puis le <a href="differentiel.html">différentiel</a> général (300 mA au plus) ;</li>
+  <li>les différentiels 30 mA, et sous chacun les <a href="disjoncteur.html">disjoncteurs</a> des circuits qu’il protège ;</li>
+  <li>au-dessus de chaque disjoncteur, le <strong>câble</strong> du circuit, puis les <strong>points</strong> qu’il alimente, dans l’ordre où on les rencontre.</li>
+</ol>
+<p>La <a href="lexique.html#terre">terre</a> figure aussi : la prise de terre, le sectionneur de terre et la barre de terre du tableau.</p>
+
+<h2 id="numerotation">Lettres et numéros : A1, A2…</h2>
+<p>Le RGIE demande un repérage précis (3.1.2.1). Chaque <strong>circuit</strong> reçoit une <strong>lettre</strong> : A, B, C… Chaque point lumineux, socle de prise et unité de commande de ce circuit reçoit un <strong>numéro d’ordre</strong>, en partant de la protection : A1, A2, A3…</p>
+<p>Un <strong>interrupteur</strong> ne reçoit pas de numéro propre : il porte la lettre du circuit et le <strong>numéro du point qu’il commande</strong>. Si l’interrupteur de la cuisine allume le point lumineux B3, il est marqué B3 lui aussi. Ce repérage est repris tel quel sur le <a href="plan-de-position.html">plan de position</a> : on retrouve ainsi sur le plan chaque point vu sur l’unifilaire, et inversement.</p>
+
+<h2 id="etiquettes">Les étiquettes</h2>
+<p>À côté des symboles, des étiquettes donnent les caractéristiques exigées :</p>
+<table>
+  <thead><tr><th>Élément</th><th>Exemple d’étiquette</th><th>Ce qu’elle dit</th></tr></thead>
+  <tbody>
+    <tr><td>Différentiel</td><td>40 A · 2P / 300 mA type A</td><td>Courant nominal, nombre de pôles, sensibilité, type</td></tr>
+    <tr><td>Disjoncteur</td><td>C20</td><td>Courbe C, calibre 20 A</td></tr>
+    <tr><td>Canalisation</td><td>XVB 3G2,5</td><td>Type de câble, 3 conducteurs dont la terre, 2,5 mm²</td></tr>
+    <tr><td>Mode de pose</td><td>Symbole sur le trait</td><td>Encastré, apparent, enterré, dans un conduit…</td></tr>
+  </tbody>
+</table>
+<p>Les symboles eux-mêmes viennent du tableau 2.23 du RGIE : voir <a href="symboles-electriques.html">Les symboles électriques</a>. Une partie d’installation antérieure au 1<sup>er</sup> octobre 1981 est marquée « partie ancienne ».</p>
+
+<h2 id="exemple">Exemple de lecture</h2>
+<p>Imaginons, au-dessus d’un différentiel 30 mA, un disjoncteur marqué C20, surmonté d’un trait « XVB 3G2,5 » qui porte cinq symboles de prises numérotés C1 à C5. On lit : le circuit C est un circuit de cinq prises, en câble XVB à trois conducteurs de 2,5 mm², protégé par un disjoncteur de 20 A en courbe C, lui-même placé derrière un différentiel 30 mA. Sur le plan, on retrouve C1 à C5 dans les pièces où les prises sont posées.</p>
+<p>Un autre circuit, D, porte un disjoncteur de 16 A, un câble en 1,5 mm², un point lumineux D1 et un interrupteur marqué D1 : c’est un <a href="simple-allumage.html">simple allumage</a>.</p>
+
+<h2 id="limites">Ce que l’unifilaire ne montre pas</h2>
+<p>L’unifilaire ne dit pas où se trouvent les éléments dans la maison : c’est le rôle du plan de position. Il ne montre pas non plus le trajet des câbles dans les murs ni la façon de raccorder chaque borne. Enfin, il ne garantit rien à lui seul : un schéma peut être faux ou ne plus correspondre à la réalité après des travaux. Avant toute intervention, coupez le circuit au tableau et vérifiez l’absence de tension, même si le schéma indique que le point est sur un autre circuit.</p>
+
+<h2 id="voltaplan">Dessiner un unifilaire avec Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, vous décrivez l’installation comme un arbre (tableau, différentiels, disjoncteurs, câbles, points) et l’unifilaire se dessine automatiquement, de bas en haut par défaut, avec les symboles du tableau 2.23. La numérotation A, B, C et A1, A2… est calculée selon les règles ci-dessus, et les étiquettes reprennent les propriétés saisies. Le contrôle signale les données manquantes (calibre, section, sensibilité) et les incohérences, par exemple un câble de 1,5 mm² derrière un disjoncteur de 20 A.</p>
+<p>Ce schéma est un document : il ne remplace pas le contrôle de l’installation par un organisme agréé, qui vérifie sur place qu’il correspond à la réalité.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>L’unifilaire représente chaque circuit par <strong>un seul trait</strong>, quel que soit le nombre de conducteurs.</li><li>En Belgique, il se lit habituellement <strong>de bas en haut</strong>, comme l’exemple de la figure 3.1 du RGIE : l’alimentation en bas, les points en haut.</li><li>Chaque circuit a une <strong>lettre</strong> (A, B, C…) et chaque point un <strong>numéro</strong> dans l’ordre depuis la protection (A1, A2…).</li><li>Un interrupteur porte le numéro du point qu’il commande.</li><li>Les étiquettes donnent le type et la section des câbles, le calibre des disjoncteurs et la sensibilité des différentiels.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Le schéma doit-il obligatoirement être dessiné de bas en haut ?</summary><div>Le RGIE impose le contenu du schéma et ses symboles, pas explicitement le sens du dessin. Mais son exemple officiel (figure 3.1) est dessiné de bas en haut, et c’est la pratique belge courante. Voltaplan le dessine ainsi par défaut, avec une option pour le sens inverse.</div></details>
+    <details><summary>Que signifie un petit trait oblique avec un chiffre sur un circuit ?</summary><div>Il indique le nombre de conducteurs de la canalisation. Comme l’unifilaire dessine un seul trait par circuit, ce repère dit combien de fils passent réellement dans le câble.</div></details>
+    <details><summary>Où trouver le schéma unifilaire de ma maison ?</summary><div>Il fait partie du dossier de l’installation, remis lors du contrôle par l’organisme agréé et à conserver avec les documents de la maison. S’il est perdu ou ne correspond plus à la réalité, un électricien peut le refaire après un relevé de l’installation.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie (sous-section 3.1.2.1, figure 3.1, tableau 2.23).</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><span></span><a class="next" href="plan-de-position.html">Le plan de position →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="plan-de-position.html">Le plan de position</a><span>Le plan de position montre où sont prises, interrupteurs, points lumineux et tableau dans chaque pièce : contenu, repérage A1, A2, conseils pour le dessiner.</span></li><li><a href="symboles-electriques.html">Les symboles électriques</a><span>Prise, interrupteur, point lumineux, disjoncteur, différentiel : les symboles électriques des schémas belges, et quand une légende est nécessaire.</span></li><li><a href="dossier-installation.html">Le dossier de l’installation</a><span>Unifilaire, plans de position, légende, mentions obligatoires : ce que contient le dossier d’une installation électrique belge et comment le préparer.</span></li><li><a href="types-de-cables.html">Les types de câbles (XVB, VOB…)</a><span>XVB, VOB, H07V-K, H05VV-F : que signifient ces noms de câbles, où les utiliser, et comment lire une désignation comme 3G2,5 sur un schéma belge.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Tableau et schémas</h2><ul class="learn-list"><li><a href="plan-de-position.html">Le plan de position</a><span>Le plan de position montre où sont prises, interrupteurs, points lumineux et tableau dans chaque pièce : contenu, repérage A1, A2, conseils pour le dessiner.</span></li><li><a href="symboles-electriques.html">Les symboles électriques</a><span>Prise, interrupteur, point lumineux, disjoncteur, différentiel : les symboles électriques des schémas belges, et quand une légende est nécessaire.</span></li><li><a href="organiser-tableau.html">Organiser le tableau électrique</a><span>Différentiel général, différentiels 30 mA, disjoncteurs, réserve et étiquettes : comment organiser un tableau électrique belge clair, sûr et facile à dépanner.</span></li><li><a href="dossier-installation.html">Le dossier de l’installation</a><span>Unifilaire, plans de position, légende, mentions obligatoires : ce que contient le dossier d’une installation électrique belge et comment le préparer.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

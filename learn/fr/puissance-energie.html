@@ -1,0 +1,76 @@
+<!--
+{
+  "title": "Puissance et énergie (W, kWh)",
+  "pageTitle": "Puissance et énergie : watts, kWh et consommation — Voltaplan",
+  "description": "Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.",
+  "rubrique": "bases",
+  "order": 5,
+  "related": ["courant", "resistance-loi-ohm", "alternatif-mono-tri", "section-des-cables"],
+  "retenir": [
+    "La <strong>puissance</strong> (W) dit à quelle vitesse un appareil consomme ; l’<strong>énergie</strong> (kWh) dit combien il a consommé au total.",
+    "P = U × I : une bouilloire de 2 000 W en 230 V appelle environ 8,7 A.",
+    "Énergie = puissance × durée : 2 000 W pendant 3 minutes = 0,1 kWh.",
+    "Une lampe LED de 8 W allumée 5 heures par jour consomme environ 15 kWh par an, contre 110 kWh pour une ampoule de 60 W.",
+    "Le compteur compte des kWh ; le câble et le disjoncteur, eux, se dimensionnent sur la puissance (le courant)."
+  ],
+  "faq": [
+    { "q": "Quelle est la différence entre kW et kWh ?", "a": "Le kW est une puissance, une vitesse de consommation à un instant donné. Le kWh est une quantité d’énergie : un appareil de 1 kW qui fonctionne pendant une heure consomme 1 kWh. On paie l’énergie (les kWh) ; le câble et le disjoncteur doivent supporter la puissance (les kW, donc le courant)." },
+    { "q": "Un appareil puissant consomme-t-il forcément beaucoup ?", "a": "Pas forcément : tout dépend de la durée. Une bouilloire de 2 000 W utilisée 3 minutes consomme 0,1 kWh, autant qu’une lampe LED de 8 W allumée plus de 12 heures. À l’inverse, un petit appareil en veille toute l’année finit par compter." },
+    { "q": "Comment connaître la consommation réelle d’un appareil ?", "a": "La puissance indiquée sur l’étiquette est un maximum. Pour connaître la consommation réelle, on peut brancher l’appareil sur une prise wattmètre pendant quelques jours, ou relever le compteur avant et après son utilisation." }
+  ],
+  "sources": [
+    { "label": "Manuels d’électrotechnique de base (puissance, énergie, effet Joule)." },
+    { "label": "Unités électriques (W, kW, Wh, kWh, VA) : sbg-energy.com", "url": "https://sbg-energy.com/unites-electriques" }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Watt, kilowatt, kilowattheure : ces unités figurent sur chaque appareil et sur chaque facture, et on les confond souvent. La <a href="lexique.html#puissance">puissance</a> dit à quelle vitesse un appareil consomme ; l’<a href="lexique.html#energie">énergie</a> dit combien il a consommé au bout du compte. La première sert à dimensionner l’installation, la seconde à comprendre la facture.</p>
+
+<h2 id="puissance">La puissance : P = U × I</h2>
+<p>La puissance, notée <strong>P</strong>, se mesure en <a href="lexique.html#watt">watts</a> (W) ; 1 kilowatt (kW) = 1 000 W. Elle indique combien d’énergie un appareil transforme chaque seconde : en chaleur pour un radiateur, en lumière pour une lampe, en mouvement pour un moteur.</p>
+<p>En électricité, elle se calcule simplement :</p>
+<p><strong>P = U × I</strong> &nbsp; (watts = volts × ampères)</p>
+<p>Dans l’image de l’eau, c’est comme une roue à aubes : elle tourne d’autant plus fort que la pression (la tension) et le débit (le courant) sont élevés. Une forte pression sans débit, ou un gros débit sans pression, ne fait rien tourner.</p>
+<p>La formule se retourne pour trouver le courant : <strong>I = P ÷ U</strong>. C’est le calcul le plus utile en pratique.</p>
+<table>
+  <thead><tr><th>Appareil (230 V)</th><th>Puissance</th><th>Courant (I = P ÷ U)</th></tr></thead>
+  <tbody>
+    <tr><td>Lampe LED</td><td>8 W</td><td>0,035 A</td></tr>
+    <tr><td>Bouilloire</td><td>2 000 W</td><td>8,7 A</td></tr>
+    <tr><td>Lave-linge en chauffe</td><td>2 200 W</td><td>9,6 A</td></tr>
+    <tr><td>Radiateur électrique</td><td>2 500 W</td><td>10,9 A</td></tr>
+  </tbody>
+</table>
+<p>Avec la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, on obtient deux autres formes : P = R × I² et P = U² ÷ R. La première explique pourquoi un câble chauffe davantage quand le courant augmente.</p>
+
+<h2 id="circuit">Additionner les puissances d’un circuit</h2>
+<p>Les appareils branchés sur un même circuit s’additionnent. Sur un circuit de prises protégé à 20 A, la puissance maximale vaut 230 × 20 = <strong>4 600 W</strong>. Une bouilloire (2 000 W), un grille-pain (900 W) et un micro-ondes (1 200 W) font 4 100 W : ça passe. Ajoutez un radiateur de 2 000 W et le disjoncteur finira par couper. C’est pour cela que les gros appareils (four, lave-linge, lave-vaisselle) ont souvent leur propre circuit.</p>
+
+<h2 id="energie">L’énergie : puissance × durée</h2>
+<p>L’énergie consommée dépend de la puissance <strong>et</strong> du temps de fonctionnement :</p>
+<p><strong>E = P × t</strong></p>
+<p>Avec la puissance en kilowatts et la durée en heures, on obtient des <a href="lexique.html#kilowattheure">kilowattheures</a> (kWh), l’unité de la facture. Un appareil de 1 kW qui fonctionne pendant 1 heure consomme 1 kWh ; un appareil de 100 W pendant 10 heures aussi.</p>
+
+<h2 id="exemples">Calculs concrets</h2>
+<p><strong>La bouilloire</strong></p>
+<p>Une bouilloire de 2 000 W (2 kW) chauffe un litre d’eau en 3 minutes environ, soit 0,05 heure :</p>
+<p>E = 2 kW × 0,05 h = <strong>0,1 kWh</strong> par utilisation.</p>
+<p>À raison de trois utilisations par jour, cela fait 0,3 kWh par jour, environ 110 kWh par an.</p>
+<p><strong>La lampe LED</strong></p>
+<p>Une lampe LED de 8 W allumée 5 heures par jour :</p>
+<p>8 W × 5 h = 40 Wh par jour, soit 40 × 365 ≈ 14 600 Wh ≈ <strong>15 kWh par an</strong>.</p>
+<p>Une ancienne ampoule à incandescence de 60 W, qui éclaire à peu près autant, consommerait 60 × 5 × 365 ≈ <strong>110 kWh par an</strong> : plus de sept fois plus.</p>
+<p><strong>Les veilles</strong></p>
+<p>Un décodeur qui consomme 5 W en veille, jour et nuit : 5 W × 24 h × 365 ≈ <strong>44 kWh par an</strong>. Discret, mais bien plus que la lampe LED de l’exemple précédent.</p>
+<p><strong>Le coût</strong></p>
+<p>Pour passer au coût, on multiplie par le prix du kWh indiqué sur votre facture. Par exemple, avec un prix hypothétique de 0,30 € par kWh, la lampe LED coûte environ 4,40 € par an et l’ampoule de 60 W environ 33 €. Le prix réel varie selon le contrat, le fournisseur et la période.</p>
+
+<h2 id="compteur">Ce que compte le compteur</h2>
+<p>Le <a href="lexique.html#compteur">compteur</a> additionne l’énergie consommée, en kWh. Selon le contrat, il peut compter séparément les heures pleines et les heures creuses (jour et nuit), ou l’énergie injectée par des panneaux solaires. Pour connaître la consommation d’un appareil, relevez le compteur avant et après son utilisation, ou utilisez une prise wattmètre.</p>
+
+<h2 id="raccordement">Puissance du raccordement</h2>
+<p>Le raccordement de la maison a lui aussi une puissance maximale, fixée par le calibre du disjoncteur de branchement. Par exemple, un raccordement monophasé de 40 A sous 230 V permet 230 × 40 = 9 200 VA, soit 9,2 kVA. On parle en VA (voltampères) plutôt qu’en watts pour les raisons expliquées dans <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>. Les différentes formules de raccordement sont détaillées sur la page <a href="https://sbg-energy.com/raccordement-mono-tri">raccordement mono ou tri</a>.</p>
+
+<h2 id="dimensionner">Puissance pour dimensionner, énergie pour payer</h2>
+<p>Retenez la distinction : la puissance (donc le courant) détermine la <a href="section-des-cables.html">section des câbles</a> et le calibre des <a href="disjoncteur.html">disjoncteurs</a> ; l’énergie détermine la facture. Un appareil de 3 000 W utilisé dix minutes par jour coûte peu, mais il exige un circuit capable de porter 13 A.</p>

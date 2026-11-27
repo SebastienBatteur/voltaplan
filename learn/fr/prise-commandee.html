@@ -1,0 +1,92 @@
+<!--
+{
+  "title": "La prise commandée par un interrupteur",
+  "pageTitle": "Câbler une prise commandée (schéma et exercice) — Voltaplan",
+  "description": "Allumer une lampe sur pied depuis l’interrupteur de la porte : câbler une prise commandée, choisir la section et l’interrupteur, éviter les erreurs.",
+  "rubrique": "cablages",
+  "order": 10,
+  "exercise": "prise-commandee",
+  "related": ["prise-de-courant", "simple-allumage", "relais-connectes", "plan-de-position"],
+  "retenir": [
+    "Une prise commandée se câble comme un simple allumage : l’interrupteur coupe la <strong>phase</strong>, le neutre et la terre vont directement à la prise.",
+    "Elle reste une prise : <strong>2,5 mm²</strong> sur tout le trajet, y compris jusqu’à l’interrupteur, sous un disjoncteur de 20 A au plus.",
+    "L’interrupteur doit supporter le courant de ce qu’on branchera : vérifiez son marquage.",
+    "Elle compte comme un point de prise dans la limite de 8 par circuit.",
+    "Repérez-la (couvercle, étiquette, plan) pour qu’on n’y branche pas un congélateur."
+  ],
+  "faq": [
+    { "q": "Peut-on commander une prise depuis le circuit d’éclairage ?", "a": "Ce n’est pas une bonne idée si le circuit d’éclairage est en 1,5 mm² protégé par 16 A : une prise accepte des appareils de 16 A, et le câble serait trop juste. La prise commandée se place sur un circuit de prises en 2,5 mm², avec un fil de commande lui aussi en 2,5 mm²." },
+    { "q": "Peut-on commander une prise depuis deux endroits ?", "a": "Oui : on remplace l’interrupteur simple par deux interrupteurs de va-et-vient, ou on utilise un télérupteur commandé par des boutons-poussoirs. Le principe reste le même : seule la phase est commandée." },
+    { "q": "Existe-t-il une solution sans tirer de nouveau câble ?", "a": "Oui : une prise connectée ou un module radio commandé par un interrupteur sans fil. C’est pratique en location ou en rénovation légère, mais cela dépend d’une pile ou d’une application. Voir l’article sur les relais et modules connectés." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants d’interrupteurs (courant nominal des contacts)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Dans un salon ou une chambre, il est agréable d’allumer la lampe sur pied depuis l’interrupteur de la porte. La solution classique est la <strong>prise commandée</strong> : une prise ordinaire dont l’alimentation passe par un interrupteur. Le montage combine deux choses déjà vues : le <a href="simple-allumage.html">simple allumage</a> et la <a href="prise-de-courant.html">prise de courant</a>.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>L’<a href="lexique.html#interrupteur">interrupteur</a> est placé sur la <a href="lexique.html#phase">phase</a>, entre le tableau et la prise. Quand il est ouvert, la prise n’est plus alimentée et la lampe qui y est branchée s’éteint. Quand il est fermé, la prise reçoit la phase et la lampe s’allume, à condition que son propre interrupteur soit resté en position « marche ».</p>
+<p>Le <a href="lexique.html#neutre">neutre</a> (bleu) et le conducteur de protection (vert-jaune) ne passent pas par l’interrupteur : ils vont directement à la prise. On ne coupe jamais le neutre seul : la prise « éteinte » resterait reliée à la phase.</p>
+<p>Souvent, la pièce compte aussi des prises <strong>permanentes</strong>, toujours sous tension, sur le même circuit. C’est ce que représente l’exercice : une prise commandée et une prise permanente.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → interrupteur (borne L), et vers les prises permanentes</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Retour (fil commandé)</td><td>Interrupteur (borne 1) → prise commandée (borne L)</td><td>Noir ou gris ; jamais bleu ni vert-jaune</td></tr>
+    <tr><td>Neutre</td><td>Tableau → chaque prise (borne N)</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → chaque prise (borne de terre)</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Le fil entre l’interrupteur et la prise joue le même rôle que le <a href="lexique.html#retour-lampe">retour lampe</a> d’un éclairage.</p>
+
+<h2 id="section">Une prise reste une prise</h2>
+<p>C’est le point qu’on oublie le plus souvent. Même si vous pensez n’y brancher qu’une lampe de 10 W, quelqu’un pourra un jour y brancher un radiateur d’appoint de 2 000 W. La prise commandée doit donc respecter les règles d’un circuit de prises :</p>
+<ul>
+  <li><strong>section de 2,5 mm²</strong> sur tout le trajet, y compris le câble qui monte à l’interrupteur et redescend vers la prise ;</li>
+  <li><strong>disjoncteur de 20 A au plus</strong>, et différentiel de 30 mA dans une installation neuve ;</li>
+  <li><strong>terre</strong> raccordée et prise avec obturateurs, comme toute prise de 16 A ;</li>
+  <li><strong>un point de prise</strong> de plus dans la limite de 8 points du circuit.</li>
+</ul>
+<p>Raccorder la prise commandée sur le circuit d’éclairage, câblé en 1,5 mm² et protégé par 16 A, est une erreur classique : le câble serait trop fin pour une prise. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
+
+<h2 id="interrupteur">Choisir l’interrupteur</h2>
+<p>Le contact de l’interrupteur laisse passer tout le courant de l’appareil branché. Le courant nominal est marqué sur l’interrupteur (par exemple 10 A ou 16 A, parfois suivi de la lettre X pour les charges difficiles). Choisissez un modèle qui convient à ce qui pourra être branché sur la prise, et pas seulement à la lampe prévue. En cas de doute, la notice du fabricant fait foi.</p>
+<p>Il existe aussi des <strong>prises avec interrupteur intégré</strong> : l’interrupteur est sur la prise elle-même, et coupe souvent les deux pôles. Elles servent plutôt à couper un appareil sur place qu’à allumer une lampe depuis la porte.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li>Amener la <strong>phase</strong> (brun) à la borne L de l’interrupteur. Si une prise permanente est alimentée au même endroit, la phase y continue aussi.</li>
+  <li>Relier la borne 1 de l’interrupteur à la borne L de la prise commandée : c’est le <strong>retour</strong> (noir ou gris).</li>
+  <li>Amener le <strong>neutre</strong> (bleu) et la <strong>terre</strong> (vert-jaune) à chaque prise, en repiquage ou depuis une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a>.</li>
+  <li>Remettre le courant, essayer l’interrupteur : la prise commandée s’allume et s’éteint, la prise permanente reste sous tension.</li>
+</ol>
+
+<h2 id="reperer">Repérer la prise commandée</h2>
+<p>Une prise commandée ressemble à n’importe quelle autre. Si l’on y branche un congélateur ou une box internet, ils s’éteindront au premier passage dans la pièce. Quelques habitudes évitent la surprise :</p>
+<ul>
+  <li>une prise d’une autre couleur, un repère sur le couvercle ou une petite étiquette ;</li>
+  <li>la prise commandée indiquée sur le <a href="plan-de-position.html">plan de position</a> et dans le dossier de l’installation ;</li>
+  <li>une position logique (près de l’endroit prévu pour la lampe, par exemple à côté du canapé).</li>
+</ul>
+
+<h2 id="variantes">Les variantes</h2>
+<ul>
+  <li><strong>Commande depuis deux endroits</strong> : deux interrupteurs de <a href="va-et-vient.html">va-et-vient</a> à la place de l’interrupteur simple.</li>
+  <li><strong>Plusieurs prises commandées ensemble</strong> : elles se branchent en parallèle sur le même retour, comme plusieurs lampes sur un simple allumage.</li>
+  <li><strong>Commande sans fil</strong> : un module radio ou une prise connectée, sans nouveau câble. Voir <a href="relais-connectes.html">Relais et modules connectés</a>.</li>
+</ul>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Fil de commande en 1,5 mm²</strong> sur un circuit protégé par 20 A.</li>
+  <li><strong>Interrupteur sur le neutre</strong> : la prise semble éteinte mais reste reliée à la phase.</li>
+  <li><strong>Interrupteur trop faible</strong> pour l’appareil qu’on y branche : il chauffe.</li>
+  <li><strong>Fil bleu utilisé comme retour</strong> : la personne suivante le prendra pour un neutre.</li>
+</ul>

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Câbler une coupole ou fenêtre motorisée (exercice) — Voltaplan</title>
+<meta name="description" content="Câbler une coupole, une fenêtre de toit ou un ouvrant à moteur deux sens avec une commande ouvrir / fermer : même principe que le volet, exercice et unifilaire.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/fenetre-motorisee.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Fenêtres, coupoles et ouvrants motorisés","description":"Câbler une coupole, une fenêtre de toit ou un ouvrant à moteur deux sens avec une commande ouvrir / fermer : même principe que le volet, exercice et unifilaire.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/fenetre-motorisee.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Fenêtres, coupoles et ouvrants motorisés","item":"https://voltaplan.org/apprendre/fenetre-motorisee.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Câbler une coupole ou fenêtre motorisée (exercice) — Voltaplan">
+<meta property="og:description" content="Câbler une coupole, une fenêtre de toit ou un ouvrant à moteur deux sens avec une commande ouvrir / fermer : même principe que le volet, exercice et unifilaire.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/fenetre-motorisee.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#volets">Volets roulants et ouvrants motorisés</a></nav>
+  <article>
+  <h1>Fenêtres, coupoles et ouvrants motorisés</h1>
+  <p class="lead">Une coupole sur un toit plat, une fenêtre de toit hors de portée, un ouvrant en haut d’une véranda : on les motorise pour les ouvrir et les fermer d’un geste. Quand le moteur fonctionne en 230 V avec deux sens, le câblage est <strong>le même que pour un <a href="volet-roulant.html">volet roulant</a></strong> : seuls les mots changent, « ouvrir » et « fermer » au lieu de « monter » et « descendre ».</p>
+
+<h2 id="types">Les types d’ouvrants motorisés</h2>
+<ul>
+  <li><strong>Coupole</strong> (ou lanterneau) sur toit plat : un vérin ou un moteur à chaîne soulève le dôme. Fréquent en salle de bain, cage d’escalier ou couloir.</li>
+  <li><strong>Fenêtre de toit</strong> : moteur intégré au châssis, souvent fourni avec un boîtier de commande et une télécommande.</li>
+  <li><strong>Ouvrant de façade ou de véranda</strong> : moteur à chaîne ou à bras fixé sur le dormant, pour la ventilation.</li>
+  <li><strong>Store extérieur ou intérieur</strong> sur une fenêtre : moteur tubulaire comme celui d’un volet.</li>
+</ul>
+<p>Deux grandes familles d’alimentation coexistent. Certains moteurs fonctionnent en <strong>230 V</strong>, avec deux fils de sens, un neutre et une terre, comme un moteur de volet. D’autres fonctionnent en <a href="lexique.html#tbts">très basse tension</a> (souvent en courant continu) : le sens dépend alors de la polarité des deux fils, et le moteur se raccorde à l’alimentation ou au boîtier du fabricant. Cet article et son exercice traitent du premier cas.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Le moteur possède deux entrées : l’une le fait tourner dans le sens « ouvrir », l’autre dans le sens « fermer ». Il a un <a href="lexique.html#neutre">neutre</a> commun et un fil de terre. La commande reçoit la <a href="lexique.html#phase">phase</a> et l’envoie soit vers « ouvrir », soit vers « fermer », soit nulle part (arrêt). En fin de course, le moteur s’arrête de lui-même : arrivé en position ouverte ou fermée, son <a href="lexique.html#fin-de-course">fin de course</a> coupe l’enroulement correspondant.</p>
+<p>Dans l’exercice, le moteur porte les bornes « montée » et « descente » d’un moteur de volet : la montée correspond ici à « ouvrir », la descente à « fermer ». Sur un vrai moteur, le repérage dépend du fabricant : vérifiez la notice, et essayez avant de régler les fins de course.</p>
+
+<h2 id="boite">Passer par une boîte de dérivation</h2>
+<p>Une coupole est souvent loin de sa commande : la commande est au mur, à hauteur de main, et le moteur au plafond. On tire donc le câble du tableau jusqu’à une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> au plafond, d’où partent un câble vers la commande et un câble vers le moteur. Dans la boîte :</p>
+<table>
+  <thead><tr><th>Connexion</th><th>Relie</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Arrivée du tableau → commande (borne L)</td><td>Brun</td></tr>
+    <tr><td>Ouvrir</td><td>Commande (sortie ouvrir) → moteur (sens ouvrir)</td><td>Noir</td></tr>
+    <tr><td>Fermer</td><td>Commande (sortie fermer) → moteur (sens fermer)</td><td>Gris</td></tr>
+    <tr><td>Neutre</td><td>Arrivée → moteur</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Arrivée → moteur (et commande si elle a une borne de terre)</td><td>Vert-jaune</td></tr>
+  </tbody>
+</table>
+<p>Chaque connexion se fait avec un connecteur dans la boîte. Le neutre et la terre ne passent pas par la commande ; on peut néanmoins les amener dans la boîte de la commande pour la remplacer plus tard par un module connecté.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Dans la boîte, relier la phase de l’arrivée au fil qui monte vers la borne L de la commande.</li>
+  <li>Relier les sorties ouvrir et fermer de la commande aux fils de sens du moteur, chacune par sa propre connexion.</li>
+  <li>Relier le neutre de l’arrivée au neutre du moteur, et la terre de l’arrivée à la terre du moteur.</li>
+  <li>Remettre le courant, essayer ouvrir et fermer, et échanger les deux fils de sens (hors tension) si le moteur tourne à l’envers.</li>
+  <li>Régler les fins de course selon la notice.</li>
+</ol>
+
+<h2 id="erreurs">Les erreurs à éviter</h2>
+<ul>
+  <li><strong>Ouvrir et fermer alimentés ensemble</strong> : avec un double interrupteur, ou en reliant par erreur les deux fils de sens dans la boîte. Le moteur force dans les deux sens et chauffe. Dans l’exercice, la vérification l’affiche : « Moteur de la coupole reçoit montée et descente en même temps : le moteur peut être endommagé ».</li>
+  <li><strong>Un moteur très basse tension raccordé au 230 V</strong> : il est détruit immédiatement, et l’isolation n’est pas prévue pour cette tension.</li>
+  <li><strong>Deux ouvrants en parallèle</strong> sur la même commande, sans accord du fabricant : voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</li>
+  <li><strong>Terre oubliée</strong> sur un moteur qui en a une.</li>
+</ul>
+
+<h2 id="securite">Sécurité d’usage</h2>
+<p>Un ouvrant motorisé exerce une force réelle. Placez la commande à un endroit d’où l’on voit l’ouvrant, pour ne pas fermer sur une main ou un objet. Beaucoup de moteurs ont une sécurité anti-pincement ou un arrêt sur effort ; ne la désactivez pas. Un capteur de pluie, raccordé à un boîtier de commande ou à un module domotique, ferme la coupole automatiquement en cas d’averse (voir <a href="volets-domotique.html">Volets et domotique</a>).</p>
+<p>Les exutoires de désenfumage obéissent à des règles propres et dépassent le cadre de cet article. Pour une installation neuve ou modifiée, le contrôle par un organisme agréé reste obligatoire.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Un ouvrant à moteur 230 V à deux sens se câble comme un volet : phase vers la commande, une sortie « ouvrir », une sortie « fermer », neutre et terre directs.</li><li>La commande doit être <strong>verrouillée</strong> : jamais ouvrir et fermer en même temps.</li><li>Beaucoup de fenêtres de toit et d’ouvrants fonctionnent en très basse tension, avec leur propre boîtier de commande : la notice du fabricant prime.</li><li>Un ouvrant qui se ferme seul peut pincer : capteur de pluie, sécurité anti-pincement et commande visible sont à prévoir.</li></ul></section>
+  <section class="exo-sec" id="exercice">
+    <h2>Exercice : câbler une coupole motorisée</h2>
+    <p>Le moteur de la coupole a deux sens : « ouvrir » (borne de montée) et « fermer » (borne de descente). Passez par la boîte de dérivation pour relier l’arrivée du tableau, la commande et le moteur. Essayez les trois positions de la commande (arrêt, ouvrir, fermer), puis cliquez sur « Vérifier ».</p>
+    <div class="exo"><script type="application/json">{"id":"fenetre-motorisee","title":"câbler une coupole motorisée","task":"Le moteur de la coupole a deux sens : « ouvrir » (borne de montée) et « fermer » (borne de descente). Passez par la boîte de dérivation pour relier l’arrivée du tableau, la commande et le moteur. Essayez les trois positions de la commande (arrêt, ouvrir, fermer), puis cliquez sur « Vérifier ».","devices":[{"id":"src","type":"supply","label":"Arrivée (tableau)","x":10,"y":10},{"id":"box","type":"box","label":"Boîte de dérivation","x":168,"y":10},{"id":"cmd","type":"shutterSwitch","label":"Commande ouvrir / fermer","x":428,"y":10},{"id":"motor","type":"motor","label":"Moteur de la coupole","x":202,"y":250,"side":"top"}],"h":350,"cases":[{"set":{"cmd":"stop"},"expect":{"motor":{"up":false,"down":false}}},{"set":{"cmd":"up"},"expect":{"motor":{"up":true,"down":false}}},{"set":{"cmd":"down"},"expect":{"motor":{"up":false,"down":true}}}],"solution":[{"a":"src.L","b":"box.a","color":"brown"},{"a":"box.a","b":"cmd.L","color":"brown"},{"a":"cmd.up","b":"box.b","color":"black"},{"a":"box.b","b":"motor.up","color":"black"},{"a":"cmd.down","b":"box.c","color":"grey"},{"a":"box.c","b":"motor.down","color":"grey"},{"a":"src.N","b":"box.d","color":"blue"},{"a":"box.d","b":"motor.N","color":"blue"},{"a":"src.PE","b":"box.e","color":"gy"},{"a":"box.e","b":"motor.PE","color":"gy"}]}</script><p class="muted">L’exercice interactif demande JavaScript. La solution est décrite dans l’article ci-dessus.</p></div>
+    <h3 id="unifilaire">Le même circuit dans un schéma unifilaire</h3>
+    <figure class="uni-fig"><svg class="uni" viewBox="-12 -12 265.36 214" width="531" role="img" aria-label="Le même schéma que pour un volet : disjoncteur 16 A, câble 3G1,5 mm², commande à deux sens (deux flèches), puis câble à 4 conducteurs vers le moteur de l’ouvrant. La boîte de dérivation n’est pas dessinée ici, pour garder le schéma lisible."><g transform="translate(32,114)" class="sym"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></g><text x="50" y="128" font-size="11" text-anchor="start" class="bold ">A · Coupole</text><text x="50" y="140" font-size="10" text-anchor="start" class="muted">C16 A · 1P+N</text><text x="50" y="152" font-size="10" text-anchor="start" class="muted">3000 A</text><g transform="translate(32,74)" class="sym"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></g><text x="45" y="95" font-size="10" text-anchor="start" class="muted">XVB 3G1,5</text><line x1="32" y1="42" x2="48" y2="42" class="wire"></line><g transform="translate(48,42)" class="sym"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><path d="M24 -2 l3 -4 l3 4 z M24 2 l3 4 l3 -4 z" class="nofill"></path></g></g></g><text x="64" y="23" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="80" y1="42" x2="92" y2="42" class="wire"></line><g transform="translate(92,42)" class="sym"><g><line x1="0" y1="0" x2="44" y2="0"></line><line x1="19" y1="4" x2="25" y2="-4"></line></g></g><text x="118.68" y="36" font-size="9" text-anchor="middle" class="muted">XVB 4G1,5</text><line x1="145.36" y1="42" x2="157.36" y2="42" class="wire"></line><g transform="translate(157.36,42)" class="sym"><g><line x1="0" y1="0" x2="6" y2="0"></line><circle cx="17" cy="0" r="10" class="bg"></circle><text x="17" y="4" font-size="11" text-anchor="middle" font-weight="bold">M</text></g></g><text x="171.36" y="27" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="32" y1="74" x2="32" y2="42" class="wire"></line><line x1="32" y1="114" x2="32" y2="108" class="wire"></line></svg><figcaption>Le même schéma que pour un volet : disjoncteur 16 A, câble 3G1,5 mm², commande à deux sens (deux flèches), puis câble à 4 conducteurs vers le moteur de l’ouvrant. La boîte de dérivation n’est pas dessinée ici, pour garder le schéma lisible.</figcaption></figure>
+    <p><a class="btn" href="../app/">Dessiner ce circuit dans Voltaplan</a></p>
+  </section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Peut-on commander une coupole avec un interrupteur ordinaire ?</summary><div>Pas un moteur à deux sens : il faut une commande à deux sorties verrouillées (ouvrir, fermer), comme pour un volet. Un interrupteur simple ne commanderait qu’un sens, et un double interrupteur permettrait d’alimenter les deux à la fois.</div></details>
+    <details><summary>Ma fenêtre de toit motorisée n’a que deux fils : comment la raccorder ?</summary><div>C’est souvent un moteur en très basse tension continue, où le sens dépend de la polarité. Il se raccorde à l’alimentation ou au boîtier de commande prévu par le fabricant, jamais directement au 230 V.</div></details>
+    <details><summary>La coupole peut-elle se fermer toute seule quand il pleut ?</summary><div>Oui, avec un capteur de pluie raccordé à un boîtier de commande ou à un module domotique. C’est utile pour une coupole de salle de bain ou de cage d’escalier qu’on oublie ouverte.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Notices des fabricants de coupoles, fenêtres de toit et moteurs d’ouvrants.</li><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="commande-groupee-volets.html">← Commander plusieurs volets ensemble</a><a class="next" href="volets-domotique.html">Volets et domotique →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="volet-roulant.html">Câbler un volet roulant</a><span>Câbler une commande de volet et un moteur tubulaire : montée, descente, neutre et terre, couleurs des fils, erreurs à éviter, exercice et unifilaire.</span></li><li><a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a><span>Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.</span></li><li><a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a><span>Commander plusieurs volets roulants d’un seul geste : pourquoi ne pas mettre deux moteurs en parallèle, relais de centralisation et modules de commande.</span></li><li><a href="volets-domotique.html">Volets et domotique</a><span>Rendre ses volets roulants connectés : modules derrière la commande, scénarios, capteurs de vent et de soleil, et câblage à prévoir (neutre et terre en boîte).</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Volets roulants et ouvrants motorisés</h2><ul class="learn-list"><li><a href="volet-roulant.html">Câbler un volet roulant</a><span>Câbler une commande de volet et un moteur tubulaire : montée, descente, neutre et terre, couleurs des fils, erreurs à éviter, exercice et unifilaire.</span></li><li><a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a><span>Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.</span></li><li><a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a><span>Commander plusieurs volets roulants d’un seul geste : pourquoi ne pas mettre deux moteurs en parallèle, relais de centralisation et modules de commande.</span></li><li><a href="volets-domotique.html">Volets et domotique</a><span>Rendre ses volets roulants connectés : modules derrière la commande, scénarios, capteurs de vent et de soleil, et câblage à prévoir (neutre et terre en boîte).</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+<script src="cablage-sim.js"></script>
+<script src="cablage.js"></script>
+</body>
+</html>

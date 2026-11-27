@@ -1,0 +1,75 @@
+<!--
+{
+  "title": "Les couleurs des fils",
+  "pageTitle": "Couleurs des fils électriques en Belgique — Voltaplan",
+  "description": "Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.",
+  "rubrique": "cables",
+  "order": 1,
+  "related": ["types-de-cables", "simple-allumage", "mise-a-la-terre", "alternatif-mono-tri"],
+  "retenir": [
+    "Le <strong>vert-jaune</strong> est réservé à la terre (conducteur de protection), sans aucune exception.",
+    "Le <strong>bleu</strong> est réservé au neutre ; la phase est en <strong>brun</strong>, noir ou gris.",
+    "Retours lampe et navettes : noir ou gris de préférence, jamais bleu ni vert-jaune.",
+    "Sur un réseau 3 × 230 V, le fil bleu d’un câble peut être relié à une phase : il est alors sous tension.",
+    "La couleur est une convention, pas une garantie : coupez le courant et vérifiez l’absence de tension avant de toucher."
+  ],
+  "faq": [
+    { "q": "Peut-on utiliser un fil bleu comme phase ?", "a": "C’est à éviter : le bleu est réservé au neutre, et quelqu’un qui interviendra plus tard le croira sans danger. Si un câble n’offre pas d’autre couleur, repérez clairement le fil à ses deux extrémités (manchon ou ruban de couleur). Seul le vert-jaune ne doit jamais être détourné, même repéré." },
+    { "q": "Quelle est la couleur du fil de terre ?", "a": "Vert-jaune (deux couleurs, en bandes). Dans une installation conforme, c’est la seule couleur admise pour la terre, et elle ne sert à rien d’autre." },
+    { "q": "J’ai trouvé des fils rouges ou blancs dans une vieille maison : qu’est-ce que c’est ?", "a": "Les installations anciennes suivent parfois d’autres habitudes de couleur. Impossible de savoir à l’œil ce qu’est chaque fil : coupez le courant, vérifiez l’absence de tension, et faites identifier les conducteurs par mesure, idéalement par un électricien." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de câbles (codes couleur des câbles harmonisés)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Dans un câble électrique, chaque fil a une couleur qui annonce son rôle : <strong>phase</strong>, <strong>neutre</strong> ou <strong>terre</strong>. Ce code permet à l’installateur, puis à toute personne qui interviendra des années plus tard, de comprendre le câblage sans tout mesurer. Encore faut-il le respecter, et savoir qu’il ne remplace jamais une vérification.</p>
+
+<h2 id="trois-roles">Trois rôles, trois familles de couleurs</h2>
+<p>Un circuit domestique en 230 V utilise trois conducteurs :</p>
+<ul>
+  <li>la <a href="lexique.html#phase">phase</a>, qui amène la tension depuis le tableau ;</li>
+  <li>le <a href="lexique.html#neutre">neutre</a>, par lequel le courant revient ;</li>
+  <li>le <a href="lexique.html#conducteur-de-protection">conducteur de protection</a>, la terre, qui ne transporte normalement aucun courant mais évacue un défaut vers la <a href="mise-a-la-terre.html">prise de terre</a>.</li>
+</ul>
+<p>La phase et le neutre alimentent l’appareil ; la terre protège les personnes. Les confondre peut donc être dangereux, même si l’appareil semble fonctionner normalement.</p>
+
+<h2 id="tableau-couleurs">Le code couleur en Belgique</h2>
+<table>
+  <thead><tr><th>Couleur</th><th>Rôle</th><th>Remarque</th></tr></thead>
+  <tbody>
+    <tr><td>Vert-jaune</td><td>Terre (conducteur de protection)</td><td>Exclusivement. Jamais pour un autre usage, même repéré.</td></tr>
+    <tr><td>Bleu</td><td>Neutre</td><td>Réservé au neutre quand le circuit en a un.</td></tr>
+    <tr><td>Brun</td><td>Phase</td><td>La couleur de phase la plus courante dans les câbles à trois fils.</td></tr>
+    <tr><td>Noir, gris</td><td>Phase, retour lampe, navette</td><td>Utiles pour distinguer plusieurs conducteurs actifs.</td></tr>
+  </tbody>
+</table>
+<p>Un câble courant à trois conducteurs, comme un 3G2,5, contient donc un brun, un bleu et un vert-jaune. Un câble à cinq conducteurs (5G) ajoute un noir et un gris : pratique pour un circuit <a href="alternatif-mono-tri.html">triphasé</a>, ou pour amener plusieurs retours vers un même point. En triphasé, on rencontre couramment le brun, le noir et le gris pour les trois phases, dans cet ordre.</p>
+
+<h2 id="retours-navettes">Retours lampe et navettes</h2>
+<p>Entre un interrupteur et une lampe, le fil qui revient vers la lampe s’appelle le <a href="lexique.html#retour-lampe">retour lampe</a>. Il porte la phase quand l’interrupteur est fermé. Entre deux interrupteurs de <a href="va-et-vient.html">va-et-vient</a>, les deux fils qui relient les interrupteurs s’appellent des navettes.</p>
+<p>Pour ces fils, on choisit de préférence le <strong>noir</strong> ou le <strong>gris</strong>. Le brun est possible, mais le réserver à la phase permanente facilite la lecture : on sait immédiatement quel fil est toujours sous tension. Le bleu et le vert-jaune sont à proscrire.</p>
+<p>Exemple pour un <a href="simple-allumage.html">simple allumage</a> : brun du tableau à l’interrupteur, noir de l’interrupteur à la lampe, bleu et vert-jaune directement du tableau à la lampe.</p>
+
+<h2 id="reseau-3x230">Attention au réseau 3 × 230 V</h2>
+<p>Une partie des habitations belges, notamment à Bruxelles et dans d’anciens réseaux, est raccordée en <strong>3 × 230 V</strong> sans neutre distribué. Chaque circuit monophasé y est alimenté entre <strong>deux phases</strong>. Le fil bleu d’un câble 3G2,5 est alors relié à une deuxième phase : il est sous tension par rapport à la terre, comme le brun.</p>
+<p>C’est aussi pour cette raison que, sur ce type de réseau, les disjoncteurs doivent couper les deux conducteurs (disjoncteurs bipolaires). Voltaplan le vérifie quand l’alimentation du projet est indiquée en 3 × 230 V.</p>
+
+<h2 id="anciennes-installations">Les installations anciennes</h2>
+<p>Les installations anciennes peuvent suivre d’autres habitudes : fils de couleurs inattendues, terre absente, neutre et phase inversés à une prise, fil bleu utilisé comme retour. Un fil d’une couleur « normale » peut aussi avoir été mal raccordé par un bricoleur.</p>
+<p>La règle est donc simple : <strong>la couleur informe, elle ne prouve rien</strong>. Avant toute intervention, coupez le circuit au tableau et vérifiez l’absence de tension avec un testeur adapté, sur chaque conducteur. Un tournevis testeur ne suffit pas à garantir l’absence de tension.</p>
+
+<h2 id="reperer">Repérer un fil quand la couleur ne convient pas</h2>
+<p>Il arrive qu’un câble ne contienne pas la couleur idéale : par exemple, un câble 3G1,5 utilisé pour un va-et-vient, où il faut deux navettes. On repère alors les fils à leurs deux extrémités avec un manchon ou un ruban de couleur. Ce repérage se pratique couramment pour les conducteurs actifs, mais <strong>jamais pour le vert-jaune</strong> : il reste la terre, quoi qu’il arrive.</p>
+<p>Le plus simple reste de choisir dès le départ un câble qui a assez de conducteurs : un 4G ou un 5G évite bien des bricolages. Voir <a href="types-de-cables.html">Les types de câbles</a>.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Vert-jaune utilisé comme phase ou comme retour</strong> : c’est l’erreur la plus grave, car la personne suivante le prendra pour la terre.</li>
+  <li><strong>Phase et neutre inversés</strong> à une prise ou à un luminaire : l’appareil fonctionne, mais un interrupteur peut alors couper le neutre au lieu de la phase.</li>
+  <li><strong>Terre non raccordée</strong> parce que « l’ampoule n’en a pas besoin » : un futur luminaire métallique, lui, en aura besoin.</li>
+  <li><strong>Bleu détourné</strong> sans repérage : rien ne prévient l’électricien qui interviendra plus tard.</li>
+</ul>
+<p>Les exercices de câblage de cette section appliquent ce code : le simulateur signale une terre qui n’est pas en vert-jaune et un neutre qui n’est pas en bleu. Une installation neuve ou modifiée est ensuite contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

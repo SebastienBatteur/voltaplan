@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Préparer le câblage d’une maison pour la domotique — Voltaplan</title>
+<meta name="description" content="Construire ou rénover en pensant à la domotique : neutre dans chaque boîte, câblage en étoile, boîtes profondes, gaines de réserve, réseau, grand tableau.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/preparer-cablage-domotique.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Préparer le câblage pour la domotique","description":"Construire ou rénover en pensant à la domotique : neutre dans chaque boîte, câblage en étoile, boîtes profondes, gaines de réserve, réseau, grand tableau.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/preparer-cablage-domotique.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Préparer le câblage pour la domotique","item":"https://voltaplan.org/apprendre/preparer-cablage-domotique.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Préparer le câblage d’une maison pour la domotique — Voltaplan">
+<meta property="og:description" content="Construire ou rénover en pensant à la domotique : neutre dans chaque boîte, câblage en étoile, boîtes profondes, gaines de réserve, réseau, grand tableau.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/preparer-cablage-domotique.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#domotique">Domotique</a></nav>
+  <article>
+  <h1>Préparer le câblage pour la domotique</h1>
+  <p class="lead">La <a href="lexique.html#domotique">domotique</a> s’installe facilement… si le câblage a été pensé pour elle. Pendant une construction ou une rénovation lourde, quelques choix simples (un neutre de plus, une boîte plus profonde, un tube vide) évitent de devoir ouvrir les murs dans cinq ans. Voici ce qu’il faut prévoir, quel que soit le système choisi ensuite.</p>
+
+<h2 id="neutre">Un neutre dans chaque boîte d’interrupteur</h2>
+<p>C’est la règle la plus importante. Les <a href="relais-connectes.html">relais connectés</a>, les variateurs électroniques, les interrupteurs à détection et beaucoup de boutons connectés ont besoin d’être alimentés en permanence, donc d’avoir la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>. Dans une installation traditionnelle, la boîte d’interrupteur ne reçoit que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a>.</p>
+<p>Tirez donc systématiquement un conducteur bleu jusqu’à chaque boîte de commande, même si l’interrupteur posé aujourd’hui n’en a pas besoin. Le neutre reste en attente dans un connecteur, isolé, prêt pour un futur module. Il doit appartenir au même circuit que la phase présente dans la boîte : mélanger le neutre d’un circuit et la phase d’un autre provoque des déclenchements de différentiel et rend la coupure incomplète.</p>
+
+<h2 id="etoile">Le câblage en étoile</h2>
+<p>Dans un câblage traditionnel, les circuits passent de boîte en boîte : la phase va de l’interrupteur à la lampe, puis à la lampe suivante. Dans un câblage <strong>en étoile</strong>, chaque point lumineux (ou chaque groupe de points commandés ensemble) a son propre câble jusqu’au <a href="lexique.html#tableau-electrique">tableau électrique</a>, et chaque bouton a ses propres conducteurs de commande vers le tableau.</p>
+<p>L’intérêt : tous les organes de puissance sont au tableau. Aujourd’hui, des <a href="telerupteur.html">télérupteurs</a> et des boutons-poussoirs ; demain, des modules sur rail DIN ou des actionneurs de <a href="bus-knx.html">bus</a>, sans toucher aux murs. Le dépannage est aussi plus simple : tout se mesure au tableau.</p>
+<p>Le câblage en étoile reste soumis aux règles habituelles : chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), et les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), avec au plus 8 circuits par différentiel de 30 mA. Les retours qui partent d’une même commande appartiennent au circuit de leur protection : ne mélangez pas des circuits différents dans un même câble sans y avoir réfléchi.</p>
+
+<h2 id="boites">Des boîtes profondes</h2>
+<p>Un module domotique mesure souvent deux centimètres d’épaisseur ou plus. Dans une boîte d’encastrement standard déjà remplie de fils et de connecteurs, il ne rentre pas, ou il est écrasé contre les conducteurs et chauffe. Posez des <strong>boîtes profondes</strong> pour les interrupteurs et les points de commande, et des boîtes de dérivation assez grandes pour accueillir un module. Voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>.</p>
+
+<h2 id="tubes">Des tubes de réserve</h2>
+<p>Un tube vide posé aujourd’hui est le moyen le moins cher de garder des options. Prévoyez en particulier :</p>
+<ul>
+  <li>un tube supplémentaire vers chaque point de commande, pour un futur câble bus ou un conducteur de commande ;</li>
+  <li>des tubes vers les fenêtres, pour des <a href="volets-domotique.html">volets motorisés</a> ou des contacts d’ouverture ;</li>
+  <li>des tubes vers le plafond des pièces principales, pour un détecteur de présence ou une sonde ;</li>
+  <li>un tube vers l’extérieur (portail, éclairage de jardin, borne de recharge) et vers le grenier ;</li>
+  <li>un tube vers le compteur, pour relier plus tard le port de données du compteur numérique.</li>
+</ul>
+<p>Laissez un tire-fil dans chaque tube vide : il servira à y tirer le câble plus tard.</p>
+
+<h2 id="reseau">Le réseau informatique</h2>
+<p>La domotique moderne vit aussi sur le réseau : passerelles sans fil, serveur Home Assistant, interface du bus, onduleur photovoltaïque, borne de recharge. Prévoyez :</p>
+<ul>
+  <li>un emplacement technique, près du tableau ou dans une armoire, avec quelques prises et un câble réseau vers le routeur ;</li>
+  <li>des câbles réseau (catégorie 6 ou plus) en étoile vers les pièces de vie, le bureau, les points d’accès Wi-Fi au plafond ;</li>
+  <li>des câbles réseau séparés des câbles 230 V, dans leurs propres tubes.</li>
+</ul>
+
+<h2 id="tableau">Un tableau assez grand</h2>
+<p>Modules sur rail DIN, alimentation de bus, contacteurs, passerelles : un tableau domotique se remplit vite. Prévoyez nettement plus de rangées que nécessaire aujourd’hui et un espace pour le câblage des commandes. Voir <a href="organiser-tableau.html">Organiser le tableau électrique</a>.</p>
+
+<h2 id="documenter">Documenter ce qui est posé</h2>
+<p>Un tube vide ou un neutre en attente qu’on ne retrouve plus ne sert à rien. Reportez chaque boîte, chaque tube de réserve et chaque câble réseau sur le <a href="plan-de-position.html">plan de position</a>, et repérez les câbles aux deux extrémités. Le <a href="lire-unifilaire.html">schéma unifilaire</a> montre les circuits, avec leurs télérupteurs, relais ou actionneurs. Une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> sur la base de ces documents.</p>
+<p>Et comme toujours : coupez le courant et vérifiez l’absence de tension avant d’intervenir dans une boîte ou au tableau.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Amenez un <strong>neutre dans chaque boîte d’interrupteur</strong> : c’est la condition de base pour presque tous les modules domotiques.</li><li>Le câblage <strong>en étoile</strong> (chaque point relié au tableau) laisse le choix entre télérupteurs, modules sur rail DIN et bus.</li><li>Boîtes profondes, tubes de réserve et tableau surdimensionné coûtent peu pendant les travaux et beaucoup après.</li><li>Prévoyez le réseau informatique : un câble jusqu’à l’emplacement de la passerelle ou du serveur, et des tubes vers les pièces.</li><li>Tout ce qui est posé doit figurer sur le plan de position et le schéma unifilaire.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Je ne sais pas encore quel système domotique choisir. Que prévoir ?</summary><div>Un câblage en étoile vers le tableau, un neutre dans chaque boîte d’interrupteur, des boîtes profondes, un tube supplémentaire vide vers chaque point de commande et un tableau avec beaucoup de place libre. Avec cette préparation, vous pourrez installer des télérupteurs aujourd’hui et passer plus tard à des modules sur rail DIN, à un bus ou à du sans-fil.</div></details>
+    <details><summary>Le câblage en étoile coûte-t-il beaucoup plus cher ?</summary><div>Il demande plus de câble et plus de place au tableau, mais pas forcément beaucoup plus de main-d’œuvre dans une construction neuve, où les tubes sont posés avant les enduits. Le surcoût est faible comparé à l’ouverture des murs plus tard.</div></details>
+    <details><summary>Faut-il tirer un câble bus même si je pars sur du sans-fil ?</summary><div>Ce n’est pas obligatoire. Un tube vide vers chaque point de commande permet d’en ajouter un plus tard. Certains préfèrent poser directement le câble bus, peu coûteux, pour garder la possibilité d’un système filaire.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants de matériel domotique et de boîtes d’encastrement.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="sans-fil-zigbee-wifi.html">← Zigbee, Z-Wave, Wi-Fi : le sans-fil</a><a class="next" href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li><li><a href="organiser-tableau.html">Organiser le tableau électrique</a><span>Différentiel général, différentiels 30 mA, disjoncteurs, réserve et étiquettes : comment organiser un tableau électrique belge clair, sûr et facile à dépanner.</span></li><li><a href="bus-knx.html">Les bus filaires (KNX et autres)</a><span>Comment fonctionne un bus domotique filaire comme KNX : câble bus dédié, alimentation en très basse tension, adresses, programmation et règles de pose.</span></li><li><a href="plan-de-position.html">Le plan de position</a><span>Le plan de position montre où sont prises, interrupteurs, points lumineux et tableau dans chaque pièce : contenu, repérage A1, A2, conseils pour le dessiner.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Domotique</h2><ul class="learn-list"><li><a href="domotique-introduction.html">La domotique : les principes</a><span>Comprendre la domotique : du télérupteur aux relais connectés, bus filaires et sans-fil, ce qui change dans le câblage et ce que le RGIE impose toujours.</span></li><li><a href="relais-connectes.html">Relais et modules connectés</a><span>Installer un relais connecté derrière un interrupteur ou un module sur rail DIN : pourquoi le neutre est nécessaire, câblage, limites de courant et erreurs.</span></li><li><a href="bus-knx.html">Les bus filaires (KNX et autres)</a><span>Comment fonctionne un bus domotique filaire comme KNX : câble bus dédié, alimentation en très basse tension, adresses, programmation et règles de pose.</span></li><li><a href="sans-fil-zigbee-wifi.html">Zigbee, Z-Wave, Wi-Fi : le sans-fil</a><span>Zigbee, Z-Wave, Wi-Fi, Thread et Matter expliqués : maillage, piles, portée, forces et limites de chaque protocole sans fil pour la domotique.</span></li><li><a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a><span>Créer des scénarios domotiques avec des capteurs, choisir entre pilotage local et cloud, protéger sa vie privée et piloter l’énergie avec Home Assistant.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

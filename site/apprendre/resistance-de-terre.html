@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Résistance de terre : que veulent dire 30 Ω et 100 Ω ? — Voltaplan</title>
+<meta name="description" content="Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/resistance-de-terre.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"La résistance de dispersion de la terre","description":"Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/resistance-de-terre.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"La résistance de dispersion de la terre","item":"https://voltaplan.org/apprendre/resistance-de-terre.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Résistance de terre : que veulent dire 30 Ω et 100 Ω ? — Voltaplan">
+<meta property="og:description" content="Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/resistance-de-terre.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#controles">Contrôles, mesures et pannes</a></nav>
+  <article>
+  <h1>La résistance de dispersion de la terre</h1>
+  <p class="lead">Toute l’efficacité de la protection contre les défauts repose sur un dernier maillon : la <strong>prise de terre</strong>, enterrée sous la maison. Sa <a href="lexique.html#resistance-de-terre">résistance de dispersion</a> dit à quel point le courant de défaut peut s’écouler facilement dans le sol. C’est une mesure que l’organisme agréé fait à chaque contrôle.</p>
+
+<h2 id="principe">Ce que représente cette valeur</h2>
+<p>Quand un appareil de <a href="lexique.html#classe-i">classe I</a> a un défaut (une phase qui touche sa carcasse métallique), le courant de défaut emprunte le <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> jusqu’à la barrette de terre, puis la prise de terre, puis le sol. Le sol n’est pas un conducteur parfait : il oppose une résistance au passage du courant. C’est cette résistance, entre la prise de terre et la « terre lointaine », qu’on appelle résistance de dispersion. Elle s’exprime en <a href="lexique.html#ohm">ohms</a>.</p>
+<p>Pendant le défaut, la carcasse de l’appareil prend une tension par rapport au sol. Selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, cette tension vaut à peu près la résistance de terre multipliée par le courant de fuite. Un exemple pour fixer les idées : une fuite de 0,3 A (le seuil d’un différentiel de 300 mA) donne environ 9 V sur une terre de 30 Ω, mais 30 V sur une terre de 100 Ω. Une terre faible garde donc les tensions de défaut basses, et le <a href="differentiel.html">différentiel</a> coupe avant que la situation ne devienne dangereuse.</p>
+
+<h2 id="seuils">Les seuils utilisés par Voltaplan</h2>
+<p>Dans l’onglet Projet de Voltaplan, vous encodez la « résistance de dispersion de la terre » en ohms. L’application la juge ainsi :</p>
+<table>
+  <thead><tr><th>Valeur mesurée</th><th>Ce qu’affiche Voltaplan</th></tr></thead>
+  <tbody>
+    <tr><td>30 Ω ou moins</td><td>Conforme (exigence affichée sur la page « Mesures et essais » : ≤ 30 Ω).</td></tr>
+    <tr><td>Plus de 30 Ω, jusqu’à 100 Ω</td><td>Avertissement : des mesures complémentaires sont exigées (différentiels 30 mA supplémentaires). Il faut vérifier les conditions du RGIE.</td></tr>
+    <tr><td>Plus de 100 Ω</td><td>Non-conformité : résistance de terre trop élevée. Il faut améliorer la prise de terre (piquets supplémentaires) avant le contrôle.</td></tr>
+  </tbody>
+</table>
+<p>Ces seuils sont ceux qu’applique l’application pour vous aider à préparer le contrôle. Le cas intermédiaire, entre 30 et 100 Ω, dépend de conditions précises du RGIE : c’est l’organisme agréé qui tranche, au vu de l’ensemble de l’installation.</p>
+
+<h2 id="prise-de-terre">La prise de terre elle-même</h2>
+<p>Deux réalisations sont courantes dans une maison :</p>
+<ul>
+  <li>la <a href="lexique.html#boucle-de-terre">boucle de terre</a> : un conducteur nu posé en fond de fouille, sous les fondations, au moment de la construction. C’est la solution habituelle en construction neuve, car elle offre un grand contact avec le sol ;</li>
+  <li>le <a href="lexique.html#piquet-de-terre">piquet de terre</a> : une tige métallique enfoncée dans le sol, souvent utilisée dans les bâtiments existants, ou en complément. Plusieurs piquets reliés entre eux et suffisamment écartés abaissent la résistance.</li>
+</ul>
+<p>La prise de terre est reliée à la barrette de terre du tableau par le conducteur de terre, en passant par un sectionneur de terre (une borne démontable) qui permet de la séparer de l’installation pour la mesurer. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
+
+<h2 id="variations">Pourquoi la valeur varie</h2>
+<ul>
+  <li><strong>La nature du sol</strong> : un sol argileux et humide conduit mieux qu’un sol sableux, rocheux ou très sec.</li>
+  <li><strong>La saison</strong> : après un été sec, la résistance est souvent plus élevée qu’en hiver. Une valeur juste sous le seuil peut le dépasser quelques mois plus tard.</li>
+  <li><strong>Le vieillissement</strong> : une connexion corrodée entre le conducteur de terre et le piquet, ou un sectionneur mal serré, augmentent la valeur mesurée.</li>
+  <li><strong>Des travaux</strong> : une terrasse, une allée bétonnée ou un drainage modifient parfois l’humidité autour d’un piquet.</li>
+</ul>
+
+<h2 id="mesure">Comment on la mesure</h2>
+<p>La mesure se fait avec un <strong>appareil dédié</strong> (un mesureur de terre ou un testeur d’installation), par l’installateur ou l’organisme agréé. Plusieurs méthodes existent : avec des électrodes auxiliaires plantées dans le sol à distance de la prise de terre, ou avec une pince de mesure. Le principe reste le même : faire circuler un courant connu entre la prise de terre et le sol, mesurer la tension qui en résulte, et en déduire la résistance.</p>
+<p>Ce n’est pas une mesure à faire soi-même : ouvrir le sectionneur de terre prive toute l’installation de sa protection pendant la mesure, et une mesure mal faite donne une valeur trompeuse.</p>
+
+<h2 id="ameliorer">Si la terre est trop élevée</h2>
+<p>L’électricien vérifie d’abord les connexions (sectionneur, raccord au piquet), puis ajoute si nécessaire des piquets supplémentaires reliés à la prise existante. Une nouvelle mesure confirme le résultat. Les <a href="liaisons-equipotentielles.html">liaisons équipotentielles</a> ne remplacent pas une bonne prise de terre : elles relient les masses entre elles, mais l’écoulement vers le sol reste l’affaire de la prise de terre.</p>
+<p>Dans <a href="../app/">Voltaplan</a>, une installation neuve sans prise de terre dessinée est signalée comme non conforme ; pour une installation existante, l’application demande de constater sa présence sur place et de mesurer sa résistance. Voir aussi <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>La résistance de dispersion indique la facilité avec laquelle le courant de défaut passe de la prise de terre au sol.</li><li>Plus elle est <strong>faible</strong>, plus la tension qui apparaît sur une masse en défaut reste basse.</li><li>Dans Voltaplan : jusqu’à <strong>30 Ω</strong>, conforme ; de 30 à 100 Ω, des mesures complémentaires sont exigées ; au-delà de <strong>100 Ω</strong>, la terre doit être améliorée.</li><li>La prise de terre est une boucle dans les fondations ou un ou plusieurs piquets ; la valeur varie avec l’humidité du sol.</li><li>La mesure se fait avec un appareil dédié, par l’installateur ou l’organisme agréé.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Ma terre fait 45 Ω : est-ce grave ?</summary><div>Dans Voltaplan, une valeur entre 30 et 100 Ω n’est pas une non-conformité mais un avertissement : des mesures complémentaires sont exigées, comme des différentiels 30 mA supplémentaires. Vérifiez les conditions du RGIE avec votre installateur ou l’organisme agréé, et voyez s’il est possible d’améliorer la prise de terre.</div></details>
+    <details><summary>Comment améliorer une terre trop élevée ?</summary><div>Le plus souvent en ajoutant un ou plusieurs piquets de terre reliés entre eux, en vérifiant les connexions du conducteur de terre, ou en reprenant une prise de terre corrodée. C’est un travail d’électricien, suivi d’une nouvelle mesure.</div></details>
+    <details><summary>Peut-on relier la terre à une conduite d’eau ?</summary><div>Non, une canalisation n’est pas une prise de terre. Les canalisations métalliques sont reliées à la terre par les liaisons équipotentielles, mais la prise de terre elle-même est une boucle ou des piquets prévus à cet effet.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Voltaplan : règles sur la résistance de terre (30 Ω et 100 Ω) et page « Mesures et essais » du dossier imprimé.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="resistance-isolement.html">← La résistance d’isolement</a><a class="next" href="test-differentiel.html">Tester un différentiel →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="mise-a-la-terre.html">La mise à la terre</a><span>À quoi sert la terre d’une installation, boucle de terre ou piquet, rôle du sectionneur de terre et de la barrette, et valeurs de résistance de terre à viser.</span></li><li><a href="differentiel.html">Le différentiel (30 mA, 300 mA)</a><span>Comment fonctionne un différentiel, pourquoi 300 mA en tête et 30 mA pour certains circuits en Belgique, et ce que signifient les types AC, A, F et B.</span></li><li><a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a><span>Installation neuve, modification ou vente : à quoi sert le contrôle par un organisme agréé, quels documents préparer et quelles mesures sont faites.</span></li><li><a href="liaisons-equipotentielles.html">Les liaisons équipotentielles</a><span>Les liaisons équipotentielles principale et supplémentaires : quelles conduites et pièces métalliques relier à la terre, et pourquoi en salle de bain.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Contrôles, mesures et pannes</h2><ul class="learn-list"><li><a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a><span>Installation neuve, modification ou vente : à quoi sert le contrôle par un organisme agréé, quels documents préparer et quelles mesures sont faites.</span></li><li><a href="continuite.html">La mesure de continuité</a><span>À quoi sert la mesure de continuité des conducteurs de protection et des liaisons équipotentielles, comment elle fonctionne et ce qui la fait échouer.</span></li><li><a href="resistance-isolement.html">La résistance d’isolement</a><span>Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.</span></li><li><a href="test-differentiel.html">Tester un différentiel</a><span>Le bouton test d’un différentiel, l’essai au testeur et le temps de déclenchement : ce que chaque essai vérifie et ce que Voltaplan attend.</span></li><li><a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a><span>Votre différentiel déclenche et ne tient plus ? Une démarche simple et prudente pour trouver l’appareil ou le circuit en cause, et quand appeler un électricien.</span></li><li><a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a><span>Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

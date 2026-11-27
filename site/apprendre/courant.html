@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Le courant électrique (I, en ampères) expliqué — Voltaplan</title>
+<meta name="description" content="Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/courant.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le courant (I, en ampères)","description":"Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/courant.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le courant (I, en ampères)","item":"https://voltaplan.org/apprendre/courant.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Le courant électrique (I, en ampères) expliqué — Voltaplan">
+<meta property="og:description" content="Le courant en ampères : ce qu’il mesure, le courant d’une lampe LED ou d’une bouilloire, pourquoi il chauffe les câbles et fait sauter un disjoncteur.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/courant.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#bases">Les bases de l’électricité</a></nav>
+  <article>
+  <h1>Le courant (I, en ampères)</h1>
+  <p class="lead">Si la tension est la poussée, le <a href="lexique.html#courant">courant</a> est ce qui circule réellement dans les fils. C’est lui qui chauffe les câbles, qui fait déclencher les disjoncteurs et qui est dangereux quand il traverse le corps. Savoir l’estimer permet de choisir le bon câble et de comprendre pourquoi un circuit saute.</p>
+
+<h2 id="definition">Ce que mesure l’ampère</h2>
+<p>Le courant, ou intensité, est noté <strong>I</strong> et se mesure en <a href="lexique.html#ampere">ampères</a> (A). Il indique la quantité de charges qui passe en un point du fil chaque seconde. Un ampère correspond à environ six milliards de milliards d’électrons par seconde : on comprend pourquoi on préfère une unité !</p>
+<p>Dans l’image de l’eau, le courant est le <strong>débit</strong> : des litres par seconde dans le tuyau. Pour les petits courants, on parle en milliampères (mA) : 1 A = 1 000 mA.</p>
+
+<h2 id="qui-decide">C’est l’appareil qui appelle le courant</h2>
+<p>La tension de la maison est fixe : 230 V. Le courant, lui, dépend de ce qu’on branche. Un appareil puissant appelle beaucoup de courant, un petit appareil peu. On le calcule avec la formule de la <a href="puissance-energie.html">puissance</a> : <strong>I = P ÷ U</strong>.</p>
+<table>
+  <thead><tr><th>Appareil (230 V)</th><th>Puissance</th><th>Courant</th></tr></thead>
+  <tbody>
+    <tr><td>Lampe LED</td><td>8 W</td><td>environ 0,035 A (35 mA)</td></tr>
+    <tr><td>Télévision</td><td>100 W</td><td>environ 0,43 A</td></tr>
+    <tr><td>Aspirateur</td><td>800 W</td><td>environ 3,5 A</td></tr>
+    <tr><td>Bouilloire</td><td>2 000 W</td><td>environ 8,7 A</td></tr>
+    <tr><td>Four</td><td>3 000 W</td><td>environ 13 A</td></tr>
+  </tbody>
+</table>
+<p>Ces valeurs sont approchées : pour les appareils à moteur ou à électronique, le courant réel peut être un peu plus élevé (voir le facteur de puissance dans <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>).</p>
+<p>Sur un circuit, les courants des appareils branchés en <a href="serie-et-parallele.html">parallèle</a> s’additionnent. Quatre lampes LED de 8 W ne font que 0,14 A ; une bouilloire et un four sur le même circuit de prises font plus de 21 A.</p>
+
+<h2 id="aller-retour">Le même courant à l’aller et au retour</h2>
+<p>Dans un circuit, le courant ne disparaît pas en route. Celui qui part par la <a href="lexique.html#phase">phase</a> revient entièrement par le <a href="lexique.html#neutre">neutre</a>. C’est ce principe qu’utilise le <a href="differentiel.html">différentiel</a> : il compare en permanence le courant aller et le courant retour. S’il manque quelques dizaines de milliampères au retour, c’est qu’ils s’échappent ailleurs, par la terre ou à travers une personne, et il coupe.</p>
+
+<h2 id="chaleur">Le courant chauffe les câbles</h2>
+<p>Tout conducteur oppose une petite <a href="resistance-loi-ohm.html">résistance</a> au courant, et cette résistance transforme une partie de l’énergie en chaleur. C’est voulu dans un radiateur ou une bouilloire, mais pas dans un câble encastré dans un mur. Plus le courant est fort et plus le câble est fin, plus il chauffe. Un câble trop chargé vieillit vite, son isolant se dégrade, et il peut provoquer un incendie.</p>
+<p>C’est pourquoi chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> dont le <a href="lexique.html#calibre">calibre</a> est adapté à la <a href="lexique.html#section">section</a> du câble. Les valeurs utilisées par Voltaplan pour les installations belges :</p>
+<table>
+  <thead><tr><th>Section du câble</th><th>Calibre maximal du disjoncteur</th><th>Exemple d’usage</th></tr></thead>
+  <tbody>
+    <tr><td>1,5 mm²</td><td>16 A</td><td>Éclairage</td></tr>
+    <tr><td>2,5 mm²</td><td>20 A</td><td>Prises de courant</td></tr>
+    <tr><td>4 mm²</td><td>25 A</td><td>Gros appareils</td></tr>
+    <tr><td>6 mm²</td><td>32 A</td><td>Cuisinière, borne de recharge</td></tr>
+    <tr><td>10 mm²</td><td>50 A</td><td>Alimentation de sous-tableau</td></tr>
+  </tbody>
+</table>
+<p>Voir <a href="section-des-cables.html">La section des câbles</a> pour le détail.</p>
+
+<h2 id="defauts">Surcharge et court-circuit</h2>
+<p>Le disjoncteur réagit à deux situations différentes :</p>
+<ul>
+  <li>la <a href="lexique.html#surcharge">surcharge</a> : trop d’appareils sur le circuit, le courant dépasse un peu le calibre pendant longtemps. Le disjoncteur coupe après quelques secondes ou minutes, avant que le câble ne surchauffe ;</li>
+  <li>le <a href="lexique.html#court-circuit">court-circuit</a> : la phase touche directement le neutre ou une autre phase, sans appareil entre les deux. Le courant devient énorme, des centaines voire des milliers d’ampères, et le disjoncteur coupe instantanément.</li>
+</ul>
+<p>Ces deux cas sont détaillés dans <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a>.</p>
+
+<h2 id="mesurer">Mesurer un courant</h2>
+<p>Un ampèremètre classique se place <strong>en série</strong> : on doit ouvrir le circuit pour faire passer le courant à travers l’appareil de mesure. En pratique, on utilise plutôt une <strong>pince ampèremétrique</strong>, qui mesure le courant sans contact en entourant un seul conducteur. Attention : si on entoure tout le câble (phase et neutre ensemble), les courants aller et retour s’annulent et la pince affiche presque zéro.</p>
+
+<h2 id="corps">Le courant et le corps humain</h2>
+<p>Ce qui blesse, c’est le courant qui traverse le corps. Quelques milliampères se sentent déjà ; quelques dizaines de milliampères peuvent bloquer les muscles, empêcher de lâcher le fil ou perturber le cœur. C’est pour cette raison que les circuits des pièces de vie sont protégés par des différentiels de 30 mA, qui coupent avant que le courant ne devienne mortel. Le différentiel ne remplace pas la prudence : <strong>coupez le circuit et vérifiez l’absence de tension</strong> avant toute intervention.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Le courant (I) est la quantité de charges qui passe chaque seconde ; il se mesure en <strong>ampères</strong> (A).</li><li>C’est l’appareil qui « appelle » le courant : I = P ÷ U, soit environ 8,7 A pour une bouilloire de 2 000 W en 230 V.</li><li>Le courant chauffe les câbles : la <strong>section</strong> et le <strong>calibre du disjoncteur</strong> se choisissent ensemble (1,5 mm² → 16 A, 2,5 mm² → 20 A).</li><li>Le même courant entre par la phase et revient par le neutre : le différentiel surveille cette égalité.</li><li>Quelques dizaines de milliampères à travers le corps peuvent tuer, d’où les différentiels de 30 mA.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Un appareil de 2 000 W et un de 20 W sur la même prise reçoivent-ils le même courant ?</summary><div>Non. Ils reçoivent la même tension (230 V), mais chacun appelle le courant dont il a besoin : environ 8,7 A pour l’appareil de 2 000 W, moins de 0,1 A pour celui de 20 W. Le circuit, lui, porte la somme des deux.</div></details>
+    <details><summary>Pourquoi le disjoncteur saute-t-il quand j’allume le four et la bouilloire en même temps ?</summary><div>Les courants s’additionnent sur le circuit. Un four de 3 000 W (environ 13 A) et une bouilloire de 2 000 W (environ 8,7 A) font ensemble près de 22 A, plus que les 20 A d’un circuit de prises habituel : le disjoncteur coupe pour protéger le câble.</div></details>
+    <details><summary>Peut-on mettre un disjoncteur plus gros pour qu’il ne saute plus ?</summary><div>Non. Le calibre du disjoncteur dépend de la section du câble : un disjoncteur trop gros laisserait le câble surchauffer sans couper. Il faut répartir les appareils sur plusieurs circuits, ou tirer un circuit dédié avec la bonne section.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Manuels d’électrotechnique de base (intensité, effets du courant).</li><li>Correspondance section ↔ calibre maximal utilisée par l’application Voltaplan (règles belges).</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="tension.html">← La tension (U, en volts)</a><a class="next" href="resistance-loi-ohm.html">La résistance et la loi d’Ohm →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="tension.html">La tension (U, en volts)</a><span>La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li><li><a href="section-des-cables.html">La section des câbles</a><span>1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.</span></li><li><a href="differentiel.html">Le différentiel (30 mA, 300 mA)</a><span>Comment fonctionne un différentiel, pourquoi 300 mA en tête et 30 mA pour certains circuits en Belgique, et ce que signifient les types AC, A, F et B.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Les bases de l’électricité</h2><ul class="learn-list"><li><a href="electricite-c-est-quoi.html">Qu’est-ce que l’électricité ?</a><span>L’électricité expliquée simplement : électrons, circuit fermé, tension, courant et puissance, avec l’analogie de l’eau et ses limites. Le point de départ.</span></li><li><a href="tension.html">La tension (U, en volts)</a><span>La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.</span></li><li><a href="resistance-loi-ohm.html">La résistance et la loi d’Ohm</a><span>La résistance électrique en ohms et la loi d’Ohm U = R × I, avec des calculs concrets : bouilloire, câble de 1,5 mm², court-circuit et corps humain.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li><li><a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a><span>Courant alternatif à 50 Hz, monophasé 230 V, réseaux belges 3 × 230 V sans neutre et 3N × 400 V, puissance en triphasé, cos φ et voltampères expliqués.</span></li><li><a href="serie-et-parallele.html">Circuits en série et en parallèle</a><span>Série ou parallèle : ce qui change pour la tension et le courant, pourquoi les lampes et les prises d’une maison sont en parallèle, et où l’on trouve la série.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

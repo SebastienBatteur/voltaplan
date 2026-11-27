@@ -1,0 +1,72 @@
+<!--
+{
+  "title": "La domotique : les principes",
+  "pageTitle": "La domotique expliquée simplement (principes, choix) — Voltaplan",
+  "description": "Comprendre la domotique : du télérupteur aux relais connectés, bus filaires et sans-fil, ce qui change dans le câblage et ce que le RGIE impose toujours.",
+  "rubrique": "domotique",
+  "order": 1,
+  "related": ["telerupteur", "relais-connectes", "bus-knx", "preparer-cablage-domotique"],
+  "retenir": [
+    "La domotique sépare la <strong>commande</strong> (bouton, capteur, application) de l’<strong>organe de puissance</strong> (relais) qui alimente la lampe ou le moteur.",
+    "Il existe trois grandes familles : relais connectés près de l’appareil, modules sur rail DIN au tableau, et bus filaire comme KNX.",
+    "Les règles du RGIE s’appliquent aux circuits domotiques comme aux autres : disjoncteur adapté à la section, différentiel, terre, schémas à jour.",
+    "Une bonne domotique continue de fonctionner avec un simple bouton quand le réseau, l’application ou Internet est en panne."
+  ],
+  "faq": [
+    { "q": "La domotique coûte-t-elle beaucoup plus cher qu’une installation classique ?", "a": "Cela dépend de la solution. Quelques relais connectés derrière des interrupteurs existants coûtent peu. Un système filaire complet dans une maison neuve représente un budget nettement plus élevé, en matériel et en programmation. Préparer le câblage pendant les travaux coûte peu et laisse tous les choix ouverts." },
+    { "q": "Peut-on installer de la domotique dans une maison existante ?", "a": "Oui. Les modules sans fil et les relais qui se glissent dans une boîte d’interrupteur sont faits pour cela. La principale limite est souvent l’absence de neutre dans les boîtes d’interrupteur des installations anciennes." },
+    { "q": "Une installation domotique doit-elle être contrôlée ?", "a": "Oui, comme toute installation électrique : une installation neuve ou modifiée est contrôlée par un organisme agréé. Les relais, modules et circuits domotiques doivent figurer sur les schémas présentés lors du contrôle." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de matériel domotique (relais, modules rail DIN, systèmes KNX)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La <a href="lexique.html#domotique">domotique</a>, c’est l’automatisation de la maison : allumer l’éclairage depuis plusieurs endroits sans fil supplémentaire, fermer tous les volets d’un seul geste, couper le chauffage quand une fenêtre s’ouvre. Derrière ces fonctions, il y a toujours la même idée : séparer <strong>ce qui commande</strong> de <strong>ce qui alimente</strong>.</p>
+
+<h2 id="du-simple-au-connecte">Du plus simple au plus connecté</h2>
+<p>Vous faites peut-être déjà de la domotique sans le savoir. Un <a href="telerupteur.html">télérupteur</a> commande une lampe depuis plusieurs boutons-poussoirs : les boutons envoient une simple impulsion, et c’est le télérupteur, au tableau ou dans une boîte, qui ferme ou ouvre le contact de puissance. Une <a href="lexique.html#minuterie">minuterie</a> d’escalier ajoute une notion de temps : la lumière s’éteint seule après deux ou trois minutes. Un <a href="detecteur-de-mouvement.html">détecteur de mouvement</a> remplace le bouton par un capteur.</p>
+<p>La domotique moderne pousse cette logique plus loin. Le contact de puissance est piloté par un petit module électronique, qui obéit à des boutons, à des capteurs (température, luminosité, ouverture de fenêtre), à un horaire ou à une application. On peut alors combiner les informations : « si personne n’est à la maison et qu’il fait nuit, fermer les volets ».</p>
+
+<h2 id="commande-et-puissance">Commande et puissance</h2>
+<p>Dans un <a href="simple-allumage.html">simple allumage</a>, l’interrupteur fait tout : il est à la fois l’organe de commande et l’organe de coupure, et le courant de la lampe le traverse. En domotique, ces deux rôles sont séparés :</p>
+<ul>
+  <li>l’<strong>organe de commande</strong> : bouton-poussoir, interrupteur, capteur, horloge, téléphone. Il ne transporte qu’une information ;</li>
+  <li>l’<strong>organe de puissance</strong> : un <a href="lexique.html#relais">relais</a>, un télérupteur, un variateur ou un <a href="lexique.html#contacteur">contacteur</a>. C’est lui qui ferme le circuit de la lampe, de la prise ou du moteur ;</li>
+  <li>entre les deux, une <strong>logique</strong> : un module, un serveur ou une centrale qui décide quand agir.</li>
+</ul>
+<p>Cette séparation explique pourquoi le câblage change : le fil qui part du bouton ne transporte plus forcément le courant de la lampe, et le relais a besoin d’être alimenté en permanence, donc d’avoir la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a> à disposition.</p>
+
+<h2 id="trois-familles">Les trois grandes familles</h2>
+<table>
+  <thead><tr><th>Famille</th><th>Où est le relais ?</th><th>Usage typique</th></tr></thead>
+  <tbody>
+    <tr><td>Relais connectés</td><td>Dans la boîte d’interrupteur ou au point lumineux</td><td>Rénovation, ajout ponctuel</td></tr>
+    <tr><td>Modules sur rail DIN</td><td>Au tableau électrique</td><td>Neuf ou grosse rénovation, câblage en étoile</td></tr>
+    <tr><td>Bus filaire (KNX et autres)</td><td>Au tableau, piloté par un câble de bus</td><td>Neuf, installations étendues et durables</td></tr>
+  </tbody>
+</table>
+<p>Les <a href="relais-connectes.html">relais connectés</a> communiquent le plus souvent sans fil : voir <a href="sans-fil-zigbee-wifi.html">Zigbee, Z-Wave, Wi-Fi : le sans-fil</a>. Les <a href="bus-knx.html">bus filaires</a> utilisent un câble dédié à basse tension qui relie tous les boutons et tous les modules. Les deux approches peuvent cohabiter dans une même maison.</p>
+
+<h2 id="ce-qui-ne-change-pas">Ce qui ne change pas : les règles de l’électricité</h2>
+<p>Un relais connecté reste un appareil branché sur le 230 V. Le circuit qui l’alimente obéit aux mêmes règles que n’importe quel autre circuit :</p>
+<ul>
+  <li>chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la <a href="section-des-cables.html">section des câbles</a> : 16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm² ;</li>
+  <li>les circuits d’éclairage et de prises sont placés derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans une installation neuve (RGIE, 4.2.4.3 b) ;</li>
+  <li>le courant commuté ne dépasse jamais le courant admis par le relais : un module annoncé pour 10 A ne doit pas alimenter un radiateur de 3 000 W (environ 13 A) ;</li>
+  <li>la terre, les couleurs des conducteurs et les boîtes de connexion suivent les règles habituelles.</li>
+</ul>
+<p>Les schémas aussi doivent suivre : le <a href="lire-unifilaire.html">schéma unifilaire</a> montre les relais, télérupteurs et modules, et le <a href="plan-de-position.html">plan de position</a> montre où se trouvent les boutons et les capteurs. Une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>, qui doit pouvoir s’y retrouver.</p>
+
+<h2 id="bonnes-questions">Les bonnes questions avant de se lancer</h2>
+<ul>
+  <li><strong>Que se passe-t-il en cas de panne ?</strong> Si le Wi-Fi, le serveur ou Internet tombe, il faut pouvoir allumer la lumière avec un bouton. Préférez les solutions dont le bouton agit directement sur le relais, sans passer par un service en ligne.</li>
+  <li><strong>Neuf ou existant ?</strong> En construction, on prépare le câblage pour tout permettre plus tard (voir <a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a>). En rénovation légère, le sans-fil évite d’ouvrir les murs.</li>
+  <li><strong>Qui pourra entretenir l’installation ?</strong> Une installation reposant sur une norme ouverte et documentée sera plus facile à reprendre par un autre électricien dans quinze ans.</li>
+  <li><strong>Local ou dans le nuage ?</strong> Certaines solutions ne fonctionnent qu’à travers les serveurs du fabricant. D’autres, comme Home Assistant, tournent chez vous. Voir <a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a>.</li>
+</ul>
+
+<h2 id="securite">Sécurité avant tout</h2>
+<p>Installer un relais derrière un interrupteur, c’est intervenir sur le 230 V. Coupez le circuit au tableau et vérifiez l’absence de tension avec un testeur adapté avant d’ouvrir une boîte. Une boîte d’interrupteur contient parfois des conducteurs d’un autre circuit : vérifiez chaque fil, pas seulement celui que vous pensez avoir coupé.</p>

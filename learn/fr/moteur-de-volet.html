@@ -1,0 +1,75 @@
+<!--
+{
+  "title": "Le moteur de volet et ses fins de course",
+  "pageTitle": "Moteur de volet roulant : fils, fins de course — Voltaplan",
+  "description": "Le moteur tubulaire d’un volet roulant : ses 4 fils (montée, descente, neutre, terre), les fins de course, et pourquoi ne jamais alimenter les deux sens.",
+  "rubrique": "volets",
+  "order": 2,
+  "related": ["volet-roulant", "commande-groupee-volets", "couleurs-des-fils", "mise-a-la-terre"],
+  "retenir": [
+    "Un moteur tubulaire a <strong>4 fils</strong> : phase montée, phase descente, neutre commun et terre.",
+    "Les couleurs des fils du moteur sont <strong>souvent</strong> brun et noir pour les sens, bleu pour le neutre, vert-jaune pour la terre : vérifiez toujours la notice.",
+    "Les <strong>fins de course</strong> arrêtent le moteur en haut et en bas ; ils se règlent à l’installation.",
+    "Alimenter les deux sens en même temps peut détruire le moteur : la commande doit l’empêcher."
+  ],
+  "faq": [
+    { "q": "Comment savoir quel fil fait monter le volet ?", "a": "Cela dépend du côté où le moteur est monté dans l’axe : le même fil fait monter le volet à gauche et descendre à droite. On raccorde, on essaie, et si le sens est inversé on coupe le courant et on échange les deux fils de sens." },
+    { "q": "Mon volet s’arrête trop tôt ou force en bas : est-ce électrique ?", "a": "C’est presque toujours un réglage des fins de course. La méthode dépend du moteur (vis de réglage, procédure par appuis, outil du fabricant) : suivez sa notice. Un moteur qui force en butée s’use vite et peut abîmer le tablier." },
+    { "q": "Le moteur ne repart pas après plusieurs montées et descentes : est-il en panne ?", "a": "Pas forcément. Beaucoup de moteurs tubulaires ont une protection thermique qui les coupe après un usage prolongé. Il suffit souvent d’attendre qu’il refroidisse ; si le problème revient à chaque usage, faites vérifier le moteur." }
+  ],
+  "sources": [
+    { "label": "Notices de raccordement et de réglage des fabricants de moteurs tubulaires." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Dans l’axe d’un volet roulant électrique se cache un <strong>moteur tubulaire</strong>. Vu de l’extérieur, c’est un simple tube d’où sort un câble à quatre fils. Comprendre ces quatre fils et le rôle des <a href="lexique.html#fin-de-course">fins de course</a> permet de raccorder un volet correctement, de le régler, et de comprendre pourquoi certaines erreurs le détruisent.</p>
+
+<h2 id="interieur">Ce qu’il y a dans le tube</h2>
+<p>Un moteur tubulaire de volet classique contient :</p>
+<ul>
+  <li>un <strong>moteur électrique</strong> monophasé à deux enroulements, un par sens de rotation, avec un neutre commun ;</li>
+  <li>un <strong>condensateur</strong> qui aide le moteur à démarrer et fixe son sens de rotation ;</li>
+  <li>un <strong>réducteur</strong> qui ralentit la rotation et augmente la force, pour soulever un tablier de plusieurs kilos ;</li>
+  <li>un <strong>frein</strong> qui maintient le volet en place quand le moteur est à l’arrêt ;</li>
+  <li>les <strong>fins de course</strong>, qui coupent le moteur en position haute et basse ;</li>
+  <li>souvent une <strong>protection thermique</strong> qui coupe le moteur s’il chauffe trop, après une longue série de manœuvres.</li>
+</ul>
+<p>Pour un volet de maison, la puissance électrique est couramment de l’ordre de 100 à 250 W, soit un courant d’environ 0,5 à 1 A sous 230 V : bien moins qu’une bouilloire de 2 000 W.</p>
+
+<h2 id="quatre-fils">Les quatre fils</h2>
+<table>
+  <thead><tr><th>Fil</th><th>Rôle</th><th>Couleur fréquente sur le câble du moteur</th></tr></thead>
+  <tbody>
+    <tr><td>Phase montée</td><td>Reçoit la <a href="lexique.html#phase">phase</a> pour faire tourner le moteur dans un sens</td><td>Souvent brun ou noir</td></tr>
+    <tr><td>Phase descente</td><td>Reçoit la phase pour l’autre sens</td><td>Souvent noir ou brun (l’autre des deux)</td></tr>
+    <tr><td>Neutre commun</td><td>Retour du courant, pour les deux sens</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td><a href="lexique.html#conducteur-de-protection">Conducteur de protection</a>, relié au corps du moteur</td><td>Vert-jaune</td></tr>
+  </tbody>
+</table>
+<p>Ces couleurs sont celles que l’on rencontre <strong>souvent</strong>, pas une règle : certains fabricants utilisent d’autres couleurs ou numérotent les fils. La notice du moteur fait foi. Le bleu reste le neutre et le vert-jaune reste la terre, comme partout dans l’installation (voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>).</p>
+<p>Le fil brun ne fait pas toujours monter le volet : tout dépend du côté où le moteur est glissé dans l’axe. Monté à gauche, il tourne dans un sens ; monté à droite, le même fil le fait tourner dans l’autre. C’est pourquoi on essaie après raccordement, et on échange les deux fils de sens si nécessaire, toujours hors tension.</p>
+
+<h2 id="fins-de-course">Les fins de course</h2>
+<p>Un fin de course est un dispositif qui <strong>coupe l’enroulement d’un sens</strong> quand le volet atteint sa position extrême. En haut, le fin de course de montée s’ouvre : le moteur s’arrête, même si la touche montée reste enfoncée. La descente, elle, reste possible. En bas, c’est l’inverse.</p>
+<p>On rencontre deux familles :</p>
+<ul>
+  <li><strong>Fins de course mécaniques</strong> : deux vis ou molettes sur la tête du moteur, que l’on tourne pour avancer ou reculer le point d’arrêt.</li>
+  <li><strong>Fins de course électroniques</strong> : le moteur compte les tours ou détecte une butée ; le réglage se fait par une suite d’appuis, avec un câble de réglage ou un outil du fabricant.</li>
+</ul>
+<p>Un fin de course mal réglé fait forcer le moteur contre le linteau ou écrase le tablier au sol. Il se règle à la mise en service, selon la notice.</p>
+
+<h2 id="deux-sens">Pourquoi jamais les deux sens en même temps</h2>
+<p>Si la phase arrive à la fois sur le fil de montée et sur le fil de descente, les deux enroulements reçoivent la tension en même temps, et le condensateur, normalement placé entre les deux, est court-circuité. Le moteur ne sait pas dans quel sens tourner : il grogne, reste bloqué ou tourne mal, et chauffe. Selon la durée, le condensateur ou les enroulements peuvent être détruits.</p>
+<p>C’est pourquoi on commande un volet avec une <strong>commande de volet verrouillée</strong>, jamais avec un double interrupteur ordinaire dont on pourrait enfoncer les deux touches. Les fabricants recommandent aussi souvent de marquer un court arrêt avant de changer de sens. Dans l’exercice de l’article <a href="volet-roulant.html">Câbler un volet roulant</a>, la vérification signale cette erreur si le moteur reçoit les deux sens.</p>
+<p>Le même phénomène explique pourquoi on ne branche pas deux moteurs en parallèle sur une seule commande : par le condensateur de l’un, l’autre peut recevoir la tension sur ses deux sens. Voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</p>
+
+<h2 id="raccordement">Raccordement et sécurité</h2>
+<ul>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avant de toucher au câble du moteur.</li>
+  <li>Raccorder dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> qui reste accessible : on aura besoin d’y revenir pour un réglage ou un remplacement.</li>
+  <li>Raccorder la <a href="lexique.html#terre">terre</a> : le corps du moteur est métallique.</li>
+  <li>Ne pas rallonger ou couper le câble du moteur n’importe où : certains câbles sont débrochables, et la notice indique comment les remplacer.</li>
+</ul>
+<p>Les moteurs radio ou à commande intégrée n’ont pas toujours quatre fils : ils reçoivent souvent une alimentation permanente (phase, neutre, terre) et reçoivent les ordres par radio ou par un bus. Voir <a href="volets-domotique.html">Volets et domotique</a>.</p>

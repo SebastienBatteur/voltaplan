@@ -1,0 +1,67 @@
+<!--
+{
+  "title": "Commander plusieurs volets ensemble",
+  "pageTitle": "Commande groupée de volets roulants — Voltaplan",
+  "description": "Commander plusieurs volets roulants d’un seul geste : pourquoi ne pas mettre deux moteurs en parallèle, relais de centralisation et modules de commande.",
+  "rubrique": "volets",
+  "order": 3,
+  "related": ["volet-roulant", "moteur-de-volet", "volets-domotique", "relais-connectes"],
+  "retenir": [
+    "On ne relie pas deux moteurs de volet en parallèle sur une commande simple, sauf si le fabricant l’autorise explicitement.",
+    "Chaque moteur garde <strong>sa propre commande ou son propre relais</strong> ; la commande générale agit sur ces relais.",
+    "Un <strong>relais de centralisation</strong> par moteur permet une commande locale et une commande générale, sans conflit.",
+    "Les moteurs radio ou sur bus se groupent par programmation, sans fils de commande supplémentaires."
+  ],
+  "faq": [
+    { "q": "J’ai deux volets côte à côte, puis-je les brancher sur le même interrupteur ?", "a": "Avec des moteurs filaires classiques, c’est déconseillé : par les condensateurs des moteurs, l’un peut alimenter l’autre dans les deux sens, ce qui les fait chauffer et les abîme. Utilisez un relais de centralisation par moteur, ou un moteur dont la notice autorise explicitement le raccordement en parallèle." },
+    { "q": "Peut-on garder les commandes individuelles avec une commande générale ?", "a": "Oui, c’est justement le rôle des relais de centralisation : chaque volet se commande depuis sa pièce, et une commande générale (souvent près de la porte d’entrée) les fait tous monter ou descendre." },
+    { "q": "Faut-il une section de câble plus grosse pour plusieurs volets ?", "a": "Rarement : un moteur de volet consomme environ 0,5 à 1 A. Dix moteurs restent sous la limite d’un circuit en 1,5 mm² protégé par un disjoncteur de 16 A. Ce qui compte surtout, c’est de prévoir le passage des fils de commande." }
+  ],
+  "sources": [
+    { "label": "Notices des fabricants de moteurs tubulaires, de relais de centralisation et de modules de commande de volets." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Fermer tous les volets du rez-de-chaussée d’un seul geste, le soir, est pratique. Mais on ne peut pas simplement raccorder plusieurs moteurs sur la même <a href="volet-roulant.html">commande de volet</a> : les moteurs tubulaires classiques s’alimenteraient l’un l’autre. La solution passe par un <a href="lexique.html#relais">relais</a> par moteur, ou par des moteurs commandés par radio ou par bus.</p>
+
+<h2 id="besoin">Commande locale et commande générale</h2>
+<p>On distingue deux niveaux :</p>
+<ul>
+  <li>la <strong>commande locale</strong> : la commande de volet dans chaque pièce, qui ne commande que le volet de cette pièce ;</li>
+  <li>la <strong>commande générale</strong> (ou centralisée) : une commande, souvent près de l’entrée ou dans le séjour, qui fait monter ou descendre tous les volets d’un groupe.</li>
+</ul>
+<p>On peut aussi prévoir des groupes intermédiaires : tous les volets d’une façade, tous ceux de l’étage. Le principe reste le même : la commande générale envoie un ordre, et chaque moteur est piloté par son propre organe de commande.</p>
+
+<h2 id="parallele">Pourquoi pas deux moteurs en parallèle</h2>
+<p>L’idée la plus simple serait de relier la sortie montée de la commande aux fils de montée des deux moteurs, et la sortie descente à leurs fils de descente. Avec la plupart des moteurs filaires, c’est une mauvaise idée, pour une raison qui tient à leur construction (voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>).</p>
+<p>Chaque moteur contient un <strong>condensateur raccordé entre ses deux fils de sens</strong>. Imaginons que les deux volets montent. Le premier arrive en haut : son <a href="lexique.html#fin-de-course">fin de course</a> coupe son enroulement de montée. Mais le second moteur tourne encore, et à travers son condensateur, une tension apparaît sur son fil de descente, donc aussi sur le fil de descente du premier moteur, qui lui est relié. Le premier moteur reçoit alors une tension sur sa descente alors qu’il devrait être arrêté : il peut repartir, vibrer ou chauffer, et les deux moteurs se gênent.</p>
+<p>Le résultat est le même qu’une commande qui alimenterait les <strong>deux sens à la fois</strong> : échauffement, usure, et à terme moteur ou condensateur détruit. Certains moteurs électroniques sont prévus pour le raccordement en parallèle ; dans ce cas, la notice le dit explicitement. Sans cette mention, comptez <strong>un moteur par contact de commande</strong>.</p>
+<p>Il existe une deuxième raison, plus simple : le contact de la commande de volet est dimensionné pour un moteur. Lui en confier plusieurs le fait vieillir plus vite.</p>
+
+<h2 id="relais">Les relais de centralisation</h2>
+<p>Un relais de centralisation (on dit aussi module ou boîtier de commande groupée) est placé près de chaque moteur, dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a>, derrière la commande locale ou dans le caisson. Il reçoit :</p>
+<ul>
+  <li>l’alimentation permanente : <a href="lexique.html#phase">phase</a>, neutre, terre ;</li>
+  <li>les ordres de la commande locale du volet ;</li>
+  <li>les ordres de la commande générale, par deux fils (montée, descente) qui passent d’un relais à l’autre.</li>
+</ul>
+<p>Le relais alimente seul son moteur, avec un verrouillage qui empêche montée et descente simultanées. Les moteurs restent ainsi <strong>électriquement séparés</strong> : chacun s’arrête sur ses propres fins de course, sans perturber les autres. Les fils de la commande générale ne transportent qu’un ordre, pas le courant des moteurs.</p>
+<p>Selon les modèles, la commande générale peut être prioritaire (elle l’emporte sur les commandes locales) ou non. Le schéma de raccordement change d’un fabricant à l’autre : suivez la notice du module que vous installez.</p>
+
+<h2 id="alternatives">Les autres solutions</h2>
+<ul>
+  <li><strong>Moteurs radio</strong> : chaque moteur reçoit une alimentation permanente et obéit à des télécommandes. Une télécommande « générale » est simplement programmée sur tous les moteurs. Aucun fil de commande à tirer.</li>
+  <li><strong>Modules connectés</strong> : un module par volet, derrière la commande locale, relié en Wi-Fi ou en <a href="lexique.html#zigbee">Zigbee</a> ; les groupes se créent dans une application. Voir <a href="volets-domotique.html">Volets et domotique</a> et <a href="relais-connectes.html">Les relais connectés</a>.</li>
+  <li><strong>Bus filaire</strong> (par exemple <a href="lexique.html#knx">KNX</a>) : des actionneurs de volets au tableau, un câble de bus vers les boutons ; les groupes sont définis à la programmation.</li>
+</ul>
+
+<h2 id="cablage">Prévoir le câblage</h2>
+<p>Une commande centralisée se décide de préférence <strong>avant les travaux</strong>. Pour garder toutes les options ouvertes, on prévoit couramment :</p>
+<ul>
+  <li>un câble à 4 conducteurs entre la boîte du volet et sa commande locale, et le neutre et la terre dans la boîte de commande ;</li>
+  <li>un tube libre entre les boîtes des volets d’un même groupe, pour les fils de commande générale ou un câble de bus ;</li>
+  <li>une boîte de dérivation accessible près de chaque caisson.</li>
+</ul>
+<p>Un circuit dédié aux volets, protégé au tableau par un <a href="disjoncteur.html">disjoncteur</a> de 16 A en 1,5 mm², simplifie aussi le dépannage. Comme pour tout travail électrique, coupez le circuit et vérifiez l’absence de tension avant d’intervenir ; une installation neuve ou modifiée est contrôlée par un organisme agréé.</p>

@@ -1,0 +1,77 @@
+<!--
+{
+  "title": "Qu’est-ce que l’électricité ?",
+  "pageTitle": "Qu’est-ce que l’électricité ? Les bases expliquées — Voltaplan",
+  "description": "L’électricité expliquée simplement : électrons, circuit fermé, tension, courant et puissance, avec l’analogie de l’eau et ses limites. Le point de départ.",
+  "rubrique": "bases",
+  "order": 1,
+  "related": ["tension", "courant", "puissance-energie", "simple-allumage"],
+  "retenir": [
+    "Le courant électrique est un déplacement de charges (des électrons dans un fil de cuivre).",
+    "Il ne circule que dans un <strong>circuit fermé</strong> : aller par la phase, retour par le neutre.",
+    "Quatre grandeurs suffisent pour commencer : la <strong>tension</strong> (V), le <strong>courant</strong> (A), la <strong>résistance</strong> (Ω) et la <strong>puissance</strong> (W).",
+    "L’analogie de l’eau aide à comprendre, mais l’électricité ne « coule » pas d’un fil ouvert et elle agit sur le corps humain : coupez toujours le courant avant d’intervenir."
+  ],
+  "faq": [
+    { "q": "Les électrons vont-ils de la centrale jusqu’à ma lampe ?", "a": "Non. Dans un fil, les électrons avancent très lentement et, en courant alternatif, ils font surtout des allers-retours sur place. Ce qui se propage presque instantanément, c’est la poussée (l’énergie), comme dans un tuyau déjà plein d’eau : l’eau sort au robinet dès qu’on l’ouvre." },
+    { "q": "Pourquoi un oiseau posé sur une ligne ne s’électrise-t-il pas ?", "a": "Parce qu’il ne touche qu’un seul fil : il n’y a pas de différence de tension entre ses deux pattes, donc pas de courant qui le traverse. Une personne qui touche une phase en ayant les pieds au sol, elle, ferme un circuit vers la terre." },
+    { "q": "L’électricité de la maison est-elle dangereuse même en 230 V ?", "a": "Oui. Un courant de quelques dizaines de milliampères à travers le corps peut être mortel. C’est pour cela que les installations ont des différentiels de 30 mA et une mise à la terre, et qu’on coupe le circuit avant toute intervention." }
+  ],
+  "sources": [
+    { "label": "Manuels de physique et d’électrotechnique de base (notions de charge, courant, tension)." },
+    { "label": "Unités électriques (V, A, W, Wh) : sbg-energy.com", "url": "https://sbg-energy.com/unites-electriques" }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">L’électricité fait tourner la maison, mais on ne la voit pas. Pour câbler une lampe, choisir un câble ou comprendre pourquoi un disjoncteur saute, il suffit pourtant de quelques idées simples : des charges qui se déplacent, un circuit fermé, et quatre grandeurs qui se mesurent. Cet article pose ces bases ; les suivants détaillent chaque grandeur.</p>
+
+<h2 id="charges">Des charges qui se déplacent</h2>
+<p>Toute matière est faite d’atomes, avec un noyau et des électrons autour. Dans les métaux comme le cuivre, certains électrons sont peu liés à leur atome : ils peuvent passer d’un atome à l’autre. Quand on les pousse tous dans le même sens, on obtient un <a href="lexique.html#courant">courant</a> électrique.</p>
+<p>Les matériaux se rangent en deux familles :</p>
+<ul>
+  <li>les <strong>conducteurs</strong>, qui laissent passer le courant : cuivre, aluminium, la plupart des métaux, mais aussi l’eau du robinet et le corps humain ;</li>
+  <li>les <strong>isolants</strong>, qui le bloquent : PVC des gaines, caoutchouc, verre, porcelaine, air sec.</li>
+</ul>
+<p>Un câble électrique combine les deux : une âme en cuivre pour conduire, une enveloppe en plastique pour isoler et protéger.</p>
+
+<h2 id="circuit">Le circuit fermé</h2>
+<p>Le courant ne circule que s’il peut faire une boucle complète : partir de la source, traverser l’appareil et revenir à la source. C’est ce qu’on appelle un <a href="lexique.html#circuit">circuit</a> fermé. Dans une maison, l’aller se fait par la <a href="lexique.html#phase">phase</a> et le retour par le <a href="lexique.html#neutre">neutre</a> (dans les réseaux belges sans neutre, par une deuxième phase : voir <a href="alternatif-mono-tri.html">monophasé et triphasé</a>).</p>
+<p>Un interrupteur ne fait rien d’autre qu’ouvrir ou fermer cette boucle. Ouvert, il coupe le chemin : plus de courant, la lampe s’éteint. Fermé, il le rétablit. C’est tout le principe du <a href="simple-allumage.html">simple allumage</a>.</p>
+<p>Si le courant trouve un chemin plus court que prévu, sans passer par un appareil, c’est un <a href="lexique.html#court-circuit">court-circuit</a> : le courant devient énorme et le disjoncteur doit couper immédiatement. Si le chemin passe par une personne, c’est une <a href="lexique.html#electrisation">électrisation</a>.</p>
+
+<h2 id="grandeurs">Quatre grandeurs pour tout comprendre</h2>
+<table>
+  <thead><tr><th>Grandeur</th><th>Symbole</th><th>Unité</th><th>Ce qu’elle décrit</th></tr></thead>
+  <tbody>
+    <tr><td>Tension</td><td>U</td><td>volt (V)</td><td>La « poussée » entre deux points</td></tr>
+    <tr><td>Courant (intensité)</td><td>I</td><td>ampère (A)</td><td>La quantité de charges qui passe chaque seconde</td></tr>
+    <tr><td>Résistance</td><td>R</td><td>ohm (Ω)</td><td>La difficulté qu’a le courant à passer</td></tr>
+    <tr><td>Puissance</td><td>P</td><td>watt (W)</td><td>L’énergie transformée chaque seconde (chaleur, lumière, mouvement)</td></tr>
+  </tbody>
+</table>
+<p>Elles sont liées par deux formules qu’on utilise tous les jours : <strong>U = R × I</strong> (la <a href="resistance-loi-ohm.html">loi d’Ohm</a>) et <strong>P = U × I</strong> (la <a href="puissance-energie.html">puissance</a>). Avec elles, on calcule le courant d’une bouilloire, la section d’un câble ou la consommation d’une lampe. Un tableau récapitulatif des unités se trouve aussi sur la page <a href="https://sbg-energy.com/unites-electriques">unités électriques</a>.</p>
+
+<h2 id="eau">L’analogie de l’eau</h2>
+<p>Pour se représenter ces grandeurs, on compare souvent un circuit à une installation d’eau :</p>
+<ul>
+  <li>la <strong>tension</strong> est la pression de l’eau (la différence de pression entre l’entrée et la sortie d’un tuyau) ;</li>
+  <li>le <strong>courant</strong> est le débit, en litres par seconde ;</li>
+  <li>la <strong>résistance</strong> est l’étroitesse du tuyau ou d’un robinet à moitié fermé ;</li>
+  <li>la <strong>puissance</strong> est le travail que l’eau peut fournir, par exemple en faisant tourner une roue : il faut à la fois de la pression et du débit.</li>
+</ul>
+<p>Cette image est utile, mais elle a ses limites :</p>
+<ul>
+  <li>un fil coupé ne « fuit » pas : sans circuit fermé, aucun courant ne sort, alors qu’un tuyau ouvert se vide ;</li>
+  <li>le courant domestique est <a href="lexique.html#alternatif">alternatif</a> : il change de sens 100 fois par seconde, ce qu’aucun réseau d’eau ne fait ;</li>
+  <li>la « pression » électrique agit à travers le corps humain sans qu’on la voie ni qu’on l’entende : on ne peut pas se fier à ses sens. Un fil peut être sous tension sans aucun signe visible.</li>
+</ul>
+
+<h2 id="vitesse">Lent et pourtant instantané</h2>
+<p>Dans un fil de cuivre, les électrons avancent très lentement, bien moins d’un millimètre par seconde en moyenne. Pourtant, la lampe s’allume dès qu’on appuie sur l’interrupteur. La raison : le fil est déjà rempli d’électrons d’un bout à l’autre. Dès qu’on ferme le circuit, la poussée se transmet à tous en même temps, comme l’eau qui sort tout de suite d’un tuyau déjà plein. Ce qui voyage vite, c’est l’énergie, pas les électrons.</p>
+
+<h2 id="maison">D’où vient l’électricité de la maison</h2>
+<p>Le réseau public amène l’électricité jusqu’au <a href="lexique.html#compteur">compteur</a>, puis au <a href="lexique.html#tableau-electrique">tableau électrique</a>. Là, elle est répartie en circuits (éclairage, prises, cuisinière…), chacun protégé par un disjoncteur, et les personnes sont protégées par un ou plusieurs différentiels. La tension habituelle est de 230 V, à une fréquence de 50 Hz.</p>
+
+<h2 id="securite">Une règle avant tout</h2>
+<p>Comprendre l’électricité ne dispense pas des précautions. Avant de toucher un fil, une prise ou un luminaire, <strong>coupez le circuit au tableau et vérifiez l’absence de tension</strong> avec un testeur adapté. Une installation neuve ou modifiée doit ensuite être contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

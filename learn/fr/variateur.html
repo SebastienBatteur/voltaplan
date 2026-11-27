@@ -1,0 +1,89 @@
+<!--
+{
+  "title": "Le variateur de lumière",
+  "pageTitle": "Variateur de lumière : câblage et LED — Voltaplan",
+  "description": "Remplacer un interrupteur par un variateur : variateur 2 fils ou 3 fils, compatibilité avec les LED, charge minimale, clignotements et erreurs à éviter.",
+  "rubrique": "cablages",
+  "order": 8,
+  "related": ["simple-allumage", "va-et-vient", "telerupteur", "relais-connectes"],
+  "retenir": [
+    "Un variateur se câble à la place de l’interrupteur, <strong>sur la phase</strong> : borne d’arrivée et borne de départ vers la lampe.",
+    "Les lampes doivent être marquées <strong>dimmables</strong>, et le variateur doit annoncer une puissance LED compatible.",
+    "Beaucoup de variateurs ont une <strong>charge minimale</strong> : en dessous, la lumière clignote ou ne s’éteint pas tout à fait.",
+    "Un variateur à 3 fils (avec neutre) fonctionne en général mieux avec de petites charges LED qu’un variateur à 2 fils.",
+    "La documentation du fabricant fait foi : puissances, types de lampes, montage en va-et-vient."
+  ],
+  "faq": [
+    { "q": "Pourquoi mes LED clignotent-elles avec mon variateur ?", "a": "Le plus souvent, la puissance des lampes est inférieure à la charge minimale du variateur, ou le principe de variation ne convient pas aux lampes. Vérifiez que les lampes sont dimmables, ajoutez une lampe sur le circuit, réglez le seuil bas si le variateur le permet, ou choisissez un variateur prévu pour les LED (souvent à coupure en fin de phase, ou avec neutre)." },
+    { "q": "Peut-on mettre un variateur sur un va-et-vient ?", "a": "Oui, avec du matériel prévu pour : certains variateurs remplacent un des deux interrupteurs du va-et-vient, d’autres acceptent des poussoirs ou des postes secondaires. Le schéma dépend du modèle : suivez la notice du fabricant." },
+    { "q": "Mon variateur chauffe, est-ce normal ?", "a": "Un variateur dégage un peu de chaleur, c’est normal. S’il devient très chaud, il est probablement trop chargé ou monté dans une boîte trop serrée, à côté d’autres variateurs. La notice indique souvent une puissance réduite dans ces cas : respectez-la." }
+  ],
+  "sources": [
+    { "label": "Documentation des fabricants de variateurs et de lampes LED (puissances, charges minimales, compatibilité)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un <a href="lexique.html#variateur">variateur</a> remplace un interrupteur et permet de régler l’intensité de la lumière. Le câblage est presque le même que celui d’un <a href="simple-allumage.html">simple allumage</a> ; la vraie difficulté est ailleurs : choisir un variateur qui s’entend bien avec les lampes LED d’aujourd’hui.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Comme un <a href="lexique.html#interrupteur">interrupteur</a>, le variateur est placé <strong>sur la phase</strong>, entre le tableau et la lampe. Au lieu d’ouvrir ou de fermer simplement le circuit, il « découpe » la tension alternative : à chaque alternance, il ne laisse passer qu’une partie de l’onde. Moins il en laisse passer, plus la lumière est faible.</p>
+<p>Il existe deux grandes façons de découper l’onde :</p>
+<ul>
+  <li><strong>coupure en début de phase</strong> (le variateur attend avant de laisser passer le courant) : la technique historique, prévue pour les ampoules à incandescence et certains transformateurs ;</li>
+  <li><strong>coupure en fin de phase</strong> (il laisse passer le courant puis coupe avant la fin de l’alternance) : souvent mieux adaptée aux lampes LED et aux alimentations électroniques.</li>
+</ul>
+<p>Beaucoup de variateurs récents sont dits <strong>universels</strong> : ils choisissent le mode automatiquement ou se règlent à la main. La notice du fabricant indique quel mode convient à quelles lampes.</p>
+
+<h2 id="deux-ou-trois-fils">Variateur à 2 fils ou à 3 fils</h2>
+<p>C’est la question pratique la plus importante au moment de l’achat.</p>
+<table>
+  <thead><tr><th></th><th>Variateur à 2 fils</th><th>Variateur à 3 fils</th></tr></thead>
+  <tbody>
+    <tr><td>Bornes</td><td>Phase d’arrivée, départ vers la lampe</td><td>Phase d’arrivée, départ vers la lampe, <strong>neutre</strong></td></tr>
+    <tr><td>Où le poser</td><td>Directement à la place d’un interrupteur existant</td><td>Seulement si le neutre est présent dans la boîte</td></tr>
+    <tr><td>Alimentation de son électronique</td><td>À travers la lampe, même éteinte</td><td>Entre phase et neutre, sans passer par la lampe</td></tr>
+    <tr><td>Petites charges LED</td><td>Risque de clignotement ou de lueur résiduelle</td><td>En général plus stable</td></tr>
+  </tbody>
+</table>
+<p>Dans une boîte d’interrupteur classique, on ne trouve souvent que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a> : le <a href="lexique.html#neutre">neutre</a> va directement de la boîte de dérivation à la lampe. Un variateur à 3 fils demande alors de tirer un fil bleu supplémentaire jusqu’à l’interrupteur. Si vous préparez une rénovation, amener le neutre dans chaque boîte de commande facilite le choix plus tard (variateur, module connecté, détecteur). Voir <a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a>.</p>
+
+<h2 id="led">La compatibilité avec les LED</h2>
+<p>Une ampoule à incandescence de 60 W se comportait comme une simple résistance : n’importe quel variateur la faisait varier. Une lampe LED de 6 W contient une petite alimentation électronique qui n’aime pas forcément voir sa tension découpée. Trois vérifications évitent la plupart des ennuis :</p>
+<ol>
+  <li><strong>La lampe est marquée « dimmable »</strong> (un pictogramme sur l’emballage). Une lampe non dimmable sur un variateur peut clignoter, bourdonner ou s’abîmer rapidement.</li>
+  <li><strong>Le variateur annonce une puissance LED</strong>, et pas seulement une puissance pour l’incandescence. La puissance LED admise est souvent bien plus faible que la puissance « classique » inscrite en grand : lisez le tableau de la notice.</li>
+  <li><strong>La charge minimale est atteinte.</strong> Beaucoup de variateurs ont besoin d’une puissance minimale pour fonctionner correctement. Avec deux spots LED de quelques watts, on peut se trouver en dessous : la lumière clignote, ne descend pas bas, ou reste légèrement allumée une fois « éteinte ».</li>
+</ol>
+<p>Certains variateurs ont un réglage de seuil bas (un petit potentiomètre ou un menu) : il évite que la lampe s’éteigne ou papillote en bas de course. Les fabricants de lampes publient parfois des listes de variateurs testés : c’est l’information la plus fiable.</p>
+
+<h2 id="cablage">Câbler un variateur pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li>Repérer les fils de l’ancien interrupteur : l’arrivée de la <a href="lexique.html#phase">phase</a> et le départ vers la lampe. Notez-les avant de les débrancher.</li>
+  <li>Raccorder la phase à la borne d’arrivée du variateur (souvent marquée L) et le retour lampe à la borne de départ (souvent marquée d’une flèche ou d’un symbole de lampe).</li>
+  <li>Pour un modèle à 3 fils, raccorder le neutre (bleu) à la borne N.</li>
+  <li>Fixer le variateur sans écraser les fils, remettre le courant, puis essayer toute la plage de réglage.</li>
+</ol>
+<p>Le neutre et la terre de la lampe ne changent pas : ils restent raccordés comme pour un simple allumage.</p>
+
+<h2 id="plusieurs-points">Varier depuis plusieurs endroits</h2>
+<p>Un variateur seul ne remplace pas un interrupteur de <a href="va-et-vient.html">va-et-vient</a> sans précaution. Selon les modèles, on peut :</p>
+<ul>
+  <li>poser un variateur prévu pour le va-et-vient à un endroit et un interrupteur de va-et-vient à l’autre ;</li>
+  <li>utiliser un variateur avec <strong>postes secondaires</strong> (des commandes supplémentaires reliées au variateur principal) ;</li>
+  <li>placer un variateur modulaire dans le tableau, commandé par des <a href="lexique.html#bouton-poussoir">boutons-poussoirs</a>, sur le même principe qu’un <a href="telerupteur.html">télérupteur</a>.</li>
+</ul>
+<p>Chaque fabricant a son schéma : suivez la notice, et ne mélangez pas des marques qui ne sont pas prévues pour fonctionner ensemble.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Lampes non dimmables</strong> : elles clignotent ou vieillissent mal, même avec un bon variateur.</li>
+  <li><strong>Variateur trop chargé</strong> : il chauffe et s’abîme. Additionnez la puissance de toutes les lampes et comparez avec la puissance LED de la notice, en tenant compte des réductions annoncées quand plusieurs variateurs sont montés côte à côte.</li>
+  <li><strong>Variateur sur une prise</strong> : un variateur de lumière n’est pas fait pour commander une prise, où l’on pourrait brancher un aspirateur ou un radiateur.</li>
+  <li><strong>Neutre inversé avec la phase</strong> sur un modèle à 3 fils : le variateur ne fonctionne pas ou s’abîme.</li>
+</ul>
+
+<h2 id="unifilaire">Dans le schéma unifilaire</h2>
+<p>Sur le <a href="lexique.html#schema-unifilaire">schéma unifilaire</a>, le variateur est un interrupteur avec un symbole particulier. Dans Voltaplan, choisissez le type « Variateur » sur l’interrupteur : le circuit reste un circuit d’éclairage, protégé au tableau par un disjoncteur adapté à la section du câble et par un différentiel de 30 mA dans une installation neuve.</p>

@@ -1,0 +1,69 @@
+<!--
+{
+  "title": "La tension (U, en volts)",
+  "pageTitle": "La tension électrique (U, en volts) expliquée — Voltaplan",
+  "description": "La tension électrique, en volts : ce qu’elle mesure, pourquoi elle se mesure entre deux points, les valeurs à connaître (230 V, 400 V, TBTS) et ses dangers.",
+  "rubrique": "bases",
+  "order": 2,
+  "related": ["courant", "resistance-loi-ohm", "alternatif-mono-tri", "chute-de-tension"],
+  "retenir": [
+    "La tension (U) est la « poussée » qui fait circuler le courant ; elle se mesure en <strong>volts</strong> (V).",
+    "Une tension existe toujours <strong>entre deux points</strong> : phase et neutre, phase et terre, deux phases.",
+    "À la maison : 230 V entre phase et neutre ; 400 V entre deux phases d’un réseau 3N × 400 V.",
+    "Le 230 V est une valeur efficace : la tension monte en réalité jusqu’à environ 325 V à chaque alternance.",
+    "C’est la tension qui pousse le courant à travers le corps : un fil sous tension ne se reconnaît pas à l’œil."
+  ],
+  "faq": [
+    { "q": "Pourquoi mon multimètre affiche-t-il 236 V et pas 230 V ?", "a": "230 V est la valeur nominale du réseau. La tension réelle varie de quelques pour cent selon l’heure, la charge du quartier et la distance au transformateur. Une petite différence est normale." },
+    { "q": "Quelle tension est dangereuse ?", "a": "Le danger dépend du courant qui traverse le corps, donc de la tension et de la résistance du corps (peau sèche ou mouillée). En pratique, on considère comme sûres les très basses tensions de sécurité (TBTS), jusqu’à 50 V en alternatif en conditions normales. Le 230 V de la maison peut tuer." },
+    { "q": "Un fil qui ne touche rien peut-il être sous tension ?", "a": "Oui. Un fil relié à la phase est sous tension même si aucun appareil ne fonctionne : la tension est là, il ne manque que le circuit fermé pour que le courant passe. Si ce circuit se ferme à travers votre corps, vous êtes électrisé." }
+  ],
+  "sources": [
+    { "label": "Manuels d’électrotechnique de base (tension, valeur efficace, valeur de crête)." },
+    { "label": "Unités électriques : sbg-energy.com", "url": "https://sbg-energy.com/unites-electriques" }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La <a href="lexique.html#tension">tension</a> est la grandeur qu’on lit sur toutes les étiquettes : 230 V sur une lampe, 12 V sur une alimentation, 400 V sur une plaque de cuisson triphasée. C’est elle qui « pousse » le courant dans les fils. Comprendre ce qu’elle représente, et entre quels points elle se mesure, est la clé pour travailler en sécurité.</p>
+
+<h2 id="definition">Une différence entre deux points</h2>
+<p>La tension, notée <strong>U</strong>, se mesure en <a href="lexique.html#volt">volts</a> (V). On l’appelle aussi « différence de potentiel », et le mot important est <em>différence</em> : une tension existe toujours <strong>entre deux points</strong>. Dire « ce fil est à 230 V » est un raccourci pour « il y a 230 V entre ce fil et le neutre (ou la terre) ».</p>
+<p>Avec l’image de l’eau, la tension correspond à la différence de pression entre deux endroits d’un tuyau. S’il n’y a pas de différence, l’eau ne bouge pas, même si la pression est élevée partout. De même, un oiseau posé sur un seul fil d’une ligne n’est traversé par aucun courant : ses deux pattes sont au même potentiel.</p>
+<p>Une tension peut exister sans courant. Une prise de courant sans rien de branché a 230 V entre ses deux trous, mais aucun courant ne circule tant qu’on n’y branche pas un appareil. C’est pour cela qu’un fil « au repos » peut être dangereux.</p>
+
+<h2 id="valeurs">Les valeurs à connaître</h2>
+<table>
+  <thead><tr><th>Exemple</th><th>Tension</th></tr></thead>
+  <tbody>
+    <tr><td>Pile ronde AA</td><td>1,5 V</td></tr>
+    <tr><td>Chargeur USB</td><td>5 V (parfois plus en charge rapide)</td></tr>
+    <tr><td>Batterie de voiture, alimentation de rubans LED</td><td>12 V ou 24 V</td></tr>
+    <tr><td>Prise de courant, éclairage de la maison</td><td>230 V</td></tr>
+    <tr><td>Entre deux phases d’un réseau 3N × 400 V</td><td>400 V</td></tr>
+    <tr><td>Lignes du réseau de distribution et de transport</td><td>de quelques milliers à plusieurs centaines de milliers de volts</td></tr>
+  </tbody>
+</table>
+<p>En Belgique, on rencontre deux types de réseaux : le 3N × 400 V (trois phases et un neutre, 230 V entre une phase et le neutre) et le 3 × 230 V, sans neutre, où le 230 V se trouve entre deux phases. Les deux sont expliqués dans <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>.</p>
+
+<h2 id="tbts">La très basse tension de sécurité</h2>
+<p>En dessous d’un certain seuil, la tension ne peut pas faire passer à travers le corps un courant dangereux dans des conditions normales. C’est le domaine de la <a href="lexique.html#tbts">TBTS</a>, la très basse tension de sécurité, qui va jusqu’à 50 V en alternatif. On l’utilise pour les sonnettes, certains éclairages, les jouets ou les équipements placés près de l’eau, où des valeurs plus basses encore sont exigées. La TBTS est produite par un transformateur de sécurité, qui sépare complètement le circuit du 230 V.</p>
+
+<h2 id="efficace">230 V : une valeur « efficace »</h2>
+<p>La tension du réseau est alternative : elle oscille 50 fois par seconde entre une valeur positive et une valeur négative. Le chiffre 230 V n’est pas son maximum, mais sa <strong>valeur efficace</strong> : celle d’une tension continue qui chaufferait une résistance exactement autant. En réalité, la tension monte jusqu’à environ <strong>325 V</strong> (230 × 1,414) à chaque alternance, puis repasse par zéro.</p>
+<p>C’est la valeur efficace qu’affichent les multimètres et qu’on utilise dans tous les calculs (P = U × I, U = R × I). Mais les isolants des câbles et des appareils doivent tenir la valeur de crête, et davantage. Voir aussi la page sur la <a href="https://sbg-energy.com/frequence-50hz">fréquence de 50 Hz</a>.</p>
+
+<h2 id="mesurer">Mesurer une tension</h2>
+<p>On mesure une tension avec un voltmètre (ou un multimètre en position V~ pour l’alternatif) en posant les deux pointes sur les deux points à comparer : <strong>en parallèle</strong> sur ce qu’on mesure, sans rien débrancher. Trois mesures sont classiques sur une prise ou un circuit :</p>
+<ul>
+  <li>phase – neutre : environ 230 V ;</li>
+  <li>phase – terre : environ 230 V sur un réseau 3N × 400 V ;</li>
+  <li>neutre – terre : proche de 0 V.</li>
+</ul>
+<p>Pour vérifier l’absence de tension avant une intervention, on utilise un détecteur ou un testeur adapté, conçu pour cet usage, et on contrôle qu’il fonctionne avant et après la mesure. Un simple tournevis testeur ne suffit pas pour garantir qu’un circuit est hors tension.</p>
+
+<h2 id="chute">La tension baisse le long des câbles</h2>
+<p>Un câble a une petite <a href="resistance-loi-ohm.html">résistance</a>. Quand un courant le traverse, une partie de la tension se « perd » en chemin : c’est la <a href="lexique.html#chute-de-tension">chute de tension</a>. Sur un long câble de faible section qui alimente un gros appareil, elle peut devenir gênante (moteur qui peine, éclairage qui baisse). On la limite en choisissant une section adaptée : voir <a href="chute-de-tension.html">La chute de tension</a>.</p>
+
+<h2 id="danger">Tension et danger</h2>
+<p>C’est la tension qui pousse le courant à travers le corps humain si celui-ci ferme un circuit, par exemple entre une phase et le sol. Plus la tension est élevée et plus la peau est humide, plus ce courant est fort. Avant toute intervention, <strong>coupez le circuit au tableau et vérifiez l’absence de tension</strong> : c’est le seul moyen d’être sûr qu’un fil n’est plus dangereux.</p>

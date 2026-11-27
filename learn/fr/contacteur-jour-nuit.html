@@ -1,0 +1,78 @@
+<!--
+{
+  "title": "Le contacteur jour/nuit du chauffe-eau",
+  "pageTitle": "Contacteur jour/nuit du chauffe-eau électrique — Voltaplan",
+  "description": "Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.",
+  "rubrique": "cablages",
+  "order": 12,
+  "related": ["puissance-energie", "telerupteur", "organiser-tableau", "disjoncteur"],
+  "retenir": [
+    "Le contacteur est un <strong>interrupteur commandé</strong> : une petite bobine actionne des contacts capables de couper un gros appareil.",
+    "Le signal qui commande la bobine vient du <strong>compteur</strong> (ou d’un récepteur séparé), selon le compteur et le tarif.",
+    "Le chauffe-eau est sur un <strong>circuit dédié</strong>, avec un disjoncteur et une section adaptés à sa puissance.",
+    "Beaucoup de contacteurs ont une position <strong>auto</strong>, une <strong>marche forcée</strong> et un <strong>arrêt</strong>.",
+    "Le raccordement côté compteur dépend du gestionnaire de réseau : laissez-le à un professionnel."
+  ],
+  "faq": [
+    { "q": "Mon chauffe-eau ne chauffe plus la nuit : que vérifier ?", "a": "Regardez d’abord la position du sélecteur du contacteur (auto, marche forcée, arrêt) et le disjoncteur du circuit. Si la marche forcée chauffe l’eau mais pas la position auto, le signal de commande n’arrive peut-être plus : c’est fréquent après un changement de compteur. Faites vérifier le raccordement par un électricien ou le gestionnaire de réseau." },
+    { "q": "Le compteur communicant change-t-il quelque chose ?", "a": "Il peut changer la façon dont le signal heures creuses est donné : certains compteurs ont un contact ou un relais prévu pour cela, et le raccordement de l’ancien récepteur doit parfois être adapté lors du remplacement. Renseignez-vous auprès de votre gestionnaire de réseau ou d’un électricien." },
+    { "q": "Faut-il un contacteur si je n’ai qu’un tarif simple ?", "a": "Non, le chauffe-eau peut alors être alimenté en permanence et réglé par son thermostat. Le contacteur reste utile pour piloter le chauffe-eau avec une horloge ou une production solaire, mais c’est un autre réglage." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de contacteurs modulaires et de chauffe-eau électriques." },
+    { "label": "SBG Energy : le compteur communicant (explications générales).", "url": "https://sbg-energy.com/compteur-communicant" }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un chauffe-eau électrique consomme beaucoup, mais il n’a pas besoin de chauffer au moment où l’on se douche : il suffit que l’eau soit chaude quand on en a besoin. Avec un compteur à deux tarifs, on le fait donc chauffer pendant les heures creuses. C’est le rôle du <strong>contacteur jour/nuit</strong>, placé dans le tableau électrique.</p>
+
+<h2 id="pourquoi">Pourquoi un contacteur ?</h2>
+<p>Un chauffe-eau électrique courant a une <a href="lexique.html#puissance">puissance</a> de l’ordre de 2 000 à 3 000 W. À 2 400 W, il tire environ 10 A (2 400 ÷ 230). Il chauffe parfois plusieurs heures d’affilée : sur une année, cela fait beaucoup de <a href="lexique.html#kilowattheure">kilowattheures</a>. Les faire passer au tarif heures creuses réduit la facture, sans rien changer au confort.</p>
+<p>Il faut donc un appareil qui alimente le chauffe-eau seulement quand le tarif bas est actif. Un interrupteur manuel ne conviendrait pas : personne ne veut se lever pour l’enclencher. Le <a href="lexique.html#contacteur">contacteur</a> fait ce travail automatiquement, à partir d’un signal.</p>
+
+<h2 id="principe">Le principe du contacteur</h2>
+<p>Un contacteur ressemble à un <a href="lexique.html#relais">relais</a> de grande taille :</p>
+<ul>
+  <li>une <strong>bobine</strong> (bornes souvent marquées A1 et A2) : quand elle est alimentée, elle attire les contacts ;</li>
+  <li>des <strong>contacts de puissance</strong> qui ferment le circuit du chauffe-eau.</li>
+</ul>
+<p>La bobine consomme très peu ; les contacts, eux, laissent passer tout le courant du chauffe-eau. Un petit signal commande ainsi un gros appareil. La différence avec le <a href="telerupteur.html">télérupteur</a> : le contacteur n’a pas de mémoire. Il reste fermé tant que la bobine est alimentée et s’ouvre dès que le signal disparaît.</p>
+
+<h2 id="signal">D’où vient le signal ?</h2>
+<p>Le signal « heures creuses » est donné par le gestionnaire de réseau. Selon le <a href="lexique.html#compteur">compteur</a> et l’époque de l’installation, il arrive de différentes façons : un récepteur séparé à côté du compteur, un contact intégré au compteur, ou un relais du compteur communicant. Dans tous les cas, ce contact sert à alimenter (ou couper) la bobine du contacteur.</p>
+<p>Cette partie de l’installation dépend du compteur, du tarif souscrit et des règles du gestionnaire de réseau. Elle change parfois lors du remplacement d’un ancien compteur par un compteur communicant. Ne la modifiez pas vous-même : faites appel à un électricien, et en cas de doute, au gestionnaire de réseau. Pour comprendre les compteurs communicants en général, vous pouvez consulter <a href="https://sbg-energy.com/compteur-communicant">cette page d’explication sur le compteur communicant</a>.</p>
+
+<h2 id="selecteur">Auto, marche forcée, arrêt</h2>
+<p>Beaucoup de contacteurs modulaires prévus pour cet usage ont un petit sélecteur en façade :</p>
+<table>
+  <thead><tr><th>Position</th><th>Effet</th><th>Quand l’utiliser</th></tr></thead>
+  <tbody>
+    <tr><td>Auto</td><td>Le chauffe-eau chauffe seulement quand le signal est présent</td><td>En temps normal</td></tr>
+    <tr><td>Marche forcée (I)</td><td>Le chauffe-eau est alimenté en permanence, quel que soit le tarif</td><td>Ponctuellement, quand l’eau chaude manque (invités, retour de vacances)</td></tr>
+    <tr><td>Arrêt (0)</td><td>Le chauffe-eau n’est jamais alimenté</td><td>Absence prolongée, entretien</td></tr>
+  </tbody>
+</table>
+<p>Sur certains modèles, la marche forcée revient seule en position auto ; sur d’autres, il faut y penser. Une marche forcée oubliée fait chauffer l’eau au tarif plein. Les positions exactes dépendent du fabricant : la notice et le marquage en façade font foi.</p>
+
+<h2 id="circuit">Le circuit du chauffe-eau</h2>
+<p>Le chauffe-eau a son <strong>propre circuit</strong> au tableau, qui passe par les contacts du contacteur :</p>
+<ul>
+  <li>un <a href="disjoncteur.html">disjoncteur</a> dont le calibre correspond à la section du câble et à la puissance de l’appareil (par exemple 2,5 mm² et 20 A au plus, ou 1,5 mm² et 16 A au plus, selon la puissance et la notice) ;</li>
+  <li>un différentiel en amont, comme pour tout circuit ;</li>
+  <li>un conducteur de protection vert-jaune raccordé à la cuve, qui est métallique ;</li>
+  <li>le contacteur, avec un courant nominal suffisant pour le chauffe-eau.</li>
+</ul>
+<p>Le thermostat du chauffe-eau continue de jouer son rôle : quand l’eau a atteint la température réglée, il coupe la résistance, même si le contacteur est fermé. Le contacteur décide <em>quand</em> le chauffe-eau peut chauffer ; le thermostat décide <em>s’il</em> en a besoin.</p>
+
+<h2 id="securite">Précautions</h2>
+<ul>
+  <li><strong>Couper le bon circuit</strong> et vérifier l’absence de tension avant toute intervention sur le chauffe-eau : la bobine du contacteur et le chauffe-eau peuvent être alimentés par des circuits différents.</li>
+  <li><strong>Un chauffe-eau qui ne chauffe pas n’est pas forcément hors tension</strong> : le contacteur peut se fermer à tout moment quand le signal arrive.</li>
+  <li><strong>Repérer le contacteur</strong> dans le tableau, avec une étiquette claire. Voir <a href="organiser-tableau.html">Organiser le tableau électrique</a>.</li>
+</ul>
+<p>Une installation neuve ou modifiée doit être contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> avant sa mise en service.</p>
+
+<h2 id="autres-usages">D’autres façons de piloter le chauffe-eau</h2>
+<p>Le même contacteur peut être commandé par autre chose que le signal du compteur : une horloge, un module domotique, ou un gestionnaire qui chauffe l’eau quand des panneaux solaires produisent plus que la maison ne consomme. Le principe électrique ne change pas : un contact commande la bobine, la bobine ferme le circuit du chauffe-eau.</p>

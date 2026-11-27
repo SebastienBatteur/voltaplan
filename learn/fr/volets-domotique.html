@@ -1,0 +1,75 @@
+<!--
+{
+  "title": "Volets et domotique",
+  "pageTitle": "Volets roulants connectés : modules, scénarios — Voltaplan",
+  "description": "Rendre ses volets roulants connectés : modules derrière la commande, scénarios, capteurs de vent et de soleil, et câblage à prévoir (neutre et terre en boîte).",
+  "rubrique": "volets",
+  "order": 5,
+  "related": ["preparer-cablage-domotique", "scenarios-home-assistant", "commande-groupee-volets", "sans-fil-zigbee-wifi"],
+  "retenir": [
+    "Un <strong>module volet connecté</strong> se place derrière la commande ou près du moteur et remplace le contact de la commande.",
+    "La plupart des modules ont besoin du <strong>neutre</strong> dans la boîte de commande : prévoyez neutre et terre dans chaque boîte.",
+    "Un module se calibre : il mesure le temps de montée et de descente pour connaître la position du volet.",
+    "Les scénarios (heure, lever du soleil, absence) et les capteurs (soleil, vent, pluie) rendent les volets automatiques, mais une commande locale doit toujours rester possible."
+  ],
+  "faq": [
+    { "q": "Puis-je rendre mes volets existants connectés sans tout recâbler ?", "a": "Souvent oui, si la boîte de la commande de volet contient le neutre : un module se glisse derrière la commande existante. Sans neutre, il faut tirer un fil, choisir un module qui s’en passe s’il en existe pour votre cas, ou placer le module près du moteur, où le neutre est présent." },
+    { "q": "Que se passe-t-il si le Wi-Fi ou la box domotique tombe en panne ?", "a": "Avec un module bien installé, la commande murale continue à fonctionner : elle est raccordée au module, qui commande le moteur localement. Seuls les scénarios et la commande à distance sont perdus. C’est un point à vérifier avant d’acheter." },
+    { "q": "Un capteur de vent est-il utile pour des volets roulants ?", "a": "Il est surtout indispensable pour les stores bannes et les brise-soleil orientables, que le vent peut arracher. Pour des volets roulants, un capteur de soleil ou de température est souvent plus utile, pour limiter la chaleur en été." }
+  ],
+  "sources": [
+    { "label": "Documentation des fabricants de modules domotiques pour volets et de moteurs radio." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Les volets roulants sont souvent la première chose que l’on automatise dans une maison : les ouvrir au lever du jour, les fermer à la tombée de la nuit, les descendre quand le soleil tape sur une façade. La <a href="lexique.html#domotique">domotique</a> le permet, à condition que le câblage ait été pensé pour. Cet article fait le tour des solutions et de ce qu’il faut prévoir dans les murs.</p>
+
+<h2 id="solutions">Trois façons de connecter un volet</h2>
+<ul>
+  <li><strong>Un module derrière la commande</strong> : un petit boîtier qui se loge dans la boîte de la commande de volet. La commande murale est raccordée au module, qui alimente lui-même le moteur. Le module communique en Wi-Fi, en <a href="lexique.html#zigbee">Zigbee</a> ou par une autre liaison radio. Voir <a href="relais-connectes.html">Les relais connectés</a>.</li>
+  <li><strong>Un moteur radio</strong> : le moteur contient son propre récepteur. Il reçoit une alimentation permanente (phase, neutre, terre) et obéit à des télécommandes ou à une passerelle.</li>
+  <li><strong>Un système filaire sur bus</strong> : des actionneurs de volets au tableau, un câble de <a href="lexique.html#bus">bus</a> vers les boutons, comme en <a href="bus-knx.html">KNX</a>. Chaque moteur reçoit un câble à 4 conducteurs depuis le tableau.</li>
+</ul>
+<p>Dans les trois cas, le moteur lui-même ne change pas : il a toujours deux sens, un neutre et une terre (voir <a href="moteur-de-volet.html">Le moteur de volet et ses fins de course</a>), et il ne doit jamais recevoir les deux sens en même temps. Les modules prévus pour les volets intègrent ce verrouillage.</p>
+
+<h2 id="module">Comment se raccorde un module</h2>
+<p>Un module volet typique a des bornes pour :</p>
+<ul>
+  <li>l’alimentation : <a href="lexique.html#phase">phase</a> (L) et <a href="lexique.html#neutre">neutre</a> (N) ;</li>
+  <li>deux entrées, reliées aux sorties de la commande murale (ou à deux boutons-poussoirs) ;</li>
+  <li>deux sorties, vers les fils de montée et de descente du moteur.</li>
+</ul>
+<p>Le schéma exact dépend du fabricant : certaines commandes sont à interrupteur, d’autres à <a href="lexique.html#bouton-poussoir">boutons-poussoirs</a>, et le module doit être configuré en conséquence. Suivez sa notice, et coupez toujours le circuit et vérifiez l’absence de tension avant d’ouvrir la boîte.</p>
+<p>Une fois raccordé, le module se <strong>calibre</strong> : il fait monter et descendre le volet en entier et mesure les durées. Il peut ensuite placer le volet à mi-hauteur ou à 30 % d’ouverture, en coupant le moteur au bon moment. Si un fin de course est déréglé ensuite, il faut recalibrer.</p>
+
+<h2 id="scenarios">Les scénarios</h2>
+<p>Un scénario est une règle : « quand ceci arrive, fais cela ». Pour des volets, les plus courants sont :</p>
+<ul>
+  <li><strong>Horaire</strong> : ouvrir à 7 h en semaine, à 9 h le week-end.</li>
+  <li><strong>Lever et coucher du soleil</strong> : l’heure suit les saisons automatiquement.</li>
+  <li><strong>Simulation de présence</strong> : pendant les vacances, ouverture et fermeture à des heures légèrement variables.</li>
+  <li><strong>Fermeture générale</strong> : un bouton « je pars » ferme tous les volets, comme une <a href="commande-groupee-volets.html">commande groupée</a>, sans fils supplémentaires.</li>
+  <li><strong>Confort d’été</strong> : descendre les volets d’une façade quand le soleil y tape et que la température intérieure dépasse un seuil.</li>
+</ul>
+<p>Un logiciel comme Home Assistant permet de combiner ces conditions. Voir l’article sur <a href="scenarios-home-assistant.html">les scénarios dans Home Assistant</a>.</p>
+
+<h2 id="capteurs">Les capteurs de vent, de soleil et de pluie</h2>
+<ul>
+  <li><strong>Capteur de soleil</strong> (luminosité) : utile pour les volets et stores d’une façade exposée, afin de limiter la chaleur.</li>
+  <li><strong>Capteur de vent</strong> (anémomètre) : il remonte automatiquement les stores bannes et les brise-soleil quand le vent forcit. Pour un volet roulant, le vent est en général moins critique.</li>
+  <li><strong>Capteur de pluie</strong> : il ferme une coupole ou une fenêtre de toit restée ouverte (voir <a href="fenetre-motorisee.html">Fenêtres, coupoles et ouvrants motorisés</a>).</li>
+</ul>
+<p>Attention au gel : un volet bloqué par la glace ne doit pas être forcé par un scénario automatique. Beaucoup de moteurs détectent l’obstacle et s’arrêtent ; vérifiez ce que prévoit le vôtre.</p>
+
+<h2 id="cablage">Préparer le câblage</h2>
+<p>La domotique se prépare surtout au moment de tirer les câbles. Pour chaque volet, on prévoit couramment :</p>
+<ul>
+  <li>dans la <strong>boîte de la commande</strong> : la phase, le <strong>neutre</strong> et la <a href="lexique.html#terre">terre</a>, même si la commande classique ne les utilise pas. Sans neutre, la plupart des modules ne peuvent pas être alimentés ;</li>
+  <li>entre la commande et le volet : un câble à 4 conducteurs (montée, descente, neutre, terre) ;</li>
+  <li>près du caisson : une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> accessible, où un module pourra aussi trouver sa place ;</li>
+  <li>des boîtes assez <strong>profondes</strong> derrière les commandes, car un module prend de la place derrière le mécanisme ;</li>
+  <li>si une solution centralisée est envisagée, un câble de chaque volet jusqu’au tableau, ou un tube libre pour un câble de bus.</li>
+</ul>
+<p>Voir aussi <a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a>. Les modules et les moteurs restent des appareils raccordés au 230 V : ils doivent être adaptés à l’usage, installés dans des boîtes, et l’installation neuve ou modifiée est contrôlée par un organisme agréé.</p>

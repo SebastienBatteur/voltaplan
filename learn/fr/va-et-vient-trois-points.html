@@ -1,0 +1,80 @@
+<!--
+{
+  "title": "Commander depuis trois endroits ou plus (inverseur)",
+  "pageTitle": "Va-et-vient à trois points : câbler l’inverseur — Voltaplan",
+  "description": "Allumer une lampe depuis trois endroits ou plus : rôle de l’inverseur sur les navettes, câblage, erreurs et quand préférer le télérupteur.",
+  "rubrique": "cablages",
+  "order": 4,
+  "exercise": "va-et-vient-trois-points",
+  "related": ["va-et-vient", "telerupteur", "lire-unifilaire"],
+  "retenir": [
+    "Pour un troisième point de commande, on garde les deux va-et-vient aux extrémités et on insère un <strong>inverseur</strong> sur les navettes.",
+    "L’inverseur a quatre bornes : deux reçoivent les navettes du premier va-et-vient, deux repartent vers le second.",
+    "Chaque point supplémentaire demande un inverseur de plus, toujours placé entre les deux va-et-vient.",
+    "Au-delà de trois points, le télérupteur est en général plus simple et moins coûteux à câbler."
+  ],
+  "faq": [
+    { "q": "Inverseur, permutateur, croisement : est-ce le même appareil ?", "a": "Dans le langage courant, oui : selon les catalogues et les régions, l’interrupteur intermédiaire à quatre bornes s’appelle inverseur, permutateur ou interrupteur de croisement. Vérifiez sur la fiche technique qu’il a bien quatre bornes et sert à commander depuis trois endroits ou plus." },
+    { "q": "Peut-on placer l’inverseur au début ou à la fin de la chaîne ?", "a": "Non. Les deux extrémités doivent être des va-et-vient : l’un reçoit la phase sur son commun, l’autre envoie le retour lampe depuis son commun. Les inverseurs se placent toujours entre les deux, sur les navettes." },
+    { "q": "Combien d’inverseurs peut-on mettre ?", "a": "Autant que de points de commande supplémentaires, en théorie. En pratique, chaque inverseur ajoute des navettes à tirer et des connexions à faire ; dès quatre points, la plupart des électriciens choisissent un télérupteur." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants d’appareillage (interrupteurs intermédiaires, repérage des bornes)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un long couloir avec trois portes, une pièce traversante, un escalier sur trois niveaux : il faut parfois commander la même lampe depuis <strong>trois endroits ou plus</strong>. Le <a href="va-et-vient.html">va-et-vient</a> ne suffit plus, mais il suffit de lui ajouter un appareil : l’<a href="lexique.html#inverseur">inverseur</a>.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>On part d’un va-et-vient classique : la <a href="lexique.html#phase">phase</a> au commun du premier interrupteur, deux <a href="lexique.html#navette">navettes</a> entre les deux interrupteurs, le retour lampe au commun du second. Pour un troisième point, on coupe les deux navettes et on insère l’inverseur au milieu.</p>
+<p>L’inverseur a deux positions :</p>
+<ul>
+  <li><strong>droite</strong> : la navette 1 continue sur la navette 1, la navette 2 sur la navette 2 ;</li>
+  <li><strong>croisée</strong> : les navettes sont échangées, la 1 part sur la 2 et la 2 sur la 1.</li>
+</ul>
+<p>Échanger les navettes revient à inverser l’état de la lampe. Ainsi, chacune des trois commandes change l’état de la lampe, quelle que soit la position des deux autres. Dans l’exercice ci-dessous, les huit combinaisons sont vérifiées.</p>
+
+<h2 id="bornes">Les bornes de l’inverseur</h2>
+<p>L’inverseur a <strong>quatre bornes</strong>, groupées par paires : une paire d’entrée (les deux navettes venant du premier va-et-vient) et une paire de sortie (les deux navettes vers le second). Le repérage dépend du fabricant : chiffres, flèches, ou paires placées de part et d’autre du mécanisme. Le schéma au dos de l’appareil ou la notice indique quelles bornes forment une paire ; c’est le point le plus important du montage.</p>
+<p>Dans l’exercice, les bornes 1 et 2 reçoivent les navettes du va-et-vient 1, et les bornes 3 et 4 repartent vers le va-et-vient 2. En position droite, 1 est relié à 3 et 2 à 4 ; en position croisée, 1 à 4 et 2 à 3.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → commun du va-et-vient 1</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Navettes (2)</td><td>Va-et-vient 1 → inverseur (paire d’entrée)</td><td>Noir et gris</td></tr>
+    <tr><td>Navettes (2)</td><td>Inverseur (paire de sortie) → va-et-vient 2</td><td>Noir et gris</td></tr>
+    <tr><td>Retour lampe</td><td>Commun du va-et-vient 2 → lampe</td><td>Noir, gris ou brun</td></tr>
+    <tr><td>Neutre et terre</td><td>Tableau → lampe</td><td>Bleu ; vert-jaune</td></tr>
+  </tbody>
+</table>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Placer les deux va-et-vient aux extrémités et l’inverseur entre eux.</li>
+  <li>Amener la phase au commun du va-et-vient 1.</li>
+  <li>Relier ses bornes 1 et 2 à la paire d’entrée de l’inverseur.</li>
+  <li>Relier la paire de sortie de l’inverseur aux bornes 1 et 2 du va-et-vient 2.</li>
+  <li>Relier le commun du va-et-vient 2 à la lampe ; amener neutre et terre à la lampe.</li>
+  <li>Remettre le courant et essayer chaque commande, dans plusieurs positions des autres.</li>
+</ol>
+<p>Comme pour le va-et-vient, l’ordre des deux fils d’une même paire n’a pas d’importance : croiser deux navettes inverse seulement le sens des positions. L’exercice l’accepte.</p>
+
+<h2 id="quatre-points">Quatre points et plus</h2>
+<p>Pour chaque point de commande supplémentaire, on ajoute un inverseur de plus dans la chaîne : va-et-vient, inverseur, inverseur, va-et-vient pour quatre points. Le principe reste le même, mais le câblage s’alourdit : chaque inverseur reçoit deux navettes et en renvoie deux, et chaque connexion est une occasion d’erreur.</p>
+
+<h2 id="telerupteur">Quand préférer le télérupteur</h2>
+<p>Au-delà de trois points de commande, la plupart des installateurs passent au <a href="telerupteur.html">télérupteur</a>. Avec lui, chaque point de commande est un simple <a href="lexique.html#bouton-poussoir">bouton-poussoir</a>, relié par deux conducteurs seulement, et tous les boutons se branchent en parallèle. Ajouter un point revient à ajouter un bouton, sans toucher aux autres. Un bouton-poussoir coûte aussi en général moins cher qu’un inverseur.</p>
+<p>Pour trois points, les deux solutions se défendent : l’inverseur évite un appareil dans le tableau et le petit claquement du télérupteur ; le télérupteur simplifie les câbles et laisse la porte ouverte à une commande centralisée ou à la <a href="domotique-introduction.html">domotique</a>.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Paires mal identifiées</strong> sur l’inverseur : les deux navettes du même va-et-vient arrivent sur une borne d’entrée et une borne de sortie. L’inverseur relie alors les navettes entre elles dans une position, et la lampe ne réagit plus correctement.</li>
+  <li><strong>Inverseur en bout de chaîne</strong> : il ne peut ni recevoir la phase ni alimenter la lampe correctement.</li>
+  <li><strong>Neutre dans les interrupteurs</strong> : aucun interrupteur ne doit commuter le neutre, qui va directement à la lampe.</li>
+</ul>
+<p>Dans un <a href="lire-unifilaire.html">schéma unifilaire</a>, le montage se lit comme une chaîne : va-et-vient, inverseur, va-et-vient, puis le point lumineux. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

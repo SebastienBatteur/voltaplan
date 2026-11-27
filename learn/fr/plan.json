@@ -1,0 +1,76 @@
+{
+  "articles": [
+    { "slug": "electricite-c-est-quoi", "rubrique": "bases", "order": 1, "title": "Qu’est-ce que l’électricité ?" },
+    { "slug": "tension", "rubrique": "bases", "order": 2, "title": "La tension (U, en volts)" },
+    { "slug": "courant", "rubrique": "bases", "order": 3, "title": "Le courant (I, en ampères)" },
+    { "slug": "resistance-loi-ohm", "rubrique": "bases", "order": 4, "title": "La résistance et la loi d’Ohm" },
+    { "slug": "puissance-energie", "rubrique": "bases", "order": 5, "title": "Puissance et énergie (W, kWh)" },
+    { "slug": "alternatif-mono-tri", "rubrique": "bases", "order": 6, "title": "Courant alternatif, monophasé et triphasé" },
+    { "slug": "serie-et-parallele", "rubrique": "bases", "order": 7, "title": "Circuits en série et en parallèle" },
+
+    { "slug": "couleurs-des-fils", "rubrique": "cables", "order": 1, "title": "Les couleurs des fils" },
+    { "slug": "types-de-cables", "rubrique": "cables", "order": 2, "title": "Les types de câbles (XVB, VOB…)" },
+    { "slug": "section-des-cables", "rubrique": "cables", "order": 3, "title": "La section des câbles" },
+    { "slug": "chute-de-tension", "rubrique": "cables", "order": 4, "title": "La chute de tension" },
+    { "slug": "tubes-et-boites", "rubrique": "cables", "order": 5, "title": "Tubes, gaines et boîtes" },
+
+    { "slug": "disjoncteur", "rubrique": "protections", "order": 1, "title": "Le disjoncteur (et le fusible)" },
+    { "slug": "courbes-disjoncteur", "rubrique": "protections", "order": 2, "title": "Les courbes B, C et D des disjoncteurs" },
+    { "slug": "surcharge-court-circuit", "rubrique": "protections", "order": 3, "title": "Surcharge et court-circuit" },
+    { "slug": "differentiel", "rubrique": "protections", "order": 4, "title": "Le différentiel (30 mA, 300 mA)" },
+    { "slug": "mise-a-la-terre", "rubrique": "protections", "order": 5, "title": "La mise à la terre" },
+    { "slug": "liaisons-equipotentielles", "rubrique": "protections", "order": 6, "title": "Les liaisons équipotentielles" },
+    { "slug": "parafoudre", "rubrique": "protections", "order": 7, "title": "Le parafoudre" },
+
+    { "slug": "controle-organisme-agree", "rubrique": "controles", "order": 1, "title": "Le contrôle par un organisme agréé" },
+    { "slug": "continuite", "rubrique": "controles", "order": 2, "title": "La mesure de continuité" },
+    { "slug": "resistance-isolement", "rubrique": "controles", "order": 3, "title": "La résistance d’isolement" },
+    { "slug": "resistance-de-terre", "rubrique": "controles", "order": 4, "title": "La résistance de dispersion de la terre" },
+    { "slug": "test-differentiel", "rubrique": "controles", "order": 5, "title": "Tester un différentiel" },
+    { "slug": "differentiel-qui-saute", "rubrique": "controles", "order": 6, "title": "Le différentiel saute : que faire ?" },
+    { "slug": "disjoncteur-qui-saute", "rubrique": "controles", "order": 7, "title": "Le disjoncteur saute : que faire ?" },
+
+    { "slug": "simple-allumage", "rubrique": "cablages", "order": 1, "title": "Le simple allumage", "exercise": "simple-allumage" },
+    { "slug": "double-allumage", "rubrique": "cablages", "order": 2, "title": "Le double allumage", "exercise": "double-allumage" },
+    { "slug": "va-et-vient", "rubrique": "cablages", "order": 3, "title": "Le va-et-vient", "exercise": "va-et-vient" },
+    { "slug": "va-et-vient-trois-points", "rubrique": "cablages", "order": 4, "title": "Commander depuis trois endroits ou plus (inverseur)", "exercise": "va-et-vient-trois-points" },
+    { "slug": "telerupteur", "rubrique": "cablages", "order": 5, "title": "Boutons-poussoirs et télérupteur", "exercise": "telerupteur" },
+    { "slug": "minuterie", "rubrique": "cablages", "order": 6, "title": "La minuterie d’escalier" },
+    { "slug": "detecteur-de-mouvement", "rubrique": "cablages", "order": 7, "title": "Le détecteur de mouvement", "exercise": "detecteur-de-mouvement" },
+    { "slug": "variateur", "rubrique": "cablages", "order": 8, "title": "Le variateur de lumière" },
+    { "slug": "prise-de-courant", "rubrique": "cablages", "order": 9, "title": "La prise de courant", "exercise": "prise-de-courant" },
+    { "slug": "prise-commandee", "rubrique": "cablages", "order": 10, "title": "La prise commandée par un interrupteur", "exercise": "prise-commandee" },
+    { "slug": "sonnette", "rubrique": "cablages", "order": 11, "title": "La sonnette et son transformateur" },
+    { "slug": "contacteur-jour-nuit", "rubrique": "cablages", "order": 12, "title": "Le contacteur jour/nuit du chauffe-eau" },
+
+    { "slug": "volet-roulant", "rubrique": "volets", "order": 1, "title": "Câbler un volet roulant", "exercise": "volet-roulant" },
+    { "slug": "moteur-de-volet", "rubrique": "volets", "order": 2, "title": "Le moteur de volet et ses fins de course" },
+    { "slug": "commande-groupee-volets", "rubrique": "volets", "order": 3, "title": "Commander plusieurs volets ensemble" },
+    { "slug": "fenetre-motorisee", "rubrique": "volets", "order": 4, "title": "Fenêtres, coupoles et ouvrants motorisés", "exercise": "fenetre-motorisee" },
+    { "slug": "volets-domotique", "rubrique": "volets", "order": 5, "title": "Volets et domotique" },
+
+    { "slug": "domotique-introduction", "rubrique": "domotique", "order": 1, "title": "La domotique : les principes" },
+    { "slug": "relais-connectes", "rubrique": "domotique", "order": 2, "title": "Relais et modules connectés" },
+    { "slug": "bus-knx", "rubrique": "domotique", "order": 3, "title": "Les bus filaires (KNX et autres)" },
+    { "slug": "sans-fil-zigbee-wifi", "rubrique": "domotique", "order": 4, "title": "Zigbee, Z-Wave, Wi-Fi : le sans-fil" },
+    { "slug": "preparer-cablage-domotique", "rubrique": "domotique", "order": 5, "title": "Préparer le câblage pour la domotique" },
+    { "slug": "scenarios-home-assistant", "rubrique": "domotique", "order": 6, "title": "Scénarios, capteurs et Home Assistant" },
+
+    { "slug": "lire-unifilaire", "rubrique": "schemas", "order": 1, "title": "Lire un schéma unifilaire" },
+    { "slug": "plan-de-position", "rubrique": "schemas", "order": 2, "title": "Le plan de position" },
+    { "slug": "symboles-electriques", "rubrique": "schemas", "order": 3, "title": "Les symboles électriques" },
+    { "slug": "organiser-tableau", "rubrique": "schemas", "order": 4, "title": "Organiser le tableau électrique" },
+    { "slug": "dossier-installation", "rubrique": "schemas", "order": 5, "title": "Le dossier de l’installation" }
+  ],
+  "lexique": [
+    "alternatif", "ampere", "borne", "boite-de-derivation", "bouton-poussoir", "bus", "calibre", "circuit", "classe-i", "classe-ii",
+    "compteur", "conducteur-de-protection", "contacteur", "continuite", "courant", "court-circuit", "courbe-de-declenchement", "differentiel",
+    "disjoncteur", "domotique", "electrisation", "electrocution", "energie", "fin-de-course", "frequence", "fusible", "indice-de-protection",
+    "interrupteur", "inverseur", "isolement", "kilowattheure", "knx", "liaison-equipotentielle", "masse", "minuterie", "monophase", "navette",
+    "neutre", "ohm", "organisme-agree", "parafoudre", "phase", "piquet-de-terre", "plan-de-position", "pouvoir-de-coupure", "prise-de-courant",
+    "puissance", "relais", "resistance", "resistance-de-terre", "retour-lampe", "rgie", "schema-unifilaire", "section", "chute-de-tension",
+    "surcharge", "tableau-electrique", "tbts", "telerupteur", "tension", "terre", "triphase", "variateur", "va-et-vient", "volet-roulant", "volt",
+    "watt", "zigbee", "detecteur-de-mouvement", "boucle-de-terre"
+  ],
+  "rgieRefs": ["3.1.2", "3.1.2.1", "4.2.4.3 b", "5.3.5.2 a"]
+}

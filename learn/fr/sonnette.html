@@ -1,0 +1,78 @@
+<!--
+{
+  "title": "La sonnette et son transformateur",
+  "pageTitle": "Câbler une sonnette et son transformateur — Voltaplan",
+  "description": "Comment fonctionne une sonnette filaire : transformateur de sécurité, très basse tension, bouton-poussoir et sonnerie, câblage pas à pas et pannes courantes.",
+  "rubrique": "cablages",
+  "order": 11,
+  "related": ["telerupteur", "tension", "types-de-cables", "symboles-electriques"],
+  "retenir": [
+    "La sonnette classique fonctionne en <strong>très basse tension</strong> : un transformateur abaisse le 230 V à quelques volts.",
+    "Le transformateur de <strong>sécurité</strong> sépare le circuit de sonnette du réseau : le bouton à l’extérieur ne porte pas de 230 V.",
+    "Le bouton-poussoir est en <strong>série</strong> avec la sonnerie, sur le secondaire du transformateur.",
+    "Le côté 230 V du transformateur est un circuit comme un autre : protégé au tableau, câblé avec les couleurs habituelles.",
+    "Choisissez la tension du transformateur selon la sonnerie (indiquée par le fabricant)."
+  ],
+  "faq": [
+    { "q": "Quelle tension pour une sonnette ?", "a": "Celle indiquée sur la sonnerie ou le carillon. Les transformateurs de sonnette ont souvent plusieurs sorties de quelques volts (par exemple 8 V et 12 V) : on choisit la sortie qui correspond à la sonnerie. Une tension trop faible donne un son faible ; trop forte, elle use la sonnerie." },
+    { "q": "Ma sonnette ne sonne plus : par où commencer ?", "a": "Vérifiez d’abord que le disjoncteur du circuit du transformateur est enclenché. Ensuite, regardez le bouton extérieur, exposé à la pluie : un contact oxydé est une panne fréquente. Enfin, le transformateur lui-même peut être en panne ; sa vérification côté 230 V se fait circuit coupé ou par une personne qualifiée." },
+    { "q": "Peut-on remplacer une sonnette filaire par un modèle sans fil ?", "a": "Oui. Une sonnette sans fil à piles ne demande aucun câblage. Si le transformateur n’est plus utilisé, faites-le retirer ou débrancher proprement, et notez la modification dans le dossier de l’installation." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Documentation des fabricants de transformateurs de sonnette et de carillons." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La sonnette est souvent le premier montage qu’on démonte par curiosité. C’est aussi un bon exemple de <strong>très basse tension</strong> : le bouton de la porte d’entrée, exposé à la pluie et touché par tous les visiteurs, n’est jamais relié au 230 V. Un petit transformateur s’en charge.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Une sonnette filaire comporte trois éléments :</p>
+<ul>
+  <li>un <strong>transformateur de sonnette</strong>, souvent placé dans le <a href="lexique.html#tableau-electrique">tableau électrique</a> (un module sur rail) ou dans une boîte près de la sonnerie ;</li>
+  <li>un <a href="lexique.html#bouton-poussoir">bouton-poussoir</a>, à côté de la porte ;</li>
+  <li>une <strong>sonnerie</strong> ou un carillon, à l’intérieur.</li>
+</ul>
+<p>Le transformateur abaisse la <a href="lexique.html#tension">tension</a> du réseau (230 V) à quelques volts. Le bouton et la sonnerie sont branchés <a href="serie-et-parallele.html">en série</a> sur cette basse tension : tant que personne n’appuie, le circuit est ouvert ; un appui ferme le circuit et la sonnerie retentit. Contrairement au <a href="telerupteur.html">télérupteur</a>, rien ne reste en mémoire : la sonnerie ne fonctionne que pendant l’appui.</p>
+
+<h2 id="tbts">La très basse tension de sécurité</h2>
+<p>On parle de très basse tension en dessous de 50 V en courant alternatif. Une sonnette fonctionne bien en dessous, avec quelques volts. La tension seule ne suffit pourtant pas : il faut aussi que ce circuit ne puisse pas recevoir le 230 V par accident.</p>
+<p>C’est le rôle du <strong>transformateur de sécurité</strong>. Ses deux enroulements sont séparés par une isolation renforcée : même en cas de défaut à l’intérieur, le 230 V ne passe pas vers le côté sonnette. Le circuit alimenté de cette façon, séparé du réseau et de la terre, est appelé <a href="lexique.html#tbts">TBTS</a> (très basse tension de sécurité). C’est ce qui permet d’utiliser un bouton simple à l’extérieur et du fil fin pour la sonnette.</p>
+<p>Un transformateur de sécurité porte un symbole spécifique sur son boîtier. N’utilisez pas un vieux chargeur ou une alimentation quelconque à la place : rien ne garantit la même séparation.</p>
+
+<h2 id="deux-cotes">Les deux côtés du transformateur</h2>
+<table>
+  <thead><tr><th></th><th>Côté réseau (primaire)</th><th>Côté sonnette (secondaire)</th></tr></thead>
+  <tbody>
+    <tr><td>Tension</td><td>230 V</td><td>Quelques volts (selon la sortie choisie)</td></tr>
+    <tr><td>Raccordé à</td><td>Phase et neutre d’un circuit protégé au tableau</td><td>Bouton-poussoir et sonnerie, en série</td></tr>
+    <tr><td>Câble</td><td>Câble d’installation habituel, couleurs normalisées</td><td>Fil de sonnette ou petit câble de signal</td></tr>
+    <tr><td>Intervention</td><td>Circuit coupé au tableau, absence de tension vérifiée</td><td>Sans danger électrique notable, mais coupez quand même</td></tr>
+  </tbody>
+</table>
+<p>Le primaire est alimenté par un circuit protégé par un disjoncteur et un différentiel, comme n’importe quel appareil. En pratique, on ne fait pas passer les fils de sonnette dans le même tube que les conducteurs à 230 V, sauf si leur isolation est prévue pour la tension la plus élevée : on garde les deux circuits séparés.</p>
+
+<h2 id="cablage">Câbler une sonnette pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> qui alimentera le transformateur et vérifier l’absence de tension.</li>
+  <li>Raccorder le <strong>primaire</strong> du transformateur à la <a href="lexique.html#phase">phase</a> et au <a href="lexique.html#neutre">neutre</a> (bornes marquées sur le boîtier, souvent 230 V ou L et N).</li>
+  <li>Choisir la <strong>sortie du secondaire</strong> qui correspond à la tension de la sonnerie (indiquée sur la sonnerie ou dans sa notice).</li>
+  <li>Relier une borne du secondaire à une borne de la sonnerie.</li>
+  <li>Relier l’autre borne du secondaire au bouton-poussoir, puis le bouton à la seconde borne de la sonnerie.</li>
+  <li>Remettre le courant et essayer.</li>
+</ol>
+<p>Pour sonner depuis deux portes, on place deux boutons en parallèle : chacun ferme le même circuit. Certains carillons ont des entrées séparées pour donner un son différent selon la porte : suivez alors la notice.</p>
+
+<h2 id="pannes">Les pannes courantes</h2>
+<ul>
+  <li><strong>Rien ne sonne</strong> : disjoncteur déclenché, fil coupé, bouton oxydé, ou transformateur en panne.</li>
+  <li><strong>La sonnerie grésille faiblement</strong> : tension trop faible (mauvaise sortie du transformateur) ou mauvais contact.</li>
+  <li><strong>La sonnerie sonne sans arrêt</strong> : bouton coincé ou fils du bouton qui se touchent, souvent à cause de l’humidité.</li>
+</ul>
+
+<h2 id="modernes">Sonnettes modernes et visiophones</h2>
+<p>Les visiophones et les sonnettes connectées ont souvent leur propre alimentation, et parfois un câble spécifique entre la porte et l’écran intérieur. Certains modèles réutilisent le transformateur et les fils d’une ancienne sonnette, d’autres non : la notice du fabricant indique la tension et la puissance nécessaires. Une sonnette sans fil à piles, enfin, ne demande aucun câblage.</p>
+
+<h2 id="schemas">Dans les schémas</h2>
+<p>Sur le <a href="lexique.html#schema-unifilaire">schéma unifilaire</a>, le transformateur est dessiné sous le circuit qui l’alimente, suivi du bouton-poussoir et de la sonnerie. Dans Voltaplan, ajoutez un transformateur sous le câble du circuit, puis un bouton-poussoir et une sonnerie ; le symbole de la sonnerie fait partie des symboles du RGIE. Voir <a href="symboles-electriques.html">Les symboles électriques</a>.</p>

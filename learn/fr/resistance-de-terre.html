@@ -1,0 +1,68 @@
+<!--
+{
+  "title": "La résistance de dispersion de la terre",
+  "pageTitle": "Résistance de terre : que veulent dire 30 Ω et 100 Ω ? — Voltaplan",
+  "description": "Résistance de dispersion de la prise de terre : ce qu’elle mesure, comment on la mesure, et comment Voltaplan lit les seuils de 30 Ω et 100 Ω.",
+  "rubrique": "controles",
+  "order": 4,
+  "related": ["mise-a-la-terre", "differentiel", "controle-organisme-agree", "liaisons-equipotentielles"],
+  "retenir": [
+    "La résistance de dispersion indique la facilité avec laquelle le courant de défaut passe de la prise de terre au sol.",
+    "Plus elle est <strong>faible</strong>, plus la tension qui apparaît sur une masse en défaut reste basse.",
+    "Dans Voltaplan : jusqu’à <strong>30 Ω</strong>, conforme ; de 30 à 100 Ω, des mesures complémentaires sont exigées ; au-delà de <strong>100 Ω</strong>, la terre doit être améliorée.",
+    "La prise de terre est une boucle dans les fondations ou un ou plusieurs piquets ; la valeur varie avec l’humidité du sol.",
+    "La mesure se fait avec un appareil dédié, par l’installateur ou l’organisme agréé."
+  ],
+  "faq": [
+    { "q": "Ma terre fait 45 Ω : est-ce grave ?", "a": "Dans Voltaplan, une valeur entre 30 et 100 Ω n’est pas une non-conformité mais un avertissement : des mesures complémentaires sont exigées, comme des différentiels 30 mA supplémentaires. Vérifiez les conditions du RGIE avec votre installateur ou l’organisme agréé, et voyez s’il est possible d’améliorer la prise de terre." },
+    { "q": "Comment améliorer une terre trop élevée ?", "a": "Le plus souvent en ajoutant un ou plusieurs piquets de terre reliés entre eux, en vérifiant les connexions du conducteur de terre, ou en reprenant une prise de terre corrodée. C’est un travail d’électricien, suivi d’une nouvelle mesure." },
+    { "q": "Peut-on relier la terre à une conduite d’eau ?", "a": "Non, une canalisation n’est pas une prise de terre. Les canalisations métalliques sont reliées à la terre par les liaisons équipotentielles, mais la prise de terre elle-même est une boucle ou des piquets prévus à cet effet." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan : règles sur la résistance de terre (30 Ω et 100 Ω) et page « Mesures et essais » du dossier imprimé." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Toute l’efficacité de la protection contre les défauts repose sur un dernier maillon : la <strong>prise de terre</strong>, enterrée sous la maison. Sa <a href="lexique.html#resistance-de-terre">résistance de dispersion</a> dit à quel point le courant de défaut peut s’écouler facilement dans le sol. C’est une mesure que l’organisme agréé fait à chaque contrôle.</p>
+
+<h2 id="principe">Ce que représente cette valeur</h2>
+<p>Quand un appareil de <a href="lexique.html#classe-i">classe I</a> a un défaut (une phase qui touche sa carcasse métallique), le courant de défaut emprunte le <a href="lexique.html#conducteur-de-protection">conducteur de protection</a> jusqu’à la barrette de terre, puis la prise de terre, puis le sol. Le sol n’est pas un conducteur parfait : il oppose une résistance au passage du courant. C’est cette résistance, entre la prise de terre et la « terre lointaine », qu’on appelle résistance de dispersion. Elle s’exprime en <a href="lexique.html#ohm">ohms</a>.</p>
+<p>Pendant le défaut, la carcasse de l’appareil prend une tension par rapport au sol. Selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, cette tension vaut à peu près la résistance de terre multipliée par le courant de fuite. Un exemple pour fixer les idées : une fuite de 0,3 A (le seuil d’un différentiel de 300 mA) donne environ 9 V sur une terre de 30 Ω, mais 30 V sur une terre de 100 Ω. Une terre faible garde donc les tensions de défaut basses, et le <a href="differentiel.html">différentiel</a> coupe avant que la situation ne devienne dangereuse.</p>
+
+<h2 id="seuils">Les seuils utilisés par Voltaplan</h2>
+<p>Dans l’onglet Projet de Voltaplan, vous encodez la « résistance de dispersion de la terre » en ohms. L’application la juge ainsi :</p>
+<table>
+  <thead><tr><th>Valeur mesurée</th><th>Ce qu’affiche Voltaplan</th></tr></thead>
+  <tbody>
+    <tr><td>30 Ω ou moins</td><td>Conforme (exigence affichée sur la page « Mesures et essais » : ≤ 30 Ω).</td></tr>
+    <tr><td>Plus de 30 Ω, jusqu’à 100 Ω</td><td>Avertissement : des mesures complémentaires sont exigées (différentiels 30 mA supplémentaires). Il faut vérifier les conditions du RGIE.</td></tr>
+    <tr><td>Plus de 100 Ω</td><td>Non-conformité : résistance de terre trop élevée. Il faut améliorer la prise de terre (piquets supplémentaires) avant le contrôle.</td></tr>
+  </tbody>
+</table>
+<p>Ces seuils sont ceux qu’applique l’application pour vous aider à préparer le contrôle. Le cas intermédiaire, entre 30 et 100 Ω, dépend de conditions précises du RGIE : c’est l’organisme agréé qui tranche, au vu de l’ensemble de l’installation.</p>
+
+<h2 id="prise-de-terre">La prise de terre elle-même</h2>
+<p>Deux réalisations sont courantes dans une maison :</p>
+<ul>
+  <li>la <a href="lexique.html#boucle-de-terre">boucle de terre</a> : un conducteur nu posé en fond de fouille, sous les fondations, au moment de la construction. C’est la solution habituelle en construction neuve, car elle offre un grand contact avec le sol ;</li>
+  <li>le <a href="lexique.html#piquet-de-terre">piquet de terre</a> : une tige métallique enfoncée dans le sol, souvent utilisée dans les bâtiments existants, ou en complément. Plusieurs piquets reliés entre eux et suffisamment écartés abaissent la résistance.</li>
+</ul>
+<p>La prise de terre est reliée à la barrette de terre du tableau par le conducteur de terre, en passant par un sectionneur de terre (une borne démontable) qui permet de la séparer de l’installation pour la mesurer. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
+
+<h2 id="variations">Pourquoi la valeur varie</h2>
+<ul>
+  <li><strong>La nature du sol</strong> : un sol argileux et humide conduit mieux qu’un sol sableux, rocheux ou très sec.</li>
+  <li><strong>La saison</strong> : après un été sec, la résistance est souvent plus élevée qu’en hiver. Une valeur juste sous le seuil peut le dépasser quelques mois plus tard.</li>
+  <li><strong>Le vieillissement</strong> : une connexion corrodée entre le conducteur de terre et le piquet, ou un sectionneur mal serré, augmentent la valeur mesurée.</li>
+  <li><strong>Des travaux</strong> : une terrasse, une allée bétonnée ou un drainage modifient parfois l’humidité autour d’un piquet.</li>
+</ul>
+
+<h2 id="mesure">Comment on la mesure</h2>
+<p>La mesure se fait avec un <strong>appareil dédié</strong> (un mesureur de terre ou un testeur d’installation), par l’installateur ou l’organisme agréé. Plusieurs méthodes existent : avec des électrodes auxiliaires plantées dans le sol à distance de la prise de terre, ou avec une pince de mesure. Le principe reste le même : faire circuler un courant connu entre la prise de terre et le sol, mesurer la tension qui en résulte, et en déduire la résistance.</p>
+<p>Ce n’est pas une mesure à faire soi-même : ouvrir le sectionneur de terre prive toute l’installation de sa protection pendant la mesure, et une mesure mal faite donne une valeur trompeuse.</p>
+
+<h2 id="ameliorer">Si la terre est trop élevée</h2>
+<p>L’électricien vérifie d’abord les connexions (sectionneur, raccord au piquet), puis ajoute si nécessaire des piquets supplémentaires reliés à la prise existante. Une nouvelle mesure confirme le résultat. Les <a href="liaisons-equipotentielles.html">liaisons équipotentielles</a> ne remplacent pas une bonne prise de terre : elles relient les masses entre elles, mais l’écoulement vers le sol reste l’affaire de la prise de terre.</p>
+<p>Dans <a href="../app/">Voltaplan</a>, une installation neuve sans prise de terre dessinée est signalée comme non conforme ; pour une installation existante, l’application demande de constater sa présence sur place et de mesurer sa résistance. Voir aussi <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>

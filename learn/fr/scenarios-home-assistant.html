@@ -1,0 +1,91 @@
+<!--
+{
+  "title": "Scénarios, capteurs et Home Assistant",
+  "pageTitle": "Scénarios domotiques et Home Assistant : local, énergie — Voltaplan",
+  "description": "Créer des scénarios domotiques avec des capteurs, choisir entre pilotage local et cloud, protéger sa vie privée et piloter l’énergie avec Home Assistant.",
+  "rubrique": "domotique",
+  "order": 6,
+  "related": ["sans-fil-zigbee-wifi", "domotique-introduction", "puissance-energie", "contacteur-jour-nuit"],
+  "retenir": [
+    "Un scénario suit toujours la même logique : un <strong>déclencheur</strong>, des <strong>conditions</strong>, des <strong>actions</strong>.",
+    "Un pilotage <strong>local</strong> continue de fonctionner sans Internet et garde vos données chez vous ; le cloud dépend d’un service extérieur.",
+    "Home Assistant est un logiciel libre qui réunit des appareils de nombreuses marques et protocoles sur un petit ordinateur installé à la maison.",
+    "Le pilotage de l’énergie (compteur, photovoltaïque, chauffe-eau) commande des charges importantes : contacteurs et protections doivent être dimensionnés en conséquence.",
+    "Les fonctions de sécurité et l’éclairage de base ne doivent jamais dépendre uniquement d’un logiciel."
+  ],
+  "faq": [
+    { "q": "Faut-il être informaticien pour utiliser Home Assistant ?", "a": "Non pour un usage courant : l’installation sur un boîtier dédié est guidée, et les scénarios se créent dans une interface graphique. Les fonctions avancées demandent un peu de pratique, et la communauté publie beaucoup d’exemples." },
+    { "q": "Que se passe-t-il si le serveur domotique tombe en panne ?", "a": "Les scénarios s’arrêtent, mais une installation bien conçue continue de fonctionner manuellement : les interrupteurs agissent directement sur les relais, et les fonctions essentielles ne dépendent pas du serveur. Faites des sauvegardes régulières de la configuration." },
+    { "q": "Peut-on lire la consommation du compteur numérique belge ?", "a": "Oui, par le port P1 du compteur numérique, après activation auprès du gestionnaire de réseau. Un petit module raccordé à ce port transmet les données à Home Assistant ou à un autre logiciel." }
+  ],
+  "sources": [
+    { "label": "Documentation officielle de Home Assistant (logiciel libre de domotique)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Une fois les relais et les capteurs en place, la <a href="lexique.html#domotique">domotique</a> prend tout son sens avec les <strong>scénarios</strong> : des règles qui enchaînent automatiquement des actions. Pour les créer, on utilise l’application du fabricant ou un logiciel qui réunit tous les appareils, comme Home Assistant. Le choix entre pilotage local et cloud compte autant que le choix des appareils.</p>
+
+<h2 id="scenario">Anatomie d’un scénario</h2>
+<p>Tout scénario se décompose en trois parties :</p>
+<ul>
+  <li>un <strong>déclencheur</strong> : un bouton appuyé, une heure, le coucher du soleil, un mouvement détecté, une fenêtre ouverte, une puissance mesurée ;</li>
+  <li>des <strong>conditions</strong> facultatives : « seulement s’il fait nuit », « seulement si personne n’est à la maison » ;</li>
+  <li>des <strong>actions</strong> : allumer, éteindre, fermer, envoyer une notification.</li>
+</ul>
+<p>Exemples concrets :</p>
+<ul>
+  <li>« Au coucher du soleil, fermer les volets du rez-de-chaussée » (voir <a href="volets-domotique.html">Volets et domotique</a>) ;</li>
+  <li>« Si une fenêtre reste ouverte plus de dix minutes, couper le thermostat de la pièce » ;</li>
+  <li>« Un appui long sur le bouton de l’entrée éteint toute la maison » ;</li>
+  <li>« La nuit, un mouvement dans le couloir allume l’éclairage à 20 % pendant deux minutes ».</li>
+</ul>
+
+<h2 id="capteurs">Les capteurs</h2>
+<p>Les scénarios ne valent que par les informations disponibles. Les capteurs courants sont les <a href="detecteur-de-mouvement.html">détecteurs de mouvement</a> et de présence, les sondes de température et d’humidité, les contacts de porte et de fenêtre, les capteurs de luminosité, les détecteurs de fuite d’eau et les mesures de <a href="lexique.html#puissance">puissance</a> intégrées à certains relais ou prises. Beaucoup fonctionnent sur pile et communiquent sans fil : voir <a href="sans-fil-zigbee-wifi.html">Zigbee, Z-Wave, Wi-Fi : le sans-fil</a>.</p>
+
+<h2 id="local-cloud">Local ou cloud ?</h2>
+<table>
+  <thead><tr><th></th><th>Pilotage local</th><th>Pilotage par le cloud</th></tr></thead>
+  <tbody>
+    <tr><td>Sans Internet</td><td>Continue de fonctionner</td><td>Fonctions réduites ou arrêtées</td></tr>
+    <tr><td>Réactivité</td><td>Immédiate</td><td>Dépend de la connexion et du serveur</td></tr>
+    <tr><td>Données</td><td>Restent chez vous</td><td>Transitent par les serveurs du fabricant</td></tr>
+    <tr><td>Durée de vie</td><td>Indépendante du fabricant</td><td>Liée à la survie du service</td></tr>
+    <tr><td>Mise en route</td><td>Demande un serveur à la maison</td><td>Une application suffit</td></tr>
+  </tbody>
+</table>
+<p>Un service en ligne peut changer ses conditions, devenir payant ou fermer : des appareils parfaitement fonctionnels deviennent alors inutilisables. Pour des équipements fixés dans les murs pour quinze ans, le pilotage local est une sécurité.</p>
+
+<h2 id="vie-privee">Vie privée et sécurité informatique</h2>
+<p>Un détecteur de présence révèle quand vous êtes chez vous ; une courbe de consommation révèle vos horaires. Ces données méritent d’être protégées :</p>
+<ul>
+  <li>préférez les appareils et logiciels qui fonctionnent localement, et lisez ce que le fabricant fait des données ;</li>
+  <li>pour l’accès à distance, utilisez une solution chiffrée plutôt que d’ouvrir un port de votre routeur ;</li>
+  <li>appliquez les mises à jour, utilisez des mots de passe solides et, si possible, un réseau séparé pour les objets connectés ;</li>
+  <li>évitez les caméras et micros connectés dans les pièces de vie si leur fonctionnement vous paraît opaque.</li>
+</ul>
+
+<h2 id="home-assistant">Home Assistant</h2>
+<p>Home Assistant est un logiciel libre et gratuit qui tourne sur un petit ordinateur à la maison (boîtier dédié, mini-PC, carte de type Raspberry Pi). Il réunit des appareils de nombreuses marques et protocoles : relais Wi-Fi, réseau Zigbee ou Z-Wave via une clé radio, appareils Matter, interface KNX, onduleur, borne de recharge. Il permet de créer des tableaux de bord, des scénarios (appelés automatisations) et un suivi de l’énergie. Il fonctionne sans Internet ; un accès à distance est possible en option.</p>
+<p>D’autres logiciels existent (par exemple Jeedom, openHAB ou Domoticz), avec la même philosophie de pilotage local.</p>
+
+<h2 id="energie">Piloter l’énergie</h2>
+<p>La domotique devient très utile avec un compteur numérique et des panneaux photovoltaïques : on peut suivre la consommation en temps réel et déplacer les gros consommateurs vers les heures de production solaire ou les heures creuses. Exemples : démarrer le chauffe-eau quand les panneaux produisent un surplus, recharger la voiture en fonction du soleil, limiter les pointes de puissance.</p>
+<p>Pour aller plus loin, ces pages du même auteur détaillent la partie énergie :</p>
+<ul>
+  <li>lire le compteur numérique par son port P1 : <a href="https://sbg-energy.com/port-p1-compteur">le port P1 du compteur</a> ;</li>
+  <li>récupérer les données du compteur dans Home Assistant : <a href="https://sbg-energy.com/donnees-compteur/#home-assistant">données du compteur et Home Assistant</a> ;</li>
+  <li>gérer l’énergie d’une installation photovoltaïque : <a href="https://sbg-energy.com/ems-photovoltaique">EMS et photovoltaïque</a> ;</li>
+  <li>envoyer le surplus solaire vers le chauffe-eau : <a href="https://sbg-energy.com/routeur-solaire">le routeur solaire</a>.</li>
+</ul>
+<p>Côté électricité, attention aux puissances : un chauffe-eau de 2 400 W tire environ 10 A, une borne de recharge bien davantage. Ces charges ne se commandent pas avec une petite prise connectée : on utilise un <a href="lexique.html#contacteur">contacteur</a> au tableau, piloté par le module domotique, comme pour le <a href="contacteur-jour-nuit.html">contacteur jour/nuit du chauffe-eau</a>. Le circuit garde son disjoncteur adapté à la section, et le contacteur apparaît sur le <a href="lire-unifilaire.html">schéma unifilaire</a>.</p>
+
+<h2 id="garde-fous">Les garde-fous</h2>
+<ul>
+  <li>L’éclairage doit toujours pouvoir s’allumer avec un bouton, sans le serveur.</li>
+  <li>Les protections électriques (disjoncteurs, <a href="differentiel.html">différentiels</a>) ne sont jamais remplacées par un logiciel.</li>
+  <li>Un scénario qui commande un moteur ou un chauffage doit prévoir un arrêt sûr en cas de panne.</li>
+  <li>Toute modification du câblage pour ajouter des relais ou des contacteurs se fait courant coupé et absence de tension vérifiée ; une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>.</li>
+</ul>

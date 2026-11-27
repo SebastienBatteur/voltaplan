@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Surcharge et court-circuit : quelle différence ? — Voltaplan</title>
+<meta name="description" content="Surcharge ou court-circuit : causes, conséquences, comment le disjoncteur réagit à chacun et comment reconnaître lequel a fait sauter votre circuit.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/surcharge-court-circuit.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Surcharge et court-circuit","description":"Surcharge ou court-circuit : causes, conséquences, comment le disjoncteur réagit à chacun et comment reconnaître lequel a fait sauter votre circuit.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/surcharge-court-circuit.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Surcharge et court-circuit","item":"https://voltaplan.org/apprendre/surcharge-court-circuit.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Surcharge et court-circuit : quelle différence ? — Voltaplan">
+<meta property="og:description" content="Surcharge ou court-circuit : causes, conséquences, comment le disjoncteur réagit à chacun et comment reconnaître lequel a fait sauter votre circuit.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/surcharge-court-circuit.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#protections">Protections</a></nav>
+  <article>
+  <h1>Surcharge et court-circuit</h1>
+  <p class="lead">On dit souvent qu’un disjoncteur « saute » sans préciser pourquoi. Pourtant il réagit à deux défauts bien différents : la <strong>surcharge</strong> et le <strong>court-circuit</strong>. Les distinguer aide à comprendre ce qui se passe dans un circuit et à réagir correctement quand le courant est coupé.</p>
+
+<h2 id="surcharge">La surcharge : trop d’appareils à la fois</h2>
+<p>Une <a href="lexique.html#surcharge">surcharge</a> se produit quand on demande à un circuit plus de courant qu’il n’est prévu pour en transporter, sans qu’il y ait de défaut dans le câblage. Le courant reste « raisonnable » (un peu au-dessus du calibre, parfois le double), mais il dure.</p>
+<p>Exemple : un circuit de prises protégé en 20 A alimente une bouilloire de 2 000 W, un four à micro-ondes de 1 200 W et un radiateur d’appoint de 2 000 W. La <a href="puissance-energie.html">puissance</a> totale est de 5 200 W, soit environ 23 A sous 230 V (puissance divisée par la tension). Le câble de 2,5 mm² commence à chauffer plus que prévu.</p>
+<p>Le danger n’est pas immédiat, mais il est réel : un câble surchargé longtemps vieillit, son isolant se dégrade, les connexions chauffent. C’est le <strong>déclencheur thermique</strong> du <a href="disjoncteur.html">disjoncteur</a> qui s’en charge. Il réagit d’autant plus vite que la surcharge est importante : dans l’exemple, il peut laisser passer plusieurs minutes avant de couper. C’est voulu, pour ne pas couper lors d’un simple pic passager.</p>
+
+<h2 id="court-circuit">Le court-circuit : un contact direct</h2>
+<p>Un <a href="lexique.html#court-circuit">court-circuit</a> est un contact direct entre deux conducteurs à des tensions différentes, typiquement la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>, sans appareil entre les deux pour limiter le courant. Seule la très faible <a href="resistance-loi-ohm.html">résistance</a> des câbles s’y oppose, et le courant monte en un instant à des centaines, voire des milliers d’ampères.</p>
+<p>Causes typiques : un clou ou une vis qui traverse un câble dans un mur, un fil mal serré qui touche une autre borne dans une boîte, un appareil endommagé, une erreur de câblage (phase et neutre reliés directement).</p>
+<p>Le danger est immédiat : arc électrique, projection de métal fondu, échauffement brutal. Le <strong>déclencheur magnétique</strong> coupe en quelques millisecondes, dès que le courant dépasse son seuil (voir <a href="courbes-disjoncteur.html">Les courbes B, C et D</a>). Le disjoncteur doit aussi avoir un <a href="lexique.html#pouvoir-de-coupure">pouvoir de coupure</a> suffisant pour interrompre ce courant sans être détruit.</p>
+
+<h2 id="comparaison">Les deux défauts côte à côte</h2>
+<table>
+  <thead><tr><th></th><th>Surcharge</th><th>Court-circuit</th></tr></thead>
+  <tbody>
+    <tr><td>Cause</td><td>Trop d’appareils, appareil trop puissant pour le circuit</td><td>Contact direct entre conducteurs, défaut de câblage</td></tr>
+    <tr><td>Courant</td><td>Un peu au-dessus du calibre</td><td>Des dizaines de fois le calibre, ou plus</td></tr>
+    <tr><td>Danger</td><td>Échauffement progressif du câble</td><td>Arc, échauffement brutal, incendie</td></tr>
+    <tr><td>Qui coupe</td><td>Déclencheur thermique</td><td>Déclencheur magnétique</td></tr>
+    <tr><td>Délai</td><td>Secondes à minutes</td><td>Quelques millisecondes</td></tr>
+  </tbody>
+</table>
+
+<h2 id="defaut-terre">Et le défaut à la terre ?</h2>
+<p>Il existe un troisième cas : la phase touche une partie métallique reliée à la <a href="lexique.html#terre">terre</a>, par exemple la carcasse d’un lave-linge dont un fil interne s’est dénudé. Le courant de défaut s’écoule alors par le conducteur de protection et par la prise de terre. Selon la <a href="lexique.html#resistance-de-terre">résistance de terre</a>, ce courant peut être trop faible pour faire réagir le disjoncteur, tout en rendant la carcasse dangereuse au toucher. C’est précisément ce que détecte le <a href="differentiel.html">différentiel</a>, qui voit qu’une partie du courant ne revient pas par le neutre.</p>
+
+<h2 id="reconnaitre">Reconnaître le défaut quand le disjoncteur a sauté</h2>
+<ul>
+  <li><strong>Il a sauté après un certain temps</strong>, alors que plusieurs appareils fonctionnaient : probablement une surcharge. Débranchez un ou deux appareils puis réarmez.</li>
+  <li><strong>Il a sauté instantanément</strong> au branchement ou à l’allumage d’un appareil : probablement un court-circuit dans cet appareil ou son cordon. Ne l’utilisez plus avant vérification.</li>
+  <li><strong>Il saute dès qu’on le réarme</strong>, même sans rien de branché : un court-circuit dans le câblage est probable. Laissez le circuit coupé et faites appel à un électricien.</li>
+  <li><strong>C’est le différentiel qui a sauté</strong>, pas le disjoncteur : il s’agit plutôt d’une fuite à la terre. Voir <a href="differentiel-qui-saute.html">Un différentiel qui saute</a>.</li>
+</ul>
+<p>Pour la démarche complète, voir <a href="disjoncteur-qui-saute.html">Un disjoncteur qui saute</a>.</p>
+
+<h2 id="prevenir">Prévenir plutôt que subir</h2>
+<p>Une bonne conception évite la plupart des surcharges : un circuit dédié pour chaque gros appareil (four, lave-linge, lave-vaisselle, cuisinière), un nombre limité de prises par circuit (8 points au plus en Belgique) et une <a href="section-des-cables.html">section de câble</a> adaptée au calibre. Pour les courts-circuits, le soin apporté aux connexions et au repérage des câbles encastrés reste la meilleure prévention. Et avant toute intervention : coupez le circuit et vérifiez l’absence de tension.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Une <strong>surcharge</strong> est un courant un peu trop élevé qui dure : trop d’appareils sur un même circuit.</li><li>Un <strong>court-circuit</strong> est un contact direct entre deux conducteurs : le courant devient énorme en un instant.</li><li>La surcharge est coupée par le déclencheur thermique (en secondes ou minutes), le court-circuit par le magnétique (en millisecondes).</li><li>Un défaut entre la phase et la terre est un troisième cas : c’est le différentiel qui le détecte le mieux.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Le disjoncteur a sauté après quelques minutes de fonctionnement du four et du lave-vaisselle : que se passe-t-il ?</summary><div>C’est typique d’une surcharge : les deux appareils ensemble dépassent le calibre du circuit, et le déclencheur thermique a coupé après un moment. Évitez de les faire fonctionner en même temps sur ce circuit ; à terme, chaque gros appareil devrait avoir son propre circuit.</div></details>
+    <details><summary>Le disjoncteur saute dès que je le remonte : surcharge ou court-circuit ?</summary><div>Un déclenchement immédiat, même appareils débranchés, oriente vers un court-circuit ou un défaut d’isolement dans le câblage. Laissez le circuit coupé et faites appel à un électricien.</div></details>
+    <details><summary>Une rallonge multiprise peut-elle provoquer une surcharge ?</summary><div>Oui, et elle peut chauffer avant même que le disjoncteur ne réagisse si elle est d’une section plus faible que le circuit. Respectez la puissance maximale indiquée sur la multiprise et évitez de brancher plusieurs appareils de chauffage dessus.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants de disjoncteurs modulaires.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="courbes-disjoncteur.html">← Les courbes B, C et D des disjoncteurs</a><a class="next" href="differentiel.html">Le différentiel (30 mA, 300 mA) →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li><li><a href="courbes-disjoncteur.html">Les courbes B, C et D des disjoncteurs</a><span>Ce que signifie la lettre B, C ou D sur un disjoncteur, les seuils de déclenchement magnétique en multiples du calibre, et quelle courbe choisir chez vous.</span></li><li><a href="disjoncteur-qui-saute.html">Le disjoncteur saute : que faire ?</a><span>Un disjoncteur qui saute signale une surcharge ou un court-circuit. Comment faire la différence, trouver l’appareil en cause et quand appeler un électricien.</span></li><li><a href="puissance-energie.html">Puissance et énergie (W, kWh)</a><span>Watts et kilowattheures sans confusion : P = U × I, calcul de la consommation d’une bouilloire, d’une lampe LED, d’une veille, et lecture du compteur.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Protections</h2><ul class="learn-list"><li><a href="disjoncteur.html">Le disjoncteur (et le fusible)</a><span>À quoi sert un disjoncteur, comment lire son calibre et son pouvoir de coupure en kA, et ce qui le distingue des fusibles des anciennes installations.</span></li><li><a href="courbes-disjoncteur.html">Les courbes B, C et D des disjoncteurs</a><span>Ce que signifie la lettre B, C ou D sur un disjoncteur, les seuils de déclenchement magnétique en multiples du calibre, et quelle courbe choisir chez vous.</span></li><li><a href="differentiel.html">Le différentiel (30 mA, 300 mA)</a><span>Comment fonctionne un différentiel, pourquoi 300 mA en tête et 30 mA pour certains circuits en Belgique, et ce que signifient les types AC, A, F et B.</span></li><li><a href="mise-a-la-terre.html">La mise à la terre</a><span>À quoi sert la terre d’une installation, boucle de terre ou piquet, rôle du sectionneur de terre et de la barrette, et valeurs de résistance de terre à viser.</span></li><li><a href="liaisons-equipotentielles.html">Les liaisons équipotentielles</a><span>Les liaisons équipotentielles principale et supplémentaires : quelles conduites et pièces métalliques relier à la terre, et pourquoi en salle de bain.</span></li><li><a href="parafoudre.html">Le parafoudre</a><span>Comment un parafoudre protège vos appareils contre les surtensions de la foudre et du réseau, quand il est utile, et comment il se place dans le tableau.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

@@ -21,7 +21,9 @@
     "desktop:build": "tauri build",
     "provenance": "vite-node tools/provenance/cli.ts --",
     "symbols:sheet": "vite-node tools/symbols-sheet/run.tsx",
-    "site:sitemap": "vite-node tools/site/cli.ts --"
+    "site:sitemap": "vite-node tools/site/cli.ts --",
+    "learn:build": "vite-node tools/learn/cli.ts",
+    "learn:check": "vite-node tools/learn/check.ts --"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",

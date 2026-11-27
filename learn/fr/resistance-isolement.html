@@ -1,0 +1,77 @@
+<!--
+{
+  "title": "La résistance d’isolement",
+  "pageTitle": "Résistance d’isolement : principe et valeurs — Voltaplan",
+  "description": "Ce que mesure la résistance d’isolement d’une installation électrique, pourquoi elle baisse (humidité, câble abîmé) et quelle valeur Voltaplan attend.",
+  "rubrique": "controles",
+  "order": 3,
+  "related": ["differentiel-qui-saute", "controle-organisme-agree", "types-de-cables", "resistance-loi-ohm"],
+  "retenir": [
+    "La résistance d’isolement mesure la qualité de la séparation entre les conducteurs, et entre les conducteurs et la terre.",
+    "Elle s’exprime en <strong>mégohms</strong> (MΩ) : plus elle est élevée, mieux c’est.",
+    "Voltaplan considère comme insuffisante une valeur <strong>inférieure à 0,5 MΩ</strong> (exigence affichée : ≥ 0,5 MΩ).",
+    "Humidité, câble écrasé ou percé, appareil défectueux font baisser l’isolement.",
+    "La mesure se fait hors tension, avec un appareil dédié, par une personne compétente."
+  ],
+  "faq": [
+    { "q": "Un mauvais isolement fait-il sauter le différentiel ?", "a": "Souvent, oui : un défaut d’isolement vers la terre laisse fuir du courant, et le différentiel coupe quand cette fuite devient trop importante. Un différentiel qui déclenche par temps humide est un indice classique." },
+    { "q": "Peut-on mesurer l’isolement avec un multimètre ?", "a": "Non. Un multimètre mesure avec une tension très faible et ne révèle pas un isolant qui cède sous tension. La mesure d’isolement se fait avec un appareil spécifique, qui applique une tension d’essai continue." },
+    { "q": "Pourquoi faut-il débrancher les appareils avant la mesure ?", "a": "La tension d’essai pourrait endommager l’électronique sensible, et les appareils branchés faussent la mesure. Le contrôleur indique ce qu’il faut débrancher." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan : règle « Résistance d’isolement insuffisante » et page « Mesures et essais » du dossier imprimé." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Un câble électrique, ce sont des conducteurs en cuivre entourés d’isolant. Tant que l’isolant fait son travail, le courant reste dans les fils. La <strong>résistance d’<a href="lexique.html#isolement">isolement</a></strong> mesure la qualité de cette séparation, circuit par circuit. C’est l’une des mesures faites lors du contrôle par l’organisme agréé.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un isolant parfait aurait une <a href="lexique.html#resistance">résistance</a> infinie : aucun courant ne passerait à travers. Dans la réalité, un tout petit courant traverse toujours l’isolant et longe les surfaces. Tant qu’il reste minuscule, l’installation est saine.</p>
+<p>La mesure consiste à appliquer, installation <strong>hors tension</strong>, une tension d’essai continue entre deux éléments qui ne devraient jamais se toucher :</p>
+<ul>
+  <li>entre les conducteurs actifs (<a href="lexique.html#phase">phase</a> et <a href="lexique.html#neutre">neutre</a>) et la terre ;</li>
+  <li>entre les conducteurs actifs eux-mêmes.</li>
+</ul>
+<p>L’appareil mesure le courant de fuite et en déduit une résistance, selon la <a href="resistance-loi-ohm.html">loi d’Ohm</a>. Le résultat s’exprime en <strong>mégohms</strong> (MΩ) : 1 MΩ = 1 000 000 Ω. Une installation récente et sèche affiche couramment des valeurs bien plus élevées que le minimum exigé.</p>
+
+<h2 id="valeur">Quelle valeur ?</h2>
+<p>Dans Voltaplan, la résistance d’isolement s’encode dans l’onglet Projet, en MΩ. L’application la juge ainsi :</p>
+<table>
+  <thead><tr><th>Valeur encodée</th><th>Ce qu’affiche Voltaplan</th></tr></thead>
+  <tbody>
+    <tr><td>0,5 MΩ ou plus</td><td>Conforme sur la page « Mesures et essais » (exigence : ≥ 0,5 MΩ).</td></tr>
+    <tr><td>Moins de 0,5 MΩ</td><td>Non-conformité : « Résistance d’isolement insuffisante », avec le conseil de rechercher le défaut circuit par circuit avant le contrôle.</td></tr>
+    <tr><td>Non encodée</td><td>Information : mesure à faire et à encoder.</td></tr>
+  </tbody>
+</table>
+<p>Une valeur à peine au-dessus du minimum n’est pas une bonne nouvelle pour autant : elle montre souvent qu’un défaut commence. Comparer les circuits entre eux est instructif : si tous affichent des valeurs élevées sauf un, c’est celui-là qu’il faut examiner.</p>
+
+<h2 id="causes">Pourquoi l’isolement baisse</h2>
+<ul>
+  <li><strong>L’humidité</strong> : une boîte de dérivation extérieure mal fermée, une prise de jardin, une cave humide, un tube encastré dans lequel l’eau stagne. C’est la cause la plus fréquente.</li>
+  <li><strong>Un câble abîmé</strong> : écrasé sous une plinthe, percé par une vis ou un clou, entaillé en tirant les fils dans un tube, rongé par des rongeurs.</li>
+  <li><strong>Un isolant vieilli</strong> : dans les installations anciennes, certains isolants deviennent cassants et se fissurent.</li>
+  <li><strong>Un appareil défectueux</strong> : une résistance chauffante de chauffe-eau, de four ou de lave-linge dont l’enveloppe est fissurée laisse fuir le courant vers la carcasse.</li>
+  <li><strong>Un mauvais raccordement</strong> : un brin de cuivre qui dépasse d’une borne et touche la boîte ou le fil de terre.</li>
+</ul>
+<p>Le choix du câble compte aussi : chaque type a son domaine d’emploi (encastré, apparent, enterré, extérieur). Voir <a href="types-de-cables.html">Les types de câbles</a>.</p>
+
+<h2 id="consequences">Les conséquences d’un mauvais isolement</h2>
+<p>Un courant qui fuit vers la terre, c’est d’abord un <a href="differentiel.html">différentiel</a> qui déclenche, parfois de façon imprévisible (par temps de pluie, quand un appareil chauffe). Voir <a href="differentiel-qui-saute.html">Le différentiel saute : que faire ?</a></p>
+<p>Plus grave, une fuite peut mettre sous tension une partie métallique accessible, ou chauffer localement et abîmer davantage l’isolant. Un défaut entre phase et neutre peut aussi évoluer en <a href="lexique.html#court-circuit">court-circuit</a>. D’où l’intérêt de mesurer avant la mise en service, et chaque fois qu’un doute apparaît.</p>
+
+<h2 id="mesure">Qui mesure, et comment ?</h2>
+<p>La mesure d’isolement se fait avec un <strong>appareil dédié</strong> (un mesureur d’isolement, souvent intégré à un testeur d’installation), par l’installateur ou l’organisme agréé. Ce n’est pas une mesure à improviser :</p>
+<ul>
+  <li>l’installation doit être coupée et l’absence de tension vérifiée ;</li>
+  <li>la tension d’essai est plus élevée que celle du réseau : elle peut endommager les appareils électroniques restés branchés (variateurs, détecteurs, alimentations, box internet) ;</li>
+  <li>certains éléments (parafoudre, appareils fixes) doivent être isolés pour ne pas fausser le résultat ;</li>
+  <li>il faut savoir interpréter une valeur faible et la localiser.</li>
+</ul>
+<p>Pour localiser un défaut, l’électricien mesure circuit par circuit, puis tronçon par tronçon, en ouvrant les boîtes de dérivation jusqu’à isoler la partie en cause.</p>
+<p>Pour un particulier, le rôle utile est ailleurs : remarquer les signes d’un isolement qui se dégrade (un différentiel qui saute par temps humide, une prise extérieure qui reste mouillée, un câble visiblement abîmé) et les signaler à l’électricien. Ne cherchez pas à « sécher » une boîte ou une prise sous tension : coupez d’abord le circuit au tableau.</p>
+
+<h2 id="voltaplan">Dans Voltaplan</h2>
+<p>La valeur encodée apparaît dans le dossier imprimé, page « Mesures et essais », avec l’exigence et le résultat. Tant que la résistance d’isolement (ou la résistance de terre) n’est pas encodée, <a href="../app/">Voltaplan</a> affiche « Mesures non encodées ». Ce sont des valeurs relevées par l’installateur : le contrôle de conformité reste réalisé par l’organisme agréé (voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>).</p>

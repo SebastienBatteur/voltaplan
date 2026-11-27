@@ -1,0 +1,10 @@
+[
+  { "id": "bases", "title": "Les bases de l’électricité", "intro": "Tension, courant, résistance, puissance : les quatre grandeurs qui expliquent tout le reste, et comment elles se combinent dans un circuit." },
+  { "id": "cables", "title": "Câbles et conducteurs", "intro": "Couleurs des fils, types de câbles, section et chute de tension : choisir le bon câble pour chaque circuit." },
+  { "id": "protections", "title": "Protections", "intro": "Disjoncteurs, différentiels, terre et parafoudre : ce qui protège les câbles, les appareils et surtout les personnes." },
+  { "id": "controles", "title": "Contrôles, mesures et pannes", "intro": "Ce que mesure l’organisme agréé, ce que veulent dire les valeurs, et comment chercher la cause d’un disjoncteur ou d’un différentiel qui saute." },
+  { "id": "cablages", "title": "Câblages de l’éclairage et des prises", "intro": "Simple allumage, va-et-vient, télérupteur, détecteur, prises : chaque montage avec son exercice de câblage et son schéma unifilaire." },
+  { "id": "volets", "title": "Volets roulants et ouvrants motorisés", "intro": "Moteurs à deux sens, inverseurs, commandes groupées : câbler un volet sans jamais alimenter la montée et la descente en même temps." },
+  { "id": "domotique", "title": "Domotique", "intro": "Du télérupteur aux relais connectés et aux bus filaires : préparer et câbler une installation pilotable." },
+  { "id": "schemas", "title": "Tableau et schémas", "intro": "Lire et dessiner un schéma unifilaire et un plan de position, organiser le tableau et préparer le dossier pour l’organisme agréé." }
+]

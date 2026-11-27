@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Zigbee, Z-Wave, Wi-Fi, Thread, Matter : le sans-fil — Voltaplan</title>
+<meta name="description" content="Zigbee, Z-Wave, Wi-Fi, Thread et Matter expliqués : maillage, piles, portée, forces et limites de chaque protocole sans fil pour la domotique.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/sans-fil-zigbee-wifi.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Zigbee, Z-Wave, Wi-Fi : le sans-fil","description":"Zigbee, Z-Wave, Wi-Fi, Thread et Matter expliqués : maillage, piles, portée, forces et limites de chaque protocole sans fil pour la domotique.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/sans-fil-zigbee-wifi.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Zigbee, Z-Wave, Wi-Fi : le sans-fil","item":"https://voltaplan.org/apprendre/sans-fil-zigbee-wifi.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Zigbee, Z-Wave, Wi-Fi, Thread, Matter : le sans-fil — Voltaplan">
+<meta property="og:description" content="Zigbee, Z-Wave, Wi-Fi, Thread et Matter expliqués : maillage, piles, portée, forces et limites de chaque protocole sans fil pour la domotique.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/sans-fil-zigbee-wifi.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#domotique">Domotique</a></nav>
+  <article>
+  <h1>Zigbee, Z-Wave, Wi-Fi : le sans-fil</h1>
+  <p class="lead">Le sans-fil a rendu la <a href="lexique.html#domotique">domotique</a> accessible aux maisons existantes : pas de saignée, pas de câble bus, un module derrière l’interrupteur et un capteur collé au mur. Mais « sans fil » ne veut pas dire « sans règles » : chaque protocole a ses forces et ses limites, et le 230 V reste du 230 V.</p>
+
+<h2 id="ce-qui-est-sans-fil">Ce qui est vraiment sans fil</h2>
+<p>Seule la <strong>commande</strong> passe par radio. Un <a href="relais-connectes.html">relais connecté</a> reste raccordé à la phase et au neutre, et il alimente la lampe par un fil. Le circuit garde son <a href="disjoncteur.html">disjoncteur</a> adapté à la <a href="lexique.html#section">section</a> et son <a href="differentiel.html">différentiel</a>. Les seuls appareils totalement sans fil sont ceux qui fonctionnent sur pile : boutons, détecteurs, sondes de température, contacts de fenêtre.</p>
+
+<h2 id="maillage">Le réseau maillé</h2>
+<p>Dans un réseau en étoile, chaque appareil parle directement à la passerelle : s’il est trop loin, il n’est pas entendu. Dans un <strong>réseau maillé</strong>, les appareils alimentés par le secteur servent de relais radio : le message d’un capteur au fond du jardin passe par un module de la cuisine, puis par une prise connectée du salon, avant d’atteindre la passerelle. Si un chemin disparaît, le réseau en trouve un autre.</p>
+<p>Conséquence pratique : <strong>les appareils sur pile ne relaient pas</strong>, pour économiser leur énergie. Un réseau composé uniquement de capteurs sur pile, loin de la passerelle, sera fragile. On répartit donc des appareils secteur (relais, prises, ampoules connectées) dans la maison, en particulier entre la passerelle et les zones éloignées.</p>
+
+<h2 id="protocoles">Les principaux protocoles</h2>
+<table>
+  <thead><tr><th>Protocole</th><th>Fréquence</th><th>Réseau</th><th>Points forts</th><th>Limites</th></tr></thead>
+  <tbody>
+    <tr><td>Zigbee</td><td>2,4 GHz</td><td>Maillé, avec un coordinateur</td><td>Très répandu, faible consommation, nombreux capteurs sur pile</td><td>Même bande que le Wi-Fi ; compatibilité entre marques parfois partielle</td></tr>
+    <tr><td>Z-Wave</td><td>Bande des 868 MHz en Europe</td><td>Maillé, avec un contrôleur</td><td>Peu de concurrence radio, bonne portée à travers les murs, certification d’interopérabilité</td><td>Choix d’appareils plus restreint, prix souvent plus élevés</td></tr>
+    <tr><td>Wi-Fi</td><td>2,4 GHz (parfois 5 GHz)</td><td>Étoile autour du routeur</td><td>Pas de passerelle à acheter, installation immédiate</td><td>Consommation élevée (peu d’appareils sur pile), charge le routeur, dépendance fréquente à un service en ligne</td></tr>
+    <tr><td>Thread</td><td>2,4 GHz</td><td>Maillé, avec un routeur de bordure</td><td>Faible consommation, réseau basé sur IP, conçu pour Matter</td><td>Plus récent ; demande un routeur de bordure (souvent intégré à une enceinte ou une box)</td></tr>
+  </tbody>
+</table>
+<p>Le <a href="lexique.html#zigbee">Zigbee</a> et le Z-Wave ont chacun besoin d’une <strong>passerelle</strong> (ou d’une clé radio branchée sur un petit ordinateur) qui traduit leurs messages pour votre logiciel ou votre application. Il existe aussi des appareils Bluetooth, surtout pour des usages de proximité.</p>
+
+<h2 id="matter">Matter : une langue commune</h2>
+<p>Matter n’est pas une nouvelle radio : c’est une <strong>couche commune</strong> qui fonctionne par-dessus le Wi-Fi, Thread ou un câble réseau. Un appareil Matter peut être commandé par plusieurs écosystèmes à la fois (par exemple l’application d’un fabricant, un assistant vocal et Home Assistant), et le pilotage se fait en local, sans passer obligatoirement par Internet. Les fonctions disponibles dépendent des types d’appareils prévus par la norme et de la version prise en charge : vérifiez que la fonction qui vous intéresse est bien couverte.</p>
+
+<h2 id="piles">Les piles</h2>
+<p>Les capteurs sans fil utilisent des piles bouton ou des piles bâton. Leur durée dépend de l’appareil et de son usage : un contact de porte qui envoie un message par jour dure bien plus longtemps qu’un détecteur qui signale chaque passage. Quelques bonnes pratiques :</p>
+<ul>
+  <li>surveiller le niveau des piles dans le logiciel domotique et programmer une alerte ;</li>
+  <li>garder un stock des modèles utilisés ;</li>
+  <li>préférer un appareil secteur pour une fonction importante (alarme, détection de fuite d’eau) quand c’est possible ;</li>
+  <li>déposer les piles usagées dans un point de collecte.</li>
+</ul>
+
+<h2 id="fiabilite">Fiabilité et bonnes pratiques</h2>
+<ul>
+  <li><strong>Gardez une commande locale</strong> : l’interrupteur relié au relais doit allumer la lampe même si la passerelle ou le réseau est hors service.</li>
+  <li><strong>Placez la passerelle au centre</strong> de la maison, loin du tableau métallique et à distance du routeur Wi-Fi pour limiter les interférences sur la bande des 2,4 GHz.</li>
+  <li><strong>Limitez le nombre d’écosystèmes</strong> : trois applications et trois passerelles compliquent le dépannage.</li>
+  <li><strong>Préférez le local</strong> : un appareil qui ne fonctionne qu’à travers un serveur distant peut cesser de fonctionner si le service ferme. Voir <a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a>.</li>
+  <li><strong>Sécurisez le réseau</strong> : mot de passe solide pour le Wi-Fi, mises à jour régulières, et un réseau séparé pour les objets connectés si votre routeur le permet.</li>
+</ul>
+
+<h2 id="installation">Installation et contrôle</h2>
+<p>Poser un module sans fil derrière un interrupteur reste une intervention sur le 230 V : coupez le circuit au tableau et vérifiez l’absence de tension. Les relais ajoutés doivent figurer sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, et une installation neuve ou modifiée est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Les appareils sans fil communiquent par radio, mais les relais restent branchés sur le 230 V et obéissent aux mêmes règles que tout circuit.</li><li>Zigbee, Z-Wave et Thread forment un <strong>réseau maillé</strong> : les appareils alimentés par le secteur relaient les messages des autres.</li><li>Le Wi-Fi est simple à mettre en place, mais consomme plus et charge le routeur ; beaucoup d’appareils dépendent d’un service en ligne.</li><li>Matter est une couche commune qui fonctionne au-dessus du Wi-Fi et de Thread, pour faire coopérer des appareils de marques différentes.</li><li>Les capteurs sur pile ne relaient pas : il faut des appareils secteur bien répartis pour un réseau fiable.</li></ul></section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Quel protocole choisir pour une maison existante ?</summary><div>Il n’y a pas de réponse unique. Un réseau maillé (Zigbee, Z-Wave ou Thread) convient bien à de nombreux capteurs sur pile et à des relais répartis dans la maison. Le Wi-Fi convient à quelques appareils isolés. L’important est de choisir une passerelle ou un logiciel qui fonctionne localement et de rester cohérent.</div></details>
+    <details><summary>Combien de temps durent les piles des capteurs ?</summary><div>Cela varie beaucoup selon l’appareil, le protocole et la fréquence des messages : de quelques mois à plusieurs années. Un logiciel domotique peut afficher le niveau des piles et prévenir avant qu’un capteur ne s’arrête.</div></details>
+    <details><summary>Les ondes des appareils domotiques sont-elles dangereuses ?</summary><div>Ces appareils émettent à faible puissance et la plupart du temps brièvement. Ils sont soumis aux mêmes règles européennes que les autres équipements radio. Si vous préférez limiter les ondes, une solution filaire reste possible pour les fonctions principales.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>Documentation des fabricants et des organismes qui publient ces protocoles (Connectivity Standards Alliance pour Zigbee et Matter, Z-Wave Alliance, Thread Group).</li><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="bus-knx.html">← Les bus filaires (KNX et autres)</a><a class="next" href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="relais-connectes.html">Relais et modules connectés</a><span>Installer un relais connecté derrière un interrupteur ou un module sur rail DIN : pourquoi le neutre est nécessaire, câblage, limites de courant et erreurs.</span></li><li><a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a><span>Créer des scénarios domotiques avec des capteurs, choisir entre pilotage local et cloud, protéger sa vie privée et piloter l’énergie avec Home Assistant.</span></li><li><a href="domotique-introduction.html">La domotique : les principes</a><span>Comprendre la domotique : du télérupteur aux relais connectés, bus filaires et sans-fil, ce qui change dans le câblage et ce que le RGIE impose toujours.</span></li><li><a href="volets-domotique.html">Volets et domotique</a><span>Rendre ses volets roulants connectés : modules derrière la commande, scénarios, capteurs de vent et de soleil, et câblage à prévoir (neutre et terre en boîte).</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Domotique</h2><ul class="learn-list"><li><a href="domotique-introduction.html">La domotique : les principes</a><span>Comprendre la domotique : du télérupteur aux relais connectés, bus filaires et sans-fil, ce qui change dans le câblage et ce que le RGIE impose toujours.</span></li><li><a href="relais-connectes.html">Relais et modules connectés</a><span>Installer un relais connecté derrière un interrupteur ou un module sur rail DIN : pourquoi le neutre est nécessaire, câblage, limites de courant et erreurs.</span></li><li><a href="bus-knx.html">Les bus filaires (KNX et autres)</a><span>Comment fonctionne un bus domotique filaire comme KNX : câble bus dédié, alimentation en très basse tension, adresses, programmation et règles de pose.</span></li><li><a href="preparer-cablage-domotique.html">Préparer le câblage pour la domotique</a><span>Construire ou rénover en pensant à la domotique : neutre dans chaque boîte, câblage en étoile, boîtes profondes, gaines de réserve, réseau, grand tableau.</span></li><li><a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a><span>Créer des scénarios domotiques avec des capteurs, choisir entre pilotage local et cloud, protéger sa vie privée et piloter l’énergie avec Home Assistant.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!--
+{
+  "title": "La section des câbles",
+  "pageTitle": "Section des câbles : 1,5 ou 2,5 mm², quel disjoncteur ? — Voltaplan",
+  "description": "1,5 mm² pour l’éclairage, 2,5 mm² pour les prises : comment la section d’un câble se choisit avec le calibre du disjoncteur, tableau des correspondances.",
+  "rubrique": "cables",
+  "order": 3,
+  "related": ["disjoncteur", "chute-de-tension", "types-de-cables", "puissance-energie"],
+  "retenir": [
+    "La section est la surface du cuivre d’un conducteur, en mm² : plus elle est grande, plus le câble supporte de courant.",
+    "C’est le <strong>disjoncteur</strong> qui protège le câble : son calibre ne doit jamais dépasser ce que la section supporte.",
+    "Correspondances usuelles : 1,5 mm² → 16 A, 2,5 mm² → 20 A, 4 mm² → 25 A, 6 mm² → 32 A, 10 mm² → 50 A.",
+    "Circuits de prises : 2,5 mm² au minimum, 8 points de prise au plus par circuit.",
+    "Un circuit long peut demander une section plus grande à cause de la chute de tension."
+  ],
+  "faq": [
+    { "q": "Peut-on mettre un disjoncteur de 20 A sur du 1,5 mm² ?", "a": "Non. Le câble pourrait chauffer au-delà de ce qu’il supporte sans que le disjoncteur déclenche. Avec du 1,5 mm², le calibre usuel maximal est 16 A. Si le disjoncteur saute trop souvent, il faut répartir les appareils sur plusieurs circuits, pas augmenter le calibre." },
+    { "q": "Pourquoi les prises demandent-elles du 2,5 mm² ?", "a": "Un circuit de prises peut alimenter des appareils puissants (bouilloire, aspirateur, radiateur d’appoint). Le 2,5 mm² permet un disjoncteur de 20 A, adapté à cet usage. Voltaplan signale un circuit de prises en section plus faible." },
+    { "q": "Mettre une section plus grosse que nécessaire, est-ce un problème ?", "a": "Non pour la sécurité : un câble plus gros chauffe moins et la chute de tension est plus faible. Il coûte plus cher et se tire moins facilement dans les tubes, et les bornes des appareils doivent accepter cette section." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
+    { "label": "Voltaplan, règles de contrôle (fichier src/rules/be/rgie.ts du code source) : correspondance section ↔ calibre maximal, valeurs prudentes pour une pose encastrée sous tube." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">La <strong>section</strong> d’un câble, c’est la surface de cuivre de chaque conducteur, exprimée en millimètres carrés (mm²). Elle détermine le courant que le câble peut transporter sans chauffer dangereusement. Choisir la section, c’est donc d’abord choisir le bon <a href="disjoncteur.html">disjoncteur</a> pour la protéger.</p>
+
+<h2 id="pourquoi">Pourquoi un câble chauffe</h2>
+<p>Le cuivre a une petite <a href="resistance-loi-ohm.html">résistance</a>. Quand un <a href="lexique.html#courant">courant</a> le traverse, une partie de l’énergie se transforme en chaleur. Plus le courant est fort et plus le conducteur est fin, plus il chauffe. Au-delà d’une certaine température, l’isolant vieillit vite, se ramollit, et peut finir par provoquer un court-circuit ou un départ de feu.</p>
+<p>Un conducteur plus gros offre plus de cuivre au passage du courant : il chauffe moins pour le même courant. C’est pourquoi un circuit qui alimente une taque de cuisson utilise une section plus grande qu’un circuit d’éclairage.</p>
+
+<h2 id="calibre">Le disjoncteur protège le câble</h2>
+<p>Le disjoncteur ne protège pas d’abord l’appareil branché : il protège <strong>le câble</strong>. Il doit couper avant que le câble ne chauffe trop. Son <a href="lexique.html#calibre">calibre</a> (16 A, 20 A…) ne doit donc jamais dépasser ce que la section supporte.</p>
+<p>Voltaplan utilise le tableau suivant, qui reprend des valeurs prudentes usuelles en Belgique pour du cuivre posé de façon courante, encastré sous tube :</p>
+<table>
+  <thead><tr><th>Section (mm²)</th><th>Calibre maximal du disjoncteur</th><th>Usage domestique typique</th></tr></thead>
+  <tbody>
+    <tr><td>1,5</td><td>16 A</td><td>Éclairage, commandes</td></tr>
+    <tr><td>2,5</td><td>20 A</td><td>Prises, lave-linge, lave-vaisselle</td></tr>
+    <tr><td>4</td><td>25 A</td><td>Appareils puissants, circuits longs</td></tr>
+    <tr><td>6</td><td>32 A</td><td>Cuisinière, taque de cuisson, selon la puissance</td></tr>
+    <tr><td>10</td><td>50 A</td><td>Alimentation d’un sous-tableau</td></tr>
+    <tr><td>16</td><td>63 A</td><td>Alimentation d’un tableau, liaison depuis le compteur</td></tr>
+  </tbody>
+</table>
+<p>Ces valeurs sont des maxima pour une pose courante. Un câble posé dans un isolant thermique, groupé avec beaucoup d’autres ou dans un local chaud évacue moins bien sa chaleur : il peut demander un calibre plus faible ou une section plus grande. La notice du fabricant et les tableaux de courant admissible font foi.</p>
+
+<h2 id="minimum">Les minimums à connaître</h2>
+<ul>
+  <li><strong>1,5 mm²</strong> est la section minimale pour un circuit d’une installation domestique (éclairage, commandes).</li>
+  <li>Les <strong>circuits de prises</strong> se font en <strong>2,5 mm²</strong> au moins, protégés par 20 A au plus, avec <strong>8 points de prise au plus</strong> par circuit (une prise double compte pour un point).</li>
+  <li>Certains appareils demandent un <strong>circuit dédié</strong> : four, cuisinière, taque, lave-linge, sèche-linge, lave-vaisselle, chauffe-eau, pompe à chaleur, borne de recharge… La section dépend alors de leur puissance et de leur notice.</li>
+</ul>
+
+<h2 id="exemple">Exemple chiffré</h2>
+<p>Une bouilloire de 2 000 W branchée sur 230 V appelle un courant d’environ 2 000 ÷ 230 ≈ 8,7 A (voir <a href="puissance-energie.html">Puissance et énergie</a>). Un radiateur d’appoint de 2 000 W sur la même ligne double ce courant : environ 17,4 A. Sur un circuit de prises en 2,5 mm² protégé par 20 A, c’est encore acceptable. Ajoutez un fer à repasser de 2 000 W et le total dépasse 26 A : le disjoncteur finira par couper, et c’est exactement ce qu’on lui demande.</p>
+<p>La bonne réaction n’est jamais de mettre un disjoncteur de 25 A sur ce câble, mais de répartir les appareils puissants sur d’autres circuits.</p>
+
+<h2 id="longueur">La longueur compte aussi</h2>
+<p>Un câble long a plus de résistance : la tension disponible au bout baisse. C’est la <a href="chute-de-tension.html">chute de tension</a>. Sur un circuit très long (un garage au fond du jardin, un grand étage), il faut parfois passer à la section supérieure même si le calibre ne l’exige pas. Une grande longueur peut aussi empêcher le disjoncteur de déclencher assez vite en cas de court-circuit lointain.</p>
+
+<h2 id="voltaplan">Ce que vérifie Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, chaque canalisation porte sa section, et chaque disjoncteur son calibre. Le contrôle signale :</p>
+<ul>
+  <li>un câble protégé par un calibre plus élevé que celui du tableau ci-dessus (par exemple 1,5 mm² sous 20 A) ;</li>
+  <li>une section inférieure à 1,5 mm² ;</li>
+  <li>un circuit de prises en dessous de 2,5 mm², ou avec plus de 8 points ;</li>
+  <li>un appareil qui devrait avoir son propre circuit mais partage le sien ;</li>
+  <li>une chute de tension trop forte ou une longueur trop grande pour la protection, quand la longueur des câbles est connue ou estimée d’après le plan.</li>
+</ul>
+<p>Ces vérifications aident à repérer une erreur ; elles ne remplacent pas le contrôle de l’installation par un <a href="controle-organisme-agree.html">organisme agréé</a>. Et avant de remplacer un câble ou un disjoncteur, coupez le courant et vérifiez l’absence de tension.</p>

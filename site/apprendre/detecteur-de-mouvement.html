@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Câbler un détecteur de mouvement (2 ou 3 fils) — Voltaplan</title>
+<meta name="description" content="Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/detecteur-de-mouvement.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le détecteur de mouvement","description":"Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/detecteur-de-mouvement.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le détecteur de mouvement","item":"https://voltaplan.org/apprendre/detecteur-de-mouvement.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Câbler un détecteur de mouvement (2 ou 3 fils) — Voltaplan">
+<meta property="og:description" content="Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/detecteur-de-mouvement.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#cablages">Câblages de l’éclairage et des prises</a></nav>
+  <article>
+  <h1>Le détecteur de mouvement</h1>
+  <p class="lead">Le <a href="lexique.html#detecteur-de-mouvement">détecteur de mouvement</a> allume l’éclairage quand quelqu’un passe et l’éteint seul quand il n’y a plus personne. On l’installe dans une allée, devant une porte d’entrée, dans un garage, une cave ou un couloir. Électriquement, il prend la place de l’<a href="lexique.html#interrupteur">interrupteur</a>.</p>
+
+<h2 id="principe">Comment il détecte</h2>
+<p>La plupart des détecteurs domestiques sont à <strong>infrarouge passif</strong> : un capteur, derrière une lentille à facettes, perçoit le rayonnement de chaleur des personnes et des animaux. Il ne réagit pas à une chaleur immobile, mais à une source de chaleur qui <strong>se déplace</strong> d’une zone à l’autre de son champ. Il détecte donc mieux une personne qui passe devant lui qu’une personne qui marche droit vers lui.</p>
+<p>Quand il détecte un mouvement, le détecteur ferme un contact interne qui alimente la lampe. Il la laisse allumée pendant la durée réglée, et relance cette durée tant qu’il voit du mouvement. À la fin, il l’éteint.</p>
+
+<h2 id="trois-fils">Le détecteur 3 fils</h2>
+<p>C’est le modèle le plus simple à comprendre, et celui de l’exercice ci-dessous. Il a trois bornes :</p>
+<table>
+  <thead><tr><th>Borne</th><th>Rôle</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>L</td><td>Arrivée de la phase, qui alimente le détecteur et son contact</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>N</td><td>Neutre : alimente l’électronique du détecteur</td><td>Bleu</td></tr>
+    <tr><td>Sortie (souvent marquée d’une flèche, L’ ou R)</td><td>Phase commutée vers la lampe : c’est le retour lampe</td><td>Noir ou gris</td></tr>
+  </tbody>
+</table>
+<p>La lampe reçoit le retour depuis la sortie du détecteur, le <a href="lexique.html#neutre">neutre</a> et la terre. Le détecteur coupe ainsi la <a href="lexique.html#phase">phase</a>, comme un interrupteur. Le point clé est qu’il faut un neutre à l’emplacement du détecteur : à prévoir dès le câblage, en amenant jusqu’à lui la phase, le neutre et le retour lampe (et la terre si son boîtier en demande une).</p>
+<p>Attention : le détecteur ne commute que s’il est alimenté. Sans neutre, il reste inerte. L’exercice le simule : tant que L et N ne sont pas correctement reliés, le mouvement n’allume rien.</p>
+
+<h2 id="deux-fils">Le détecteur 2 fils</h2>
+<p>Le détecteur 2 fils se branche exactement à la place d’un interrupteur simple : la phase arrive sur une borne, le retour lampe part de l’autre. Pas besoin de neutre, ce qui le rend pratique en rénovation, quand on remplace un interrupteur existant.</p>
+<p>Pour alimenter son électronique, il laisse passer un petit courant permanent à travers la lampe, même éteinte. Avec une lampe à incandescence, ce courant ne se voyait pas. Avec des LED de faible puissance, il peut les faire luire ou clignoter. Les fabricants indiquent donc une <strong>charge minimale</strong>, par exemple quelques watts, et proposent parfois un module de compensation à placer en parallèle sur la lampe. Lisez la notice avant d’acheter : c’est la source d’ennuis la plus fréquente.</p>
+<p>En résumé : si vous avez un neutre au point de commande, préférez le 3 fils ; sinon, choisissez un 2 fils compatible avec vos LED.</p>
+
+<h2 id="reglages">Les réglages</h2>
+<ul>
+  <li><strong>Durée</strong> : de quelques secondes à plusieurs minutes selon le modèle. Pour une allée, une à deux minutes suffisent souvent.</li>
+  <li><strong>Seuil de luminosité</strong> (en lux) : en dessous de ce seuil seulement, le détecteur allume. On évite ainsi d’allumer en plein jour.</li>
+  <li><strong>Sensibilité ou portée</strong> : à réduire si le détecteur se déclenche pour un chat, des branches au vent ou les voitures de la rue.</li>
+</ul>
+<p>Réglez de jour la portée et l’orientation, puis le seuil de luminosité à la tombée de la nuit.</p>
+
+<h2 id="installation">Où et comment l’installer</h2>
+<ul>
+  <li><strong>Hauteur et orientation</strong> : respectez la hauteur conseillée par le fabricant, et orientez-le pour que l’on passe <em>devant</em> lui plutôt que vers lui.</li>
+  <li><strong>Extérieur</strong> : choisissez un modèle avec un <a href="lexique.html#indice-de-protection">indice de protection</a> adapté à la pluie, et une boîte de raccordement étanche.</li>
+  <li><strong>Plusieurs détecteurs</strong> pour une même lampe : selon les modèles, on relie leurs sorties en parallèle, ou on utilise un système maître et esclaves. La notice indique ce qui est permis.</li>
+  <li><strong>Charge maximale</strong> : la puissance de lampes admise figure sur la notice, souvent plus faible pour les LED que pour les lampes classiques.</li>
+</ul>
+
+<h2 id="etapes">Câbler un détecteur 3 fils pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Raccorder la phase (brun) à la borne L du détecteur et le neutre (bleu) à sa borne N.</li>
+  <li>Relier la sortie du détecteur à la borne L de la lampe (retour noir ou gris).</li>
+  <li>Amener le neutre et la terre (vert-jaune) à la lampe.</li>
+  <li>Remettre le courant et passer devant le détecteur.</li>
+</ol>
+<p>Le détecteur se combine bien avec la <a href="minuterie.html">minuterie</a> et la domotique, où il sert aussi de capteur de présence : voir <a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a>. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Un détecteur de mouvement remplace l’interrupteur : il allume la lampe quand il voit bouger une source de chaleur, puis l’éteint après une durée réglable.</li><li>Le modèle <strong>3 fils</strong> reçoit la phase, le neutre, et renvoie la phase vers la lampe par sa sortie : il demande un neutre à son emplacement.</li><li>Le modèle <strong>2 fils</strong> se branche à la place d’un interrupteur simple, sans neutre, mais il est plus délicat avec les petites charges LED.</li><li>Les réglages habituels : durée d’allumage, seuil de luminosité, sensibilité ou portée.</li></ul></section>
+  <section class="exo-sec" id="exercice">
+    <h2>Exercice : câbler un détecteur de mouvement</h2>
+    <p>Ce détecteur se raccorde en trois fils : phase (L), neutre (N) et sortie vers la lampe. Reliez l’arrivée, le détecteur et la lampe pour que la lampe s’allume quand un mouvement est détecté, puis cliquez sur « Vérifier ».</p>
+    <div class="exo"><script type="application/json">{"id":"detecteur-de-mouvement","title":"câbler un détecteur de mouvement","task":"Ce détecteur se raccorde en trois fils : phase (L), neutre (N) et sortie vers la lampe. Reliez l’arrivée, le détecteur et la lampe pour que la lampe s’allume quand un mouvement est détecté, puis cliquez sur « Vérifier ».","devices":[{"id":"src","type":"supply","label":"Arrivée (tableau)","x":10,"y":10},{"id":"det","type":"detector","label":"Détecteur","x":168,"y":10},{"id":"lamp","type":"lamp","label":"Lampe","x":326,"y":10}],"h":190,"cases":[{"set":{"det":"idle"},"expect":{"lamp":false}},{"set":{"det":"motion"},"expect":{"lamp":true}}],"solution":[{"a":"src.L","b":"det.L","color":"brown"},{"a":"src.N","b":"det.N","color":"blue"},{"a":"det.out","b":"lamp.L","color":"black"},{"a":"det.N","b":"lamp.N","color":"blue"},{"a":"src.PE","b":"lamp.PE","color":"gy"}]}</script><p class="muted">L’exercice interactif demande JavaScript. La solution est décrite dans l’article ci-dessus.</p></div>
+    <h3 id="unifilaire">Le même circuit dans un schéma unifilaire</h3>
+    <figure class="uni-fig"><svg class="uni" viewBox="-12 -12 271.68 214" width="543" role="img" aria-label="Disjoncteur 16 A, câble 3G1,5 mm², détecteur de mouvement et point lumineux. Le détecteur prend la place de l’interrupteur dans la chaîne : c’est lui qui commande la lampe."><g transform="translate(32,114)" class="sym"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></g><text x="50" y="128" font-size="11" text-anchor="start" class="bold ">A · Éclairage extérieur</text><text x="50" y="140" font-size="10" text-anchor="start" class="muted">C16 A · 1P+N</text><text x="50" y="152" font-size="10" text-anchor="start" class="muted">3000 A</text><g transform="translate(32,74)" class="sym"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></g><text x="45" y="95" font-size="10" text-anchor="start" class="muted">XVB 3G1,5</text><line x1="32" y1="42" x2="48" y2="42" class="wire"></line><g transform="translate(48,42)" class="sym"><g><line x1="0" y1="0" x2="6" y2="0"></line><rect x="6" y="-10" width="20" height="20" class="bg"></rect><path d="M12 -5 q3 5 0 10 M16 -6 q4 6 0 12" class="nofill"></path></g></g><text x="64" y="27" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="80" y1="42" x2="92" y2="42" class="wire"></line><g transform="translate(92,42)" class="sym"><g><line x1="0" y1="0" x2="17" y2="0"></line><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line></g></g><text x="108" y="27" font-size="9" text-anchor="middle" class="bold ">A2</text><line x1="32" y1="74" x2="32" y2="42" class="wire"></line><line x1="32" y1="114" x2="32" y2="108" class="wire"></line></svg><figcaption>Disjoncteur 16 A, câble 3G1,5 mm², détecteur de mouvement et point lumineux. Le détecteur prend la place de l’interrupteur dans la chaîne : c’est lui qui commande la lampe.</figcaption></figure>
+    <p><a class="btn" href="../app/">Dessiner ce circuit dans Voltaplan</a></p>
+  </section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Mon détecteur 2 fils fait clignoter ou luire les LED : pourquoi ?</summary><div>Un détecteur 2 fils s’alimente par un petit courant qui traverse la lampe, même éteinte. Avec des LED de faible puissance, ce courant suffit à les faire luire ou clignoter. Respectez la charge minimale indiquée par le fabricant ; certains proposent un module de compensation à placer près de la lampe. Sinon, un détecteur 3 fils règle le problème, à condition d’avoir un neutre.</div></details>
+    <details><summary>Peut-on forcer l’éclairage allumé avec un détecteur ?</summary><div>Oui. Beaucoup de détecteurs ont une position de marche forcée ou une entrée pour bouton-poussoir. On peut aussi placer un interrupteur en parallèle sur la sortie du détecteur, entre la phase et le retour lampe, pour allumer en permanence : suivez la notice du détecteur.</div></details>
+    <details><summary>Quelle différence entre détecteur de mouvement et détecteur de présence ?</summary><div>Les deux utilisent souvent le même principe infrarouge. Le détecteur de présence est plus sensible : il perçoit de petits mouvements, comme une personne assise à un bureau. Le détecteur de mouvement convient aux lieux de passage : allée, garage, couloir.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants de détecteurs (raccordement 2 fils et 3 fils, charges minimales et maximales, réglages).</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="minuterie.html">← La minuterie d’escalier</a><a class="next" href="variateur.html">Le variateur de lumière →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="minuterie.html">La minuterie d’escalier</a><span>La minuterie allume pour une durée réglable puis éteint seule : principe, câblage avec boutons-poussoirs, réglages et différence avec le télérupteur.</span></li><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="scenarios-home-assistant.html">Scénarios, capteurs et Home Assistant</a><span>Créer des scénarios domotiques avec des capteurs, choisir entre pilotage local et cloud, protéger sa vie privée et piloter l’énergie avec Home Assistant.</span></li><li><a href="couleurs-des-fils.html">Les couleurs des fils</a><span>Brun, bleu, vert-jaune, noir, gris : à quoi sert chaque couleur de fil électrique en Belgique, et pourquoi il ne faut jamais se fier à la couleur seule.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câblages de l’éclairage et des prises</h2><ul class="learn-list"><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="double-allumage.html">Le double allumage</a><span>Un interrupteur double pour commander deux lampes séparément : bornes, retours lampe, couleurs, variantes et exercice de câblage interactif.</span></li><li><a href="va-et-vient.html">Le va-et-vient</a><span>Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.</span></li><li><a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus (inverseur)</a><span>Allumer une lampe depuis trois endroits ou plus : rôle de l’inverseur sur les navettes, câblage, erreurs et quand préférer le télérupteur.</span></li><li><a href="telerupteur.html">Boutons-poussoirs et télérupteur</a><span>Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.</span></li><li><a href="minuterie.html">La minuterie d’escalier</a><span>La minuterie allume pour une durée réglable puis éteint seule : principe, câblage avec boutons-poussoirs, réglages et différence avec le télérupteur.</span></li><li><a href="variateur.html">Le variateur de lumière</a><span>Remplacer un interrupteur par un variateur : variateur 2 fils ou 3 fils, compatibilité avec les LED, charge minimale, clignotements et erreurs à éviter.</span></li><li><a href="prise-de-courant.html">La prise de courant</a><span>Câbler des prises de courant en Belgique : terre obligatoire, 2,5 mm² et 20 A, 8 points par circuit, 30 mA, obturateurs, repiquage ou boîte de dérivation.</span></li><li><a href="prise-commandee.html">La prise commandée par un interrupteur</a><span>Allumer une lampe sur pied depuis l’interrupteur de la porte : câbler une prise commandée, choisir la section et l’interrupteur, éviter les erreurs.</span></li><li><a href="sonnette.html">La sonnette et son transformateur</a><span>Comment fonctionne une sonnette filaire : transformateur de sécurité, très basse tension, bouton-poussoir et sonnerie, câblage pas à pas et pannes courantes.</span></li><li><a href="contacteur-jour-nuit.html">Le contacteur jour/nuit du chauffe-eau</a><span>Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+<script src="cablage-sim.js"></script>
+<script src="cablage.js"></script>
+</body>
+</html>

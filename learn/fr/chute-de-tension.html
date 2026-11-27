@@ -1,0 +1,78 @@
+<!--
+{
+  "title": "La chute de tension",
+  "pageTitle": "Chute de tension dans un câble : calcul simple — Voltaplan",
+  "description": "Pourquoi la tension baisse au bout d’un long câble, la formule simple pour la calculer avec un exemple chiffré, et ce que Voltaplan vérifie pour chaque circuit.",
+  "rubrique": "cables",
+  "order": 4,
+  "related": ["section-des-cables", "resistance-loi-ohm", "tension", "disjoncteur"],
+  "retenir": [
+    "Le câble a une résistance : une partie de la tension se perd en chemin, et d’autant plus que le câble est long et fin.",
+    "Formule simple en monophasé : ΔU = 2 × ρ × L × I ÷ S (ρ ≈ 0,0225 Ω·mm²/m pour le cuivre en service).",
+    "Doubler la longueur double la chute ; doubler la section la divise par deux.",
+    "Voltaplan calcule la chute depuis le compteur jusqu’au point le plus éloigné, au calibre du disjoncteur ou avec les puissances saisies.",
+    "Remèdes : section plus grande, circuit plus court, ou circuit partagé en deux."
+  ],
+  "faq": [
+    { "q": "Une chute de tension est-elle dangereuse ?", "a": "Pas directement, mais elle signale un circuit trop long ou trop fin : les appareils reçoivent moins de tension (moteurs qui peinent, éclairage moins efficace) et le câble dissipe de l’énergie en chaleur. Un circuit très long peut aussi empêcher le disjoncteur de couper assez vite en cas de court-circuit à son extrémité." },
+    { "q": "Pourquoi multiplier par 2 dans la formule ?", "a": "Le courant fait l’aller par la phase et le retour par le neutre : il parcourt deux fois la longueur du câble. En triphasé équilibré, on utilise √3 (environ 1,73) au lieu de 2." },
+    { "q": "Faut-il connaître la longueur exacte des câbles ?", "a": "Une bonne estimation suffit pour repérer un problème. Voltaplan peut estimer chaque longueur d’après le plan de position (trajet le long des murs, montées et descentes, 10 % de marge) ; une longueur mesurée et saisie est toujours prioritaire." }
+  ],
+  "sources": [
+    { "label": "Voltaplan, documentation des calculs (docs/calc.md) : méthode conventionnelle de l’IEC 60364-5-52, annexe G, résistivité du cuivre en service 0,0225 Ω·mm²/m." },
+    { "label": "IEC 60364-5-52 (Installations électriques à basse tension, choix et mise en œuvre des canalisations), annexe G." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Branchez une perceuse au bout d’une rallonge de 50 mètres : elle tourne un peu moins vite qu’à côté du tableau. La raison est la <strong>chute de tension</strong> : le câble lui-même consomme une partie de la tension. Cet article explique d’où elle vient, comment l’estimer avec une formule simple, et comment Voltaplan la vérifie pour chaque circuit.</p>
+
+<h2 id="principe">Le principe</h2>
+<p>Un conducteur en cuivre n’est pas parfait : il a une petite <a href="resistance-loi-ohm.html">résistance</a>. D’après la loi d’Ohm, un courant qui traverse une résistance provoque une différence de tension à ses bornes (U = R × I). Une partie des 230 V du tableau reste donc « dans le câble », et l’appareil au bout reçoit un peu moins.</p>
+<p>Cette perte dépend de trois choses :</p>
+<ul>
+  <li>la <strong>longueur</strong> du câble : plus il est long, plus sa résistance est grande ;</li>
+  <li>la <a href="lexique.html#section">section</a> : plus elle est petite, plus la résistance est grande ;</li>
+  <li>le <strong>courant</strong> : plus l’appareil est puissant, plus la perte est forte.</li>
+</ul>
+
+<h2 id="formule">La formule simple</h2>
+<p>Pour un circuit monophasé en 230 V, la <a href="lexique.html#chute-de-tension">chute de tension</a> s’estime ainsi :</p>
+<p><strong>ΔU = 2 × ρ × L × I ÷ S</strong></p>
+<ul>
+  <li>ΔU : chute de tension, en volts ;</li>
+  <li>2 : le courant fait l’aller par la phase et le retour par le neutre ;</li>
+  <li>ρ (rhô) : la résistivité du cuivre, environ <strong>0,0225 Ω·mm²/m</strong> à sa température de service (le cuivre froid est un peu meilleur, mais un câble en service chauffe) ;</li>
+  <li>L : la longueur du câble, en mètres (une seule fois, pas aller-retour) ;</li>
+  <li>I : le courant, en ampères ;</li>
+  <li>S : la section, en mm².</li>
+</ul>
+<p>On exprime souvent le résultat en pour cent de la tension : ΔU % = 100 × ΔU ÷ 230.</p>
+
+<h2 id="exemples">Deux exemples chiffrés</h2>
+<p><strong>Une bouilloire de 2 000 W</strong> au bout d’un circuit de prises en 2,5 mm², à 30 mètres du tableau. Le courant vaut environ 2 000 ÷ 230 ≈ 8,7 A. La chute est de 2 × 0,0225 × 30 × 8,7 ÷ 2,5 ≈ 4,7 V, soit environ 2 % de 230 V.</p>
+<p><strong>Le même circuit, chargé jusqu’au calibre</strong> de son disjoncteur (20 A) : 2 × 0,0225 × 30 × 20 ÷ 2,5 = 10,8 V, soit 4,7 %. C’est le cas le plus défavorable : le circuit transporte tout ce que sa protection autorise.</p>
+<p>Ces exemples montrent les deux leviers : la chute est <strong>proportionnelle à la longueur</strong> (60 mètres donneraient le double) et <strong>inversement proportionnelle à la section</strong> (du 4 mm² au lieu du 2,5 la réduirait de plus d’un tiers).</p>
+
+<h2 id="cumul">La chute s’additionne depuis le compteur</h2>
+<p>Le courant d’un circuit ne part pas du disjoncteur : il vient du compteur, passe par la liaison vers le tableau, parfois par l’alimentation d’un sous-tableau. Chacun de ces câbles a sa propre chute de tension, qui s’ajoute à celle du circuit. Un sous-tableau dans un garage éloigné, alimenté par un câble déjà long, laisse moins de marge à ses circuits.</p>
+
+<h2 id="voltaplan">Ce que calcule Voltaplan</h2>
+<p>Dans <a href="../app/">Voltaplan</a>, dès que la longueur des câbles est connue, l’onglet Contrôle calcule pour chaque circuit :</p>
+<ul>
+  <li>la <strong>chute au calibre</strong> de la protection, sur le trajet le plus défavorable du circuit (le point le plus éloigné) : c’est le calcul prudent, toujours disponible ;</li>
+  <li>la <strong>chute cumulée depuis le compteur</strong>, en ajoutant les câbles connus en amont (liaison vers le tableau, alimentation d’un sous-tableau) ;</li>
+  <li>la <strong>chute avec le courant réel</strong>, quand la puissance de chaque appareil du circuit est saisie : chaque tronçon de câble porte alors seulement le courant des appareils situés après lui.</li>
+</ul>
+<p>Voltaplan compare le résultat à 3 % pour un circuit d’éclairage seul et à 5 % pour les autres usages, valeurs de référence de l’annexe G de l’IEC 60364-5-52 reprises dans sa documentation. Si le calcul au calibre dépasse la limite mais que le calcul avec les puissances saisies reste en dessous, le circuit n’est pas déclaré en défaut, mais une information rappelle qu’il ne le reste que tant que les charges ne dépassent pas ces puissances.</p>
+<p>Les longueurs peuvent être saisies, ou <strong>estimées d’après le plan de position</strong> : trajet à angles droits le long des murs, montées et descentes selon la hauteur de chaque point, 10 % de marge. Une longueur estimée est marquée « ≈ ».</p>
+<p>Ces calculs sont des <strong>estimations par la méthode conventionnelle</strong>. Ils aident à repérer un circuit trop long ou une section trop faible, mais ne remplacent ni une étude complète ni l’avis de l’<a href="controle-organisme-agree.html">organisme agréé</a>.</p>
+
+<h2 id="remedes">Que faire si la chute est trop forte ?</h2>
+<ul>
+  <li><strong>Augmenter la section</strong> : passer de 2,5 à 4 mm², par exemple, sur un circuit long.</li>
+  <li><strong>Raccourcir le trajet</strong> : un câble qui fait le tour de la maison peut souvent passer plus directement.</li>
+  <li><strong>Partager le circuit en deux</strong> : chaque moitié transporte moins de courant sur moins de longueur.</li>
+  <li><strong>Rapprocher la source</strong> : un sous-tableau près des circuits éloignés, alimenté par un câble de forte section.</li>
+</ul>
+<p>Une chute excessive va souvent de pair avec un autre problème : en cas de court-circuit au bout d’un très long câble, le courant de défaut peut rester trop faible pour faire déclencher le disjoncteur instantanément. Voltaplan calcule aussi cette longueur maximale protégée. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>

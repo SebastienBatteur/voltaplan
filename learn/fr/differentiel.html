@@ -1,0 +1,71 @@
+<!--
+{
+  "title": "Le différentiel (30 mA, 300 mA)",
+  "pageTitle": "Le différentiel 30 mA et 300 mA : principe et règles — Voltaplan",
+  "description": "Comment fonctionne un différentiel, pourquoi 300 mA en tête et 30 mA pour certains circuits en Belgique, et ce que signifient les types AC, A, F et B.",
+  "rubrique": "protections",
+  "order": 4,
+  "related": ["test-differentiel", "differentiel-qui-saute", "mise-a-la-terre", "organiser-tableau"],
+  "retenir": [
+    "Le différentiel compare le courant qui part par la phase et celui qui revient par le neutre : s’il manque du courant, il coupe.",
+    "Il protège les <strong>personnes</strong> (électrisation) et limite le risque d’incendie dû aux fuites de courant.",
+    "En Belgique : un différentiel général de <strong>300 mA au plus</strong> en tête de l’installation, et des différentiels de <strong>30 mA</strong> pour la salle de bain, le lave-linge, le sèche-linge, le lave-vaisselle et, depuis le 1/6/2023 en neuf, les prises et l’éclairage.",
+    "Au plus 8 circuits derrière un même différentiel 30 mA (RGIE, 4.2.4.3 b).",
+    "Le type indique les formes de courant de fuite détectées ; Voltaplan recommande le type A pour le lave-linge, le sèche-linge et le lave-vaisselle."
+  ],
+  "faq": [
+    { "q": "Quelle différence entre un interrupteur différentiel et un disjoncteur différentiel ?", "a": "L’interrupteur différentiel détecte seulement les fuites de courant : il ne protège pas contre les surcharges et les courts-circuits, et les circuits qu’il alimente ont chacun leur disjoncteur. Le disjoncteur différentiel combine les deux fonctions pour un seul circuit." },
+    { "q": "Le 30 mA suffit-il, sans différentiel 300 mA ?", "a": "Le différentiel général de 300 mA au plus protège toute l’installation, y compris les circuits qui ne sont pas derrière un 30 mA. Dans la disposition la plus courante, les différentiels 30 mA sont placés en aval du général. L’organisation exacte dépend du tableau : c’est à l’installateur de la définir." },
+    { "q": "À quoi sert le bouton « T » ?", "a": "Il simule une fuite pour vérifier que le mécanisme fonctionne. Les fabricants conseillent de l’actionner régulièrement. Ce test ne remplace pas la mesure du temps et du courant de déclenchement faite avec un appareil lors du contrôle." }
+  ],
+  "sources": [
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie (notamment 4.2.4.3 b)." },
+    { "label": "Voltaplan : règles R-RCD-MAIN, R-RCD30, R-RCD30-MAX, R-RCD-TYPE-A et R-RCD-TRIP de l’aide au contrôle (src/rules/be/rgie.ts)." },
+    { "label": "Documentation des fabricants d’interrupteurs différentiels (types AC, A, F, B)." }
+  ],
+  "updated": "2026-11-27"
+}
+-->
+<p class="lead">Le <strong>différentiel</strong> est la protection qui sauve des vies. Là où le disjoncteur surveille la quantité de courant pour protéger les câbles, le différentiel cherche le courant <strong>qui s’échappe</strong> du circuit, par exemple à travers le corps d’une personne. En Belgique, il est obligatoire dans toute installation domestique.</p>
+
+<h2 id="principe">Le principe : comparer ce qui part et ce qui revient</h2>
+<p>Dans un circuit sain, tout le courant qui part par la <a href="lexique.html#phase">phase</a> revient par le <a href="lexique.html#neutre">neutre</a>. Le différentiel fait passer ces deux conducteurs dans un même tore magnétique : tant que les deux courants sont égaux, leurs effets s’annulent. Si une partie du courant s’échappe vers la <a href="lexique.html#terre">terre</a>, par une carcasse métallique en défaut ou par une personne, le courant de retour est plus faible que le courant de départ. Le tore détecte cette différence et fait ouvrir le contact.</p>
+<p>La <strong>sensibilité</strong>, notée IΔn, est le courant de fuite à partir duquel il doit déclencher : 30 mA, 300 mA… Elle n’a rien à voir avec son calibre en ampères (40 A, 63 A), qui indique le courant qu’il peut laisser passer en service normal.</p>
+<p>Le différentiel réagit à une fuite, pas à une surcharge ni à un <a href="lexique.html#court-circuit">court-circuit</a> entre phase et neutre : dans ces deux cas, le courant qui part revient entièrement. D’où la complémentarité avec le <a href="disjoncteur.html">disjoncteur</a>.</p>
+
+<h2 id="sensibilites">300 mA et 30 mA : deux rôles</h2>
+<ul>
+  <li><strong>300 mA au plus, en tête de l’installation</strong> : ce différentiel général couvre tous les circuits. Il protège contre les fuites qui pourraient provoquer un échauffement ou un incendie, et participe à la protection des personnes avec la <a href="mise-a-la-terre.html">mise à la terre</a>.</li>
+  <li><strong>30 mA</strong> : une sensibilité élevée, pour les endroits et les usages où le risque d’électrisation est plus grand. Un courant de quelques dizaines de milliampères à travers le corps peut être dangereux ; le 30 mA coupe avant.</li>
+</ul>
+<p>Dans un tableau courant, le différentiel général 300 mA alimente plusieurs différentiels 30 mA, qui alimentent à leur tour les disjoncteurs des circuits concernés. Voir <a href="organiser-tableau.html">Organiser un tableau</a>.</p>
+
+<h2 id="regles-belges">Quels circuits derrière un 30 mA ?</h2>
+<p>Les règles que vérifie Voltaplan sont les suivantes :</p>
+<ul>
+  <li>tous les circuits sont derrière un différentiel de <strong>300 mA au plus</strong> ;</li>
+  <li>sont derrière un <strong>30 mA</strong> : les circuits d’un local avec baignoire ou douche, et ceux qui alimentent le lave-linge, le sèche-linge et le lave-vaisselle ;</li>
+  <li>dans une installation (ou une partie d’installation) dont l’exécution a commencé le 1<sup>er</sup> juin 2023 ou après, sont aussi derrière un 30 mA les circuits de <strong>prises de courant</strong> et d’<strong>éclairage</strong> ;</li>
+  <li>depuis la même date, un différentiel 30 mA protège <strong>8 circuits au plus</strong> (RGIE, 4.2.4.3 b). Au-delà, on ajoute un second 30 mA et on répartit les circuits.</li>
+</ul>
+<p>Répartir les circuits sur plusieurs 30 mA a un avantage pratique : quand l’un déclenche, il ne plonge pas toute la maison dans le noir.</p>
+
+<h2 id="selectivite">Sélectivité</h2>
+<p>Si un différentiel de 300 mA alimente un 30 mA, une fuite sur un circuit aval fera normalement déclencher le 30 mA seul. Mais deux différentiels de même sensibilité l’un derrière l’autre risquent de déclencher ensemble : il n’y a pas de sélectivité, et Voltaplan le signale. Pour garantir que seul l’appareil aval coupe, on peut aussi utiliser en amont un différentiel <strong>sélectif</strong> (marqué « S »), légèrement temporisé.</p>
+
+<h2 id="types">Les types AC, A, F et B</h2>
+<p>Le type d’un différentiel indique les <strong>formes de courant de fuite</strong> qu’il sait détecter. Les appareils électroniques modernes peuvent produire des fuites qui ne sont pas purement sinusoïdales, et qu’un différentiel trop simple pourrait mal voir.</p>
+<table>
+  <thead><tr><th>Type</th><th>En résumé</th></tr></thead>
+  <tbody>
+    <tr><td>AC</td><td>Courants de fuite alternatifs sinusoïdaux. Le plus simple.</td></tr>
+    <tr><td>A</td><td>Comme AC, plus les courants de fuite comportant une composante continue pulsée (appareils avec électronique).</td></tr>
+    <tr><td>F</td><td>Comme A, avec une meilleure tenue aux fuites de fréquences mélangées (par exemple appareils à vitesse variable).</td></tr>
+    <tr><td>B</td><td>Détecte aussi les fuites en courant continu lisse ; utilisé pour certains équipements spécifiques, selon les indications de leur fabricant.</td></tr>
+  </tbody>
+</table>
+<p>Voltaplan signale un différentiel 30 mA de type AC qui protège un lave-linge, un sèche-linge ou un lave-vaisselle, et recommande le <strong>type A</strong>. Pour une borne de recharge, une pompe à chaleur ou un onduleur photovoltaïque, suivez la notice de l’appareil et l’avis de l’installateur : ces cas sont à vérifier à la main.</p>
+
+<h2 id="essai">Vérifier qu’il fonctionne</h2>
+<p>Le bouton « T » simule une fuite : le différentiel doit déclencher aussitôt. Lors du contrôle, l’<a href="lexique.html#organisme-agree">organisme agréé</a> mesure avec un appareil le temps de déclenchement au courant nominal différentiel ; Voltaplan considère comme non conforme un temps supérieur à 300 ms (500 ms pour un différentiel sélectif). Voir <a href="test-differentiel.html">Tester un différentiel</a> et, s’il déclenche sans raison apparente, <a href="differentiel-qui-saute.html">Un différentiel qui saute</a>.</p>
+<p>Comme pour toute intervention au tableau : coupez l’alimentation et vérifiez l’absence de tension avant de toucher aux connexions.</p>

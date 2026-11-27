@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Page produite par tools/learn/build.tsx à partir de learn/ : modifier la source, puis npm run learn:build -->
+<title>Câbler un va-et-vient (schéma et exercice) — Voltaplan</title>
+<meta name="description" content="Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.">
+<link rel="canonical" href="https://voltaplan.org/apprendre/va-et-vient.html">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"Le va-et-vient","description":"Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.","inLanguage":"fr","dateModified":"2026-11-27","mainEntityOfPage":"https://voltaplan.org/apprendre/va-et-vient.html","isAccessibleForFree":true,"publisher":{"@type":"Organization","name":"Voltaplan","url":"https://voltaplan.org/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Accueil","item":"https://voltaplan.org/"},{"@type":"ListItem","position":2,"name":"Apprendre","item":"https://voltaplan.org/apprendre/"},{"@type":"ListItem","position":3,"name":"Le va-et-vient","item":"https://voltaplan.org/apprendre/va-et-vient.html"}]}</script>
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Voltaplan">
+<meta property="og:title" content="Câbler un va-et-vient (schéma et exercice) — Voltaplan">
+<meta property="og:description" content="Commander une lampe depuis deux endroits : commun, navettes, retour lampe, variantes de câblage, erreurs fréquentes et exercice interactif.">
+<meta property="og:url" content="https://voltaplan.org/apprendre/va-et-vient.html">
+<meta property="og:locale" content="fr_BE">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="../icon.svg">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="../"><img src="../icon.svg" alt="">Voltaplan</a>
+  <nav class="links">
+    <a href="../guide.html">Guide</a>
+    <a href="./">Apprendre</a>
+    <a href="../faq.html">FAQ</a>
+    <a class="repo-link" href="#">Code source</a>
+    <a class="btn sponsor" href="https://github.com/sponsors/SebastienBatteur" title="Soutenir Voltaplan sur GitHub Sponsors (facultatif)"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="currentColor" d="M8 14.25.345 6.595a4.25 4.25 0 0 1 6.01-6.01L8 2.23l1.645-1.645a4.25 4.25 0 0 1 6.01 6.01Z"/></svg><span>Soutenir</span></a>
+    <a class="btn primary" href="../app/">Ouvrir l'application</a>
+    <details class="lang"><summary aria-label="Langue : Français"><svg aria-hidden="true" viewBox="0 0 16 16" width="16" height="16"><path fill="none" stroke="currentColor" stroke-width="1.3" d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Zm-6.5 6.5h13M8 1.5c-1.8 1.8-2.7 4-2.7 6.5s.9 4.7 2.7 6.5c1.8-1.8 2.7-4 2.7-6.5S9.8 3.3 8 1.5Z"/></svg>FR</summary><div class="lang-menu"><a href="./" aria-current="true" lang="fr">Français</a><a href="../nl/" lang="nl" hreflang="nl" title="Deze rubriek bestaat alleen in het Frans">Nederlands</a><a href="../en/" lang="en" hreflang="en" title="This section is only available in French">English</a><a href="../de/" lang="de" hreflang="de" title="Diese Rubrik gibt es nur auf Französisch">Deutsch</a></div></details>
+  </nav>
+</div></header>
+<main class="learn">
+  <nav class="crumbs" aria-label="Fil d’Ariane"><a href="../">Accueil</a> › <a href="./">Apprendre</a> › <a href="./#cablages">Câblages de l’éclairage et des prises</a></nav>
+  <article>
+  <h1>Le va-et-vient</h1>
+  <p class="lead">Le <a href="lexique.html#va-et-vient">va-et-vient</a> permet d’allumer et d’éteindre une même lampe depuis <strong>deux endroits</strong> : en haut et en bas d’un escalier, aux deux portes d’un salon, à l’entrée d’une chambre et près du lit. Chaque interrupteur inverse l’état de la lampe, quelle que soit la position de l’autre.</p>
+
+<h2 id="vocabulaire">Le vocabulaire : commun, navettes, retour lampe</h2>
+<p>Un interrupteur va-et-vient n’est pas un interrupteur qui « ouvre » ou « ferme » : c’est un <strong>aiguillage</strong>. Il a trois bornes :</p>
+<ul>
+  <li>le <strong>commun</strong> (souvent marqué C, L ou d’un repère particulier) : la borne qui est toujours reliée à l’une des deux autres ;</li>
+  <li>deux bornes de sortie (1 et 2, ou deux flèches) : selon la position de la touche, le commun est relié à la borne 1 ou à la borne 2.</li>
+</ul>
+<p>Les deux fils qui relient les bornes 1 et 2 du premier interrupteur aux bornes 1 et 2 du second s’appellent les <a href="lexique.html#navette">navettes</a>. Le fil qui part du commun du second interrupteur vers la lampe est le <a href="lexique.html#retour-lampe">retour lampe</a>, comme dans un <a href="simple-allumage.html">simple allumage</a>.</p>
+
+<h2 id="principe">Comment ça marche</h2>
+<p>La <a href="lexique.html#phase">phase</a> arrive au commun du premier interrupteur. Selon sa position, elle part sur la navette 1 ou sur la navette 2. Au bout, le second interrupteur relie son commun soit à la navette 1, soit à la navette 2. La lampe s’allume quand les deux interrupteurs « choisissent » la même navette, et s’éteint dans le cas contraire.</p>
+<table>
+  <thead><tr><th>Interrupteur 1</th><th>Interrupteur 2</th><th>Lampe</th></tr></thead>
+  <tbody>
+    <tr><td>Position 1</td><td>Position 1</td><td>Allumée</td></tr>
+    <tr><td>Position 1</td><td>Position 2</td><td>Éteinte</td></tr>
+    <tr><td>Position 2</td><td>Position 1</td><td>Éteinte</td></tr>
+    <tr><td>Position 2</td><td>Position 2</td><td>Allumée</td></tr>
+  </tbody>
+</table>
+<p>Quel que soit l’état de départ, basculer l’un ou l’autre interrupteur change l’état de la lampe. Si l’on croise les navettes (borne 1 vers borne 2), le tableau est simplement inversé : le montage fonctionne tout aussi bien. L’exercice ci-dessous accepte d’ailleurs les deux.</p>
+
+<h2 id="fils">Le rôle de chaque fil</h2>
+<table>
+  <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
+  <tbody>
+    <tr><td>Phase</td><td>Tableau → commun de l’interrupteur 1</td><td>Brun (ou noir, gris)</td></tr>
+    <tr><td>Navettes (2)</td><td>Bornes 1 et 2 de l’interrupteur 1 → bornes 1 et 2 de l’interrupteur 2</td><td>Noir et gris, par exemple</td></tr>
+    <tr><td>Retour lampe</td><td>Commun de l’interrupteur 2 → lampe (borne L)</td><td>Noir, gris ou brun</td></tr>
+    <tr><td>Neutre</td><td>Tableau → lampe</td><td>Bleu</td></tr>
+    <tr><td>Terre</td><td>Tableau → point lumineux</td><td>Vert-jaune, uniquement</td></tr>
+  </tbody>
+</table>
+<p>Le <a href="lexique.html#neutre">neutre</a> ne passe jamais par les interrupteurs : il va directement à la lampe.</p>
+
+<h2 id="etapes">Câbler pas à pas</h2>
+<ol>
+  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li>Repérer le <strong>commun</strong> de chaque interrupteur (marquage ou notice).</li>
+  <li>Amener la phase au commun de l’interrupteur 1.</li>
+  <li>Tirer les deux navettes entre les bornes 1 et 2 des deux interrupteurs.</li>
+  <li>Relier le commun de l’interrupteur 2 à la borne L de la lampe.</li>
+  <li>Amener le neutre et la terre à la lampe.</li>
+  <li>Remettre le courant et essayer les quatre combinaisons.</li>
+</ol>
+
+<h2 id="variantes">Les variantes de câblage</h2>
+<p>Le schéma électrique est toujours le même, mais le chemin des fils dépend de l’emplacement des boîtes :</p>
+<ul>
+  <li><strong>En chaîne</strong> : la phase va du tableau à l’interrupteur 1, les navettes vont à l’interrupteur 2, et le retour lampe part de l’interrupteur 2 vers la lampe. C’est le montage de l’exercice.</li>
+  <li><strong>Tout dans la boîte du plafond</strong> : la phase, le neutre et la terre arrivent dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> près de la lampe. De cette boîte partent vers chaque interrupteur trois conducteurs : vers le premier, la phase et les deux navettes ; vers le second, les deux navettes et le retour lampe. Les navettes se raccordent entre elles dans la boîte.</li>
+  <li><strong>Lampe entre les deux interrupteurs</strong> : fréquent dans un couloir. Les navettes passent alors par la boîte de la lampe, où elles sont simplement prolongées.</li>
+</ul>
+<p>Quelle que soit la variante, raccordez les fils dans des boîtes accessibles, avec des connecteurs adaptés : voir <a href="tubes-et-boites.html">Tubes et boîtes</a>.</p>
+
+<h2 id="erreurs">Les erreurs fréquentes</h2>
+<ul>
+  <li><strong>Commun mal repéré</strong> : la phase ou le retour lampe arrive sur une borne de navette. La lampe ne fonctionne alors que dans certaines positions, ou un seul interrupteur la commande.</li>
+  <li><strong>Neutre envoyé dans les interrupteurs</strong> : les interrupteurs commutent alors le neutre au lieu de la phase, et la lampe éteinte peut rester sous tension. Le neutre va directement à la lampe.</li>
+  <li><strong>Phase et neutre réunis</strong> par erreur dans le même connecteur : c’est un <a href="lexique.html#court-circuit">court-circuit</a>, et le disjoncteur déclenche à la remise sous tension.</li>
+  <li><strong>Navettes en bleu</strong> : le montage fonctionne, mais ce fil sous tension passe pour un neutre.</li>
+</ul>
+
+<h2 id="plus-de-points">Et pour trois endroits ou plus ?</h2>
+<p>Pour un troisième point de commande, on insère un <a href="lexique.html#inverseur">inverseur</a> sur les navettes : voir <a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus</a>. Au-delà, le <a href="telerupteur.html">télérupteur</a> et ses boutons-poussoirs deviennent plus simples à câbler.</p>
+<p>Dans un schéma unifilaire, le va-et-vient est dessiné comme deux interrupteurs en chaîne avant le point lumineux. Toute installation neuve ou modifiée est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>
+  <section class="retenir"><h2 id="a-retenir">À retenir</h2><ul><li>Un va-et-vient commande une lampe depuis <strong>deux endroits</strong> : chaque interrupteur inverse l’état de la lampe.</li><li>Chaque interrupteur a un <strong>commun</strong> et deux autres bornes ; les deux fils qui relient ces bornes d’un interrupteur à l’autre sont les <strong>navettes</strong>.</li><li>La phase arrive au commun du premier interrupteur ; le retour lampe part du commun du second.</li><li>Croiser les deux navettes ne change rien : le montage fonctionne aussi.</li><li>Au-delà de deux points de commande, on ajoute un inverseur, ou on passe au télérupteur.</li></ul></section>
+  <section class="exo-sec" id="exercice">
+    <h2>Exercice : câbler un va-et-vient</h2>
+    <p>Reliez l’arrivée, les deux interrupteurs va-et-vient et la lampe pour que <strong>chaque</strong> interrupteur allume ou éteigne la lampe, quelle que soit la position de l’autre. Pensez aux deux navettes entre les interrupteurs, essayez toutes les positions, puis cliquez sur « Vérifier ».</p>
+    <div class="exo"><script type="application/json">{"id":"va-et-vient","title":"câbler un va-et-vient","task":"Reliez l’arrivée, les deux interrupteurs va-et-vient et la lampe pour que \u003cstrong>chaque\u003c/strong> interrupteur allume ou éteigne la lampe, quelle que soit la position de l’autre. Pensez aux deux navettes entre les interrupteurs, essayez toutes les positions, puis cliquez sur « Vérifier ».","devices":[{"id":"src","type":"supply","label":"Arrivée (tableau)","x":10,"y":10},{"id":"s1","type":"twoway","label":"Va-et-vient 1","x":190,"y":10},{"id":"lamp","type":"lamp","label":"Lampe","x":10,"y":250,"side":"top"},{"id":"s2","type":"twoway","label":"Va-et-vient 2","x":190,"y":250,"side":"top"}],"h":350,"toggle":{"inputs":["s1","s2"],"output":"lamp"},"solution":[{"a":"src.L","b":"s1.C","color":"brown"},{"a":"s1.1","b":"s2.1","color":"black"},{"a":"s1.2","b":"s2.2","color":"grey"},{"a":"s2.C","b":"lamp.L","color":"black"},{"a":"src.N","b":"lamp.N","color":"blue"},{"a":"src.PE","b":"lamp.PE","color":"gy"}]}</script><p class="muted">L’exercice interactif demande JavaScript. La solution est décrite dans l’article ci-dessus.</p></div>
+    <h3 id="unifilaire">Le même circuit dans un schéma unifilaire</h3>
+    <figure class="uni-fig"><svg class="uni" viewBox="-12 -12 248 214" width="496" role="img" aria-label="Disjoncteur 16 A, câble 3G1,5 mm², deux interrupteurs va-et-vient en chaîne puis le point lumineux. Les navettes ne sont pas dessinées une à une : l’unifilaire indique seulement que les deux interrupteurs commandent la même lampe."><g transform="translate(32,114)" class="sym"><g><line x1="0" y1="0" x2="0" y2="16"></line><line x1="0" y1="40" x2="-10" y2="19"></line><line x1="-11.5" y1="15" x2="-8.5" y2="21.5" style="stroke-width:4.5"></line><line x1="0" y1="40" x2="0" y2="56"></line></g></g><text x="50" y="128" font-size="11" text-anchor="start" class="bold ">A · Éclairage</text><text x="50" y="140" font-size="10" text-anchor="start" class="muted">C16 A · 1P+N</text><text x="50" y="152" font-size="10" text-anchor="start" class="muted">3000 A</text><g transform="translate(32,74)" class="sym"><g><line x1="0" y1="0" x2="0" y2="34"></line><line x1="-5" y1="21" x2="5" y2="13"></line><text x="-7" y="14" font-size="7" text-anchor="end">3</text><g transform="translate(-9,29) rotate(90)" class="thin"><path d="M-3 4 V0 H3 V4" class="nofill"></path><circle cx="8" cy="1" r="2.5" class="nofill"></circle></g></g></g><text x="45" y="95" font-size="10" text-anchor="start" class="muted">XVB 3G1,5</text><line x1="32" y1="42" x2="48" y2="42" class="wire"></line><g transform="translate(48,42)" class="sym"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line></g></g></g><text x="64" y="23" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="80" y1="42" x2="92" y2="42" class="wire"></line><g transform="translate(92,42)" class="sym"><g><line x1="0" y1="0" x2="10" y2="0"></line><g><circle cx="14" cy="0" r="4" class="bg"></circle><line x1="16" y1="-3.48" x2="21" y2="-16"></line><line x1="21" y1="-16" x2="26" y2="-16"></line><line x1="12" y1="3.48" x2="7" y2="16"></line><line x1="7" y1="16" x2="2" y2="16"></line></g></g></g><text x="108" y="23" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="124" y1="42" x2="136" y2="42" class="wire"></line><g transform="translate(136,42)" class="sym"><g><line x1="0" y1="0" x2="17" y2="0"></line><line x1="9" y1="-8" x2="25" y2="8"></line><line x1="25" y1="-8" x2="9" y2="8"></line></g></g><text x="152" y="27" font-size="9" text-anchor="middle" class="bold ">A1</text><line x1="32" y1="74" x2="32" y2="42" class="wire"></line><line x1="32" y1="114" x2="32" y2="108" class="wire"></line></svg><figcaption>Disjoncteur 16 A, câble 3G1,5 mm², deux interrupteurs va-et-vient en chaîne puis le point lumineux. Les navettes ne sont pas dessinées une à une : l’unifilaire indique seulement que les deux interrupteurs commandent la même lampe.</figcaption></figure>
+    <p><a class="btn" href="../app/">Dessiner ce circuit dans Voltaplan</a></p>
+  </section>
+  <section class="learn-faq"><h2 id="questions">Questions fréquentes</h2>
+    <details><summary>Peut-on utiliser un interrupteur va-et-vient comme interrupteur simple ?</summary><div>Oui. En n’utilisant que le commun et l’une des deux autres bornes, un va-et-vient fonctionne comme un interrupteur simple. C’est pratique quand on veut prévoir un futur second point de commande.</div></details>
+    <details><summary>La lampe ne s’allume que dans certaines positions des interrupteurs : pourquoi ?</summary><div>C’est presque toujours un commun mal identifié : la phase ou le retour lampe est branché sur une borne de navette. Repérez le commun sur chaque interrupteur (notice, marquage, ou mesure au testeur de continuité, courant coupé) et refaites les raccordements.</div></details>
+    <details><summary>Combien de fils faut-il entre les deux interrupteurs ?</summary><div>Deux navettes au minimum. Selon le cheminement, on y ajoute la phase ou le retour lampe, par exemple quand les deux interrupteurs sont alimentés depuis la même boîte : on tire alors un câble ou des fils à trois conducteurs.</div></details>
+  </section>
+  <section class="learn-sources"><h2 id="sources">Sources</h2><ul><li>RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie.</li><li>Documentation des fabricants d’appareillage (interrupteurs va-et-vient, repérage des bornes).</li></ul></section>
+  </article>
+  <nav class="pager" aria-label="Dans la rubrique"><a class="prev" href="double-allumage.html">← Le double allumage</a><a class="next" href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus (inverseur) →</a></nav>
+  <section class="learn-more"><h2 id="complements">Articles complémentaires</h2><ul class="learn-list"><li><a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus (inverseur)</a><span>Allumer une lampe depuis trois endroits ou plus : rôle de l’inverseur sur les navettes, câblage, erreurs et quand préférer le télérupteur.</span></li><li><a href="telerupteur.html">Boutons-poussoirs et télérupteur</a><span>Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.</span></li><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="tubes-et-boites.html">Tubes, gaines et boîtes</a><span>Tube souple ou rigide, boîte d’encastrement, boîte de dérivation : à quoi sert chaque élément d’une installation encastrée et les règles à respecter.</span></li></ul></section>
+  <section class="learn-more"><h2 id="rubrique">Dans la même rubrique : Câblages de l’éclairage et des prises</h2><ul class="learn-list"><li><a href="simple-allumage.html">Le simple allumage</a><span>Câbler un interrupteur simple qui commande une lampe : rôle de chaque fil, couleurs, erreurs à éviter, exercice interactif et schéma unifilaire.</span></li><li><a href="double-allumage.html">Le double allumage</a><span>Un interrupteur double pour commander deux lampes séparément : bornes, retours lampe, couleurs, variantes et exercice de câblage interactif.</span></li><li><a href="va-et-vient-trois-points.html">Commander depuis trois endroits ou plus (inverseur)</a><span>Allumer une lampe depuis trois endroits ou plus : rôle de l’inverseur sur les navettes, câblage, erreurs et quand préférer le télérupteur.</span></li><li><a href="telerupteur.html">Boutons-poussoirs et télérupteur</a><span>Le télérupteur : bobine, contact, boutons-poussoirs en parallèle, câblage pas à pas, et pourquoi il remplace le va-et-vient au-delà de trois points.</span></li><li><a href="minuterie.html">La minuterie d’escalier</a><span>La minuterie allume pour une durée réglable puis éteint seule : principe, câblage avec boutons-poussoirs, réglages et différence avec le télérupteur.</span></li><li><a href="detecteur-de-mouvement.html">Le détecteur de mouvement</a><span>Détecteur de mouvement : principe infrarouge, raccordement 3 fils (phase, neutre, sortie) ou 2 fils, réglages, LED et exercice de câblage interactif.</span></li><li><a href="variateur.html">Le variateur de lumière</a><span>Remplacer un interrupteur par un variateur : variateur 2 fils ou 3 fils, compatibilité avec les LED, charge minimale, clignotements et erreurs à éviter.</span></li><li><a href="prise-de-courant.html">La prise de courant</a><span>Câbler des prises de courant en Belgique : terre obligatoire, 2,5 mm² et 20 A, 8 points par circuit, 30 mA, obturateurs, repiquage ou boîte de dérivation.</span></li><li><a href="prise-commandee.html">La prise commandée par un interrupteur</a><span>Allumer une lampe sur pied depuis l’interrupteur de la porte : câbler une prise commandée, choisir la section et l’interrupteur, éviter les erreurs.</span></li><li><a href="sonnette.html">La sonnette et son transformateur</a><span>Comment fonctionne une sonnette filaire : transformateur de sécurité, très basse tension, bouton-poussoir et sonnerie, câblage pas à pas et pannes courantes.</span></li><li><a href="contacteur-jour-nuit.html">Le contacteur jour/nuit du chauffe-eau</a><span>Comment un chauffe-eau électrique chauffe pendant les heures creuses : rôle du contacteur, signal du compteur, positions auto et marche forcée, précautions.</span></li></ul></section>
+  <p class="note learn-note">Ces pages expliquent les principes. Elles ne remplacent ni le texte officiel du RGIE ni un électricien qualifié : coupez toujours le courant avant d’intervenir, et faites contrôler toute installation neuve ou modifiée par un organisme agréé.</p>
+</main>
+<footer>Voltaplan — gratuit et open source — <a href="./">Apprendre l'électricité</a> — <a href="lexique.html">Lexique</a> — <a href="../faq.html">FAQ</a> — <a href="../privacy.html">Confidentialité</a> — <a href="../terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
+<script src="../site.js"></script>
+<script src="cablage-sim.js"></script>
+<script src="cablage.js"></script>
+</body>
+</html>
