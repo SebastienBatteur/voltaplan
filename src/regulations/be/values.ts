@@ -38,18 +38,22 @@ export const EARTH_MAX = p(100, 'Ω', 'RGIE 4.2.3.2, p. 84');
 /** Au-delà : mesures complémentaires (deux différentiels haute sensibilité, 16 socles chacun, 100 mA) (4.2.4.3 b, p. 101). */
 export const EARTH_EXTRA_MEASURES_ABOVE = p(30, 'Ω', 'RGIE 4.2.4.3 b, p. 101');
 
-/** Résistance d'isolement minimale retenue par Voltaplan (à confirmer selon la tension nominale, 6.4.5.1). */
-export const INSULATION_MIN = p(0.5, 'MΩ', 'RGIE 6.4.5.1');
+/** Au-delà de 30 Ω : 16 socles au plus par différentiel haute sensibilité, et 100 mA au plus pour les autres circuits. */
+export const EARTH_EXTRA_SOCKETS_PER_RCD = p(16, 'socles', 'RGIE 4.2.4.3 b, 10e alinéa, p. 101');
+export const EARTH_EXTRA_RCD_MAX = p(100, 'mA', 'RGIE 4.2.4.3 b, 10e alinéa, p. 101');
+
+/** Résistance d'isolement minimale (6.4.5.1, tableau 6.1 : 0,5 MΩ pour une tension nominale ≤ 500 V, essai à 500 V continu). */
+export const INSULATION_MIN = p(0.5, 'MΩ', 'RGIE 6.4.5.1, tableau 6.1, p. 201 (tension nominale ≤ 500 V, essai sous 500 V continu)');
 
 /** Socles de prise simples ou multiples par circuit terminal (5.3.5.2 b, p. 167). */
 export const SOCKETS_PER_CIRCUIT_MAX = p(8, 'points', 'RGIE 5.3.5.2 b, p. 167');
 
 /** Différentiel à l'origine de l'installation : sensibilité maximale (4.2.4.3 b, p. 100). */
 export const RCD_ORIGIN_MAX_SENSITIVITY = p(300, 'mA', 'RGIE 4.2.4.3 b, p. 100');
-/** Haute sensibilité : au plus 30 mA en courant alternatif (définitions, p. 23). */
-export const RCD_HIGH_SENSITIVITY = p(30, 'mA', 'RGIE 2.6.4 (définitions)');
+/** Haute sensibilité : au plus 30 mA en courant alternatif (définitions, p. 34). */
+export const RCD_HIGH_SENSITIVITY = p(30, 'mA', 'RGIE 2.6.4 (définitions), p. 34');
 /** Circuits terminaux par différentiel à haute ou très haute sensibilité (4.2.4.3 b, p. 100). */
-export const CIRCUITS_PER_RCD30_MAX = p(8, 'circuits', 'RGIE 4.2.4.3 b, p. 100');
+export const CIRCUITS_PER_RCD30_MAX = p(8, 'circuits', 'RGIE 4.2.4.3 b, p. 101');
 /** Différentiel placé en tête : intensité nominale minimale (5.3.5.3 a, p. 168). */
 export const RCD_HEAD_MIN_RATING = p(40, 'A', 'RGIE 5.3.5.3 a, p. 168');
 

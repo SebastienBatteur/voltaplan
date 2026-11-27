@@ -162,11 +162,19 @@ describe('matrice RGIE — installations existantes et anciennes', () => {
     expect(get(p, 'R-CABLE-PROT')).toMatchObject({ status: 'nonCompliant', blocking: true });
   });
 
-  it('existante : une règle de conception devient une recommandation', () => {
+  it('existante sans date : plus de 8 prises → à vérifier (dérogation possible 8.2.1 / 8.2.2), jamais une recommandation d’office', () => {
     const { p, sockets } = compliant();
     p.meta.installationKind = 'existing';
     sockets.children[0].children = Array.from({ length: 10 }, () => createNode('socket'));
-    expect(get(p, 'R-SOCKET-MAX')).toMatchObject({ status: 'recommendation', blocking: false, severity: 'info' });
+    expect(get(p, 'R-SOCKET-MAX')).toMatchObject({ status: 'manualCheck', blocking: false });
+  });
+
+  it('existante sous le Livre 1 (2021) : plus de 8 prises → non conforme (aucune dérogation), non bloquant (gravité faible)', () => {
+    const { p, sockets } = compliant();
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '2021-05-01';
+    sockets.children[0].children = Array.from({ length: 10 }, () => createNode('socket'));
+    expect(get(p, 'R-SOCKET-MAX')).toMatchObject({ status: 'nonCompliant', blocking: false });
   });
 
   it('ancien RGIE (rgieVersion « old ») : édition 1981 appliquée, jamais « conforme » en silence', () => {
@@ -198,13 +206,13 @@ describe('matrice RGIE — installations existantes et anciennes', () => {
 });
 
 describe('matrice RGIE — installation mixte (plusieurs générations)', () => {
-  it('circuit ancien (partie ancienne) dans une installation neuve : règle de conception en recommandation', () => {
+  it('circuit ancien (partie ancienne) dans une installation neuve : dérogation 8.2.1 à vérifier, le circuit neuf reste exigé', () => {
     const { p, sockets, lights } = compliant();
     sockets.props.oldPart = true;
     sockets.children[0].children = Array.from({ length: 10 }, () => createNode('socket'));
     lights.children[0].children = [createNode('socket'), ...lights.children[0].children]; // prise sur 1,5 mm² (neuf)
     const f = checkProject(p);
-    expect(f.find((x) => x.ruleId === 'R-SOCKET-MAX')).toMatchObject({ status: 'recommendation', edition: 'pre1981' });
+    expect(f.find((x) => x.ruleId === 'R-SOCKET-MAX')).toMatchObject({ status: 'manualCheck', edition: 'pre1981', derogation: { reference: '8.2.1, point 6 b ; 8.2.2, point 6' } });
     expect(f.find((x) => x.ruleId === 'R-SOCKET-SECTION' && x.nodeId === lights.id)).toMatchObject({ status: 'nonCompliant', blocking: true, edition: '2020' });
   });
 

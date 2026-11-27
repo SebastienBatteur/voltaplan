@@ -60,9 +60,11 @@ describe('classement', () => {
     expect(classify({ ruleId: 'R-X' }, rule({}), ctxNew)).toMatchObject({ status: 'nonCompliant', blocking: true, severity: 'error' });
   });
 
-  it('existant : sécurité bloquante, le reste en recommandation', () => {
+  it('existant : une non-conformité reste une non-conformité ; seule la sécurité (gravité élevée) bloque', () => {
     expect(classify({ ruleId: 'R-X' }, rule({ hazard: 'high' }), ctxOld)).toMatchObject({ status: 'nonCompliant', blocking: true });
-    expect(classify({ ruleId: 'R-X' }, rule({ hazard: 'low' }), ctxOld)).toMatchObject({ status: 'recommendation', blocking: false, severity: 'info' });
+    expect(classify({ ruleId: 'R-X' }, rule({ hazard: 'low' }), ctxOld)).toMatchObject({ status: 'nonCompliant', blocking: false, severity: 'warning' });
+    // Statut explicite du catalogue (règle qui n'est qu'une recommandation dans l'existant) : respecté
+    expect(classify({ ruleId: 'R-X' }, rule({ hazard: 'low', existing: 'recommendation' }), ctxOld)).toMatchObject({ status: 'recommendation' });
   });
 
   it('statut imposé par la règle (vérification manuelle) : jamais bloquant', () => {

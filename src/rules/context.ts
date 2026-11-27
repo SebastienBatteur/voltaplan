@@ -23,6 +23,8 @@ export interface PartContext {
   isNew: boolean;
   /** L'édition applicable est-elle l'édition en vigueur ? */
   current: boolean;
+  /** L'édition vient-elle d'une donnée (date, partie ancienne) et non d'une hypothèse ? */
+  dated?: boolean;
 }
 
 /** Date ISO normalisée (« 2024 » → « 2024-01-01 ») ou undefined. */
@@ -93,16 +95,21 @@ export function partContext(project: Project, pack: RulePack, chain: ElNode[]): 
   const meta = project.meta ?? ({} as Project['meta']);
   let edition: string | undefined;
   let kind: 'new' | 'existing' | undefined;
+  let dated = false;
   for (const n of [...chain].reverse()) {
     if (edition === undefined) {
       if (n.props.oldPart === true && editions.length) edition = editions[0].id;
       else {
         edition = editionOf(editions, n.props.installedOn)?.id;
       }
+      if (edition !== undefined) dated = true;
     }
     if (kind === undefined && (n.props.installationKind === 'new' || n.props.installationKind === 'existing')) kind = n.props.installationKind;
   }
-  if (edition === undefined) edition = editionOf(editions, meta.installationDate)?.id;
+  if (edition === undefined) {
+    edition = editionOf(editions, meta.installationDate)?.id;
+    if (edition !== undefined) dated = true;
+  }
   if (edition === undefined) {
     // Ancien modèle : « new » = édition en vigueur, « old » = édition précédente.
     if (meta.rgieVersion === 'old' && editions.length >= 2) edition = editions[editions.length - 2].id;
@@ -111,7 +118,7 @@ export function partContext(project: Project, pack: RulePack, chain: ElNode[]): 
   const current = !cur || edition === cur.id;
   // Une partie réalisée sous une édition antérieure est forcément existante.
   const isNew = current && (kind ?? meta.installationKind) === 'new';
-  return { edition, isNew, current };
+  return { edition, isNew, current, dated };
 }
 
 /** Dérogation saisie pour ce constat (règle seule, ou règle + élément). */
@@ -151,7 +158,10 @@ export function classify(raw: Omit<Finding, 'severity'>, rule: RuleMeta | undefi
         status = 'nonCompliant';
         blocking = true;
       } else {
-        status = rule?.existing ?? (hazard === 'high' ? 'nonCompliant' : 'recommendation');
+        // Partie existante : une non-conformité reste une non-conformité. Seule une dérogation du RGIE, appliquée par la
+        // règle elle-même (src/regulations/be/derogations.ts), la change. Le caractère bloquant est une décision distincte
+        // du statut : dans l'existant, seule une gravité élevée bloque.
+        status = rule?.existing ?? 'nonCompliant';
         blocking = status === 'nonCompliant' && hazard === 'high';
       }
       break;

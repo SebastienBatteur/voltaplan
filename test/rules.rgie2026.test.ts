@@ -4,7 +4,7 @@
  * valeurs limites et les exceptions du texte. Les points encore à trancher par un spécialiste ne sont pas bloquants.
  */
 import { checkProject } from '../src/rules';
-import { maxProtectionFor, belgium } from '../src/rules/be/rgie';
+import { maxProtectionFor, belgium, WET_ROOM } from '../src/rules/be/rgie';
 import { BE_RULES } from '../src/rules/be/catalog';
 import { createNode as baseNode, emptyProject } from '../src/model/tree';
 import { translate } from '../src/i18n';
@@ -101,20 +101,34 @@ describe('M3 — différentiels au moins de type A (RGIE 5.3.5.3 a)', () => {
     expect(findings(p, 'R-RCD-TYPE-A').find((f) => f.nodeId === main.id)).toMatchObject({ status: 'nonCompliant', blocking: true });
   });
 
-  it('type A, F ou B : rien ; type non renseigné : pas de constat inventé', () => {
-    for (const t of ['A', 'F', 'B', undefined]) {
+  it('type A, F ou B : rien', () => {
+    for (const t of ['A', 'F', 'B']) {
       const { p, main } = project(circuit('mcb', 20, 2.5));
       main.props.rcdType = t;
-      expect(has(p, 'R-RCD-TYPE-A'), String(t)).toBe(false);
+      expect(has(p, 'R-RCD-TYPE-A'), t).toBe(false);
     }
   });
 
-  it('installation existante : recommandation, non bloquante (dérogation éventuelle à confirmer par un spécialiste)', () => {
+  it('type non renseigné : données insuffisantes (bloquant en conception, jamais « conforme » en silence)', () => {
+    const { p, main } = project(circuit('mcb', 20, 2.5));
+    delete main.props.rcdType;
+    expect(findings(p, 'R-RCD-TYPE-A').find((f) => f.nodeId === main.id)).toMatchObject({ status: 'insufficientData', blocking: true });
+  });
+
+  it('existant Livre 1 (2021) : type AC non conforme (aucune dérogation), non bloquant (gravité moyenne)', () => {
+    const { p, main } = project(circuit('mcb', 20, 2.5));
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '2021-01-01';
+    main.props.rcdType = 'AC';
+    expect(findings(p, 'R-RCD-TYPE-A')[0]).toMatchObject({ status: 'nonCompliant', blocking: false });
+  });
+
+  it('existant antérieur au Livre 1 (2010) : type AC à vérifier (exigence de l’époque inconnue), jamais une recommandation', () => {
     const { p, main } = project(circuit('mcb', 20, 2.5));
     p.meta.installationKind = 'existing';
     p.meta.installationDate = '2010-01-01';
     main.props.rcdType = 'AC';
-    expect(findings(p, 'R-RCD-TYPE-A')[0]).toMatchObject({ status: 'recommendation', blocking: false });
+    expect(findings(p, 'R-RCD-TYPE-A')[0]).toMatchObject({ status: 'manualCheck', blocking: false });
   });
 });
 
@@ -297,6 +311,122 @@ describe('Dates et éditions : jamais de dérogation silencieuse (audit 2026, po
     p.meta.installationKind = 'existing';
     p.meta.installationDate = '2020';
     expect(has(p, 'R-OLD-RGIE')).toBe(false);
+  });
+});
+
+describe('Audit des 47 règles (2026) : dérogations réelles, terre > 30 Ω, câbles', () => {
+  const old = (p: Project) => {
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '1975-01-01';
+  };
+
+  it('prise sans terre, partie d’avant 1981 : sans 30 mA → non conforme ; sous 30 mA → dérogation 8.2.1 point 6 b à vérifier', () => {
+    const a = project();
+    old(a.p);
+    a.main.children[0].children.push(circuit('mcb', 16, 2.5, [createNode('socket', { earth: false })]));
+    expect(findings(a.p, 'R-SOCKET-EARTH')[0]).toMatchObject({ status: 'nonCompliant' });
+    const b = project(circuit('mcb', 16, 2.5, [createNode('socket', { earth: false })]));
+    old(b.p);
+    expect(findings(b.p, 'R-SOCKET-EARTH')[0]).toMatchObject({ status: 'manualCheck', derogation: { reference: '8.2.1, point 6 b' } });
+  });
+
+  it('prise sans terre dans une partie du Livre 1 : non conforme, aucune dérogation', () => {
+    const { p } = project(circuit('mcb', 16, 2.5, [createNode('socket', { earth: false })]));
+    p.meta.installationKind = 'existing';
+    p.meta.installationDate = '2021-01-01';
+    expect(findings(p, 'R-SOCKET-EARTH')[0]).toMatchObject({ status: 'nonCompliant', blocking: true });
+  });
+
+  it('circuit non dédié d’avant 1981 : dérogation (8.2.1 point 5), non bloquante', () => {
+    const { p } = project(circuit('mcb', 20, 2.5, [createNode('socket', {}), createNode('appliance', { applianceType: 'washingMachine' })]));
+    old(p);
+    expect(findings(p, 'R-DEDICATED-CIRCUIT')[0]).toMatchObject({ status: 'derogation', blocking: false });
+  });
+
+  it('section de 1 mm² d’avant 1981 : dérogation si protégée par 10 A au plus ; non conforme à 16 A ; 0,75 mm² non conforme', () => {
+    const light = () => [createNode('switch', { switchType: 'single' }, [createNode('light')])];
+    const a = project(circuit('mcb', 10, 1, light()));
+    old(a.p);
+    expect(findings(a.p, 'R-CABLE-MIN')[0]).toMatchObject({ status: 'derogation' });
+    const b = project(circuit('mcb', 16, 1, light()));
+    old(b.p);
+    expect(findings(b.p, 'R-CABLE-MIN')[0]).toMatchObject({ status: 'nonCompliant' });
+    const c = project(circuit('mcb', 6, 0.75, light()));
+    old(c.p);
+    expect(findings(c.p, 'R-CABLE-MIN')[0]).toMatchObject({ status: 'nonCompliant' });
+  });
+
+  it('circuit de commande en 0,5 mm² (sans charge de puissance) : à vérifier (tableau 5.1), pas une non-conformité certaine', () => {
+    const { p } = project(circuit('mcb', 2, 0.5, [createNode('pushButton', {}, [createNode('bell')])]));
+    // la sonnerie est une charge ; un circuit de commande pur n'alimente que des organes de commande
+    const cmd = project(circuit('mcb', 2, 0.5, [createNode('pushButton', {})]));
+    expect(findings(cmd.p, 'R-CABLE-MIN')[0]).toMatchObject({ status: 'manualCheck', blocking: false });
+    expect(findings(p, 'R-CABLE-MIN')[0]).toBeDefined();
+  });
+
+  it('section au-delà de 35 mm² : courant admissible à vérifier (R-CABLE-IZ), jamais conforme en silence', () => {
+    const { p } = project(circuit('mcb', 160, 50, [createNode('appliance', { applianceType: 'other', power: 30000 })]));
+    expect(findings(p, 'R-CABLE-IZ')[0]).toMatchObject({ status: 'manualCheck', blocking: false });
+    expect(has(project(circuit('mcb', 125, 35, [createNode('appliance', { applianceType: 'other' })])).p, 'R-CABLE-IZ')).toBe(false);
+  });
+
+  it('câble en aval d’un onduleur déclaré en alternatif : les règles de câble s’appliquent (plus d’exclusion par heuristique)', () => {
+    const ac = createNode('cable', { section: 1.5, current: 'ac' }, [createNode('socket', {})]);
+    const inv = createNode('inverter', {}, [ac]);
+    const { p } = project(createNode('protection', { device: 'mcb', ratedCurrent: 25, curve: 'C', poles: '1P+N', circuitName: 'PV', breakingCapacity: 6 }, [inv]));
+    expect(has(p, 'R-CABLE-PROT')).toBe(true);
+  });
+
+  describe('terre > 30 Ω : mesures complémentaires de 4.2.4.3 b évaluées', () => {
+    const withEarth = (ohm: number, setup: (x: ReturnType<typeof project>) => void) => {
+      const x = project(circuit('mcb', 20, 2.5));
+      x.p.measurements.earthResistanceOhm = ohm;
+      setup(x);
+      return findings(x.p, 'R-EARTH-30');
+    };
+    it('un seul 30 mA : non conforme (au moins deux exigés), avec le détail', () => {
+      expect(withEarth(50, () => undefined)[0]).toMatchObject({ status: 'nonCompliant', params: { rcd30: 1 } });
+    });
+    it('deux 30 mA, 16 socles au plus chacun, aucun circuit hors 100 mA : satisfait (aucun constat)', () => {
+      const f = withEarth(50, ({ main, rcd30 }) => {
+        const second = createNode('protection', { device: 'rcd', ratedCurrent: 40, residualCurrent: 30, poles: '2P', rcdType: 'A' }, [createNode('board', {}, [])]);
+        main.children[0].children.push(second);
+        void rcd30;
+      });
+      expect(f).toEqual([]);
+    });
+    it('30 Ω pile : pas de mesures complémentaires', () => {
+      expect(withEarth(30, () => undefined)).toEqual([]);
+    });
+    it('installation existante d’avant le 1/6/2023 : variante de la dérogation → à vérifier', () => {
+      const f = withEarth(50, ({ p }) => {
+        p.meta.installationKind = 'existing';
+        p.meta.installationDate = '2015-01-01';
+      });
+      expect(f[0]).toMatchObject({ status: 'manualCheck' });
+    });
+  });
+
+  it('différentiel d’origine de sensibilité connue mais trop élevée (500 mA) : non conforme, même en relevé', () => {
+    const { p, main } = project(circuit('mcb', 20, 2.5));
+    p.meta.installationKind = 'existing';
+    main.props.residualCurrent = 500;
+    const board = main.children[0];
+    board.children = board.children.filter((c) => c.kind !== 'protection');
+    board.children.push(circuit('mcb', 20, 2.5));
+    expect(findings(p, 'R-RCD-MAIN')[0]).toMatchObject({ status: 'nonCompliant' });
+  });
+
+  it('disjoncteur différentiel sans différentiel en amont, moins de 40 A : à vérifier (pas un « différentiel de tête » certain)', () => {
+    const { p, main } = project();
+    main.props.device = 'rcbo';
+    main.props.ratedCurrent = 25;
+    expect(findings(p, 'R-RCD-HEAD-RATING')[0]).toMatchObject({ status: 'manualCheck' });
+  });
+
+  it('noms de salle d’eau reconnus (indice à confirmer)', () => {
+    for (const name of ['Salle d’eau', 'Shower', 'Badezimmer', 'Dusche'])
+      expect(WET_ROOM.test(name), name).toBe(true);
   });
 });
 

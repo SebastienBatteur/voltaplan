@@ -145,6 +145,8 @@ export const PROP_SCHEMAS: Partial<Record<NodeKind, PropDef[]>> = {
     { key: 'section', type: 'number', unit: 'mm²', default: 2.5 },
     // Matière de l'âme : absente = cuivre supposé par les calculs (src/calc/electrical.ts)
     { key: 'material', type: 'enum', options: ['Cu', 'Al'] },
+    // Nature du courant : absente = déduite (en aval d'un panneau, d'un onduleur ou d'une batterie : continu supposé)
+    { key: 'current', type: 'enum', options: ['ac', 'dc'] },
     { key: 'conductors', type: 'number', default: 3 },
     { key: 'inConduit', type: 'bool', default: true },
     { key: 'method', type: 'enum', options: [...INSTALL_METHODS], default: 'inWall' },
