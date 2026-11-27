@@ -26,201 +26,325 @@
     <span class="lang"><a href="../faq.html" data-lang="fr">FR</a><a href="../nl/faq.html" data-lang="nl">NL</a><a href="faq.html" aria-current="true" data-lang="en">EN</a><a href="../de/faq.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
-<main class="doc">
-  <nav class="toc" aria-label="Contents">
-    <a href="#c-general">General</a>
-    <a href="#gratuit">Is it free?</a>
-    <a href="#licence">Is it open source?</a>
-    <a href="#compte">Do I need an account?</a>
-    <a href="#bureau">Browser or desktop app?</a>
-    <a href="#hors-ligne">Offline?</a>
-    <a href="#langues">Languages</a>
-    <a href="#c-utiliser">Using the app</a>
-    <a href="#u-nouveau">Starting a project</a>
-    <a href="#u-schema">Drawing the single-line diagram</a>
-    <a href="#u-modifier">Move, duplicate, delete, undo</a>
-    <a href="#u-proprietes">Cable, rating, RCD</a>
-    <a href="#u-maj">The Update button</a>
-    <a href="#u-fond">Background plan and scale</a>
-    <a href="#u-symboles">Placing points on the plan</a>
-    <a href="#u-piece">Equipping a room</a>
-    <a href="#u-tableau">Arranging the board</a>
-    <a href="#u-controle">Using the RGIE check</a>
-    <a href="#u-mesures">Entering measurements</a>
-    <a href="#u-materiel">Materials and lengths</a>
-    <a href="#u-enregistrer">Save, reopen, recover</a>
-    <a href="#u-langue">Changing the language</a>
-    <a href="#u-raccourcis">Keyboard shortcuts</a>
-    <a href="#c-fichiers">Files</a>
-    <a href="#fichiers">Where are my files?</a>
-    <a href="#format">File format</a>
-    <a href="#importer">Import from other software</a>
-    <a href="#pdf">PDF file from other software</a>
-    <a href="#c-rgie">RGIE and inspection</a>
-    <a href="#organisme">Does it replace the inspection body?</a>
-    <a href="#rgie">Which RGIE version?</a>
-    <a href="#neuf-existant">New or existing</a>
-    <a href="#pays">Other countries</a>
-    <a href="#c-fonctions">Features</a>
-    <a href="#longueurs">Cable lengths</a>
-    <a href="#imprimer">Printing the file</a>
-    <a href="#c-vie-privee">AI and privacy</a>
-    <a href="#ia">Is the AI required?</a>
-    <a href="#telemetrie">Telemetry</a>
-    <a href="#c-projet">The project</a>
-    <a href="#bug">Report a bug, contribute</a>
-    <a href="#soutenir">Support Voltaplan</a>
+<main class="faq">
+  <h1>Frequently asked questions</h1>
+  <p class="muted">Click a question to see the answer, or search for a word.</p>
+  <div class="faq-search" hidden><input type="search" id="faq-q" placeholder="Search a question (e.g. PDF, Trikker, offline)…" aria-label="Search the FAQ" autocomplete="off"><button type="button" class="faq-toggle" data-open="Open all" data-close="Close all">Open all</button></div>
+  <nav class="faq-tiles" aria-label="Frequently asked questions">
+    <a href="#c-general"><span aria-hidden="true">💡</span> General <small>6 questions</small></a>
+    <a href="#c-utiliser"><span aria-hidden="true">🧭</span> Using the app <small>15 questions</small></a>
+    <a href="#c-fichiers"><span aria-hidden="true">📁</span> Files <small>4 questions</small></a>
+    <a href="#c-rgie"><span aria-hidden="true">✅</span> RGIE and inspection <small>4 questions</small></a>
+    <a href="#c-fonctions"><span aria-hidden="true">📐</span> Features <small>2 questions</small></a>
+    <a href="#c-vie-privee"><span aria-hidden="true">🔒</span> AI and privacy <small>2 questions</small></a>
+    <a href="#c-projet"><span aria-hidden="true">🤝</span> The project <small>2 questions</small></a>
   </nav>
-  <article>
-    <h2 id="c-general">General</h2>
-
-    <h3 id="gratuit">Is Voltaplan free?</h3>
-    <p>Yes, entirely: no subscription, no ads, no locked features. Saving and the PDF file are included, with no watermark and no project limit. <a href="#soutenir">Donations</a> are optional and unlock nothing.</p>
-
-    <h3 id="licence">Is it open source? Under which licence?</h3>
-    <p>Yes. The code is published under the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> licence on the <a class="repo-link" href="#">GitHub repository</a>. Any modified version that is distributed or offered online must publish its source code.</p>
-
-    <h3 id="compte">Do I need to create an account?</h3>
-    <p>No. Voltaplan has no account and no server. If you choose to save to Google Drive, OneDrive, Dropbox or GitHub, you sign in to <strong>your</strong> account with that service, directly from the app.</p>
-
-    <h3 id="bureau">Browser or desktop app?</h3>
-    <p>The web version runs in Chrome, Edge or Firefox, with nothing to install. Your browser can install it as an app on a computer, iPhone, iPad or Android device (see <a href="guide.html#installer">Install</a>). A desktop app for Windows, macOS and Linux is planned, but <strong>no desktop version has been published yet</strong>: the installers will appear on the repository's <a class="release-link" href="#">Releases</a> page.</p>
-
-    <h3 id="hors-ligne">Does it work offline?</h3>
-    <p>Yes, after the first visit: drawing, plan, board, calculations, RGIE check, PDF file, files and local versions work without Internet. Offline, the online AI, GitHub, Drive, OneDrive and Dropbox are unavailable; saves to these services are queued. The photo reading engine (≈ 18 MB) is downloaded the first time you read a photo, and then works offline too.</p>
-
-    <h3 id="langues">Which languages?</h3>
-    <p>The app and this website are available in French, Dutch, English and German. PDF import also recognises files written in these four languages.</p>
-
-    <h2 id="c-utiliser">Using the app</h2>
-
-    <h3 id="u-nouveau">How do I start a new project?</h3>
-    <p>On the <strong>My projects</strong> screen, click <strong>New project</strong>, or <strong>Survey an existing installation</strong> for an installation that is already in place. The wizard has 4 steps: <strong>Type</strong> (new or existing installation, project name; for a new installation, start from an <em>Empty project</em> or a <em>Typical house, to adapt</em>), <strong>Site</strong> (client and address), <strong>Installer</strong> and <strong>Supply</strong> (voltage, earthing system, rating of the main breaker). <strong>Create now</strong> skips the remaining steps: everything can be completed later in the <strong>Project</strong> tab. To pick up a file from other software, see <a href="#importer">Which files can I import?</a> Details: <a href="guide.html#demarrer">Getting started</a>.</p>
-
-    <h3 id="u-schema">How do I draw the single-line diagram?</h3>
-    <p>You do not draw it: you describe the installation in the <strong>Installation</strong> tree on the left, and the single-line diagram draws itself.</p>
-    <ol>
-      <li>Select the element to add under (board, RCD, circuit breaker…).</li>
-      <li>Add with the <strong>＋</strong> at the end of its row, the <strong>＋ Add…</strong> button in the properties, the <strong>Elements</strong> palette, or right-click its symbol → <strong>Add to</strong>. Only what can be connected there is offered.</li>
-      <li>Example of a socket circuit: board → protective device (20 A circuit breaker) → cable (VOB 3G2.5) → sockets.</li>
-    </ol>
-    <p>The RGIE numbering (A, B… then A1, A2…) follows. See <a href="guide.html#installation">Describing the installation</a>.</p>
-
-    <h3 id="u-modifier">How do I move, duplicate or delete an element? And undo?</h3>
-    <p>Select the element in the tree, the single-line diagram, the plan or the board: it is selected everywhere. Under its properties, <strong>↑</strong> and <strong>↓</strong> change its place among its siblings, <strong>Duplicate</strong> makes a copy and <strong>Delete</strong> removes it (<kbd>Del</kbd> key). On the plan and in the board, drag it to move it. <strong>Undo</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) and <strong>Redo</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) are in the top bar. See <a href="guide.html#ecran">The screen</a>.</p>
-
-    <h3 id="u-proprietes">Where do I set the cable, cross-section, rating or RCD sensitivity?</h3>
-    <p>In the <strong>Properties</strong> panel, under the tree, once the element is selected. Protective device: device, rating, poles, curve, breaking capacity, RCD sensitivity and type, number of modules. Cable: type (VOB, XVB…), cross-section, number of conductors, installation method, length. Also fill in the <strong>Location</strong> (the room): it is used to place the points on the plan. See <a href="guide.html#installation">Describing the installation</a>.</p>
-
-    <h3 id="u-maj">What does the ⟳ Update button do?</h3>
-    <p>Click it after creating the installation or adding circuits. It places new devices in the first free slot of the board, without moving the others, and new points on the plan near their room name; it estimates cable lengths, adds a revision to the file and recalculates numbering, labels, materials and the check. The result window lets you undo it all at once. See <a href="guide.html#maj">Update</a>.</p>
-
-    <h3 id="u-fond">How do I import a background plan and set its scale?</h3>
-    <ol>
-      <li><strong>Floor plan</strong> tab → <strong>Background plan (photo / PDF / DXF)…</strong>. A DXF that states its unit is placed to scale straight away.</li>
-      <li>For a photo or a PDF: <strong>Set scale</strong>, click two points and enter their real distance. <strong>Straighten (4 corners)</strong> corrects a photo taken at an angle.</li>
-      <li>Draw the walls, doors and windows over it, or try <strong>Trace walls</strong> (automatic detection, to check).</li>
-    </ol>
-    <p>See <a href="guide.html#plan">Layout plan</a>.</p>
-
-    <h3 id="u-symboles">How do I place points on the plan and link them to the diagram?</h3>
-    <p>For an element already in the single-line diagram: <strong>Place on plan</strong> in its properties, or the palette's <strong>Not yet on the plan</strong> list, then click on the plan. For a new element: right-click the plan where you want it, choose the element, then where it connects in the single-line diagram (Voltaplan suggests the circuit of the nearest element); it is added to the diagram and placed on the plan. Drag a symbol to move it. See <a href="guide.html#plan">Layout plan</a>.</p>
-
-    <h3 id="u-piece">How do I equip a whole room at once?</h3>
-    <ol>
-      <li>Name the room on the plan with the <strong>Text</strong> tool (“Bedroom”, “Kitchen”, “Bathroom”…), or read the names written on the background with <strong>Read room names</strong>.</li>
-      <li>Select that name: the <strong>Equip the room</strong> panel offers the usual equipment, to tick, and <strong>Add typical furniture</strong>.</li>
-      <li><strong>Add to the room</strong> places the points, <strong>not connected</strong>: then link them to their circuits.</li>
-    </ol>
-    <p>It is a starting point, not an RGIE list. See <a href="guide.html#plan">Layout plan</a>.</p>
-
-    <h3 id="u-tableau">How do I arrange the board?</h3>
-    <p>In the board's properties, set the number of rows and modules per row. In the <strong>Board</strong> tab, drag devices between the rows and the reserve, or click <strong>Automatic layout</strong> (tree order); each device's real width is set in its properties (modules). With a photo taken from the front: <strong>Board photo…</strong>, then <strong>Align photo (rows)</strong>, then <strong>Arrange from photo</strong> or <strong>Compare with photo</strong>. See <a href="guide.html#tableau">Distribution board</a> and <a href="guide.html#photo">Board photo</a>.</p>
-
-    <h3 id="u-controle">How do I use the RGIE check?</h3>
-    <p>Open the <strong>RGIE check</strong> tab (the red number = number of non-conformities). Each finding has a status (non-conformity detected, insufficient information, recommendation…), a severity and, where relevant, the blocking mark.</p>
-    <ul>
-      <li>A finding's <strong>Single-line</strong>, <strong>Plan</strong> and <strong>Board</strong> buttons show the element concerned.</li>
-      <li>When the fix is obvious, a button under the finding offers it (for example <strong>Choose 20 A</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> takes it back.</li>
-      <li>Existing installation: an element that is not drawn (earth, RCD) is confirmed with <strong>Confirm present</strong>, <strong>Confirm absent</strong> or <strong>I don’t know</strong>.</li>
-      <li><strong>Derogation…</strong> records a derogation with its reason: the finding stays visible but is no longer blocking.</li>
-    </ul>
-    <p>See <a href="guide.html#controle">RGIE check</a>.</p>
-
-    <h3 id="u-mesures">Where do I enter measurements?</h3>
-    <p><strong>Project</strong> tab, <strong>Measurements</strong> section: earth resistance, insulation, equipotential bonding, test of each RCD, date and measuring instrument. They are checked and printed in the file. See <a href="guide.html#mesures">Measurements</a>.</p>
-
-    <h3 id="u-materiel">How do I get the bill of materials and cable lengths?</h3>
-    <p><strong>Materials</strong> tab: materials are grouped and added up; <strong>By room</strong> sorts them room by room. <strong>Estimate lengths</strong> calculates cable lengths from the plan (place the board on the plan first); a length you entered is never replaced. <strong>Export (CSV, spreadsheet)</strong> and <strong>Circuit list (CSV)</strong> open in a spreadsheet. See <a href="guide.html#materiel">Bill of materials</a> and <a href="#longueurs">How are cable lengths estimated?</a></p>
-
-    <h3 id="u-enregistrer">How do I save, reopen or recover a project?</h3>
-    <ul>
-      <li><strong>Save</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Save as…</strong> chooses the location: <strong>This device</strong> (<code>.voltaplan</code> file), the browser or GitHub (under <strong>Other locations</strong>), or Drive, OneDrive, Dropbox.</li>
-      <li>Reopen: the list on the <strong>My projects</strong> screen, <strong>File → Open…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) or <strong>Open from the cloud or the browser</strong>.</li>
-      <li>Recover: after an unexpected close, unsaved work is offered when you reopen (<strong>Recover</strong>). <strong>File → Local versions…</strong> reopens an earlier version as a new project.</li>
-    </ul>
-    <p>See <a href="guide.html#sauver">Saving and opening</a>.</p>
-
-    <h3 id="u-langue">How do I change the language?</h3>
-    <p>With the language selector in the top bar (Français, Nederlands, English, Deutsch); on a small screen, in the <strong>⋯</strong> menu → <strong>Language</strong>. The choice is remembered on this device.</p>
-
-    <h3 id="u-raccourcis">What are the keyboard shortcuts?</h3>
-    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> save, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> save as, <kbd>Ctrl</kbd>+<kbd>O</kbd> open, <kbd>Ctrl</kbd>+<kbd>P</kbd> print / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd> undo and redo, <kbd>Del</kbd> delete the selected element, <kbd>Esc</kbd> exit the current tool. In the tree: arrows to browse, left and right to collapse and expand, <kbd>+</kbd> to add inside. On a Mac, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd>. See <a href="guide.html#raccourcis">Shortcuts</a>.</p>
-
-    <h2 id="c-fichiers">Files</h2>
-
-    <h3 id="fichiers">Where are my files stored?</h3>
-    <p>Wherever you choose: on your device (a <code>.voltaplan</code> file, also on a USB stick or in a synced folder), in the browser, or in your own online storage: <strong>OneDrive, Google Drive, Dropbox or GitHub</strong>. No Voltaplan server ever receives your projects. Projects kept in the browser are erased if you clear its data: keep a file copy too. See <a href="guide.html#sauver">Saving and opening</a>.</p>
-
-    <h3 id="format">Is the file format open?</h3>
-    <p>Yes. A <code>.voltaplan</code> file is an ordinary ZIP archive: the project model as readable JSON (<code>project.json</code>), the original photos and PDFs as they are, and a README explaining how to recover the data without Voltaplan. The format is described in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. You can also export for Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) and as CSV.</p>
-
-    <h3 id="importer">Which files can I import?</h3>
-    <p><strong>File → Import from other software…</strong> (or the card on the My projects screen) recognises the source from the content, whatever the extension: Voltaplan project, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code> export) and PDF files from other software. A <code>.zip</code> archive containing one of these files is opened. An unrecognised file is refused with an explanation. Details: <a href="guide.html#importer">Import from other software</a>.</p>
-
-    <h3 id="pdf">Can I take over a PDF file made with other software?</h3>
-    <p>Yes, if it contains <strong>text</strong>: circuit table, sub-boards, points, plans (as background, with walls, doors and windows read from the drawing), board front view, title block information and measurements are taken over. The PDF is read in your browser, with no upload and no AI. A <strong>scanned PDF</strong>, or one whose text is drawn as images, cannot be read: it is refused with an explanation. What the text does not say is flagged when the file opens, for you to complete.</p>
-
-    <h2 id="c-rgie">RGIE and inspection</h2>
-
-    <h3 id="organisme">Does Voltaplan replace the approved inspection body?</h3>
-    <p>No. Voltaplan is an <strong>aid</strong> for drawing and checking: it is not an inspection body and issues no certification, attestation or conformity report. “No anomaly detected” only means that no anomaly was found among the rules actually checked, with the information entered. You remain responsible for the installation and the documents you sign; the inspection is still carried out by the approved body. See the <a href="terms.html">terms of use</a>.</p>
-
-    <h3 id="rgie">Which version of the RGIE is checked?</h3>
-    <p>The Belgian RGIE, <strong>Book 1</strong> (low and extra-low voltage installations), in force since 1/6/2020. Depending on the installation date entered, part by part, Voltaplan also applies the former RGIE (Royal Decree of 10 March 1981) or the rules for an old part (before 1/10/1981), as well as the dated amendments of Book 1. Symbols follow table 2.23 and the single-line diagram follows figure 3.1. Only part of the rules is checked, and they must be reviewed by a professional: the list and the open points are in the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">regulatory coverage</a> (in French).</p>
-
-    <h3 id="neuf-existant">New or existing installation?</h3>
-    <p>Both. For a <strong>new installation</strong>, you design the installation: all rules apply and non-compliances are blocking for the inspection file. For an <strong>existing installation</strong> (sale, upgrade), you survey what is in place: what is not seen stays “unknown” and is not counted as missing; safety rules remain blocking, the others become recommendations. An installation can mix parts from several periods.</p>
-
-    <h3 id="pays">What about other countries?</h3>
-    <p>Today, only the Belgian RGIE is available. The engine is designed for other countries (one country = one rules module, with its texts and lists), but no other regulation is included yet.</p>
-
-    <h2 id="c-fonctions">Features</h2>
-
-    <h3 id="longueurs">How are cable lengths estimated?</h3>
-    <p>From the layout plan: from the board to the points in diagram order, at right angles, with rises and drops according to mounting height (switch at 1.10 m, low socket at 0.25 m…), changes of floor and a 10 % margin. Condui cable traces are reused; for other imports, right-angle traces are created from the single-line diagram, shown as dashed lines, to adjust. A length you entered is never replaced. See <a href="guide.html#longueurs">Cable lengths</a>.</p>
-
-    <h3 id="imprimer">How do I print the file?</h3>
-    <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): working document, inspection file, anomaly report or complete technical file, in A4 or A3 landscape, with the parts of your choice (single-line diagram, plans, boards, legend, measurements, bill of materials, 1:1 labels…). Choose “Save as PDF” in the print dialog for a vector PDF. The inspection file carries a “DRAFT — …” mark while points remain to be dealt with. See <a href="guide.html#imprimer">Printing the file</a>.</p>
-
-    <h2 id="c-vie-privee">AI and privacy</h2>
-
-    <h3 id="ia">Is the AI required?</h3>
-    <p>No. Everything works without AI; it is off by default and each use must be allowed. If you turn it on, it goes through the provider you choose with <strong>your own key</strong> (Anthropic, or an OpenAI-compatible API: OpenAI, Gemini, Mistral), or through a <strong>local model</strong> (Ollama, LM Studio) with no key, in which case nothing leaves the computer. Only the photo concerned (board, meter plate or plan) is sent, directly from your device to the provider, never the customer's name or address. Any cost is yours. See <a href="guide.html#ia">AI</a> and the <a href="privacy.html">privacy policy</a>.</p>
-
-    <h3 id="telemetrie">Is there any telemetry or audience tracking?</h3>
-    <p>No: no telemetry, no statistics, no cookies or trackers added by Voltaplan. Only the website host (GitHub Pages) receives the usual requests to download the app, as for any website.</p>
-
-    <h2 id="c-projet">The project</h2>
-
-    <h3 id="bug">How do I report a bug or contribute?</h3>
-    <p>Open an issue on the <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub repository</a>. Issues are public: never attach a customer's file, photo or address. Report a security vulnerability through a <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">private report</a>. Code, rules, translations and tests are welcome: see the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">contribution guide</a> (a regulatory contribution cites its source; a contributor agreement is required before the first contribution).</p>
-
-    <h3 id="soutenir">How can I support Voltaplan?</h3>
-    <p>With an optional donation on <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: it funds development, maintenance and regulatory review time, and unlocks nothing. Reporting a bug or having a rule reviewed by a professional helps just as much.</p>
-  </article>
+  <section class="faq-popular"><h2>Most useful questions</h2><ul>
+    <li><a href="#u-nouveau">How do I start a new project?</a></li>
+    <li><a href="#importer">Which files can I import?</a></li>
+    <li><a href="#organisme">Does Voltaplan replace the approved inspection body?</a></li>
+    <li><a href="#fichiers">Where are my files stored?</a></li>
+    <li><a href="#gratuit">Is Voltaplan free?</a></li>
+  </ul></section>
+  <section class="faq-group" id="c-general">
+    <h2>General</h2>
+    <details id="gratuit">
+      <summary>Is Voltaplan free?</summary>
+      <div class="faq-a">
+      <p>Yes, entirely: no subscription, no ads, no locked features. Saving and the PDF file are included, with no watermark and no project limit. <a href="#soutenir">Donations</a> are optional and unlock nothing.</p>
+        <p class="faq-link"><a href="#gratuit" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="licence">
+      <summary>Is it open source? Under which licence?</summary>
+      <div class="faq-a">
+      <p>Yes. The code is published under the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> licence on the <a class="repo-link" href="#">GitHub repository</a>. Any modified version that is distributed or offered online must publish its source code.</p>
+        <p class="faq-link"><a href="#licence" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="compte">
+      <summary>Do I need to create an account?</summary>
+      <div class="faq-a">
+      <p>No. Voltaplan has no account and no server. If you choose to save to Google Drive, OneDrive, Dropbox or GitHub, you sign in to <strong>your</strong> account with that service, directly from the app.</p>
+        <p class="faq-link"><a href="#compte" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="bureau">
+      <summary>Browser or desktop app?</summary>
+      <div class="faq-a">
+      <p>The web version runs in Chrome, Edge or Firefox, with nothing to install. Your browser can install it as an app on a computer, iPhone, iPad or Android device (see <a href="guide.html#installer">Install</a>). A desktop app for Windows, macOS and Linux is planned, but <strong>no desktop version has been published yet</strong>: the installers will appear on the repository's <a class="release-link" href="#">Releases</a> page.</p>
+        <p class="faq-link"><a href="#bureau" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="hors-ligne">
+      <summary>Does it work offline?</summary>
+      <div class="faq-a">
+      <p>Yes, after the first visit: drawing, plan, board, calculations, RGIE check, PDF file, files and local versions work without Internet. Offline, the online AI, GitHub, Drive, OneDrive and Dropbox are unavailable; saves to these services are queued. The photo reading engine (≈ 18 MB) is downloaded the first time you read a photo, and then works offline too.</p>
+        <p class="faq-link"><a href="#hors-ligne" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="langues">
+      <summary>Which languages?</summary>
+      <div class="faq-a">
+      <p>The app and this website are available in French, Dutch, English and German. PDF import also recognises files written in these four languages.</p>
+        <p class="faq-link"><a href="#langues" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-utiliser">
+    <h2>Using the app</h2>
+    <details id="u-nouveau">
+      <summary>How do I start a new project?</summary>
+      <div class="faq-a">
+      <p>On the <strong>My projects</strong> screen, click <strong>New project</strong>, or <strong>Survey an existing installation</strong> for an installation that is already in place. The wizard has 4 steps: <strong>Type</strong> (new or existing installation, project name; for a new installation, start from an <em>Empty project</em> or a <em>Typical house, to adapt</em>), <strong>Site</strong> (client and address), <strong>Installer</strong> and <strong>Supply</strong> (voltage, earthing system, rating of the main breaker). <strong>Create now</strong> skips the remaining steps: everything can be completed later in the <strong>Project</strong> tab. To pick up a file from other software, see <a href="#importer">Which files can I import?</a> Details: <a href="guide.html#demarrer">Getting started</a>.</p>
+        <p class="faq-link"><a href="#u-nouveau" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-schema">
+      <summary>How do I draw the single-line diagram?</summary>
+      <div class="faq-a">
+      <p>You do not draw it: you describe the installation in the <strong>Installation</strong> tree on the left, and the single-line diagram draws itself.</p>
+      <ol>
+        <li>Select the element to add under (board, RCD, circuit breaker…).</li>
+        <li>Add with the <strong>＋</strong> at the end of its row, the <strong>＋ Add…</strong> button in the properties, the <strong>Elements</strong> palette, or right-click its symbol → <strong>Add to</strong>. Only what can be connected there is offered.</li>
+        <li>Example of a socket circuit: board → protective device (20 A circuit breaker) → cable (VOB 3G2.5) → sockets.</li>
+      </ol>
+      <p>The RGIE numbering (A, B… then A1, A2…) follows. See <a href="guide.html#installation">Describing the installation</a>.</p>
+        <p class="faq-link"><a href="#u-schema" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-modifier">
+      <summary>How do I move, duplicate or delete an element? And undo?</summary>
+      <div class="faq-a">
+      <p>Select the element in the tree, the single-line diagram, the plan or the board: it is selected everywhere. Under its properties, <strong>↑</strong> and <strong>↓</strong> change its place among its siblings, <strong>Duplicate</strong> makes a copy and <strong>Delete</strong> removes it (<kbd>Del</kbd> key). On the plan and in the board, drag it to move it. <strong>Undo</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) and <strong>Redo</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) are in the top bar. See <a href="guide.html#ecran">The screen</a>.</p>
+        <p class="faq-link"><a href="#u-modifier" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-proprietes">
+      <summary>Where do I set the cable, cross-section, rating or RCD sensitivity?</summary>
+      <div class="faq-a">
+      <p>In the <strong>Properties</strong> panel, under the tree, once the element is selected. Protective device: device, rating, poles, curve, breaking capacity, RCD sensitivity and type, number of modules. Cable: type (VOB, XVB…), cross-section, number of conductors, installation method, length. Also fill in the <strong>Location</strong> (the room): it is used to place the points on the plan. See <a href="guide.html#installation">Describing the installation</a>.</p>
+        <p class="faq-link"><a href="#u-proprietes" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-maj">
+      <summary>What does the ⟳ Update button do?</summary>
+      <div class="faq-a">
+      <p>Click it after creating the installation or adding circuits. It places new devices in the first free slot of the board, without moving the others, and new points on the plan near their room name; it estimates cable lengths, adds a revision to the file and recalculates numbering, labels, materials and the check. The result window lets you undo it all at once. See <a href="guide.html#maj">Update</a>.</p>
+        <p class="faq-link"><a href="#u-maj" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-fond">
+      <summary>How do I import a background plan and set its scale?</summary>
+      <div class="faq-a">
+      <ol>
+        <li><strong>Floor plan</strong> tab → <strong>Background plan (photo / PDF / DXF)…</strong>. A DXF that states its unit is placed to scale straight away.</li>
+        <li>For a photo or a PDF: <strong>Set scale</strong>, click two points and enter their real distance. <strong>Straighten (4 corners)</strong> corrects a photo taken at an angle.</li>
+        <li>Draw the walls, doors and windows over it, or try <strong>Trace walls</strong> (automatic detection, to check).</li>
+      </ol>
+      <p>See <a href="guide.html#plan">Layout plan</a>.</p>
+        <p class="faq-link"><a href="#u-fond" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-symboles">
+      <summary>How do I place points on the plan and link them to the diagram?</summary>
+      <div class="faq-a">
+      <p>For an element already in the single-line diagram: <strong>Place on plan</strong> in its properties, or the palette's <strong>Not yet on the plan</strong> list, then click on the plan. For a new element: right-click the plan where you want it, choose the element, then where it connects in the single-line diagram (Voltaplan suggests the circuit of the nearest element); it is added to the diagram and placed on the plan. Drag a symbol to move it. See <a href="guide.html#plan">Layout plan</a>.</p>
+        <p class="faq-link"><a href="#u-symboles" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-piece">
+      <summary>How do I equip a whole room at once?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Name the room on the plan with the <strong>Text</strong> tool (“Bedroom”, “Kitchen”, “Bathroom”…), or read the names written on the background with <strong>Read room names</strong>.</li>
+        <li>Select that name: the <strong>Equip the room</strong> panel offers the usual equipment, to tick, and <strong>Add typical furniture</strong>.</li>
+        <li><strong>Add to the room</strong> places the points, <strong>not connected</strong>: then link them to their circuits.</li>
+      </ol>
+      <p>It is a starting point, not an RGIE list. See <a href="guide.html#plan">Layout plan</a>.</p>
+        <p class="faq-link"><a href="#u-piece" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-tableau">
+      <summary>How do I arrange the board?</summary>
+      <div class="faq-a">
+      <p>In the board's properties, set the number of rows and modules per row. In the <strong>Board</strong> tab, drag devices between the rows and the reserve, or click <strong>Automatic layout</strong> (tree order); each device's real width is set in its properties (modules). With a photo taken from the front: <strong>Board photo…</strong>, then <strong>Align photo (rows)</strong>, then <strong>Arrange from photo</strong> or <strong>Compare with photo</strong>. See <a href="guide.html#tableau">Distribution board</a> and <a href="guide.html#photo">Board photo</a>.</p>
+        <p class="faq-link"><a href="#u-tableau" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-controle">
+      <summary>How do I use the RGIE check?</summary>
+      <div class="faq-a">
+      <p>Open the <strong>RGIE check</strong> tab (the red number = number of non-conformities). Each finding has a status (non-conformity detected, insufficient information, recommendation…), a severity and, where relevant, the blocking mark.</p>
+      <ul>
+        <li>A finding's <strong>Single-line</strong>, <strong>Plan</strong> and <strong>Board</strong> buttons show the element concerned.</li>
+        <li>When the fix is obvious, a button under the finding offers it (for example <strong>Choose 20 A</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> takes it back.</li>
+        <li>Existing installation: an element that is not drawn (earth, RCD) is confirmed with <strong>Confirm present</strong>, <strong>Confirm absent</strong> or <strong>I don’t know</strong>.</li>
+        <li><strong>Derogation…</strong> records a derogation with its reason: the finding stays visible but is no longer blocking.</li>
+      </ul>
+      <p>See <a href="guide.html#controle">RGIE check</a>.</p>
+        <p class="faq-link"><a href="#u-controle" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-mesures">
+      <summary>Where do I enter measurements?</summary>
+      <div class="faq-a">
+      <p><strong>Project</strong> tab, <strong>Measurements</strong> section: earth resistance, insulation, equipotential bonding, test of each RCD, date and measuring instrument. They are checked and printed in the file. See <a href="guide.html#mesures">Measurements</a>.</p>
+        <p class="faq-link"><a href="#u-mesures" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-materiel">
+      <summary>How do I get the bill of materials and cable lengths?</summary>
+      <div class="faq-a">
+      <p><strong>Materials</strong> tab: materials are grouped and added up; <strong>By room</strong> sorts them room by room. <strong>Estimate lengths</strong> calculates cable lengths from the plan (place the board on the plan first); a length you entered is never replaced. <strong>Export (CSV, spreadsheet)</strong> and <strong>Circuit list (CSV)</strong> open in a spreadsheet. See <a href="guide.html#materiel">Bill of materials</a> and <a href="#longueurs">How are cable lengths estimated?</a></p>
+        <p class="faq-link"><a href="#u-materiel" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-enregistrer">
+      <summary>How do I save, reopen or recover a project?</summary>
+      <div class="faq-a">
+      <ul>
+        <li><strong>Save</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Save as…</strong> chooses the location: <strong>This device</strong> (<code>.voltaplan</code> file), the browser or GitHub (under <strong>Other locations</strong>), or Drive, OneDrive, Dropbox.</li>
+        <li>Reopen: the list on the <strong>My projects</strong> screen, <strong>File → Open…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) or <strong>Open from the cloud or the browser</strong>.</li>
+        <li>Recover: after an unexpected close, unsaved work is offered when you reopen (<strong>Recover</strong>). <strong>File → Local versions…</strong> reopens an earlier version as a new project.</li>
+      </ul>
+      <p>See <a href="guide.html#sauver">Saving and opening</a>.</p>
+        <p class="faq-link"><a href="#u-enregistrer" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-langue">
+      <summary>How do I change the language?</summary>
+      <div class="faq-a">
+      <p>With the language selector in the top bar (Français, Nederlands, English, Deutsch); on a small screen, in the <strong>⋯</strong> menu → <strong>Language</strong>. The choice is remembered on this device.</p>
+        <p class="faq-link"><a href="#u-langue" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="u-raccourcis">
+      <summary>What are the keyboard shortcuts?</summary>
+      <div class="faq-a">
+      <p><kbd>Ctrl</kbd>+<kbd>S</kbd> save, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> save as, <kbd>Ctrl</kbd>+<kbd>O</kbd> open, <kbd>Ctrl</kbd>+<kbd>P</kbd> print / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd> undo and redo, <kbd>Del</kbd> delete the selected element, <kbd>Esc</kbd> exit the current tool. In the tree: arrows to browse, left and right to collapse and expand, <kbd>+</kbd> to add inside. On a Mac, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd>. See <a href="guide.html#raccourcis">Shortcuts</a>.</p>
+        <p class="faq-link"><a href="#u-raccourcis" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fichiers">
+    <h2>Files</h2>
+    <details id="fichiers">
+      <summary>Where are my files stored?</summary>
+      <div class="faq-a">
+      <p>Wherever you choose: on your device (a <code>.voltaplan</code> file, also on a USB stick or in a synced folder), in the browser, or in your own online storage: <strong>OneDrive, Google Drive, Dropbox or GitHub</strong>. No Voltaplan server ever receives your projects. Projects kept in the browser are erased if you clear its data: keep a file copy too. See <a href="guide.html#sauver">Saving and opening</a>.</p>
+        <p class="faq-link"><a href="#fichiers" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="format">
+      <summary>Is the file format open?</summary>
+      <div class="faq-a">
+      <p>Yes. A <code>.voltaplan</code> file is an ordinary ZIP archive: the project model as readable JSON (<code>project.json</code>), the original photos and PDFs as they are, and a README explaining how to recover the data without Voltaplan. The format is described in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. You can also export for Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) and as CSV.</p>
+        <p class="faq-link"><a href="#format" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="importer">
+      <summary>Which files can I import?</summary>
+      <div class="faq-a">
+      <p><strong>File → Import from other software…</strong> (or the card on the My projects screen) recognises the source from the content, whatever the extension: Voltaplan project, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code> export) and PDF files from other software. A <code>.zip</code> archive containing one of these files is opened. An unrecognised file is refused with an explanation. Details: <a href="guide.html#importer">Import from other software</a>.</p>
+        <p class="faq-link"><a href="#importer" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="pdf">
+      <summary>Can I take over a PDF file made with other software?</summary>
+      <div class="faq-a">
+      <p>Yes, if it contains <strong>text</strong>: circuit table, sub-boards, points, plans (as background, with walls, doors and windows read from the drawing), board front view, title block information and measurements are taken over. The PDF is read in your browser, with no upload and no AI. A <strong>scanned PDF</strong>, or one whose text is drawn as images, cannot be read: it is refused with an explanation. What the text does not say is flagged when the file opens, for you to complete.</p>
+        <p class="faq-link"><a href="#pdf" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-rgie">
+    <h2>RGIE and inspection</h2>
+    <details id="organisme">
+      <summary>Does Voltaplan replace the approved inspection body?</summary>
+      <div class="faq-a">
+      <p>No. Voltaplan is an <strong>aid</strong> for drawing and checking: it is not an inspection body and issues no certification, attestation or conformity report. “No anomaly detected” only means that no anomaly was found among the rules actually checked, with the information entered. You remain responsible for the installation and the documents you sign; the inspection is still carried out by the approved body. See the <a href="terms.html">terms of use</a>.</p>
+        <p class="faq-link"><a href="#organisme" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="rgie">
+      <summary>Which version of the RGIE is checked?</summary>
+      <div class="faq-a">
+      <p>The Belgian RGIE, <strong>Book 1</strong> (low and extra-low voltage installations), in force since 1/6/2020. Depending on the installation date entered, part by part, Voltaplan also applies the former RGIE (Royal Decree of 10 March 1981) or the rules for an old part (before 1/10/1981), as well as the dated amendments of Book 1. Symbols follow table 2.23 and the single-line diagram follows figure 3.1. Only part of the rules is checked, and they must be reviewed by a professional: the list and the open points are in the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">regulatory coverage</a> (in French).</p>
+        <p class="faq-link"><a href="#rgie" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="neuf-existant">
+      <summary>New or existing installation?</summary>
+      <div class="faq-a">
+      <p>Both. For a <strong>new installation</strong>, you design the installation: all rules apply and non-compliances are blocking for the inspection file. For an <strong>existing installation</strong> (sale, upgrade), you survey what is in place: what is not seen stays “unknown” and is not counted as missing; safety rules remain blocking, the others become recommendations. An installation can mix parts from several periods.</p>
+        <p class="faq-link"><a href="#neuf-existant" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="pays">
+      <summary>What about other countries?</summary>
+      <div class="faq-a">
+      <p>Today, only the Belgian RGIE is available. The engine is designed for other countries (one country = one rules module, with its texts and lists), but no other regulation is included yet.</p>
+        <p class="faq-link"><a href="#pays" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fonctions">
+    <h2>Features</h2>
+    <details id="longueurs">
+      <summary>How are cable lengths estimated?</summary>
+      <div class="faq-a">
+      <p>From the layout plan: from the board to the points in diagram order, at right angles, with rises and drops according to mounting height (switch at 1.10 m, low socket at 0.25 m…), changes of floor and a 10 % margin. Condui cable traces are reused; for other imports, right-angle traces are created from the single-line diagram, shown as dashed lines, to adjust. A length you entered is never replaced. See <a href="guide.html#longueurs">Cable lengths</a>.</p>
+        <p class="faq-link"><a href="#longueurs" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="imprimer">
+      <summary>How do I print the file?</summary>
+      <div class="faq-a">
+      <p><strong>Print / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): working document, inspection file, anomaly report or complete technical file, in A4 or A3 landscape, with the parts of your choice (single-line diagram, plans, boards, legend, measurements, bill of materials, 1:1 labels…). Choose “Save as PDF” in the print dialog for a vector PDF. The inspection file carries a “DRAFT — …” mark while points remain to be dealt with. See <a href="guide.html#imprimer">Printing the file</a>.</p>
+        <p class="faq-link"><a href="#imprimer" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-vie-privee">
+    <h2>AI and privacy</h2>
+    <details id="ia">
+      <summary>Is the AI required?</summary>
+      <div class="faq-a">
+      <p>No. Everything works without AI; it is off by default and each use must be allowed. If you turn it on, it goes through the provider you choose with <strong>your own key</strong> (Anthropic, or an OpenAI-compatible API: OpenAI, Gemini, Mistral), or through a <strong>local model</strong> (Ollama, LM Studio) with no key, in which case nothing leaves the computer. Only the photo concerned (board, meter plate or plan) is sent, directly from your device to the provider, never the customer's name or address. Any cost is yours. See <a href="guide.html#ia">AI</a> and the <a href="privacy.html">privacy policy</a>.</p>
+        <p class="faq-link"><a href="#ia" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="telemetrie">
+      <summary>Is there any telemetry or audience tracking?</summary>
+      <div class="faq-a">
+      <p>No: no telemetry, no statistics, no cookies or trackers added by Voltaplan. Only the website host (GitHub Pages) receives the usual requests to download the app, as for any website.</p>
+        <p class="faq-link"><a href="#telemetrie" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-projet">
+    <h2>The project</h2>
+    <details id="bug">
+      <summary>How do I report a bug or contribute?</summary>
+      <div class="faq-a">
+      <p>Open an issue on the <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub repository</a>. Issues are public: never attach a customer's file, photo or address. Report a security vulnerability through a <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">private report</a>. Code, rules, translations and tests are welcome: see the <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">contribution guide</a> (a regulatory contribution cites its source; a contributor agreement is required before the first contribution).</p>
+        <p class="faq-link"><a href="#bug" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+    <details id="soutenir">
+      <summary>How can I support Voltaplan?</summary>
+      <div class="faq-a">
+      <p>With an optional donation on <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: it funds development, maintenance and regulatory review time, and unlocks nothing. Reporting a bug or having a rule reviewed by a professional helps just as much.</p>
+        <p class="faq-link"><a href="#soutenir" data-copied="Link copied">Link to this question</a></p>
+      </div>
+    </details>
+  </section>
+  <p class="faq-empty" hidden>No question matches. Try another word, or see the guide.</p>
+  <section class="faq-more"><h2>Didn’t find it?</h2><p>The <a href="guide.html">guide</a> explains every screen step by step. Otherwise, ask your question on <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub</a> (public: no customer data).</p></section>
 </main>
 <footer>Voltaplan — free and open source — <a href="https://github.com/sponsors/SebastienBatteur">support the project</a> (optional) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Terms of use</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">source code</a></footer>
 <script src="../site.js"></script>
+<script src="../search.js"></script>
 </body>
 </html>

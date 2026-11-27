@@ -26,201 +26,325 @@
     <span class="lang"><a href="../faq.html" data-lang="fr">FR</a><a href="faq.html" aria-current="true" data-lang="nl">NL</a><a href="../en/faq.html" data-lang="en">EN</a><a href="../de/faq.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
-<main class="doc">
-  <nav class="toc" aria-label="Inhoud">
-    <a href="#c-general">Algemeen</a>
-    <a href="#gratuit">Is het gratis?</a>
-    <a href="#licence">Is het open source?</a>
-    <a href="#compte">Is een account nodig?</a>
-    <a href="#bureau">Browser of desktopprogramma?</a>
-    <a href="#hors-ligne">Offline?</a>
-    <a href="#langues">Talen</a>
-    <a href="#c-utiliser">De app gebruiken</a>
-    <a href="#u-nouveau">Een project beginnen</a>
-    <a href="#u-schema">Het eendraadschema tekenen</a>
-    <a href="#u-modifier">Verplaatsen, dupliceren, verwijderen, ongedaan maken</a>
-    <a href="#u-proprietes">Kabel, kaliber, verliesstroomschakelaar</a>
-    <a href="#u-maj">De knop Bijwerken</a>
-    <a href="#u-fond">Achtergrondplan en schaal</a>
-    <a href="#u-symboles">Punten op het plan plaatsen</a>
-    <a href="#u-piece">Een ruimte uitrusten</a>
-    <a href="#u-tableau">Het verdeelbord schikken</a>
-    <a href="#u-controle">De AREI-controle gebruiken</a>
-    <a href="#u-mesures">Metingen invullen</a>
-    <a href="#u-materiel">Materiaal en lengtes</a>
-    <a href="#u-enregistrer">Opslaan, openen, herstellen</a>
-    <a href="#u-langue">Van taal veranderen</a>
-    <a href="#u-raccourcis">Sneltoetsen</a>
-    <a href="#c-fichiers">Bestanden</a>
-    <a href="#fichiers">Waar staan mijn bestanden?</a>
-    <a href="#format">Bestandsformaat</a>
-    <a href="#importer">Importeren uit ander programma</a>
-    <a href="#pdf">Pdf-dossier van een ander programma</a>
-    <a href="#c-rgie">AREI en controle</a>
-    <a href="#organisme">Vervangt het het erkend organisme?</a>
-    <a href="#rgie">Welke versie van het AREI?</a>
-    <a href="#neuf-existant">Nieuw of bestaand</a>
-    <a href="#pays">Andere landen</a>
-    <a href="#c-fonctions">Functies</a>
-    <a href="#longueurs">Kabellengte</a>
-    <a href="#imprimer">Het dossier afdrukken</a>
-    <a href="#c-vie-privee">AI en privacy</a>
-    <a href="#ia">Is AI verplicht?</a>
-    <a href="#telemetrie">Telemetrie</a>
-    <a href="#c-projet">Het project</a>
-    <a href="#bug">Een bug melden, bijdragen</a>
-    <a href="#soutenir">Voltaplan steunen</a>
+<main class="faq">
+  <h1>Veelgestelde vragen</h1>
+  <p class="muted">Klik op een vraag om het antwoord te zien, of zoek op een woord.</p>
+  <div class="faq-search" hidden><input type="search" id="faq-q" placeholder="Zoek een vraag (bv. pdf, Trikker, offline)…" aria-label="Zoeken in de FAQ" autocomplete="off"><button type="button" class="faq-toggle" data-open="Alles openen" data-close="Alles sluiten">Alles openen</button></div>
+  <nav class="faq-tiles" aria-label="Veelgestelde vragen">
+    <a href="#c-general"><span aria-hidden="true">💡</span> Algemeen <small>6 vragen</small></a>
+    <a href="#c-utiliser"><span aria-hidden="true">🧭</span> De app gebruiken <small>15 vragen</small></a>
+    <a href="#c-fichiers"><span aria-hidden="true">📁</span> Bestanden <small>4 vragen</small></a>
+    <a href="#c-rgie"><span aria-hidden="true">✅</span> AREI en controle <small>4 vragen</small></a>
+    <a href="#c-fonctions"><span aria-hidden="true">📐</span> Functies <small>2 vragen</small></a>
+    <a href="#c-vie-privee"><span aria-hidden="true">🔒</span> AI en privacy <small>2 vragen</small></a>
+    <a href="#c-projet"><span aria-hidden="true">🤝</span> Het project <small>2 vragen</small></a>
   </nav>
-  <article>
-    <h2 id="c-general">Algemeen</h2>
-
-    <h3 id="gratuit">Is Voltaplan gratis?</h3>
-    <p>Ja, volledig: geen abonnement, geen reclame, geen voorbehouden functies. Opslaan en de pdf van het dossier zijn inbegrepen, zonder watermerk of limiet op het aantal projecten. <a href="#soutenir">Giften</a> zijn vrijblijvend en ontgrendelen niets.</p>
-
-    <h3 id="licence">Is het open source? Onder welke licentie?</h3>
-    <p>Ja. De code is gepubliceerd onder de licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> in de <a class="repo-link" href="#">GitHub-repository</a>. Elke gewijzigde versie die verspreid of online aangeboden wordt, moet haar broncode publiceren.</p>
-
-    <h3 id="compte">Moet ik een account aanmaken?</h3>
-    <p>Nee. Voltaplan heeft geen account en geen server. Als u kiest om op te slaan in Google Drive, OneDrive, Dropbox of GitHub, meldt u zich rechtstreeks vanuit de toepassing aan bij <strong>uw</strong> account bij die dienst.</p>
-
-    <h3 id="bureau">Browser of desktopprogramma?</h3>
-    <p>De webversie werkt in Chrome, Edge of Firefox, zonder iets te installeren. Uw browser kan ze installeren als toepassing, op een computer, iPhone, iPad of Android (zie <a href="guide.html#installer">Installeren</a>). Een desktopprogramma voor Windows, macOS en Linux is gepland, maar <strong>er is nog geen desktopversie gepubliceerd</strong>: de installatiebestanden verschijnen op de pagina <a class="release-link" href="#">Releases</a> van de repository.</p>
-
-    <h3 id="hors-ligne">Werkt het offline?</h3>
-    <p>Ja, na het eerste bezoek: tekenen, plan, bord, berekeningen, AREI-controle, pdf-dossier, bestanden en lokale versies werken zonder internet. Offline zijn de online AI, GitHub, Drive, OneDrive en Dropbox niet beschikbaar; opslaan naar die diensten wordt in de wachtrij gezet. De leesmodule voor foto's (≈ 18 MB) wordt geladen bij de eerste keer lezen en werkt daarna ook offline.</p>
-
-    <h3 id="langues">In welke talen?</h3>
-    <p>De toepassing en deze site bestaan in het Frans, Nederlands, Engels en Duits. Het importeren van pdf-dossiers herkent ook dossiers in die vier talen.</p>
-
-    <h2 id="c-utiliser">De app gebruiken</h2>
-
-    <h3 id="u-nouveau">Hoe begin ik een nieuw project?</h3>
-    <p>Klik op het scherm <strong>Mijn projecten</strong> op <strong>Nieuw project</strong>, of op <strong>Een bestaande installatie opnemen</strong> voor een installatie die er al is. De assistent telt 4 stappen: <strong>Type</strong> (nieuwe of bestaande installatie, naam van het project; voor een nieuwe installatie vertrekt u van een <em>Leeg project</em> of een <em>Typewoning, aan te passen</em>), <strong>Plaats</strong> (klant en adres), <strong>Installateur</strong> en <strong>Voeding</strong> (spanning, aardingsstelsel, kaliber van de aansluitautomaat). <strong>Nu aanmaken</strong> slaat de overige stappen over: alles kan later aangevuld worden in het tabblad <strong>Project</strong>. Om het dossier van een ander programma over te nemen, zie <a href="#importer">Welke bestanden kan ik importeren?</a> Details: <a href="guide.html#demarrer">Aan de slag</a>.</p>
-
-    <h3 id="u-schema">Hoe teken ik het eendraadschema?</h3>
-    <p>U tekent het niet zelf: u beschrijft de installatie in de boomstructuur <strong>Installatie</strong>, links, en het eendraadschema tekent zichzelf.</p>
-    <ol>
-      <li>Selecteer het element waaronder u iets toevoegt (verdeelbord, verliesstroomschakelaar, automaat…).</li>
-      <li>Voeg toe met de <strong>＋</strong> aan het einde van zijn regel, de knop <strong>＋ Toevoegen…</strong> in de eigenschappen, het palet <strong>Elementen</strong>, of een rechtsklik op zijn symbool → <strong>Toevoegen in</strong>. Enkel wat daaronder kan worden aangesloten, wordt voorgesteld.</li>
-      <li>Voorbeeld van een kring met contactdozen: verdeelbord → beveiliging (automaat 20 A) → leiding (VOB 3G2,5) → contactdozen.</li>
-    </ol>
-    <p>De AREI-nummering (A, B… en dan A1, A2…) volgt vanzelf. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
-
-    <h3 id="u-modifier">Hoe verplaats, dupliceer of verwijder ik een element? En hoe maak ik iets ongedaan?</h3>
-    <p>Selecteer het element in de boomstructuur, het eendraadschema, het situatieschema of het verdeelbord: het wordt overal geselecteerd. Onder de eigenschappen veranderen <strong>↑</strong> en <strong>↓</strong> zijn plaats tussen de andere elementen op hetzelfde niveau, maakt <strong>Dupliceren</strong> een kopie en haalt <strong>Verwijderen</strong> het weg (toets <kbd>Del</kbd>). Op het plan en in het verdeelbord sleept u het om het te verplaatsen. <strong>Ongedaan maken</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) en <strong>Opnieuw</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) staan in de bovenbalk. Zie <a href="guide.html#ecran">Het scherm</a>.</p>
-
-    <h3 id="u-proprietes">Waar stel ik de kabel, de doorsnede, het kaliber of de gevoeligheid van de verliesstroomschakelaar in?</h3>
-    <p>In het paneel <strong>Eigenschappen</strong>, onder de boomstructuur, zodra het element geselecteerd is. Beveiliging: toestel, nominale stroom, polen, curve, kortsluitvermogen, gevoeligheid en type van de verliesstroomschakelaar, aantal modules. Leiding: type (VOB, XVB…), doorsnede, aantal geleiders, plaatsing, lengte. Vul ook de <strong>Locatie</strong> in (de ruimte): die dient om de punten op het plan te plaatsen. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
-
-    <h3 id="u-maj">Waarvoor dient de knop ⟳ Bijwerken?</h3>
-    <p>Klik erop nadat u de installatie hebt aangemaakt of kringen hebt toegevoegd. Hij zet nieuwe toestellen op de eerste vrije plaats in het verdeelbord, zonder de andere te verschuiven, en nieuwe punten op het plan bij de naam van hun ruimte; hij schat de kabellengtes, voegt een revisie toe aan het dossier en berekent nummering, etiketten, materiaal en controle opnieuw. In het resultaatvenster maakt u alles in één keer ongedaan. Zie <a href="guide.html#maj">Bijwerken</a>.</p>
-
-    <h3 id="u-fond">Hoe importeer ik een achtergrondplan en zet ik het op schaal?</h3>
-    <ol>
-      <li>Tabblad <strong>Situatieschema</strong> → <strong>Achtergrondplan (foto / PDF / DXF)…</strong>. Een DXF waarin de eenheid vermeld staat, komt meteen op de juiste schaal.</li>
-      <li>Voor een foto of een PDF: <strong>Op schaal zetten</strong>, klik op twee punten en geef hun werkelijke afstand. <strong>Rechtzetten (4 hoeken)</strong> corrigeert een schuin genomen foto.</li>
-      <li>Teken de muren, deuren en ramen erover, of probeer <strong>Muren overtrekken</strong> (automatische herkenning, na te kijken).</li>
-    </ol>
-    <p>Zie <a href="guide.html#plan">Situatieschema</a>.</p>
-
-    <h3 id="u-symboles">Hoe plaats ik punten op het plan en koppel ik ze aan het schema?</h3>
-    <p>Voor een element dat al in het eendraadschema staat: <strong>Op plan plaatsen</strong> in de eigenschappen, of de lijst <strong>Nog niet op het plan</strong> in het palet, en klik daarna op het plan. Voor een nieuw element: rechtsklik op het plan op de gewenste plaats, kies het element en daarna waar het aansluit in het eendraadschema (Voltaplan stelt de kring van het dichtste element voor); het wordt aan het schema toegevoegd en op het plan geplaatst. Sleep een symbool om het te verplaatsen. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
-
-    <h3 id="u-piece">Hoe rust ik een hele ruimte in één keer uit?</h3>
-    <ol>
-      <li>Geef de ruimte een naam op het plan met het werktuig <strong>Tekst</strong> („Slaapkamer”, „Keuken”, „Badkamer”…), of lees de namen op het achtergrondplan met <strong>Ruimtenamen lezen</strong>.</li>
-      <li>Selecteer die naam: het paneel <strong>Ruimte uitrusten</strong> stelt de gebruikelijke uitrusting voor, aan te vinken, en <strong>Standaardmeubilair toevoegen</strong>.</li>
-      <li><strong>Aan de ruimte toevoegen</strong> plaatst de punten, <strong>niet aangesloten</strong>: verbind ze daarna met hun kringen.</li>
-    </ol>
-    <p>Het is een vertrekpunt, geen lijst uit het AREI. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
-
-    <h3 id="u-tableau">Hoe schik ik het verdeelbord?</h3>
-    <p>Geef in de eigenschappen van het verdeelbord het aantal rijen en modules per rij op. Sleep in het tabblad <strong>Verdeelbord</strong> de toestellen tussen de rijen en de reserve, of klik op <strong>Automatische indeling</strong> (volgorde van de boomstructuur); de werkelijke breedte van elk toestel stelt u in bij zijn eigenschappen (modules). Met een foto van voren: <strong>Foto van het bord…</strong>, dan <strong>Foto uitlijnen (rijen)</strong>, dan <strong>Schikken volgens de foto</strong> of <strong>Vergelijken met de foto</strong>. Zie <a href="guide.html#tableau">Verdeelbord</a> en <a href="guide.html#photo">Foto van het bord</a>.</p>
-
-    <h3 id="u-controle">Hoe gebruik ik de AREI-controle?</h3>
-    <p>Open het tabblad <strong>AREI-controle</strong> (het rode cijfer = aantal non-conformiteiten). Elke vaststelling heeft een status (non-conformiteit vastgesteld, onvoldoende informatie, aanbeveling…), een ernst en, indien van toepassing, de vermelding blokkerend.</p>
-    <ul>
-      <li>De knoppen <strong>Eendraadschema</strong>, <strong>Plan</strong> en <strong>Bord</strong> van een vaststelling tonen het betrokken element.</li>
-      <li>Als de correctie voor de hand ligt, stelt een knop onder de vaststelling ze voor (bijvoorbeeld <strong>20 A kiezen</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> maakt ze ongedaan.</li>
-      <li>Bestaande installatie: een element dat niet getekend is (aarding, verliesstroomschakelaar) bevestigt u met <strong>Aanwezig bevestigen</strong>, <strong>Afwezig bevestigen</strong> of <strong>Ik weet het niet</strong>.</li>
-      <li><strong>Afwijking…</strong> legt een afwijking vast met haar reden: de vaststelling blijft zichtbaar, maar is niet langer blokkerend.</li>
-    </ul>
-    <p>Zie <a href="guide.html#controle">AREI-controle</a>.</p>
-
-    <h3 id="u-mesures">Waar vul ik de metingen in?</h3>
-    <p>Tabblad <strong>Project</strong>, deel <strong>Metingen</strong>: aardingsweerstand, isolatie, equipotentiaalverbindingen, test van elke verliesstroomschakelaar, datum en meettoestel. Ze worden gecontroleerd en in het dossier afgedrukt. Zie <a href="guide.html#mesures">Metingen</a>.</p>
-
-    <h3 id="u-materiel">Hoe krijg ik de materiaallijst en de kabellengtes?</h3>
-    <p>Tabblad <strong>Materiaal</strong>: het materiaal wordt gegroepeerd en opgeteld; <strong>Per ruimte</strong> rangschikt het per ruimte. <strong>Lengtes schatten</strong> berekent de kabellengtes volgens het plan (zet eerst het verdeelbord op het plan); een ingevulde lengte wordt nooit vervangen. <strong>Exporteren (CSV, rekenblad)</strong> en <strong>Lijst van de kringen (CSV)</strong> openen in een rekenblad. Zie <a href="guide.html#materiel">Materiaallijst</a> en <a href="#longueurs">Hoe wordt de kabellengte geschat?</a></p>
-
-    <h3 id="u-enregistrer">Hoe sla ik een project op, open ik het opnieuw of herstel ik het?</h3>
-    <ul>
-      <li><strong>Opslaan</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Opslaan als…</strong> kiest de locatie: <strong>Dit toestel</strong> (bestand <code>.voltaplan</code>), de browser of GitHub (onder <strong>Andere locaties</strong>), of Drive, OneDrive, Dropbox.</li>
-      <li>Opnieuw openen: de lijst op het scherm <strong>Mijn projecten</strong>, <strong>Bestand → Openen…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) of <strong>Openen vanuit de cloud of de browser</strong>.</li>
-      <li>Herstellen: na een onverwachte afsluiting wordt het niet-opgeslagen werk voorgesteld bij het heropenen (<strong>Herstellen</strong>). <strong>Bestand → Lokale versies…</strong> opent een vorige versie als nieuw project.</li>
-    </ul>
-    <p>Zie <a href="guide.html#sauver">Opslaan en openen</a>.</p>
-
-    <h3 id="u-langue">Hoe verander ik van taal?</h3>
-    <p>Met de taalkeuze in de bovenbalk (Français, Nederlands, English, Deutsch); op een klein scherm in het menu <strong>⋯</strong> → <strong>Taal</strong>. De keuze wordt op dit toestel onthouden.</p>
-
-    <h3 id="u-raccourcis">Welke sneltoetsen zijn er?</h3>
-    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> opslaan, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> opslaan als, <kbd>Ctrl</kbd>+<kbd>O</kbd> openen, <kbd>Ctrl</kbd>+<kbd>P</kbd> afdrukken / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> en <kbd>Ctrl</kbd>+<kbd>Y</kbd> ongedaan maken en opnieuw, <kbd>Del</kbd> het geselecteerde element verwijderen, <kbd>Esc</kbd> het huidige werktuig verlaten. In de boomstructuur: pijltjes om te doorlopen, links en rechts om in en uit te klappen, <kbd>+</kbd> om iets toe te voegen. Op een Mac vervangt <kbd>Cmd</kbd> de <kbd>Ctrl</kbd>. Zie <a href="guide.html#raccourcis">Sneltoetsen</a>.</p>
-
-    <h2 id="c-fichiers">Bestanden</h2>
-
-    <h3 id="fichiers">Waar worden mijn bestanden opgeslagen?</h3>
-    <p>Waar u wilt: op uw toestel (bestand <code>.voltaplan</code>, ook op een USB-stick of in een gesynchroniseerde map), in de browser, of in uw eigen online opslag: <strong>OneDrive, Google Drive, Dropbox of GitHub</strong>. Geen enkele Voltaplan-server ontvangt uw projecten. Projecten die in de browser bewaard worden, worden gewist als u de browsergegevens wist: bewaar ook een kopie als bestand. Zie <a href="guide.html#sauver">Opslaan en openen</a>.</p>
-
-    <h3 id="format">Is het bestandsformaat open?</h3>
-    <p>Ja. Een <code>.voltaplan</code>-bestand is een gewoon ZIP-archief: het projectmodel in leesbare JSON (<code>project.json</code>), de originele foto's en pdf's zoals ze zijn, en een LEESMIJ die uitlegt hoe u de gegevens zonder Voltaplan terugvindt. Het formaat is beschreven in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. U kunt ook exporteren voor Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) en in CSV.</p>
-
-    <h3 id="importer">Welke bestanden kan ik importeren?</h3>
-    <p><strong>Bestand → Importeren uit ander programma…</strong> (of de kaart op het scherm Mijn projecten) herkent de bron aan de inhoud, ongeacht de extensie: Voltaplan-project, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code>-export) en pdf-dossier van een ander programma. Een <code>.zip</code>-archief dat een van die bestanden bevat, wordt geopend. Een niet-herkend bestand wordt geweigerd, met uitleg. Details: <a href="guide.html#importer">Importeren uit ander programma</a>.</p>
-
-    <h3 id="pdf">Kan ik het pdf-dossier van een ander programma overnemen?</h3>
-    <p>Ja, als het <strong>tekst</strong> bevat: tabel van de kringen, onderborden, punten, plannen (als achtergrondplan, met muren, deuren en ramen gelezen uit de tekening), vooraanzicht van de borden, gegevens uit het titelblok en metingen worden overgenomen. De pdf wordt in uw browser gelezen, zonder verzending en zonder AI. Een <strong>gescande pdf</strong> of een pdf waarvan de tekst getekend is (afbeeldingen) kan niet gelezen worden: hij wordt geweigerd, met uitleg. Wat de tekst niet zegt, wordt bij het openen gemeld, om aan te vullen.</p>
-
-    <h2 id="c-rgie">AREI en controle</h2>
-
-    <h3 id="organisme">Vervangt Voltaplan het erkend organisme?</h3>
-    <p>Nee. Voltaplan is een <strong>hulpmiddel</strong> bij het tekenen en controleren: het is geen keuringsinstantie en levert geen certificering, attest of proces-verbaal van conformiteit. „Geen anomalie vastgesteld” betekent alleen dat er geen anomalie gevonden is bij de regels die effectief gecontroleerd werden, met de ingevoerde gegevens. U blijft verantwoordelijk voor de installatie en de documenten die u ondertekent; de keuring blijft die van het erkend organisme. Zie de <a href="terms.html">gebruiksvoorwaarden</a>.</p>
-
-    <h3 id="rgie">Welke versie van het AREI wordt gecontroleerd?</h3>
-    <p>Het Belgische AREI, <strong>Boek 1</strong> (installaties op laagspanning en zeer lage spanning), van kracht sinds 1/6/2020. Volgens de opgegeven uitvoeringsdatum, deel per deel, past Voltaplan ook het vroegere AREI (KB van 10 maart 1981) of de regels voor een oud deel (vóór 1/10/1981) toe, evenals de gedateerde wijzigingen van Boek 1. De symbolen volgen tabel 2.23 en het eendraadschema figuur 3.1. Slechts een deel van de regels wordt gecontroleerd, en ze moeten door een vakman nagelezen worden: de lijst en de openstaande punten staan in de <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">reglementaire dekking</a> (in het Frans).</p>
-
-    <h3 id="neuf-existant">Nieuwe of bestaande installatie?</h3>
-    <p>Beide. Bij een <strong>nieuwe installatie</strong> ontwerpt u de installatie: alle regels gelden en non-conformiteiten zijn blokkerend voor het keuringsdossier. Bij een <strong>bestaande installatie</strong> (verkoop, in orde brengen) neemt u op wat er is: wat niet gezien wordt, blijft „onbekend” en telt niet als afwezig; de veiligheidsregels blijven blokkerend, de andere worden aanbevelingen. Een installatie kan delen uit verschillende periodes combineren.</p>
-
-    <h3 id="pays">En voor andere landen?</h3>
-    <p>Vandaag is alleen het Belgische AREI beschikbaar. De motor is voorzien voor andere landen (een land = een regelmodule, met zijn teksten en lijsten), maar er is nog geen ander reglement opgenomen.</p>
-
-    <h2 id="c-fonctions">Functies</h2>
-
-    <h3 id="longueurs">Hoe wordt de kabellengte geschat?</h3>
-    <p>Volgens het situatieschema: van het bord naar de punten in de volgorde van het schema, haaks, met stijgingen en dalingen volgens de montagehoogte (schakelaar op 1,10 m, lage contactdoos op 0,25 m…), verdiepingswissels en 10 % marge. De kabeltracés van Condui worden overgenomen; voor andere imports worden haakse tracés gemaakt volgens het eendraadschema, in stippellijn, om bij te stellen. Een ingevoerde lengte wordt nooit vervangen. Zie <a href="guide.html#longueurs">Kabellengte</a>.</p>
-
-    <h3 id="imprimer">Hoe druk ik het dossier af?</h3>
-    <p><strong>Afdrukken / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): werkdocument, keuringsdossier, anomalierapport of volledig technisch dossier, in A4 of A3 liggend, met de delen van uw keuze (eendraadschema, plannen, borden, legende, metingen, materiaallijst, etiketten 1:1…). Kies „Opslaan als PDF” in het afdrukvenster voor een vectoriële pdf. Het keuringsdossier draagt een vermelding „ONTWERP — …” zolang er punten te behandelen zijn. Zie <a href="guide.html#imprimer">Het dossier afdrukken</a>.</p>
-
-    <h2 id="c-vie-privee">AI en privacy</h2>
-
-    <h3 id="ia">Is AI verplicht?</h3>
-    <p>Nee. Alles werkt zonder AI; ze staat standaard uit en elk gebruik moet toegestaan worden. Als u ze inschakelt, verloopt ze via de leverancier die u kiest met <strong>uw eigen sleutel</strong> (Anthropic, of een OpenAI-compatibele API: OpenAI, Gemini, Mistral), of via een <strong>lokaal model</strong> (Ollama, LM Studio) zonder sleutel, en dan verlaat niets de computer. Alleen de betrokken foto (bord, typeplaatje van de meter of plan) wordt verstuurd, rechtstreeks van uw toestel naar de leverancier, nooit de naam of het adres van de klant. Eventuele kosten zijn voor u. Zie <a href="guide.html#ia">AI</a> en het <a href="privacy.html">privacybeleid</a>.</p>
-
-    <h3 id="telemetrie">Is er telemetrie of bezoekersmeting?</h3>
-    <p>Nee: geen telemetrie, geen statistieken, geen cookies of trackers toegevoegd door Voltaplan. Alleen de host van de site (GitHub Pages) ontvangt de gebruikelijke verzoeken om de toepassing te downloaden, zoals bij elke site.</p>
-
-    <h2 id="c-projet">Het project</h2>
-
-    <h3 id="bug">Hoe meld ik een bug of draag ik bij?</h3>
-    <p>Open een ticket in de <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub-repository</a>. Tickets zijn openbaar: voeg nooit een dossier, een foto of het adres van een klant toe. Een beveiligingslek meldt u met een <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">privémelding</a>. Code, regels, vertalingen en tests zijn welkom: zie de <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">gids voor bijdragers</a> (een reglementaire bijdrage vermeldt haar bron; vóór de eerste bijdrage wordt een bijdrageovereenkomst gevraagd).</p>
-
-    <h3 id="soutenir">Hoe kan ik Voltaplan steunen?</h3>
-    <p>Met een vrijblijvende gift via <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: die financiert de tijd voor ontwikkeling, onderhoud en reglementaire nalezing, en ontgrendelt niets. Een bug melden of een regel door een vakman laten nalezen helpt evenveel.</p>
-  </article>
+  <section class="faq-popular"><h2>Nuttigste vragen</h2><ul>
+    <li><a href="#u-nouveau">Hoe begin ik een nieuw project?</a></li>
+    <li><a href="#importer">Welke bestanden kan ik importeren?</a></li>
+    <li><a href="#organisme">Vervangt Voltaplan het erkend organisme?</a></li>
+    <li><a href="#fichiers">Waar worden mijn bestanden opgeslagen?</a></li>
+    <li><a href="#gratuit">Is Voltaplan gratis?</a></li>
+  </ul></section>
+  <section class="faq-group" id="c-general">
+    <h2>Algemeen</h2>
+    <details id="gratuit">
+      <summary>Is Voltaplan gratis?</summary>
+      <div class="faq-a">
+      <p>Ja, volledig: geen abonnement, geen reclame, geen voorbehouden functies. Opslaan en de pdf van het dossier zijn inbegrepen, zonder watermerk of limiet op het aantal projecten. <a href="#soutenir">Giften</a> zijn vrijblijvend en ontgrendelen niets.</p>
+        <p class="faq-link"><a href="#gratuit" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="licence">
+      <summary>Is het open source? Onder welke licentie?</summary>
+      <div class="faq-a">
+      <p>Ja. De code is gepubliceerd onder de licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> in de <a class="repo-link" href="#">GitHub-repository</a>. Elke gewijzigde versie die verspreid of online aangeboden wordt, moet haar broncode publiceren.</p>
+        <p class="faq-link"><a href="#licence" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="compte">
+      <summary>Moet ik een account aanmaken?</summary>
+      <div class="faq-a">
+      <p>Nee. Voltaplan heeft geen account en geen server. Als u kiest om op te slaan in Google Drive, OneDrive, Dropbox of GitHub, meldt u zich rechtstreeks vanuit de toepassing aan bij <strong>uw</strong> account bij die dienst.</p>
+        <p class="faq-link"><a href="#compte" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="bureau">
+      <summary>Browser of desktopprogramma?</summary>
+      <div class="faq-a">
+      <p>De webversie werkt in Chrome, Edge of Firefox, zonder iets te installeren. Uw browser kan ze installeren als toepassing, op een computer, iPhone, iPad of Android (zie <a href="guide.html#installer">Installeren</a>). Een desktopprogramma voor Windows, macOS en Linux is gepland, maar <strong>er is nog geen desktopversie gepubliceerd</strong>: de installatiebestanden verschijnen op de pagina <a class="release-link" href="#">Releases</a> van de repository.</p>
+        <p class="faq-link"><a href="#bureau" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="hors-ligne">
+      <summary>Werkt het offline?</summary>
+      <div class="faq-a">
+      <p>Ja, na het eerste bezoek: tekenen, plan, bord, berekeningen, AREI-controle, pdf-dossier, bestanden en lokale versies werken zonder internet. Offline zijn de online AI, GitHub, Drive, OneDrive en Dropbox niet beschikbaar; opslaan naar die diensten wordt in de wachtrij gezet. De leesmodule voor foto's (≈ 18 MB) wordt geladen bij de eerste keer lezen en werkt daarna ook offline.</p>
+        <p class="faq-link"><a href="#hors-ligne" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="langues">
+      <summary>In welke talen?</summary>
+      <div class="faq-a">
+      <p>De toepassing en deze site bestaan in het Frans, Nederlands, Engels en Duits. Het importeren van pdf-dossiers herkent ook dossiers in die vier talen.</p>
+        <p class="faq-link"><a href="#langues" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-utiliser">
+    <h2>De app gebruiken</h2>
+    <details id="u-nouveau">
+      <summary>Hoe begin ik een nieuw project?</summary>
+      <div class="faq-a">
+      <p>Klik op het scherm <strong>Mijn projecten</strong> op <strong>Nieuw project</strong>, of op <strong>Een bestaande installatie opnemen</strong> voor een installatie die er al is. De assistent telt 4 stappen: <strong>Type</strong> (nieuwe of bestaande installatie, naam van het project; voor een nieuwe installatie vertrekt u van een <em>Leeg project</em> of een <em>Typewoning, aan te passen</em>), <strong>Plaats</strong> (klant en adres), <strong>Installateur</strong> en <strong>Voeding</strong> (spanning, aardingsstelsel, kaliber van de aansluitautomaat). <strong>Nu aanmaken</strong> slaat de overige stappen over: alles kan later aangevuld worden in het tabblad <strong>Project</strong>. Om het dossier van een ander programma over te nemen, zie <a href="#importer">Welke bestanden kan ik importeren?</a> Details: <a href="guide.html#demarrer">Aan de slag</a>.</p>
+        <p class="faq-link"><a href="#u-nouveau" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-schema">
+      <summary>Hoe teken ik het eendraadschema?</summary>
+      <div class="faq-a">
+      <p>U tekent het niet zelf: u beschrijft de installatie in de boomstructuur <strong>Installatie</strong>, links, en het eendraadschema tekent zichzelf.</p>
+      <ol>
+        <li>Selecteer het element waaronder u iets toevoegt (verdeelbord, verliesstroomschakelaar, automaat…).</li>
+        <li>Voeg toe met de <strong>＋</strong> aan het einde van zijn regel, de knop <strong>＋ Toevoegen…</strong> in de eigenschappen, het palet <strong>Elementen</strong>, of een rechtsklik op zijn symbool → <strong>Toevoegen in</strong>. Enkel wat daaronder kan worden aangesloten, wordt voorgesteld.</li>
+        <li>Voorbeeld van een kring met contactdozen: verdeelbord → beveiliging (automaat 20 A) → leiding (VOB 3G2,5) → contactdozen.</li>
+      </ol>
+      <p>De AREI-nummering (A, B… en dan A1, A2…) volgt vanzelf. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
+        <p class="faq-link"><a href="#u-schema" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-modifier">
+      <summary>Hoe verplaats, dupliceer of verwijder ik een element? En hoe maak ik iets ongedaan?</summary>
+      <div class="faq-a">
+      <p>Selecteer het element in de boomstructuur, het eendraadschema, het situatieschema of het verdeelbord: het wordt overal geselecteerd. Onder de eigenschappen veranderen <strong>↑</strong> en <strong>↓</strong> zijn plaats tussen de andere elementen op hetzelfde niveau, maakt <strong>Dupliceren</strong> een kopie en haalt <strong>Verwijderen</strong> het weg (toets <kbd>Del</kbd>). Op het plan en in het verdeelbord sleept u het om het te verplaatsen. <strong>Ongedaan maken</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) en <strong>Opnieuw</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) staan in de bovenbalk. Zie <a href="guide.html#ecran">Het scherm</a>.</p>
+        <p class="faq-link"><a href="#u-modifier" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-proprietes">
+      <summary>Waar stel ik de kabel, de doorsnede, het kaliber of de gevoeligheid van de verliesstroomschakelaar in?</summary>
+      <div class="faq-a">
+      <p>In het paneel <strong>Eigenschappen</strong>, onder de boomstructuur, zodra het element geselecteerd is. Beveiliging: toestel, nominale stroom, polen, curve, kortsluitvermogen, gevoeligheid en type van de verliesstroomschakelaar, aantal modules. Leiding: type (VOB, XVB…), doorsnede, aantal geleiders, plaatsing, lengte. Vul ook de <strong>Locatie</strong> in (de ruimte): die dient om de punten op het plan te plaatsen. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
+        <p class="faq-link"><a href="#u-proprietes" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-maj">
+      <summary>Waarvoor dient de knop ⟳ Bijwerken?</summary>
+      <div class="faq-a">
+      <p>Klik erop nadat u de installatie hebt aangemaakt of kringen hebt toegevoegd. Hij zet nieuwe toestellen op de eerste vrije plaats in het verdeelbord, zonder de andere te verschuiven, en nieuwe punten op het plan bij de naam van hun ruimte; hij schat de kabellengtes, voegt een revisie toe aan het dossier en berekent nummering, etiketten, materiaal en controle opnieuw. In het resultaatvenster maakt u alles in één keer ongedaan. Zie <a href="guide.html#maj">Bijwerken</a>.</p>
+        <p class="faq-link"><a href="#u-maj" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-fond">
+      <summary>Hoe importeer ik een achtergrondplan en zet ik het op schaal?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Tabblad <strong>Situatieschema</strong> → <strong>Achtergrondplan (foto / PDF / DXF)…</strong>. Een DXF waarin de eenheid vermeld staat, komt meteen op de juiste schaal.</li>
+        <li>Voor een foto of een PDF: <strong>Op schaal zetten</strong>, klik op twee punten en geef hun werkelijke afstand. <strong>Rechtzetten (4 hoeken)</strong> corrigeert een schuin genomen foto.</li>
+        <li>Teken de muren, deuren en ramen erover, of probeer <strong>Muren overtrekken</strong> (automatische herkenning, na te kijken).</li>
+      </ol>
+      <p>Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+        <p class="faq-link"><a href="#u-fond" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-symboles">
+      <summary>Hoe plaats ik punten op het plan en koppel ik ze aan het schema?</summary>
+      <div class="faq-a">
+      <p>Voor een element dat al in het eendraadschema staat: <strong>Op plan plaatsen</strong> in de eigenschappen, of de lijst <strong>Nog niet op het plan</strong> in het palet, en klik daarna op het plan. Voor een nieuw element: rechtsklik op het plan op de gewenste plaats, kies het element en daarna waar het aansluit in het eendraadschema (Voltaplan stelt de kring van het dichtste element voor); het wordt aan het schema toegevoegd en op het plan geplaatst. Sleep een symbool om het te verplaatsen. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+        <p class="faq-link"><a href="#u-symboles" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-piece">
+      <summary>Hoe rust ik een hele ruimte in één keer uit?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Geef de ruimte een naam op het plan met het werktuig <strong>Tekst</strong> („Slaapkamer”, „Keuken”, „Badkamer”…), of lees de namen op het achtergrondplan met <strong>Ruimtenamen lezen</strong>.</li>
+        <li>Selecteer die naam: het paneel <strong>Ruimte uitrusten</strong> stelt de gebruikelijke uitrusting voor, aan te vinken, en <strong>Standaardmeubilair toevoegen</strong>.</li>
+        <li><strong>Aan de ruimte toevoegen</strong> plaatst de punten, <strong>niet aangesloten</strong>: verbind ze daarna met hun kringen.</li>
+      </ol>
+      <p>Het is een vertrekpunt, geen lijst uit het AREI. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+        <p class="faq-link"><a href="#u-piece" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-tableau">
+      <summary>Hoe schik ik het verdeelbord?</summary>
+      <div class="faq-a">
+      <p>Geef in de eigenschappen van het verdeelbord het aantal rijen en modules per rij op. Sleep in het tabblad <strong>Verdeelbord</strong> de toestellen tussen de rijen en de reserve, of klik op <strong>Automatische indeling</strong> (volgorde van de boomstructuur); de werkelijke breedte van elk toestel stelt u in bij zijn eigenschappen (modules). Met een foto van voren: <strong>Foto van het bord…</strong>, dan <strong>Foto uitlijnen (rijen)</strong>, dan <strong>Schikken volgens de foto</strong> of <strong>Vergelijken met de foto</strong>. Zie <a href="guide.html#tableau">Verdeelbord</a> en <a href="guide.html#photo">Foto van het bord</a>.</p>
+        <p class="faq-link"><a href="#u-tableau" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-controle">
+      <summary>Hoe gebruik ik de AREI-controle?</summary>
+      <div class="faq-a">
+      <p>Open het tabblad <strong>AREI-controle</strong> (het rode cijfer = aantal non-conformiteiten). Elke vaststelling heeft een status (non-conformiteit vastgesteld, onvoldoende informatie, aanbeveling…), een ernst en, indien van toepassing, de vermelding blokkerend.</p>
+      <ul>
+        <li>De knoppen <strong>Eendraadschema</strong>, <strong>Plan</strong> en <strong>Bord</strong> van een vaststelling tonen het betrokken element.</li>
+        <li>Als de correctie voor de hand ligt, stelt een knop onder de vaststelling ze voor (bijvoorbeeld <strong>20 A kiezen</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> maakt ze ongedaan.</li>
+        <li>Bestaande installatie: een element dat niet getekend is (aarding, verliesstroomschakelaar) bevestigt u met <strong>Aanwezig bevestigen</strong>, <strong>Afwezig bevestigen</strong> of <strong>Ik weet het niet</strong>.</li>
+        <li><strong>Afwijking…</strong> legt een afwijking vast met haar reden: de vaststelling blijft zichtbaar, maar is niet langer blokkerend.</li>
+      </ul>
+      <p>Zie <a href="guide.html#controle">AREI-controle</a>.</p>
+        <p class="faq-link"><a href="#u-controle" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-mesures">
+      <summary>Waar vul ik de metingen in?</summary>
+      <div class="faq-a">
+      <p>Tabblad <strong>Project</strong>, deel <strong>Metingen</strong>: aardingsweerstand, isolatie, equipotentiaalverbindingen, test van elke verliesstroomschakelaar, datum en meettoestel. Ze worden gecontroleerd en in het dossier afgedrukt. Zie <a href="guide.html#mesures">Metingen</a>.</p>
+        <p class="faq-link"><a href="#u-mesures" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-materiel">
+      <summary>Hoe krijg ik de materiaallijst en de kabellengtes?</summary>
+      <div class="faq-a">
+      <p>Tabblad <strong>Materiaal</strong>: het materiaal wordt gegroepeerd en opgeteld; <strong>Per ruimte</strong> rangschikt het per ruimte. <strong>Lengtes schatten</strong> berekent de kabellengtes volgens het plan (zet eerst het verdeelbord op het plan); een ingevulde lengte wordt nooit vervangen. <strong>Exporteren (CSV, rekenblad)</strong> en <strong>Lijst van de kringen (CSV)</strong> openen in een rekenblad. Zie <a href="guide.html#materiel">Materiaallijst</a> en <a href="#longueurs">Hoe wordt de kabellengte geschat?</a></p>
+        <p class="faq-link"><a href="#u-materiel" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-enregistrer">
+      <summary>Hoe sla ik een project op, open ik het opnieuw of herstel ik het?</summary>
+      <div class="faq-a">
+      <ul>
+        <li><strong>Opslaan</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Opslaan als…</strong> kiest de locatie: <strong>Dit toestel</strong> (bestand <code>.voltaplan</code>), de browser of GitHub (onder <strong>Andere locaties</strong>), of Drive, OneDrive, Dropbox.</li>
+        <li>Opnieuw openen: de lijst op het scherm <strong>Mijn projecten</strong>, <strong>Bestand → Openen…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) of <strong>Openen vanuit de cloud of de browser</strong>.</li>
+        <li>Herstellen: na een onverwachte afsluiting wordt het niet-opgeslagen werk voorgesteld bij het heropenen (<strong>Herstellen</strong>). <strong>Bestand → Lokale versies…</strong> opent een vorige versie als nieuw project.</li>
+      </ul>
+      <p>Zie <a href="guide.html#sauver">Opslaan en openen</a>.</p>
+        <p class="faq-link"><a href="#u-enregistrer" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-langue">
+      <summary>Hoe verander ik van taal?</summary>
+      <div class="faq-a">
+      <p>Met de taalkeuze in de bovenbalk (Français, Nederlands, English, Deutsch); op een klein scherm in het menu <strong>⋯</strong> → <strong>Taal</strong>. De keuze wordt op dit toestel onthouden.</p>
+        <p class="faq-link"><a href="#u-langue" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="u-raccourcis">
+      <summary>Welke sneltoetsen zijn er?</summary>
+      <div class="faq-a">
+      <p><kbd>Ctrl</kbd>+<kbd>S</kbd> opslaan, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> opslaan als, <kbd>Ctrl</kbd>+<kbd>O</kbd> openen, <kbd>Ctrl</kbd>+<kbd>P</kbd> afdrukken / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> en <kbd>Ctrl</kbd>+<kbd>Y</kbd> ongedaan maken en opnieuw, <kbd>Del</kbd> het geselecteerde element verwijderen, <kbd>Esc</kbd> het huidige werktuig verlaten. In de boomstructuur: pijltjes om te doorlopen, links en rechts om in en uit te klappen, <kbd>+</kbd> om iets toe te voegen. Op een Mac vervangt <kbd>Cmd</kbd> de <kbd>Ctrl</kbd>. Zie <a href="guide.html#raccourcis">Sneltoetsen</a>.</p>
+        <p class="faq-link"><a href="#u-raccourcis" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fichiers">
+    <h2>Bestanden</h2>
+    <details id="fichiers">
+      <summary>Waar worden mijn bestanden opgeslagen?</summary>
+      <div class="faq-a">
+      <p>Waar u wilt: op uw toestel (bestand <code>.voltaplan</code>, ook op een USB-stick of in een gesynchroniseerde map), in de browser, of in uw eigen online opslag: <strong>OneDrive, Google Drive, Dropbox of GitHub</strong>. Geen enkele Voltaplan-server ontvangt uw projecten. Projecten die in de browser bewaard worden, worden gewist als u de browsergegevens wist: bewaar ook een kopie als bestand. Zie <a href="guide.html#sauver">Opslaan en openen</a>.</p>
+        <p class="faq-link"><a href="#fichiers" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="format">
+      <summary>Is het bestandsformaat open?</summary>
+      <div class="faq-a">
+      <p>Ja. Een <code>.voltaplan</code>-bestand is een gewoon ZIP-archief: het projectmodel in leesbare JSON (<code>project.json</code>), de originele foto's en pdf's zoals ze zijn, en een LEESMIJ die uitlegt hoe u de gegevens zonder Voltaplan terugvindt. Het formaat is beschreven in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. U kunt ook exporteren voor Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) en in CSV.</p>
+        <p class="faq-link"><a href="#format" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="importer">
+      <summary>Welke bestanden kan ik importeren?</summary>
+      <div class="faq-a">
+      <p><strong>Bestand → Importeren uit ander programma…</strong> (of de kaart op het scherm Mijn projecten) herkent de bron aan de inhoud, ongeacht de extensie: Voltaplan-project, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code>-export) en pdf-dossier van een ander programma. Een <code>.zip</code>-archief dat een van die bestanden bevat, wordt geopend. Een niet-herkend bestand wordt geweigerd, met uitleg. Details: <a href="guide.html#importer">Importeren uit ander programma</a>.</p>
+        <p class="faq-link"><a href="#importer" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="pdf">
+      <summary>Kan ik het pdf-dossier van een ander programma overnemen?</summary>
+      <div class="faq-a">
+      <p>Ja, als het <strong>tekst</strong> bevat: tabel van de kringen, onderborden, punten, plannen (als achtergrondplan, met muren, deuren en ramen gelezen uit de tekening), vooraanzicht van de borden, gegevens uit het titelblok en metingen worden overgenomen. De pdf wordt in uw browser gelezen, zonder verzending en zonder AI. Een <strong>gescande pdf</strong> of een pdf waarvan de tekst getekend is (afbeeldingen) kan niet gelezen worden: hij wordt geweigerd, met uitleg. Wat de tekst niet zegt, wordt bij het openen gemeld, om aan te vullen.</p>
+        <p class="faq-link"><a href="#pdf" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-rgie">
+    <h2>AREI en controle</h2>
+    <details id="organisme">
+      <summary>Vervangt Voltaplan het erkend organisme?</summary>
+      <div class="faq-a">
+      <p>Nee. Voltaplan is een <strong>hulpmiddel</strong> bij het tekenen en controleren: het is geen keuringsinstantie en levert geen certificering, attest of proces-verbaal van conformiteit. „Geen anomalie vastgesteld” betekent alleen dat er geen anomalie gevonden is bij de regels die effectief gecontroleerd werden, met de ingevoerde gegevens. U blijft verantwoordelijk voor de installatie en de documenten die u ondertekent; de keuring blijft die van het erkend organisme. Zie de <a href="terms.html">gebruiksvoorwaarden</a>.</p>
+        <p class="faq-link"><a href="#organisme" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="rgie">
+      <summary>Welke versie van het AREI wordt gecontroleerd?</summary>
+      <div class="faq-a">
+      <p>Het Belgische AREI, <strong>Boek 1</strong> (installaties op laagspanning en zeer lage spanning), van kracht sinds 1/6/2020. Volgens de opgegeven uitvoeringsdatum, deel per deel, past Voltaplan ook het vroegere AREI (KB van 10 maart 1981) of de regels voor een oud deel (vóór 1/10/1981) toe, evenals de gedateerde wijzigingen van Boek 1. De symbolen volgen tabel 2.23 en het eendraadschema figuur 3.1. Slechts een deel van de regels wordt gecontroleerd, en ze moeten door een vakman nagelezen worden: de lijst en de openstaande punten staan in de <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">reglementaire dekking</a> (in het Frans).</p>
+        <p class="faq-link"><a href="#rgie" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="neuf-existant">
+      <summary>Nieuwe of bestaande installatie?</summary>
+      <div class="faq-a">
+      <p>Beide. Bij een <strong>nieuwe installatie</strong> ontwerpt u de installatie: alle regels gelden en non-conformiteiten zijn blokkerend voor het keuringsdossier. Bij een <strong>bestaande installatie</strong> (verkoop, in orde brengen) neemt u op wat er is: wat niet gezien wordt, blijft „onbekend” en telt niet als afwezig; de veiligheidsregels blijven blokkerend, de andere worden aanbevelingen. Een installatie kan delen uit verschillende periodes combineren.</p>
+        <p class="faq-link"><a href="#neuf-existant" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="pays">
+      <summary>En voor andere landen?</summary>
+      <div class="faq-a">
+      <p>Vandaag is alleen het Belgische AREI beschikbaar. De motor is voorzien voor andere landen (een land = een regelmodule, met zijn teksten en lijsten), maar er is nog geen ander reglement opgenomen.</p>
+        <p class="faq-link"><a href="#pays" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fonctions">
+    <h2>Functies</h2>
+    <details id="longueurs">
+      <summary>Hoe wordt de kabellengte geschat?</summary>
+      <div class="faq-a">
+      <p>Volgens het situatieschema: van het bord naar de punten in de volgorde van het schema, haaks, met stijgingen en dalingen volgens de montagehoogte (schakelaar op 1,10 m, lage contactdoos op 0,25 m…), verdiepingswissels en 10 % marge. De kabeltracés van Condui worden overgenomen; voor andere imports worden haakse tracés gemaakt volgens het eendraadschema, in stippellijn, om bij te stellen. Een ingevoerde lengte wordt nooit vervangen. Zie <a href="guide.html#longueurs">Kabellengte</a>.</p>
+        <p class="faq-link"><a href="#longueurs" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="imprimer">
+      <summary>Hoe druk ik het dossier af?</summary>
+      <div class="faq-a">
+      <p><strong>Afdrukken / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>): werkdocument, keuringsdossier, anomalierapport of volledig technisch dossier, in A4 of A3 liggend, met de delen van uw keuze (eendraadschema, plannen, borden, legende, metingen, materiaallijst, etiketten 1:1…). Kies „Opslaan als PDF” in het afdrukvenster voor een vectoriële pdf. Het keuringsdossier draagt een vermelding „ONTWERP — …” zolang er punten te behandelen zijn. Zie <a href="guide.html#imprimer">Het dossier afdrukken</a>.</p>
+        <p class="faq-link"><a href="#imprimer" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-vie-privee">
+    <h2>AI en privacy</h2>
+    <details id="ia">
+      <summary>Is AI verplicht?</summary>
+      <div class="faq-a">
+      <p>Nee. Alles werkt zonder AI; ze staat standaard uit en elk gebruik moet toegestaan worden. Als u ze inschakelt, verloopt ze via de leverancier die u kiest met <strong>uw eigen sleutel</strong> (Anthropic, of een OpenAI-compatibele API: OpenAI, Gemini, Mistral), of via een <strong>lokaal model</strong> (Ollama, LM Studio) zonder sleutel, en dan verlaat niets de computer. Alleen de betrokken foto (bord, typeplaatje van de meter of plan) wordt verstuurd, rechtstreeks van uw toestel naar de leverancier, nooit de naam of het adres van de klant. Eventuele kosten zijn voor u. Zie <a href="guide.html#ia">AI</a> en het <a href="privacy.html">privacybeleid</a>.</p>
+        <p class="faq-link"><a href="#ia" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="telemetrie">
+      <summary>Is er telemetrie of bezoekersmeting?</summary>
+      <div class="faq-a">
+      <p>Nee: geen telemetrie, geen statistieken, geen cookies of trackers toegevoegd door Voltaplan. Alleen de host van de site (GitHub Pages) ontvangt de gebruikelijke verzoeken om de toepassing te downloaden, zoals bij elke site.</p>
+        <p class="faq-link"><a href="#telemetrie" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-projet">
+    <h2>Het project</h2>
+    <details id="bug">
+      <summary>Hoe meld ik een bug of draag ik bij?</summary>
+      <div class="faq-a">
+      <p>Open een ticket in de <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub-repository</a>. Tickets zijn openbaar: voeg nooit een dossier, een foto of het adres van een klant toe. Een beveiligingslek meldt u met een <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">privémelding</a>. Code, regels, vertalingen en tests zijn welkom: zie de <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">gids voor bijdragers</a> (een reglementaire bijdrage vermeldt haar bron; vóór de eerste bijdrage wordt een bijdrageovereenkomst gevraagd).</p>
+        <p class="faq-link"><a href="#bug" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+    <details id="soutenir">
+      <summary>Hoe kan ik Voltaplan steunen?</summary>
+      <div class="faq-a">
+      <p>Met een vrijblijvende gift via <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: die financiert de tijd voor ontwikkeling, onderhoud en reglementaire nalezing, en ontgrendelt niets. Een bug melden of een regel door een vakman laten nalezen helpt evenveel.</p>
+        <p class="faq-link"><a href="#soutenir" data-copied="Link gekopieerd">Link naar deze vraag</a></p>
+      </div>
+    </details>
+  </section>
+  <p class="faq-empty" hidden>Geen enkele vraag komt overeen. Probeer een ander woord, of bekijk de handleiding.</p>
+  <section class="faq-more"><h2>Niet gevonden?</h2><p>De <a href="guide.html">handleiding</a> legt elk scherm stap voor stap uit. Stel anders uw vraag op <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub</a> (openbaar: zonder klantgegevens).</p></section>
 </main>
 <footer>Voltaplan — gratis en open source — <a href="https://github.com/sponsors/SebastienBatteur">het project steunen</a> (vrijblijvend) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Privacy</a> — <a href="terms.html">Gebruiksvoorwaarden</a> — licentie <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">broncode</a></footer>
 <script src="../site.js"></script>
+<script src="../search.js"></script>
 </body>
 </html>

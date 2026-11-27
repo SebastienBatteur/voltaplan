@@ -26,201 +26,325 @@
     <span class="lang"><a href="faq.html" aria-current="true" data-lang="fr">FR</a><a href="nl/faq.html" data-lang="nl">NL</a><a href="en/faq.html" data-lang="en">EN</a><a href="de/faq.html" data-lang="de">DE</a></span>
   </nav>
 </div></header>
-<main class="doc">
-  <nav class="toc" aria-label="Sommaire">
-    <a href="#c-general">Généralités</a>
-    <a href="#gratuit">Est-ce gratuit ?</a>
-    <a href="#licence">Est-ce open source ?</a>
-    <a href="#compte">Faut-il un compte ?</a>
-    <a href="#bureau">Navigateur ou application de bureau ?</a>
-    <a href="#hors-ligne">Hors connexion ?</a>
-    <a href="#langues">Langues</a>
-    <a href="#c-utiliser">Utiliser l'application</a>
-    <a href="#u-nouveau">Commencer un projet</a>
-    <a href="#u-schema">Dessiner l'unifilaire</a>
-    <a href="#u-modifier">Déplacer, dupliquer, supprimer, annuler</a>
-    <a href="#u-proprietes">Câble, calibre, différentiel</a>
-    <a href="#u-maj">Le bouton Mettre à jour</a>
-    <a href="#u-fond">Fond de plan et échelle</a>
-    <a href="#u-symboles">Placer les points sur le plan</a>
-    <a href="#u-piece">Équiper une pièce</a>
-    <a href="#u-tableau">Organiser le tableau</a>
-    <a href="#u-controle">Utiliser le contrôle RGIE</a>
-    <a href="#u-mesures">Saisir les mesures</a>
-    <a href="#u-materiel">Matériel et longueurs</a>
-    <a href="#u-enregistrer">Enregistrer, rouvrir, récupérer</a>
-    <a href="#u-langue">Changer de langue</a>
-    <a href="#u-raccourcis">Raccourcis clavier</a>
-    <a href="#c-fichiers">Fichiers</a>
-    <a href="#fichiers">Où sont mes fichiers ?</a>
-    <a href="#format">Format de fichier</a>
-    <a href="#importer">Importer d'un autre logiciel</a>
-    <a href="#pdf">Dossier PDF d'un autre logiciel</a>
-    <a href="#c-rgie">RGIE et contrôle</a>
-    <a href="#organisme">Remplace-t-il l'organisme agréé ?</a>
-    <a href="#rgie">Quelle version du RGIE ?</a>
-    <a href="#neuf-existant">Neuf ou existant</a>
-    <a href="#pays">Autres pays</a>
-    <a href="#c-fonctions">Fonctions</a>
-    <a href="#longueurs">Longueur des câbles</a>
-    <a href="#imprimer">Imprimer le dossier</a>
-    <a href="#c-vie-privee">IA et vie privée</a>
-    <a href="#ia">L'IA est-elle obligatoire ?</a>
-    <a href="#telemetrie">Télémétrie</a>
-    <a href="#c-projet">Le projet</a>
-    <a href="#bug">Signaler un bug, contribuer</a>
-    <a href="#soutenir">Soutenir Voltaplan</a>
+<main class="faq">
+  <h1>Questions fréquentes</h1>
+  <p class="muted">Cliquez sur une question pour voir la réponse, ou cherchez un mot.</p>
+  <div class="faq-search" hidden><input type="search" id="faq-q" placeholder="Chercher une question (ex. PDF, Trikker, hors ligne)…" aria-label="Chercher dans la FAQ" autocomplete="off"><button type="button" class="faq-toggle" data-open="Tout ouvrir" data-close="Tout fermer">Tout ouvrir</button></div>
+  <nav class="faq-tiles" aria-label="Questions fréquentes">
+    <a href="#c-general"><span aria-hidden="true">💡</span> Généralités <small>6 questions</small></a>
+    <a href="#c-utiliser"><span aria-hidden="true">🧭</span> Utiliser l'application <small>15 questions</small></a>
+    <a href="#c-fichiers"><span aria-hidden="true">📁</span> Fichiers <small>4 questions</small></a>
+    <a href="#c-rgie"><span aria-hidden="true">✅</span> RGIE et contrôle <small>4 questions</small></a>
+    <a href="#c-fonctions"><span aria-hidden="true">📐</span> Fonctions <small>2 questions</small></a>
+    <a href="#c-vie-privee"><span aria-hidden="true">🔒</span> IA et vie privée <small>2 questions</small></a>
+    <a href="#c-projet"><span aria-hidden="true">🤝</span> Le projet <small>2 questions</small></a>
   </nav>
-  <article>
-    <h2 id="c-general">Généralités</h2>
-
-    <h3 id="gratuit">Voltaplan est-il gratuit ?</h3>
-    <p>Oui, entièrement : sans abonnement, sans publicité, sans fonction réservée. L'enregistrement et le PDF du dossier sont compris, sans filigrane ni limite de projets. Les <a href="#soutenir">dons</a> sont facultatifs et ne débloquent rien.</p>
-
-    <h3 id="licence">Est-ce un logiciel open source ? Sous quelle licence ?</h3>
-    <p>Oui. Le code est publié sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> sur le <a class="repo-link" href="#">dépôt GitHub</a>. Toute version modifiée distribuée ou proposée en ligne doit publier son code source.</p>
-
-    <h3 id="compte">Faut-il créer un compte ?</h3>
-    <p>Non. Voltaplan n'a ni compte ni serveur. Si vous choisissez d'enregistrer dans Google Drive, OneDrive, Dropbox ou GitHub, vous vous connectez à <strong>votre</strong> compte chez ce service, directement depuis l'application.</p>
-
-    <h3 id="bureau">Navigateur ou application de bureau ?</h3>
-    <p>La version web fonctionne dans Chrome, Edge ou Firefox, sans rien installer. Votre navigateur peut l'installer comme une application, sur ordinateur, iPhone, iPad ou Android (voir <a href="guide.html#installer">Installer</a>). Une application de bureau pour Windows, macOS et Linux est prévue, mais <strong>aucune version de bureau n'est encore publiée</strong> : les installateurs paraîtront sur la page <a class="release-link" href="#">Releases</a> du dépôt.</p>
-
-    <h3 id="hors-ligne">Fonctionne-t-il hors connexion ?</h3>
-    <p>Oui, après la première visite : dessin, plan, tableau, calculs, contrôle RGIE, dossier PDF, fichiers et versions locales fonctionnent sans Internet. Hors ligne, l'IA en ligne, GitHub, Drive, OneDrive et Dropbox sont indisponibles ; les enregistrements vers ces services sont mis en attente. Le moteur de lecture des photos (≈ 18 Mo) est chargé à la première lecture, puis fonctionne lui aussi hors ligne.</p>
-
-    <h3 id="langues">Dans quelles langues ?</h3>
-    <p>L'application et ce site existent en français, néerlandais, anglais et allemand. L'import de dossiers PDF reconnaît aussi les dossiers rédigés dans ces quatre langues.</p>
-
-    <h2 id="c-utiliser">Utiliser l'application</h2>
-
-    <h3 id="u-nouveau">Comment commencer un nouveau projet ?</h3>
-    <p>Sur l'écran <strong>Mes projets</strong>, cliquez <strong>Nouveau projet</strong>, ou <strong>Relever une installation existante</strong> pour une installation déjà en place. L'assistant compte 4 étapes : <strong>Type</strong> (installation neuve ou existante, nom du projet ; pour une installation neuve, départ d'un <em>Projet vide</em> ou d'une <em>Maison type, à adapter</em>), <strong>Lieu</strong> (client et adresse), <strong>Installateur</strong> et <strong>Alimentation</strong> (tension, schéma de terre, calibre du disjoncteur de branchement). <strong>Créer maintenant</strong> saute les étapes restantes : tout se complète ensuite dans l'onglet <strong>Projet</strong>. Pour reprendre le dossier d'un autre logiciel, voir <a href="#importer">Quels fichiers puis-je importer ?</a> Détails : <a href="guide.html#demarrer">Démarrer</a>.</p>
-
-    <h3 id="u-schema">Comment dessiner le schéma unifilaire ?</h3>
-    <p>Vous ne le dessinez pas : vous décrivez l'installation dans l'arborescence <strong>Installation</strong>, à gauche, et l'unifilaire se dessine tout seul.</p>
-    <ol>
-      <li>Sélectionnez l'élément sous lequel ajouter (tableau, différentiel, disjoncteur…).</li>
-      <li>Ajoutez avec le <strong>＋</strong> au bout de sa ligne, le bouton <strong>＋ Ajouter…</strong> des propriétés, la palette <strong>Éléments</strong>, ou un clic droit sur son symbole → <strong>Ajouter dans</strong>. Seul ce qui peut s'y brancher est proposé.</li>
-      <li>Exemple de circuit de prises : tableau → protection (disjoncteur 20 A) → canalisation (VOB 3G2,5) → prises.</li>
-    </ol>
-    <p>La numérotation RGIE (A, B… puis A1, A2…) suit. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
-
-    <h3 id="u-modifier">Comment déplacer, dupliquer ou supprimer un élément ? Et annuler ?</h3>
-    <p>Sélectionnez l'élément dans l'arborescence, l'unifilaire, le plan ou le tableau : il est sélectionné partout. Sous ses propriétés, <strong>↑</strong> et <strong>↓</strong> changent sa place parmi ses voisins, <strong>Dupliquer</strong> en fait une copie et <strong>Supprimer</strong> le retire (touche <kbd>Suppr</kbd>). Sur le plan et dans le tableau, glissez-le pour le déplacer. <strong>Annuler</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) et <strong>Rétablir</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) sont dans la barre du haut. Voir <a href="guide.html#ecran">L'écran</a>.</p>
-
-    <h3 id="u-proprietes">Où régler le câble, la section, le calibre ou la sensibilité du différentiel ?</h3>
-    <p>Dans le panneau <strong>Propriétés</strong>, sous l'arborescence, une fois l'élément sélectionné. Protection : appareil, calibre, pôles, courbe, pouvoir de coupure, sensibilité et type du différentiel, nombre de modules. Canalisation : type (VOB, XVB…), section, nombre de conducteurs, mode de pose, longueur. Indiquez aussi l'<strong>Emplacement</strong> (la pièce) : il sert à poser les points sur le plan. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
-
-    <h3 id="u-maj">À quoi sert le bouton ⟳ Mettre à jour ?</h3>
-    <p>Cliquez-le après avoir créé l'installation ou ajouté des circuits. Il pose les nouveaux appareils dans le premier emplacement libre du tableau, sans déplacer les autres, et les nouveaux points sur le plan près du nom de leur pièce ; il estime la longueur des câbles, ajoute une révision au dossier et recalcule numérotation, étiquettes, matériel et contrôle. La fenêtre de résultat permet de tout annuler en une fois. Voir <a href="guide.html#maj">Mettre à jour</a>.</p>
-
-    <h3 id="u-fond">Comment importer un fond de plan et le mettre à l'échelle ?</h3>
-    <ol>
-      <li>Onglet <strong>Plan</strong> → <strong>Fond de plan (photo / PDF / DXF)…</strong>. Un DXF dont l'unité est indiquée est posé directement à la bonne échelle.</li>
-      <li>Pour une photo ou un PDF : <strong>Mettre à l'échelle</strong>, cliquez deux points et donnez leur distance réelle. <strong>Redresser (4 coins)</strong> corrige une photo prise de biais.</li>
-      <li>Dessinez les murs, portes et fenêtres par-dessus, ou essayez <strong>Tracer les murs</strong> (détection automatique, à vérifier).</li>
-    </ol>
-    <p>Voir <a href="guide.html#plan">Plan de position</a>.</p>
-
-    <h3 id="u-symboles">Comment placer les points sur le plan et les relier au schéma ?</h3>
-    <p>Pour un élément déjà dans l'unifilaire : <strong>Placer sur le plan</strong> dans ses propriétés, ou la liste <strong>Pas encore sur le plan</strong> de la palette, puis cliquez sur le plan. Pour un nouvel élément : clic droit sur le plan à l'endroit voulu, choisissez l'élément puis où il se branche dans l'unifilaire (Voltaplan propose le circuit de l'élément le plus proche) ; il est ajouté au schéma et posé sur le plan. Glissez un symbole pour le déplacer. Voir <a href="guide.html#plan">Plan de position</a>.</p>
-
-    <h3 id="u-piece">Comment équiper une pièce d'un coup ?</h3>
-    <ol>
-      <li>Nommez la pièce sur le plan avec l'outil <strong>Texte</strong> (« Chambre », « Cuisine », « Salle de bain »…), ou lisez les noms écrits sur le fond avec <strong>Lire les noms de pièces</strong>.</li>
-      <li>Sélectionnez ce nom : le panneau <strong>Équiper la pièce</strong> propose l'équipement habituel, à cocher, et <strong>Ajouter le mobilier type</strong>.</li>
-      <li><strong>Ajouter à la pièce</strong> pose les points, <strong>non raccordés</strong> : reliez-les ensuite à leurs circuits.</li>
-    </ol>
-    <p>C'est un point de départ, pas une liste du RGIE. Voir <a href="guide.html#plan">Plan de position</a>.</p>
-
-    <h3 id="u-tableau">Comment organiser le tableau ?</h3>
-    <p>Dans les propriétés du tableau, indiquez le nombre de rangées et de modules par rangée. Dans l'onglet <strong>Tableau</strong>, glissez les appareils entre les rangées et la réserve, ou cliquez <strong>Disposition automatique</strong> (ordre de l'arborescence) ; la largeur réelle de chaque appareil se règle dans ses propriétés (modules). Avec une photo prise de face : <strong>Photo du tableau…</strong>, puis <strong>Caler la photo (rangées)</strong>, puis <strong>Disposer d'après la photo</strong> ou <strong>Comparer à la photo</strong>. Voir <a href="guide.html#tableau">Tableau</a> et <a href="guide.html#photo">Photo du tableau</a>.</p>
-
-    <h3 id="u-controle">Comment utiliser le contrôle RGIE ?</h3>
-    <p>Ouvrez l'onglet <strong>Contrôle RGIE</strong> (le chiffre rouge = nombre de non-conformités). Chaque constat a un statut (non-conformité détectée, informations insuffisantes, recommandation…), une gravité et, s'il y a lieu, la mention bloquant.</p>
-    <ul>
-      <li>Les boutons <strong>Unifilaire</strong>, <strong>Plan</strong> et <strong>Tableau</strong> d'un constat montrent l'élément concerné.</li>
-      <li>Quand la correction est évidente, un bouton la propose sous le constat (par exemple <strong>Choisir 20 A</strong>) ; <kbd>Ctrl</kbd>+<kbd>Z</kbd> revient en arrière.</li>
-      <li>Installation existante : un élément non dessiné (terre, différentiel) se confirme avec <strong>Confirmer présent</strong>, <strong>Confirmer absent</strong> ou <strong>Je ne sais pas</strong>.</li>
-      <li><strong>Dérogation…</strong> enregistre une dérogation avec son motif : le constat reste visible, mais n'est plus bloquant.</li>
-    </ul>
-    <p>Voir <a href="guide.html#controle">Contrôle RGIE</a>.</p>
-
-    <h3 id="u-mesures">Où saisir les mesures ?</h3>
-    <p>Onglet <strong>Projet</strong>, partie <strong>Mesures</strong> : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel, date et appareil de mesure. Elles sont contrôlées et imprimées dans le dossier. Voir <a href="guide.html#mesures">Mesures</a>.</p>
-
-    <h3 id="u-materiel">Comment obtenir la liste du matériel et la longueur des câbles ?</h3>
-    <p>Onglet <strong>Matériel</strong> : le matériel est groupé et additionné ; <strong>Par pièce</strong> le range pièce par pièce. <strong>Estimer les longueurs</strong> calcule la longueur des câbles d'après le plan (posez d'abord le tableau sur le plan) ; une longueur saisie n'est jamais remplacée. <strong>Exporter (CSV, tableur)</strong> et <strong>Liste des circuits (CSV)</strong> s'ouvrent dans un tableur. Voir <a href="guide.html#materiel">Liste du matériel</a> et <a href="#longueurs">Comment la longueur des câbles est-elle estimée ?</a></p>
-
-    <h3 id="u-enregistrer">Comment enregistrer, rouvrir ou récupérer un projet ?</h3>
-    <ul>
-      <li><strong>Enregistrer</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Enregistrer sous…</strong> choisit l'emplacement : <strong>Cet appareil</strong> (fichier <code>.voltaplan</code>), le navigateur ou GitHub (sous <strong>Autres emplacements</strong>), ou Drive, OneDrive, Dropbox.</li>
-      <li>Rouvrir : la liste de l'écran <strong>Mes projets</strong>, <strong>Fichier → Ouvrir…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) ou <strong>Ouvrir depuis le cloud ou le navigateur</strong>.</li>
-      <li>Récupérer : après une fermeture inattendue, le travail non enregistré est proposé à la réouverture (<strong>Récupérer</strong>). <strong>Fichier → Versions locales…</strong> rouvre une version précédente comme nouveau projet.</li>
-    </ul>
-    <p>Voir <a href="guide.html#sauver">Enregistrer et ouvrir</a>.</p>
-
-    <h3 id="u-langue">Comment changer de langue ?</h3>
-    <p>Avec le choix de langue de la barre du haut (Français, Nederlands, English, Deutsch) ; sur petit écran, dans le menu <strong>⋯</strong> → <strong>Langue</strong>. Le choix est retenu sur cet appareil.</p>
-
-    <h3 id="u-raccourcis">Quels sont les raccourcis clavier ?</h3>
-    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> enregistrer, <kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>S</kbd> enregistrer sous, <kbd>Ctrl</kbd>+<kbd>O</kbd> ouvrir, <kbd>Ctrl</kbd>+<kbd>P</kbd> imprimer / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd> annuler et rétablir, <kbd>Suppr</kbd> supprimer l'élément sélectionné, <kbd>Échap</kbd> quitter l'outil en cours. Dans l'arborescence : flèches pour parcourir, gauche et droite pour replier et déplier, <kbd>+</kbd> pour ajouter dedans. Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>. Voir <a href="guide.html#raccourcis">Raccourcis</a>.</p>
-
-    <h2 id="c-fichiers">Fichiers</h2>
-
-    <h3 id="fichiers">Où sont enregistrés mes fichiers ?</h3>
-    <p>Là où vous le choisissez : sur votre appareil (fichier <code>.voltaplan</code>, aussi sur une clé USB ou un dossier synchronisé), dans le navigateur, ou dans votre propre stockage en ligne : <strong>OneDrive, Google Drive, Dropbox ou GitHub</strong>. Aucun serveur Voltaplan ne reçoit vos projets. Les projets gardés dans le navigateur sont effacés si vous videz ses données : gardez aussi une copie en fichier. Voir <a href="guide.html#sauver">Enregistrer et ouvrir</a>.</p>
-
-    <h3 id="format">Le format de fichier est-il ouvert ?</h3>
-    <p>Oui. Un fichier <code>.voltaplan</code> est une archive ZIP ordinaire : le modèle du projet en JSON lisible (<code>project.json</code>), les photos et PDF d'origine tels quels, et un LISEZMOI qui explique comment récupérer les données sans Voltaplan. Le format est décrit dans <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. Vous pouvez aussi exporter pour Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) et en CSV.</p>
-
-    <h3 id="importer">Quels fichiers puis-je importer ?</h3>
-    <p><strong>Fichier → Importer d'un autre logiciel…</strong> (ou la carte de l'écran Mes projets) reconnaît la source d'après le contenu, quelle que soit l'extension : projet Voltaplan, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (export <code>.zip</code>) et dossier PDF d'un autre logiciel. Une archive <code>.zip</code> qui contient un de ces fichiers est ouverte. Un fichier non reconnu est refusé avec une explication. Détails : <a href="guide.html#importer">Importer d'un autre logiciel</a>.</p>
-
-    <h3 id="pdf">Puis-je reprendre le dossier PDF d'un autre logiciel ?</h3>
-    <p>Oui, s'il contient du <strong>texte</strong> : tableau des circuits, sous-tableaux, points, plans (en fond de plan, avec murs, portes et fenêtres lus dans le dessin), face avant des tableaux, informations du cartouche et mesures sont repris. Le PDF est lu dans votre navigateur, sans envoi ni IA. Un <strong>PDF scanné</strong> ou dont le texte est dessiné (images) ne peut pas être lu : il est refusé avec une explication. Ce que le texte ne dit pas est signalé à l'ouverture, à compléter.</p>
-
-    <h2 id="c-rgie">RGIE et contrôle</h2>
-
-    <h3 id="organisme">Voltaplan remplace-t-il l'organisme agréé ?</h3>
-    <p>Non. Voltaplan est une <strong>aide</strong> au dessin et à la vérification : ce n'est pas un organisme de contrôle, il ne délivre ni certification, ni attestation, ni procès-verbal de conformité. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée parmi les règles effectivement vérifiées, avec les informations saisies. Vous restez responsable de l'installation et des documents que vous signez ; le contrôle reste celui de l'organisme agréé. Voir les <a href="terms.html">conditions d'utilisation</a>.</p>
-
-    <h3 id="rgie">Quelle version du RGIE est vérifiée ?</h3>
-    <p>Le RGIE belge, <strong>Livre 1</strong> (installations à basse et très basse tension), en vigueur depuis le 1/6/2020. Selon la date de réalisation indiquée, partie par partie, Voltaplan applique aussi l'ancien RGIE (AR du 10 mars 1981) ou les règles d'une partie ancienne (avant le 1/10/1981), ainsi que les modifications datées du Livre 1. Les symboles suivent le tableau 2.23 et l'unifilaire la figure 3.1. Seule une partie des règles est vérifiée, et elles doivent être relues par un professionnel : la liste et les points en attente sont dans la <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">couverture réglementaire</a>.</p>
-
-    <h3 id="neuf-existant">Installation neuve ou existante ?</h3>
-    <p>Les deux. Pour une <strong>installation neuve</strong>, vous concevez l'installation : toutes les règles s'appliquent et les non-conformités sont bloquantes pour le dossier de réception. Pour une <strong>installation existante</strong> (vente, remise en ordre), vous relevez ce qui est en place : ce qui n'est pas vu reste « inconnu » et n'est pas compté comme absent ; les règles de sécurité restent bloquantes, les autres deviennent des recommandations. Une installation peut mêler des parties de plusieurs époques.</p>
-
-    <h3 id="pays">Et pour d'autres pays ?</h3>
-    <p>Aujourd'hui, seul le RGIE belge est disponible. Le moteur est prévu pour d'autres pays (un pays = un module de règles, ses textes et ses listes), mais aucun autre règlement n'est encore inclus.</p>
-
-    <h2 id="c-fonctions">Fonctions</h2>
-
-    <h3 id="longueurs">Comment la longueur des câbles est-elle estimée ?</h3>
-    <p>D'après le plan de position : du tableau aux points dans l'ordre du schéma, à angles droits, avec les montées et descentes selon la hauteur de pose (interrupteur à 1,10 m, prise basse à 0,25 m…), les changements d'étage et 10 % de marge. Les tracés de câbles de Condui sont repris ; pour les autres imports, des tracés à angles droits sont créés d'après l'unifilaire, en pointillé, à ajuster. Une longueur saisie n'est jamais remplacée. Voir <a href="guide.html#longueurs">Longueur des câbles</a>.</p>
-
-    <h3 id="imprimer">Comment imprimer le dossier ?</h3>
-    <p><strong>Imprimer / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>) : document de travail, dossier de réception, rapport d'anomalies ou dossier technique complet, en A4 ou A3 paysage, avec les parties de votre choix (unifilaire, plans, tableaux, légende, mesures, liste du matériel, étiquettes 1:1…). Choisissez « Enregistrer au format PDF » dans la boîte d'impression pour un PDF vectoriel. Le dossier de réception porte une mention « PROJET — … » tant qu'il reste des points à traiter. Voir <a href="guide.html#imprimer">Imprimer le dossier</a>.</p>
-
-    <h2 id="c-vie-privee">IA et vie privée</h2>
-
-    <h3 id="ia">L'IA est-elle obligatoire ?</h3>
-    <p>Non. Tout fonctionne sans IA ; elle est désactivée par défaut et chaque usage doit être autorisé. Si vous l'activez, elle passe par le fournisseur que vous choisissez avec <strong>votre propre clé</strong> (Anthropic, ou une API compatible OpenAI : OpenAI, Gemini, Mistral), ou par un <strong>modèle local</strong> (Ollama, LM Studio) sans clé, et alors rien ne quitte l'ordinateur. Seule la photo concernée (tableau, plaque du compteur ou plan) est envoyée, directement de votre appareil au fournisseur, jamais le nom ni l'adresse du client. Le coût éventuel est à votre charge. Voir <a href="guide.html#ia">IA</a> et la <a href="privacy.html">politique de confidentialité</a>.</p>
-
-    <h3 id="telemetrie">Y a-t-il de la télémétrie ou une mesure d'audience ?</h3>
-    <p>Non : aucune télémétrie, aucune statistique, aucun cookie ni traceur ajouté par Voltaplan. Seul l'hébergeur du site (GitHub Pages) reçoit les requêtes habituelles pour télécharger l'application, comme pour tout site.</p>
-
-    <h2 id="c-projet">Le projet</h2>
-
-    <h3 id="bug">Comment signaler un bug ou contribuer ?</h3>
-    <p>Ouvrez un ticket sur le <a href="https://github.com/SebastienBatteur/voltaplan/issues">dépôt GitHub</a>. Les tickets sont publics : n'y joignez jamais un dossier, une photo ou l'adresse d'un client. Une faille de sécurité se signale par un <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">rapport privé</a>. Code, règles, traductions et tests sont bienvenus : voir le <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">guide de contribution</a> (une contribution réglementaire cite sa source ; un accord de contribution est demandé avant la première contribution).</p>
-
-    <h3 id="soutenir">Comment soutenir Voltaplan ?</h3>
-    <p>Par un don facultatif sur <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a> : il finance le temps de développement, de maintenance et de relecture réglementaire, et ne débloque rien. Signaler un bug ou faire relire une règle par un professionnel aide tout autant.</p>
-  </article>
+  <section class="faq-popular"><h2>Questions les plus utiles</h2><ul>
+    <li><a href="#u-nouveau">Comment commencer un nouveau projet ?</a></li>
+    <li><a href="#importer">Quels fichiers puis-je importer ?</a></li>
+    <li><a href="#organisme">Voltaplan remplace-t-il l'organisme agréé ?</a></li>
+    <li><a href="#fichiers">Où sont enregistrés mes fichiers ?</a></li>
+    <li><a href="#gratuit">Voltaplan est-il gratuit ?</a></li>
+  </ul></section>
+  <section class="faq-group" id="c-general">
+    <h2>Généralités</h2>
+    <details id="gratuit">
+      <summary>Voltaplan est-il gratuit ?</summary>
+      <div class="faq-a">
+      <p>Oui, entièrement : sans abonnement, sans publicité, sans fonction réservée. L'enregistrement et le PDF du dossier sont compris, sans filigrane ni limite de projets. Les <a href="#soutenir">dons</a> sont facultatifs et ne débloquent rien.</p>
+        <p class="faq-link"><a href="#gratuit" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="licence">
+      <summary>Est-ce un logiciel open source ? Sous quelle licence ?</summary>
+      <div class="faq-a">
+      <p>Oui. Le code est publié sous licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> sur le <a class="repo-link" href="#">dépôt GitHub</a>. Toute version modifiée distribuée ou proposée en ligne doit publier son code source.</p>
+        <p class="faq-link"><a href="#licence" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="compte">
+      <summary>Faut-il créer un compte ?</summary>
+      <div class="faq-a">
+      <p>Non. Voltaplan n'a ni compte ni serveur. Si vous choisissez d'enregistrer dans Google Drive, OneDrive, Dropbox ou GitHub, vous vous connectez à <strong>votre</strong> compte chez ce service, directement depuis l'application.</p>
+        <p class="faq-link"><a href="#compte" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="bureau">
+      <summary>Navigateur ou application de bureau ?</summary>
+      <div class="faq-a">
+      <p>La version web fonctionne dans Chrome, Edge ou Firefox, sans rien installer. Votre navigateur peut l'installer comme une application, sur ordinateur, iPhone, iPad ou Android (voir <a href="guide.html#installer">Installer</a>). Une application de bureau pour Windows, macOS et Linux est prévue, mais <strong>aucune version de bureau n'est encore publiée</strong> : les installateurs paraîtront sur la page <a class="release-link" href="#">Releases</a> du dépôt.</p>
+        <p class="faq-link"><a href="#bureau" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="hors-ligne">
+      <summary>Fonctionne-t-il hors connexion ?</summary>
+      <div class="faq-a">
+      <p>Oui, après la première visite : dessin, plan, tableau, calculs, contrôle RGIE, dossier PDF, fichiers et versions locales fonctionnent sans Internet. Hors ligne, l'IA en ligne, GitHub, Drive, OneDrive et Dropbox sont indisponibles ; les enregistrements vers ces services sont mis en attente. Le moteur de lecture des photos (≈ 18 Mo) est chargé à la première lecture, puis fonctionne lui aussi hors ligne.</p>
+        <p class="faq-link"><a href="#hors-ligne" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="langues">
+      <summary>Dans quelles langues ?</summary>
+      <div class="faq-a">
+      <p>L'application et ce site existent en français, néerlandais, anglais et allemand. L'import de dossiers PDF reconnaît aussi les dossiers rédigés dans ces quatre langues.</p>
+        <p class="faq-link"><a href="#langues" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-utiliser">
+    <h2>Utiliser l'application</h2>
+    <details id="u-nouveau">
+      <summary>Comment commencer un nouveau projet ?</summary>
+      <div class="faq-a">
+      <p>Sur l'écran <strong>Mes projets</strong>, cliquez <strong>Nouveau projet</strong>, ou <strong>Relever une installation existante</strong> pour une installation déjà en place. L'assistant compte 4 étapes : <strong>Type</strong> (installation neuve ou existante, nom du projet ; pour une installation neuve, départ d'un <em>Projet vide</em> ou d'une <em>Maison type, à adapter</em>), <strong>Lieu</strong> (client et adresse), <strong>Installateur</strong> et <strong>Alimentation</strong> (tension, schéma de terre, calibre du disjoncteur de branchement). <strong>Créer maintenant</strong> saute les étapes restantes : tout se complète ensuite dans l'onglet <strong>Projet</strong>. Pour reprendre le dossier d'un autre logiciel, voir <a href="#importer">Quels fichiers puis-je importer ?</a> Détails : <a href="guide.html#demarrer">Démarrer</a>.</p>
+        <p class="faq-link"><a href="#u-nouveau" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-schema">
+      <summary>Comment dessiner le schéma unifilaire ?</summary>
+      <div class="faq-a">
+      <p>Vous ne le dessinez pas : vous décrivez l'installation dans l'arborescence <strong>Installation</strong>, à gauche, et l'unifilaire se dessine tout seul.</p>
+      <ol>
+        <li>Sélectionnez l'élément sous lequel ajouter (tableau, différentiel, disjoncteur…).</li>
+        <li>Ajoutez avec le <strong>＋</strong> au bout de sa ligne, le bouton <strong>＋ Ajouter…</strong> des propriétés, la palette <strong>Éléments</strong>, ou un clic droit sur son symbole → <strong>Ajouter dans</strong>. Seul ce qui peut s'y brancher est proposé.</li>
+        <li>Exemple de circuit de prises : tableau → protection (disjoncteur 20 A) → canalisation (VOB 3G2,5) → prises.</li>
+      </ol>
+      <p>La numérotation RGIE (A, B… puis A1, A2…) suit. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
+        <p class="faq-link"><a href="#u-schema" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-modifier">
+      <summary>Comment déplacer, dupliquer ou supprimer un élément ? Et annuler ?</summary>
+      <div class="faq-a">
+      <p>Sélectionnez l'élément dans l'arborescence, l'unifilaire, le plan ou le tableau : il est sélectionné partout. Sous ses propriétés, <strong>↑</strong> et <strong>↓</strong> changent sa place parmi ses voisins, <strong>Dupliquer</strong> en fait une copie et <strong>Supprimer</strong> le retire (touche <kbd>Suppr</kbd>). Sur le plan et dans le tableau, glissez-le pour le déplacer. <strong>Annuler</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) et <strong>Rétablir</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) sont dans la barre du haut. Voir <a href="guide.html#ecran">L'écran</a>.</p>
+        <p class="faq-link"><a href="#u-modifier" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-proprietes">
+      <summary>Où régler le câble, la section, le calibre ou la sensibilité du différentiel ?</summary>
+      <div class="faq-a">
+      <p>Dans le panneau <strong>Propriétés</strong>, sous l'arborescence, une fois l'élément sélectionné. Protection : appareil, calibre, pôles, courbe, pouvoir de coupure, sensibilité et type du différentiel, nombre de modules. Canalisation : type (VOB, XVB…), section, nombre de conducteurs, mode de pose, longueur. Indiquez aussi l'<strong>Emplacement</strong> (la pièce) : il sert à poser les points sur le plan. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
+        <p class="faq-link"><a href="#u-proprietes" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-maj">
+      <summary>À quoi sert le bouton ⟳ Mettre à jour ?</summary>
+      <div class="faq-a">
+      <p>Cliquez-le après avoir créé l'installation ou ajouté des circuits. Il pose les nouveaux appareils dans le premier emplacement libre du tableau, sans déplacer les autres, et les nouveaux points sur le plan près du nom de leur pièce ; il estime la longueur des câbles, ajoute une révision au dossier et recalcule numérotation, étiquettes, matériel et contrôle. La fenêtre de résultat permet de tout annuler en une fois. Voir <a href="guide.html#maj">Mettre à jour</a>.</p>
+        <p class="faq-link"><a href="#u-maj" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-fond">
+      <summary>Comment importer un fond de plan et le mettre à l'échelle ?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Onglet <strong>Plan</strong> → <strong>Fond de plan (photo / PDF / DXF)…</strong>. Un DXF dont l'unité est indiquée est posé directement à la bonne échelle.</li>
+        <li>Pour une photo ou un PDF : <strong>Mettre à l'échelle</strong>, cliquez deux points et donnez leur distance réelle. <strong>Redresser (4 coins)</strong> corrige une photo prise de biais.</li>
+        <li>Dessinez les murs, portes et fenêtres par-dessus, ou essayez <strong>Tracer les murs</strong> (détection automatique, à vérifier).</li>
+      </ol>
+      <p>Voir <a href="guide.html#plan">Plan de position</a>.</p>
+        <p class="faq-link"><a href="#u-fond" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-symboles">
+      <summary>Comment placer les points sur le plan et les relier au schéma ?</summary>
+      <div class="faq-a">
+      <p>Pour un élément déjà dans l'unifilaire : <strong>Placer sur le plan</strong> dans ses propriétés, ou la liste <strong>Pas encore sur le plan</strong> de la palette, puis cliquez sur le plan. Pour un nouvel élément : clic droit sur le plan à l'endroit voulu, choisissez l'élément puis où il se branche dans l'unifilaire (Voltaplan propose le circuit de l'élément le plus proche) ; il est ajouté au schéma et posé sur le plan. Glissez un symbole pour le déplacer. Voir <a href="guide.html#plan">Plan de position</a>.</p>
+        <p class="faq-link"><a href="#u-symboles" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-piece">
+      <summary>Comment équiper une pièce d'un coup ?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Nommez la pièce sur le plan avec l'outil <strong>Texte</strong> (« Chambre », « Cuisine », « Salle de bain »…), ou lisez les noms écrits sur le fond avec <strong>Lire les noms de pièces</strong>.</li>
+        <li>Sélectionnez ce nom : le panneau <strong>Équiper la pièce</strong> propose l'équipement habituel, à cocher, et <strong>Ajouter le mobilier type</strong>.</li>
+        <li><strong>Ajouter à la pièce</strong> pose les points, <strong>non raccordés</strong> : reliez-les ensuite à leurs circuits.</li>
+      </ol>
+      <p>C'est un point de départ, pas une liste du RGIE. Voir <a href="guide.html#plan">Plan de position</a>.</p>
+        <p class="faq-link"><a href="#u-piece" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-tableau">
+      <summary>Comment organiser le tableau ?</summary>
+      <div class="faq-a">
+      <p>Dans les propriétés du tableau, indiquez le nombre de rangées et de modules par rangée. Dans l'onglet <strong>Tableau</strong>, glissez les appareils entre les rangées et la réserve, ou cliquez <strong>Disposition automatique</strong> (ordre de l'arborescence) ; la largeur réelle de chaque appareil se règle dans ses propriétés (modules). Avec une photo prise de face : <strong>Photo du tableau…</strong>, puis <strong>Caler la photo (rangées)</strong>, puis <strong>Disposer d'après la photo</strong> ou <strong>Comparer à la photo</strong>. Voir <a href="guide.html#tableau">Tableau</a> et <a href="guide.html#photo">Photo du tableau</a>.</p>
+        <p class="faq-link"><a href="#u-tableau" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-controle">
+      <summary>Comment utiliser le contrôle RGIE ?</summary>
+      <div class="faq-a">
+      <p>Ouvrez l'onglet <strong>Contrôle RGIE</strong> (le chiffre rouge = nombre de non-conformités). Chaque constat a un statut (non-conformité détectée, informations insuffisantes, recommandation…), une gravité et, s'il y a lieu, la mention bloquant.</p>
+      <ul>
+        <li>Les boutons <strong>Unifilaire</strong>, <strong>Plan</strong> et <strong>Tableau</strong> d'un constat montrent l'élément concerné.</li>
+        <li>Quand la correction est évidente, un bouton la propose sous le constat (par exemple <strong>Choisir 20 A</strong>) ; <kbd>Ctrl</kbd>+<kbd>Z</kbd> revient en arrière.</li>
+        <li>Installation existante : un élément non dessiné (terre, différentiel) se confirme avec <strong>Confirmer présent</strong>, <strong>Confirmer absent</strong> ou <strong>Je ne sais pas</strong>.</li>
+        <li><strong>Dérogation…</strong> enregistre une dérogation avec son motif : le constat reste visible, mais n'est plus bloquant.</li>
+      </ul>
+      <p>Voir <a href="guide.html#controle">Contrôle RGIE</a>.</p>
+        <p class="faq-link"><a href="#u-controle" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-mesures">
+      <summary>Où saisir les mesures ?</summary>
+      <div class="faq-a">
+      <p>Onglet <strong>Projet</strong>, partie <strong>Mesures</strong> : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel, date et appareil de mesure. Elles sont contrôlées et imprimées dans le dossier. Voir <a href="guide.html#mesures">Mesures</a>.</p>
+        <p class="faq-link"><a href="#u-mesures" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-materiel">
+      <summary>Comment obtenir la liste du matériel et la longueur des câbles ?</summary>
+      <div class="faq-a">
+      <p>Onglet <strong>Matériel</strong> : le matériel est groupé et additionné ; <strong>Par pièce</strong> le range pièce par pièce. <strong>Estimer les longueurs</strong> calcule la longueur des câbles d'après le plan (posez d'abord le tableau sur le plan) ; une longueur saisie n'est jamais remplacée. <strong>Exporter (CSV, tableur)</strong> et <strong>Liste des circuits (CSV)</strong> s'ouvrent dans un tableur. Voir <a href="guide.html#materiel">Liste du matériel</a> et <a href="#longueurs">Comment la longueur des câbles est-elle estimée ?</a></p>
+        <p class="faq-link"><a href="#u-materiel" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-enregistrer">
+      <summary>Comment enregistrer, rouvrir ou récupérer un projet ?</summary>
+      <div class="faq-a">
+      <ul>
+        <li><strong>Enregistrer</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Enregistrer sous…</strong> choisit l'emplacement : <strong>Cet appareil</strong> (fichier <code>.voltaplan</code>), le navigateur ou GitHub (sous <strong>Autres emplacements</strong>), ou Drive, OneDrive, Dropbox.</li>
+        <li>Rouvrir : la liste de l'écran <strong>Mes projets</strong>, <strong>Fichier → Ouvrir…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) ou <strong>Ouvrir depuis le cloud ou le navigateur</strong>.</li>
+        <li>Récupérer : après une fermeture inattendue, le travail non enregistré est proposé à la réouverture (<strong>Récupérer</strong>). <strong>Fichier → Versions locales…</strong> rouvre une version précédente comme nouveau projet.</li>
+      </ul>
+      <p>Voir <a href="guide.html#sauver">Enregistrer et ouvrir</a>.</p>
+        <p class="faq-link"><a href="#u-enregistrer" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-langue">
+      <summary>Comment changer de langue ?</summary>
+      <div class="faq-a">
+      <p>Avec le choix de langue de la barre du haut (Français, Nederlands, English, Deutsch) ; sur petit écran, dans le menu <strong>⋯</strong> → <strong>Langue</strong>. Le choix est retenu sur cet appareil.</p>
+        <p class="faq-link"><a href="#u-langue" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="u-raccourcis">
+      <summary>Quels sont les raccourcis clavier ?</summary>
+      <div class="faq-a">
+      <p><kbd>Ctrl</kbd>+<kbd>S</kbd> enregistrer, <kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>S</kbd> enregistrer sous, <kbd>Ctrl</kbd>+<kbd>O</kbd> ouvrir, <kbd>Ctrl</kbd>+<kbd>P</kbd> imprimer / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd> annuler et rétablir, <kbd>Suppr</kbd> supprimer l'élément sélectionné, <kbd>Échap</kbd> quitter l'outil en cours. Dans l'arborescence : flèches pour parcourir, gauche et droite pour replier et déplier, <kbd>+</kbd> pour ajouter dedans. Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>. Voir <a href="guide.html#raccourcis">Raccourcis</a>.</p>
+        <p class="faq-link"><a href="#u-raccourcis" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fichiers">
+    <h2>Fichiers</h2>
+    <details id="fichiers">
+      <summary>Où sont enregistrés mes fichiers ?</summary>
+      <div class="faq-a">
+      <p>Là où vous le choisissez : sur votre appareil (fichier <code>.voltaplan</code>, aussi sur une clé USB ou un dossier synchronisé), dans le navigateur, ou dans votre propre stockage en ligne : <strong>OneDrive, Google Drive, Dropbox ou GitHub</strong>. Aucun serveur Voltaplan ne reçoit vos projets. Les projets gardés dans le navigateur sont effacés si vous videz ses données : gardez aussi une copie en fichier. Voir <a href="guide.html#sauver">Enregistrer et ouvrir</a>.</p>
+        <p class="faq-link"><a href="#fichiers" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="format">
+      <summary>Le format de fichier est-il ouvert ?</summary>
+      <div class="faq-a">
+      <p>Oui. Un fichier <code>.voltaplan</code> est une archive ZIP ordinaire : le modèle du projet en JSON lisible (<code>project.json</code>), les photos et PDF d'origine tels quels, et un LISEZMOI qui explique comment récupérer les données sans Voltaplan. Le format est décrit dans <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a>. Vous pouvez aussi exporter pour Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) et en CSV.</p>
+        <p class="faq-link"><a href="#format" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="importer">
+      <summary>Quels fichiers puis-je importer ?</summary>
+      <div class="faq-a">
+      <p><strong>Fichier → Importer d'un autre logiciel…</strong> (ou la carte de l'écran Mes projets) reconnaît la source d'après le contenu, quelle que soit l'extension : projet Voltaplan, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (export <code>.zip</code>) et dossier PDF d'un autre logiciel. Une archive <code>.zip</code> qui contient un de ces fichiers est ouverte. Un fichier non reconnu est refusé avec une explication. Détails : <a href="guide.html#importer">Importer d'un autre logiciel</a>.</p>
+        <p class="faq-link"><a href="#importer" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="pdf">
+      <summary>Puis-je reprendre le dossier PDF d'un autre logiciel ?</summary>
+      <div class="faq-a">
+      <p>Oui, s'il contient du <strong>texte</strong> : tableau des circuits, sous-tableaux, points, plans (en fond de plan, avec murs, portes et fenêtres lus dans le dessin), face avant des tableaux, informations du cartouche et mesures sont repris. Le PDF est lu dans votre navigateur, sans envoi ni IA. Un <strong>PDF scanné</strong> ou dont le texte est dessiné (images) ne peut pas être lu : il est refusé avec une explication. Ce que le texte ne dit pas est signalé à l'ouverture, à compléter.</p>
+        <p class="faq-link"><a href="#pdf" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-rgie">
+    <h2>RGIE et contrôle</h2>
+    <details id="organisme">
+      <summary>Voltaplan remplace-t-il l'organisme agréé ?</summary>
+      <div class="faq-a">
+      <p>Non. Voltaplan est une <strong>aide</strong> au dessin et à la vérification : ce n'est pas un organisme de contrôle, il ne délivre ni certification, ni attestation, ni procès-verbal de conformité. « Aucune anomalie détectée » signifie seulement qu'aucune anomalie n'a été trouvée parmi les règles effectivement vérifiées, avec les informations saisies. Vous restez responsable de l'installation et des documents que vous signez ; le contrôle reste celui de l'organisme agréé. Voir les <a href="terms.html">conditions d'utilisation</a>.</p>
+        <p class="faq-link"><a href="#organisme" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="rgie">
+      <summary>Quelle version du RGIE est vérifiée ?</summary>
+      <div class="faq-a">
+      <p>Le RGIE belge, <strong>Livre 1</strong> (installations à basse et très basse tension), en vigueur depuis le 1/6/2020. Selon la date de réalisation indiquée, partie par partie, Voltaplan applique aussi l'ancien RGIE (AR du 10 mars 1981) ou les règles d'une partie ancienne (avant le 1/10/1981), ainsi que les modifications datées du Livre 1. Les symboles suivent le tableau 2.23 et l'unifilaire la figure 3.1. Seule une partie des règles est vérifiée, et elles doivent être relues par un professionnel : la liste et les points en attente sont dans la <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">couverture réglementaire</a>.</p>
+        <p class="faq-link"><a href="#rgie" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="neuf-existant">
+      <summary>Installation neuve ou existante ?</summary>
+      <div class="faq-a">
+      <p>Les deux. Pour une <strong>installation neuve</strong>, vous concevez l'installation : toutes les règles s'appliquent et les non-conformités sont bloquantes pour le dossier de réception. Pour une <strong>installation existante</strong> (vente, remise en ordre), vous relevez ce qui est en place : ce qui n'est pas vu reste « inconnu » et n'est pas compté comme absent ; les règles de sécurité restent bloquantes, les autres deviennent des recommandations. Une installation peut mêler des parties de plusieurs époques.</p>
+        <p class="faq-link"><a href="#neuf-existant" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="pays">
+      <summary>Et pour d'autres pays ?</summary>
+      <div class="faq-a">
+      <p>Aujourd'hui, seul le RGIE belge est disponible. Le moteur est prévu pour d'autres pays (un pays = un module de règles, ses textes et ses listes), mais aucun autre règlement n'est encore inclus.</p>
+        <p class="faq-link"><a href="#pays" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fonctions">
+    <h2>Fonctions</h2>
+    <details id="longueurs">
+      <summary>Comment la longueur des câbles est-elle estimée ?</summary>
+      <div class="faq-a">
+      <p>D'après le plan de position : du tableau aux points dans l'ordre du schéma, à angles droits, avec les montées et descentes selon la hauteur de pose (interrupteur à 1,10 m, prise basse à 0,25 m…), les changements d'étage et 10 % de marge. Les tracés de câbles de Condui sont repris ; pour les autres imports, des tracés à angles droits sont créés d'après l'unifilaire, en pointillé, à ajuster. Une longueur saisie n'est jamais remplacée. Voir <a href="guide.html#longueurs">Longueur des câbles</a>.</p>
+        <p class="faq-link"><a href="#longueurs" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="imprimer">
+      <summary>Comment imprimer le dossier ?</summary>
+      <div class="faq-a">
+      <p><strong>Imprimer / PDF</strong> (<kbd>Ctrl</kbd>+<kbd>P</kbd>) : document de travail, dossier de réception, rapport d'anomalies ou dossier technique complet, en A4 ou A3 paysage, avec les parties de votre choix (unifilaire, plans, tableaux, légende, mesures, liste du matériel, étiquettes 1:1…). Choisissez « Enregistrer au format PDF » dans la boîte d'impression pour un PDF vectoriel. Le dossier de réception porte une mention « PROJET — … » tant qu'il reste des points à traiter. Voir <a href="guide.html#imprimer">Imprimer le dossier</a>.</p>
+        <p class="faq-link"><a href="#imprimer" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-vie-privee">
+    <h2>IA et vie privée</h2>
+    <details id="ia">
+      <summary>L'IA est-elle obligatoire ?</summary>
+      <div class="faq-a">
+      <p>Non. Tout fonctionne sans IA ; elle est désactivée par défaut et chaque usage doit être autorisé. Si vous l'activez, elle passe par le fournisseur que vous choisissez avec <strong>votre propre clé</strong> (Anthropic, ou une API compatible OpenAI : OpenAI, Gemini, Mistral), ou par un <strong>modèle local</strong> (Ollama, LM Studio) sans clé, et alors rien ne quitte l'ordinateur. Seule la photo concernée (tableau, plaque du compteur ou plan) est envoyée, directement de votre appareil au fournisseur, jamais le nom ni l'adresse du client. Le coût éventuel est à votre charge. Voir <a href="guide.html#ia">IA</a> et la <a href="privacy.html">politique de confidentialité</a>.</p>
+        <p class="faq-link"><a href="#ia" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="telemetrie">
+      <summary>Y a-t-il de la télémétrie ou une mesure d'audience ?</summary>
+      <div class="faq-a">
+      <p>Non : aucune télémétrie, aucune statistique, aucun cookie ni traceur ajouté par Voltaplan. Seul l'hébergeur du site (GitHub Pages) reçoit les requêtes habituelles pour télécharger l'application, comme pour tout site.</p>
+        <p class="faq-link"><a href="#telemetrie" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-projet">
+    <h2>Le projet</h2>
+    <details id="bug">
+      <summary>Comment signaler un bug ou contribuer ?</summary>
+      <div class="faq-a">
+      <p>Ouvrez un ticket sur le <a href="https://github.com/SebastienBatteur/voltaplan/issues">dépôt GitHub</a>. Les tickets sont publics : n'y joignez jamais un dossier, une photo ou l'adresse d'un client. Une faille de sécurité se signale par un <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">rapport privé</a>. Code, règles, traductions et tests sont bienvenus : voir le <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">guide de contribution</a> (une contribution réglementaire cite sa source ; un accord de contribution est demandé avant la première contribution).</p>
+        <p class="faq-link"><a href="#bug" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+    <details id="soutenir">
+      <summary>Comment soutenir Voltaplan ?</summary>
+      <div class="faq-a">
+      <p>Par un don facultatif sur <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a> : il finance le temps de développement, de maintenance et de relecture réglementaire, et ne débloque rien. Signaler un bug ou faire relire une règle par un professionnel aide tout autant.</p>
+        <p class="faq-link"><a href="#soutenir" data-copied="Lien copié">Lien vers cette question</a></p>
+      </div>
+    </details>
+  </section>
+  <p class="faq-empty" hidden>Aucune question ne correspond. Essayez un autre mot, ou consultez le guide.</p>
+  <section class="faq-more"><h2>Vous n’avez pas trouvé ?</h2><p>Le <a href="guide.html">guide</a> explique chaque écran pas à pas. Sinon, posez votre question sur <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub</a> (public : sans données de client).</p></section>
 </main>
 <footer>Voltaplan — gratuit et open source — <a href="https://github.com/sponsors/SebastienBatteur">soutenir le projet</a> (facultatif) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Confidentialité</a> — <a href="terms.html">Conditions d'utilisation</a> — licence <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">code source</a></footer>
 <script src="site.js"></script>
+<script src="search.js"></script>
 </body>
 </html>

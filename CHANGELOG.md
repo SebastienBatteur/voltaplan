@@ -2,6 +2,15 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### FAQ et guide plus faciles à parcourir (2026-11-27)
+
+- FAQ : questions repliées (un clic ouvre la réponse), tuiles des groupes, « questions les plus utiles », bouton
+  « Tout ouvrir », lien vers une question qui l'ouvre et se copie, « Vous n'avez pas trouvé ? » vers le guide.
+- Recherche dans le guide et la FAQ (même langue, sans service extérieur) : chaque page cherche aussi dans l'autre,
+  accents ignorés, extraits surlignés ; « / » place le curseur dans la recherche ; `?q=` dans l'adresse.
+- Guide sur téléphone : sommaire replié sous « Sommaire » ; un tableau large défile dans son cadre au lieu
+  d'élargir toute la page (la page débordait en largeur).
+
 ### Traductions complètes, documentation et FAQ (2026-11-27)
 
 - Allemand complet : toutes les clés de l'interface (environ 1 380) traduites ; le test des traductions exige

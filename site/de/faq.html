@@ -26,201 +26,325 @@
     <span class="lang"><a href="../faq.html" data-lang="fr">FR</a><a href="../nl/faq.html" data-lang="nl">NL</a><a href="../en/faq.html" data-lang="en">EN</a><a href="faq.html" aria-current="true" data-lang="de">DE</a></span>
   </nav>
 </div></header>
-<main class="doc">
-  <nav class="toc" aria-label="Inhalt">
-    <a href="#c-general">Allgemeines</a>
-    <a href="#gratuit">Ist es kostenlos?</a>
-    <a href="#licence">Ist es Open Source?</a>
-    <a href="#compte">Brauche ich ein Konto?</a>
-    <a href="#bureau">Browser oder Desktop-App?</a>
-    <a href="#hors-ligne">Offline?</a>
-    <a href="#langues">Sprachen</a>
-    <a href="#c-utiliser">Die App verwenden</a>
-    <a href="#u-nouveau">Ein Projekt beginnen</a>
-    <a href="#u-schema">Den einpoligen Plan zeichnen</a>
-    <a href="#u-modifier">Verschieben, duplizieren, löschen, rückgängig</a>
-    <a href="#u-proprietes">Leitung, Nennstrom, Fehlerstromschutzschalter</a>
-    <a href="#u-maj">Die Schaltfläche Aktualisieren</a>
-    <a href="#u-fond">Planhintergrund und Maßstab</a>
-    <a href="#u-symboles">Punkte im Lageplan platzieren</a>
-    <a href="#u-piece">Einen Raum ausstatten</a>
-    <a href="#u-tableau">Den Verteiler anordnen</a>
-    <a href="#u-controle">Die RGIE-Prüfung verwenden</a>
-    <a href="#u-mesures">Messungen eingeben</a>
-    <a href="#u-materiel">Material und Längen</a>
-    <a href="#u-enregistrer">Speichern, öffnen, wiederherstellen</a>
-    <a href="#u-langue">Sprache wechseln</a>
-    <a href="#u-raccourcis">Tastenkürzel</a>
-    <a href="#c-fichiers">Dateien</a>
-    <a href="#fichiers">Wo liegen meine Dateien?</a>
-    <a href="#format">Dateiformat</a>
-    <a href="#importer">Aus anderer Software importieren</a>
-    <a href="#pdf">PDF-Unterlagen anderer Software</a>
-    <a href="#c-rgie">RGIE und Prüfung</a>
-    <a href="#organisme">Ersetzt es die zugelassene Prüfstelle?</a>
-    <a href="#rgie">Welche RGIE-Fassung?</a>
-    <a href="#neuf-existant">Neu oder bestehend</a>
-    <a href="#pays">Andere Länder</a>
-    <a href="#c-fonctions">Funktionen</a>
-    <a href="#longueurs">Leitungslängen</a>
-    <a href="#imprimer">Unterlagen drucken</a>
-    <a href="#c-vie-privee">KI und Datenschutz</a>
-    <a href="#ia">Ist die KI Pflicht?</a>
-    <a href="#telemetrie">Telemetrie</a>
-    <a href="#c-projet">Das Projekt</a>
-    <a href="#bug">Fehler melden, mitwirken</a>
-    <a href="#soutenir">Voltaplan unterstützen</a>
+<main class="faq">
+  <h1>Häufige Fragen</h1>
+  <p class="muted">Klicken Sie auf eine Frage, um die Antwort zu sehen, oder suchen Sie nach einem Wort.</p>
+  <div class="faq-search" hidden><input type="search" id="faq-q" placeholder="Frage suchen (z. B. PDF, Trikker, offline)…" aria-label="In den FAQ suchen" autocomplete="off"><button type="button" class="faq-toggle" data-open="Alle öffnen" data-close="Alle schließen">Alle öffnen</button></div>
+  <nav class="faq-tiles" aria-label="Häufige Fragen">
+    <a href="#c-general"><span aria-hidden="true">💡</span> Allgemeines <small>6 Fragen</small></a>
+    <a href="#c-utiliser"><span aria-hidden="true">🧭</span> Die App verwenden <small>15 Fragen</small></a>
+    <a href="#c-fichiers"><span aria-hidden="true">📁</span> Dateien <small>4 Fragen</small></a>
+    <a href="#c-rgie"><span aria-hidden="true">✅</span> RGIE und Prüfung <small>4 Fragen</small></a>
+    <a href="#c-fonctions"><span aria-hidden="true">📐</span> Funktionen <small>2 Fragen</small></a>
+    <a href="#c-vie-privee"><span aria-hidden="true">🔒</span> KI und Datenschutz <small>2 Fragen</small></a>
+    <a href="#c-projet"><span aria-hidden="true">🤝</span> Das Projekt <small>2 Fragen</small></a>
   </nav>
-  <article>
-    <h2 id="c-general">Allgemeines</h2>
-
-    <h3 id="gratuit">Ist Voltaplan kostenlos?</h3>
-    <p>Ja, vollständig: kein Abonnement, keine Werbung, keine reservierten Funktionen. Speichern und das PDF der Unterlagen sind inbegriffen, ohne Wasserzeichen und ohne Begrenzung der Projektanzahl. <a href="#soutenir">Spenden</a> sind freiwillig und schalten nichts frei.</p>
-
-    <h3 id="licence">Ist es Open-Source-Software? Unter welcher Lizenz?</h3>
-    <p>Ja. Der Code ist unter der Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> im <a class="repo-link" href="#">GitHub-Repository</a> veröffentlicht. Jede veränderte Version, die verbreitet oder online angeboten wird, muss ihren Quellcode veröffentlichen.</p>
-
-    <h3 id="compte">Muss ich ein Konto anlegen?</h3>
-    <p>Nein. Voltaplan hat weder Konten noch einen Server. Wenn Sie in Google Drive, OneDrive, Dropbox oder GitHub speichern möchten, melden Sie sich direkt aus der App bei <strong>Ihrem</strong> Konto bei diesem Dienst an.</p>
-
-    <h3 id="bureau">Browser oder Desktop-App?</h3>
-    <p>Die Webversion läuft in Chrome, Edge oder Firefox, ohne Installation. Ihr Browser kann sie als App installieren, auf dem Computer, iPhone, iPad oder Android (siehe <a href="guide.html#installer">Installieren</a>). Eine Desktop-App für Windows, macOS und Linux ist geplant, aber <strong>es ist noch keine Desktop-Version veröffentlicht</strong>: Die Installationsprogramme erscheinen auf der Seite <a class="release-link" href="#">Releases</a> des Repositorys.</p>
-
-    <h3 id="hors-ligne">Funktioniert es offline?</h3>
-    <p>Ja, nach dem ersten Besuch: Zeichnen, Lageplan, Verteiler, Berechnungen, RGIE-Prüfung, PDF-Unterlagen, Dateien und lokale Versionen funktionieren ohne Internet. Offline sind die Online-KI, GitHub, Drive, OneDrive und Dropbox nicht verfügbar; das Speichern bei diesen Diensten wird zurückgestellt. Die Lesefunktion für Fotos (≈ 18 MB) wird beim ersten Einlesen geladen und funktioniert danach ebenfalls offline.</p>
-
-    <h3 id="langues">In welchen Sprachen?</h3>
-    <p>Die App und diese Website gibt es auf Französisch, Niederländisch, Englisch und Deutsch. Der Import von PDF-Unterlagen erkennt auch Unterlagen in diesen vier Sprachen.</p>
-
-    <h2 id="c-utiliser">Die App verwenden</h2>
-
-    <h3 id="u-nouveau">Wie beginne ich ein neues Projekt?</h3>
-    <p>Klicken Sie im Bildschirm <strong>Meine Projekte</strong> auf <strong>Neues Projekt</strong> oder, für eine bereits vorhandene Anlage, auf <strong>Bestehende Installation aufnehmen</strong>. Der Assistent hat 4 Schritte: <strong>Art</strong> (neue oder bestehende Installation, Projektname; bei einer neuen Installation Start mit einem <em>Leeren Projekt</em> oder einem <em>Musterhaus, anpassbar</em>), <strong>Standort</strong> (Kunde und Adresse), <strong>Installateur</strong> und <strong>Versorgung</strong> (Spannung, Erdungssystem, Nennstrom des Hausanschluss-Leitungsschutzschalters). <strong>Jetzt erstellen</strong> überspringt die übrigen Schritte: Alles lässt sich später im Reiter <strong>Projekt</strong> ergänzen. Um die Unterlagen einer anderen Software zu übernehmen, siehe <a href="#importer">Welche Dateien kann ich importieren?</a> Einzelheiten: <a href="guide.html#demarrer">Erste Schritte</a>.</p>
-
-    <h3 id="u-schema">Wie zeichne ich den einpoligen Plan?</h3>
-    <p>Sie zeichnen ihn nicht selbst: Sie beschreiben die Anlage in der Baumansicht <strong>Anlage</strong> links, und der einpolige Plan zeichnet sich von selbst.</p>
-    <ol>
-      <li>Wählen Sie das Element, unter dem Sie etwas hinzufügen möchten (Verteiler, Fehlerstromschutzschalter, Leitungsschutzschalter…).</li>
-      <li>Fügen Sie mit dem <strong>＋</strong> am Ende seiner Zeile, der Schaltfläche <strong>＋ Hinzufügen…</strong> in den Eigenschaften, der Palette <strong>Elemente</strong> oder per Rechtsklick auf sein Symbol → <strong>Hinzufügen zu</strong> hinzu. Es wird nur angeboten, was dort angeschlossen werden kann.</li>
-      <li>Beispiel für einen Steckdosenstromkreis: Verteiler → Schutzeinrichtung (Leitungsschutzschalter 20 A) → Leitung (VOB 3G2,5) → Steckdosen.</li>
-    </ol>
-    <p>Die RGIE-Nummerierung (A, B… dann A1, A2…) folgt automatisch. Siehe <a href="guide.html#installation">Die Anlage beschreiben</a>.</p>
-
-    <h3 id="u-modifier">Wie verschiebe, dupliziere oder lösche ich ein Element? Und wie mache ich etwas rückgängig?</h3>
-    <p>Wählen Sie das Element in der Baumansicht, im einpoligen Plan, im Lageplan oder im Verteiler: Es wird überall ausgewählt. Unter seinen Eigenschaften ändern <strong>↑</strong> und <strong>↓</strong> seine Position unter den Elementen derselben Ebene, <strong>Duplizieren</strong> erstellt eine Kopie und <strong>Löschen</strong> entfernt es (Taste <kbd>Entf</kbd>). Im Lageplan und im Verteiler verschieben Sie es durch Ziehen. <strong>Rückgängig</strong> (<kbd>Strg</kbd>+<kbd>Z</kbd>) und <strong>Wiederholen</strong> (<kbd>Strg</kbd>+<kbd>Y</kbd>) befinden sich in der oberen Leiste. Siehe <a href="guide.html#ecran">Der Bildschirm</a>.</p>
-
-    <h3 id="u-proprietes">Wo stelle ich Leitung, Querschnitt, Nennstrom oder Empfindlichkeit des Fehlerstromschutzschalters ein?</h3>
-    <p>Im Bereich <strong>Eigenschaften</strong> unter der Baumansicht, sobald das Element ausgewählt ist. Schutzeinrichtung: Gerät, Nennstrom, Polzahl, Kennlinie, Schaltvermögen, Empfindlichkeit und Typ des Fehlerstromschutzschalters, Anzahl der Module. Leitung: Typ (VOB, XVB…), Querschnitt, Anzahl der Leiter, Verlegeart, Länge. Geben Sie auch den <strong>Ort</strong> an (den Raum): Er dient dazu, die Punkte im Lageplan zu platzieren. Siehe <a href="guide.html#installation">Die Anlage beschreiben</a>.</p>
-
-    <h3 id="u-maj">Wozu dient die Schaltfläche ⟳ Aktualisieren?</h3>
-    <p>Klicken Sie darauf, nachdem Sie die Anlage erstellt oder Stromkreise hinzugefügt haben. Sie setzt neue Geräte auf den ersten freien Platz im Verteiler, ohne die anderen zu verschieben, und neue Punkte im Lageplan in die Nähe ihres Raumnamens; sie schätzt die Leitungslängen, fügt den Unterlagen eine Revision hinzu und berechnet Nummerierung, Beschriftungen, Material und Prüfung neu. Im Ergebnisfenster können Sie alles auf einmal rückgängig machen. Siehe <a href="guide.html#maj">Aktualisieren</a>.</p>
-
-    <h3 id="u-fond">Wie importiere ich einen Planhintergrund und lege den Maßstab fest?</h3>
-    <ol>
-      <li>Reiter <strong>Lageplan</strong> → <strong>Planhintergrund (Foto / PDF / DXF)…</strong>. Eine DXF-Datei mit angegebener Einheit wird direkt im richtigen Maßstab eingefügt.</li>
-      <li>Für ein Foto oder ein PDF: <strong>Skalieren</strong>, klicken Sie zwei Punkte an und geben Sie ihren tatsächlichen Abstand ein. <strong>Entzerren (4 Ecken)</strong> korrigiert ein schräg aufgenommenes Foto.</li>
-      <li>Zeichnen Sie Wände, Türen und Fenster darüber, oder versuchen Sie <strong>Wände nachzeichnen</strong> (automatische Erkennung, zu prüfen).</li>
-    </ol>
-    <p>Siehe <a href="guide.html#plan">Lageplan</a>.</p>
-
-    <h3 id="u-symboles">Wie platziere ich Punkte im Lageplan und verbinde sie mit dem Plan?</h3>
-    <p>Für ein Element, das schon im einpoligen Plan steht: <strong>Im Plan platzieren</strong> in seinen Eigenschaften oder die Liste <strong>Noch nicht im Plan</strong> der Palette, dann in den Lageplan klicken. Für ein neues Element: Rechtsklick an der gewünschten Stelle im Lageplan, Element wählen, dann seinen Anschluss im einpoligen Plan (Voltaplan schlägt den Stromkreis des nächstgelegenen Elements vor); es wird dem einpoligen Plan hinzugefügt und im Lageplan platziert. Ziehen Sie ein Symbol, um es zu verschieben. Siehe <a href="guide.html#plan">Lageplan</a>.</p>
-
-    <h3 id="u-piece">Wie statte ich einen ganzen Raum auf einmal aus?</h3>
-    <ol>
-      <li>Benennen Sie den Raum im Lageplan mit dem Werkzeug <strong>Text</strong> („Schlafzimmer“, „Küche“, „Bad“…), oder lesen Sie die Namen auf dem Planhintergrund mit <strong>Raumnamen lesen</strong>.</li>
-      <li>Wählen Sie diesen Namen: Der Bereich <strong>Raum ausstatten</strong> schlägt die übliche Ausstattung zum Ankreuzen vor, sowie <strong>Typische Möbel hinzufügen</strong>.</li>
-      <li><strong>Zum Raum hinzufügen</strong> setzt die Punkte, <strong>nicht angeschlossen</strong>: Verbinden Sie sie anschließend mit ihren Stromkreisen.</li>
-    </ol>
-    <p>Das ist ein Ausgangspunkt, keine Liste des RGIE. Siehe <a href="guide.html#plan">Lageplan</a>.</p>
-
-    <h3 id="u-tableau">Wie ordne ich den Verteiler an?</h3>
-    <p>Geben Sie in den Eigenschaften des Verteilers die Anzahl der Reihen und der Module pro Reihe an. Ziehen Sie im Reiter <strong>Verteiler</strong> die Geräte zwischen den Reihen und der Reserve, oder klicken Sie auf <strong>Automatische Anordnung</strong> (Reihenfolge der Baumansicht); die tatsächliche Breite jedes Geräts stellen Sie in seinen Eigenschaften ein (Module). Mit einem Foto von vorn: <strong>Foto des Verteilers …</strong>, dann <strong>Foto ausrichten (Reihen)</strong>, dann <strong>Nach Foto anordnen</strong> oder <strong>Mit Foto vergleichen</strong>. Siehe <a href="guide.html#tableau">Verteiler</a> und <a href="guide.html#photo">Foto des Verteilers</a>.</p>
-
-    <h3 id="u-controle">Wie verwende ich die RGIE-Prüfung?</h3>
-    <p>Öffnen Sie den Reiter <strong>RGIE-Prüfung</strong> (die rote Zahl = Anzahl der Nichtkonformitäten). Jede Feststellung hat einen Status (Nichtkonformität festgestellt, unzureichende Angaben, Empfehlung…), einen Schweregrad und gegebenenfalls den Vermerk blockierend.</p>
-    <ul>
-      <li>Die Schaltflächen <strong>Einpoliger Plan</strong>, <strong>Plan</strong> und <strong>Verteiler</strong> einer Feststellung zeigen das betroffene Element.</li>
-      <li>Ist die Korrektur offensichtlich, schlägt eine Schaltfläche unter der Feststellung sie vor (zum Beispiel <strong>20 A wählen</strong>); <kbd>Strg</kbd>+<kbd>Z</kbd> macht sie rückgängig.</li>
-      <li>Bestehende Installation: Ein nicht gezeichnetes Element (Erdung, Fehlerstromschutzschalter) bestätigen Sie mit <strong>Als vorhanden bestätigen</strong>, <strong>Als fehlend bestätigen</strong> oder <strong>Ich weiß es nicht</strong>.</li>
-      <li><strong>Abweichung…</strong> erfasst eine Abweichung mit ihrer Begründung: Die Feststellung bleibt sichtbar, ist aber nicht mehr blockierend.</li>
-    </ul>
-    <p>Siehe <a href="guide.html#controle">RGIE-Prüfung</a>.</p>
-
-    <h3 id="u-mesures">Wo gebe ich die Messungen ein?</h3>
-    <p>Reiter <strong>Projekt</strong>, Bereich <strong>Messungen</strong>: Erdungswiderstand, Isolation, Potentialausgleich, Prüfung jedes Fehlerstromschutzschalters, Datum und Messgerät. Sie werden geprüft und in den Unterlagen gedruckt. Siehe <a href="guide.html#mesures">Messungen</a>.</p>
-
-    <h3 id="u-materiel">Wie erhalte ich die Materialliste und die Leitungslängen?</h3>
-    <p>Reiter <strong>Material</strong>: Das Material wird gruppiert und summiert; <strong>Nach Raum</strong> ordnet es Raum für Raum. <strong>Längen schätzen</strong> berechnet die Leitungslängen anhand des Lageplans (platzieren Sie zuerst den Verteiler im Lageplan); eine eingegebene Länge wird nie ersetzt. <strong>Exportieren (CSV, Tabellenkalkulation)</strong> und <strong>Stromkreisliste (CSV)</strong> öffnen sich in einer Tabellenkalkulation. Siehe <a href="guide.html#materiel">Materialliste</a> und <a href="#longueurs">Wie werden die Leitungslängen geschätzt?</a></p>
-
-    <h3 id="u-enregistrer">Wie speichere, öffne oder rette ich ein Projekt?</h3>
-    <ul>
-      <li><strong>Speichern</strong> (<kbd>Strg</kbd>+<kbd>S</kbd>). <strong>Speichern unter…</strong> wählt den Speicherort: <strong>Dieses Gerät</strong> (Datei <code>.voltaplan</code>), den Browser oder GitHub (unter <strong>Weitere Speicherorte</strong>), oder Drive, OneDrive, Dropbox.</li>
-      <li>Wieder öffnen: die Liste im Bildschirm <strong>Meine Projekte</strong>, <strong>Datei → Öffnen…</strong> (<kbd>Strg</kbd>+<kbd>O</kbd>) oder <strong>Aus der Cloud oder dem Browser öffnen</strong>.</li>
-      <li>Wiederherstellen: Nach einem unerwarteten Schließen wird die nicht gespeicherte Arbeit beim erneuten Öffnen angeboten (<strong>Wiederherstellen</strong>). <strong>Datei → Lokale Versionen …</strong> öffnet eine frühere Version als neues Projekt.</li>
-    </ul>
-    <p>Siehe <a href="guide.html#sauver">Speichern und öffnen</a>.</p>
-
-    <h3 id="u-langue">Wie wechsle ich die Sprache?</h3>
-    <p>Mit der Sprachauswahl in der oberen Leiste (Français, Nederlands, English, Deutsch); auf einem kleinen Bildschirm im Menü <strong>⋯</strong> → <strong>Sprache</strong>. Die Wahl wird auf diesem Gerät gespeichert.</p>
-
-    <h3 id="u-raccourcis">Welche Tastenkürzel gibt es?</h3>
-    <p><kbd>Strg</kbd>+<kbd>S</kbd> speichern, <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>S</kbd> speichern unter, <kbd>Strg</kbd>+<kbd>O</kbd> öffnen, <kbd>Strg</kbd>+<kbd>P</kbd> drucken / PDF, <kbd>Strg</kbd>+<kbd>Z</kbd> und <kbd>Strg</kbd>+<kbd>Y</kbd> rückgängig und wiederholen, <kbd>Entf</kbd> das ausgewählte Element löschen, <kbd>Esc</kbd> das aktuelle Werkzeug verlassen. In der Baumansicht: Pfeiltasten zum Durchgehen, links und rechts zum Ein- und Ausklappen, <kbd>+</kbd> zum Hinzufügen. Auf dem Mac ersetzt <kbd>Cmd</kbd> die Taste <kbd>Strg</kbd>. Siehe <a href="guide.html#raccourcis">Tastenkürzel</a>.</p>
-
-    <h2 id="c-fichiers">Dateien</h2>
-
-    <h3 id="fichiers">Wo werden meine Dateien gespeichert?</h3>
-    <p>Wo Sie möchten: auf Ihrem Gerät (Datei <code>.voltaplan</code>, auch auf einem USB-Stick oder in einem synchronisierten Ordner), im Browser oder in Ihrem eigenen Online-Speicher: <strong>OneDrive, Google Drive, Dropbox oder GitHub</strong>. Kein Voltaplan-Server erhält Ihre Projekte. Im Browser gespeicherte Projekte werden gelöscht, wenn Sie die Browserdaten löschen: Bewahren Sie auch eine Kopie als Datei auf. Siehe <a href="guide.html#sauver">Speichern und öffnen</a>.</p>
-
-    <h3 id="format">Ist das Dateiformat offen?</h3>
-    <p>Ja. Eine <code>.voltaplan</code>-Datei ist ein gewöhnliches ZIP-Archiv: das Projektmodell als lesbares JSON (<code>project.json</code>), die Originalfotos und -PDFs unverändert und eine LIESMICH-Datei, die erklärt, wie Sie die Daten ohne Voltaplan wiederherstellen. Das Format ist in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a> beschrieben. Sie können auch für Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) und als CSV exportieren.</p>
-
-    <h3 id="importer">Welche Dateien kann ich importieren?</h3>
-    <p><strong>Datei → Aus anderer Software importieren…</strong> (oder die Karte auf dem Bildschirm Meine Projekte) erkennt die Quelle am Inhalt, unabhängig von der Dateiendung: Voltaplan-Projekt, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code>-Export) und PDF-Unterlagen anderer Software. Ein <code>.zip</code>-Archiv, das eine dieser Dateien enthält, wird geöffnet. Eine nicht erkannte Datei wird mit einer Erklärung abgelehnt. Einzelheiten: <a href="guide.html#importer">Aus anderer Software importieren</a>.</p>
-
-    <h3 id="pdf">Kann ich die PDF-Unterlagen einer anderen Software übernehmen?</h3>
-    <p>Ja, wenn sie <strong>Text</strong> enthalten: Stromkreistabelle, Unterverteiler, Punkte, Pläne (als Hintergrundplan, mit aus der Zeichnung gelesenen Wänden, Türen und Fenstern), Frontansicht der Verteiler, Angaben aus dem Schriftfeld und Messungen werden übernommen. Das PDF wird in Ihrem Browser gelesen, ohne Übertragung und ohne KI. Ein <strong>gescanntes PDF</strong> oder eines, dessen Text gezeichnet ist (Bilder), kann nicht gelesen werden: Es wird mit einer Erklärung abgelehnt. Was der Text nicht angibt, wird beim Öffnen gemeldet und ist zu ergänzen.</p>
-
-    <h2 id="c-rgie">RGIE und Prüfung</h2>
-
-    <h3 id="organisme">Ersetzt Voltaplan die zugelassene Prüfstelle?</h3>
-    <p>Nein. Voltaplan ist eine <strong>Hilfe</strong> beim Zeichnen und Prüfen: Es ist keine Prüfstelle und stellt weder Zertifizierung noch Bescheinigung noch Konformitätsprotokoll aus. „Keine Anomalie festgestellt“ bedeutet nur, dass unter den tatsächlich geprüften Regeln, mit den eingegebenen Angaben, keine Anomalie gefunden wurde. Sie bleiben für die Anlage und die Unterlagen, die Sie unterschreiben, verantwortlich; die Prüfung bleibt Sache der zugelassenen Prüfstelle. Siehe die <a href="terms.html">Nutzungsbedingungen</a>.</p>
-
-    <h3 id="rgie">Welche Fassung der RGIE wird geprüft?</h3>
-    <p>Die belgische RGIE, <strong>Buch 1</strong> (Niederspannungs- und Kleinspannungsanlagen), in Kraft seit dem 1.6.2020. Je nach angegebenem Ausführungsdatum, Teil für Teil, wendet Voltaplan auch die frühere RGIE (Königlicher Erlass vom 10. März 1981) oder die Regeln für einen alten Teil (vor dem 1.10.1981) an, ebenso die datierten Änderungen von Buch 1. Die Symbole folgen Tabelle 2.23, der einpolige Plan Abbildung 3.1. Nur ein Teil der Regeln wird geprüft, und sie müssen von einer Fachkraft überprüft werden: Die Liste und die offenen Punkte stehen in der <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">Übersicht der geprüften Vorschriften</a> (auf Französisch).</p>
-
-    <h3 id="neuf-existant">Neue oder bestehende Anlage?</h3>
-    <p>Beides. Bei einer <strong>neuen Anlage</strong> planen Sie die Anlage: Alle Regeln gelten, und Nichtkonformitäten sind für die Abnahmeunterlagen blockierend. Bei einer <strong>bestehenden Anlage</strong> (Verkauf, Instandsetzung) nehmen Sie auf, was vorhanden ist: Was nicht gesehen wird, bleibt „unbekannt“ und gilt nicht als fehlend; die Sicherheitsregeln bleiben blockierend, die übrigen werden zu Empfehlungen. Eine Anlage kann Teile aus mehreren Epochen umfassen.</p>
-
-    <h3 id="pays">Und für andere Länder?</h3>
-    <p>Derzeit ist nur die belgische RGIE verfügbar. Die Prüflogik ist für andere Länder ausgelegt (ein Land = ein Regelmodul mit seinen Texten und Listen), aber noch keine andere Vorschrift ist enthalten.</p>
-
-    <h2 id="c-fonctions">Funktionen</h2>
-
-    <h3 id="longueurs">Wie werden die Leitungslängen geschätzt?</h3>
-    <p>Anhand des Lageplans: vom Verteiler zu den Punkten in der Reihenfolge des Schemas, rechtwinklig, mit Steig- und Fallstrecken je nach Montagehöhe (Schalter auf 1,10 m, tiefe Steckdose auf 0,25 m…), Stockwerkswechseln und 10 % Zuschlag. Die Leitungsverläufe aus Condui werden übernommen; für andere Importe werden rechtwinklige Verläufe anhand des einpoligen Plans erzeugt, gestrichelt, zum Anpassen. Eine eingegebene Länge wird nie ersetzt. Siehe <a href="guide.html#longueurs">Leitungslängen</a>.</p>
-
-    <h3 id="imprimer">Wie drucke ich die Unterlagen?</h3>
-    <p><strong>Drucken / PDF</strong> (<kbd>Strg</kbd>+<kbd>P</kbd>): Arbeitsdokument, Abnahmeunterlagen, Mängelbericht oder vollständige technische Unterlagen, in A4 oder A3 quer, mit den Teilen Ihrer Wahl (einpoliger Plan, Lagepläne, Verteiler, Legende, Messungen, Materialliste, Beschriftungen 1:1…). Wählen Sie im Druckdialog „Als PDF speichern“ für ein Vektor-PDF. Die Abnahmeunterlagen tragen einen Entwurfsvermerk, solange noch Punkte zu bearbeiten sind. Siehe <a href="guide.html#imprimer">Unterlagen drucken</a>.</p>
-
-    <h2 id="c-vie-privee">KI und Datenschutz</h2>
-
-    <h3 id="ia">Ist die KI Pflicht?</h3>
-    <p>Nein. Alles funktioniert ohne KI; sie ist standardmäßig ausgeschaltet, und jede Verwendung muss einzeln erlaubt werden. Wenn Sie sie aktivieren, läuft sie über den Anbieter Ihrer Wahl mit <strong>Ihrem eigenen Schlüssel</strong> (Anthropic oder eine OpenAI-kompatible API: OpenAI, Gemini, Mistral) oder über ein <strong>lokales Modell</strong> (Ollama, LM Studio) ohne Schlüssel – dann verlässt nichts den Computer. Nur das betreffende Foto (Verteiler, Zählerschild oder Lageplan) wird gesendet, direkt von Ihrem Gerät an den Anbieter, nie Name oder Adresse des Kunden. Etwaige Kosten tragen Sie. Siehe <a href="guide.html#ia">KI</a> und die <a href="privacy.html">Datenschutzerklärung</a>.</p>
-
-    <h3 id="telemetrie">Gibt es Telemetrie oder Reichweitenmessung?</h3>
-    <p>Nein: keine Telemetrie, keine Statistik, keine Cookies oder Tracker von Voltaplan. Nur der Hoster der Website (GitHub Pages) erhält die üblichen Anfragen zum Herunterladen der App, wie bei jeder Website.</p>
-
-    <h2 id="c-projet">Das Projekt</h2>
-
-    <h3 id="bug">Wie melde ich einen Fehler oder wirke mit?</h3>
-    <p>Eröffnen Sie ein Ticket im <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub-Repository</a>. Tickets sind öffentlich: Hängen Sie nie Unterlagen, Fotos oder die Adresse eines Kunden an. Eine Sicherheitslücke melden Sie über eine <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">vertrauliche Meldung</a>. Code, Regeln, Übersetzungen und Tests sind willkommen: siehe den <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">Leitfaden für Beiträge</a> (ein Beitrag zu Vorschriften nennt seine Quelle; vor dem ersten Beitrag wird eine Beitragsvereinbarung verlangt).</p>
-
-    <h3 id="soutenir">Wie kann ich Voltaplan unterstützen?</h3>
-    <p>Mit einer freiwilligen Spende über <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: Sie finanziert die Zeit für Entwicklung, Wartung und Überprüfung der Vorschriften und schaltet nichts frei. Einen Fehler zu melden oder eine Regel von einer Fachkraft prüfen zu lassen, hilft genauso.</p>
-  </article>
+  <section class="faq-popular"><h2>Die nützlichsten Fragen</h2><ul>
+    <li><a href="#u-nouveau">Wie beginne ich ein neues Projekt?</a></li>
+    <li><a href="#importer">Welche Dateien kann ich importieren?</a></li>
+    <li><a href="#organisme">Ersetzt Voltaplan die zugelassene Prüfstelle?</a></li>
+    <li><a href="#fichiers">Wo werden meine Dateien gespeichert?</a></li>
+    <li><a href="#gratuit">Ist Voltaplan kostenlos?</a></li>
+  </ul></section>
+  <section class="faq-group" id="c-general">
+    <h2>Allgemeines</h2>
+    <details id="gratuit">
+      <summary>Ist Voltaplan kostenlos?</summary>
+      <div class="faq-a">
+      <p>Ja, vollständig: kein Abonnement, keine Werbung, keine reservierten Funktionen. Speichern und das PDF der Unterlagen sind inbegriffen, ohne Wasserzeichen und ohne Begrenzung der Projektanzahl. <a href="#soutenir">Spenden</a> sind freiwillig und schalten nichts frei.</p>
+        <p class="faq-link"><a href="#gratuit" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="licence">
+      <summary>Ist es Open-Source-Software? Unter welcher Lizenz?</summary>
+      <div class="faq-a">
+      <p>Ja. Der Code ist unter der Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> im <a class="repo-link" href="#">GitHub-Repository</a> veröffentlicht. Jede veränderte Version, die verbreitet oder online angeboten wird, muss ihren Quellcode veröffentlichen.</p>
+        <p class="faq-link"><a href="#licence" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="compte">
+      <summary>Muss ich ein Konto anlegen?</summary>
+      <div class="faq-a">
+      <p>Nein. Voltaplan hat weder Konten noch einen Server. Wenn Sie in Google Drive, OneDrive, Dropbox oder GitHub speichern möchten, melden Sie sich direkt aus der App bei <strong>Ihrem</strong> Konto bei diesem Dienst an.</p>
+        <p class="faq-link"><a href="#compte" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="bureau">
+      <summary>Browser oder Desktop-App?</summary>
+      <div class="faq-a">
+      <p>Die Webversion läuft in Chrome, Edge oder Firefox, ohne Installation. Ihr Browser kann sie als App installieren, auf dem Computer, iPhone, iPad oder Android (siehe <a href="guide.html#installer">Installieren</a>). Eine Desktop-App für Windows, macOS und Linux ist geplant, aber <strong>es ist noch keine Desktop-Version veröffentlicht</strong>: Die Installationsprogramme erscheinen auf der Seite <a class="release-link" href="#">Releases</a> des Repositorys.</p>
+        <p class="faq-link"><a href="#bureau" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="hors-ligne">
+      <summary>Funktioniert es offline?</summary>
+      <div class="faq-a">
+      <p>Ja, nach dem ersten Besuch: Zeichnen, Lageplan, Verteiler, Berechnungen, RGIE-Prüfung, PDF-Unterlagen, Dateien und lokale Versionen funktionieren ohne Internet. Offline sind die Online-KI, GitHub, Drive, OneDrive und Dropbox nicht verfügbar; das Speichern bei diesen Diensten wird zurückgestellt. Die Lesefunktion für Fotos (≈ 18 MB) wird beim ersten Einlesen geladen und funktioniert danach ebenfalls offline.</p>
+        <p class="faq-link"><a href="#hors-ligne" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="langues">
+      <summary>In welchen Sprachen?</summary>
+      <div class="faq-a">
+      <p>Die App und diese Website gibt es auf Französisch, Niederländisch, Englisch und Deutsch. Der Import von PDF-Unterlagen erkennt auch Unterlagen in diesen vier Sprachen.</p>
+        <p class="faq-link"><a href="#langues" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-utiliser">
+    <h2>Die App verwenden</h2>
+    <details id="u-nouveau">
+      <summary>Wie beginne ich ein neues Projekt?</summary>
+      <div class="faq-a">
+      <p>Klicken Sie im Bildschirm <strong>Meine Projekte</strong> auf <strong>Neues Projekt</strong> oder, für eine bereits vorhandene Anlage, auf <strong>Bestehende Installation aufnehmen</strong>. Der Assistent hat 4 Schritte: <strong>Art</strong> (neue oder bestehende Installation, Projektname; bei einer neuen Installation Start mit einem <em>Leeren Projekt</em> oder einem <em>Musterhaus, anpassbar</em>), <strong>Standort</strong> (Kunde und Adresse), <strong>Installateur</strong> und <strong>Versorgung</strong> (Spannung, Erdungssystem, Nennstrom des Hausanschluss-Leitungsschutzschalters). <strong>Jetzt erstellen</strong> überspringt die übrigen Schritte: Alles lässt sich später im Reiter <strong>Projekt</strong> ergänzen. Um die Unterlagen einer anderen Software zu übernehmen, siehe <a href="#importer">Welche Dateien kann ich importieren?</a> Einzelheiten: <a href="guide.html#demarrer">Erste Schritte</a>.</p>
+        <p class="faq-link"><a href="#u-nouveau" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-schema">
+      <summary>Wie zeichne ich den einpoligen Plan?</summary>
+      <div class="faq-a">
+      <p>Sie zeichnen ihn nicht selbst: Sie beschreiben die Anlage in der Baumansicht <strong>Anlage</strong> links, und der einpolige Plan zeichnet sich von selbst.</p>
+      <ol>
+        <li>Wählen Sie das Element, unter dem Sie etwas hinzufügen möchten (Verteiler, Fehlerstromschutzschalter, Leitungsschutzschalter…).</li>
+        <li>Fügen Sie mit dem <strong>＋</strong> am Ende seiner Zeile, der Schaltfläche <strong>＋ Hinzufügen…</strong> in den Eigenschaften, der Palette <strong>Elemente</strong> oder per Rechtsklick auf sein Symbol → <strong>Hinzufügen zu</strong> hinzu. Es wird nur angeboten, was dort angeschlossen werden kann.</li>
+        <li>Beispiel für einen Steckdosenstromkreis: Verteiler → Schutzeinrichtung (Leitungsschutzschalter 20 A) → Leitung (VOB 3G2,5) → Steckdosen.</li>
+      </ol>
+      <p>Die RGIE-Nummerierung (A, B… dann A1, A2…) folgt automatisch. Siehe <a href="guide.html#installation">Die Anlage beschreiben</a>.</p>
+        <p class="faq-link"><a href="#u-schema" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-modifier">
+      <summary>Wie verschiebe, dupliziere oder lösche ich ein Element? Und wie mache ich etwas rückgängig?</summary>
+      <div class="faq-a">
+      <p>Wählen Sie das Element in der Baumansicht, im einpoligen Plan, im Lageplan oder im Verteiler: Es wird überall ausgewählt. Unter seinen Eigenschaften ändern <strong>↑</strong> und <strong>↓</strong> seine Position unter den Elementen derselben Ebene, <strong>Duplizieren</strong> erstellt eine Kopie und <strong>Löschen</strong> entfernt es (Taste <kbd>Entf</kbd>). Im Lageplan und im Verteiler verschieben Sie es durch Ziehen. <strong>Rückgängig</strong> (<kbd>Strg</kbd>+<kbd>Z</kbd>) und <strong>Wiederholen</strong> (<kbd>Strg</kbd>+<kbd>Y</kbd>) befinden sich in der oberen Leiste. Siehe <a href="guide.html#ecran">Der Bildschirm</a>.</p>
+        <p class="faq-link"><a href="#u-modifier" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-proprietes">
+      <summary>Wo stelle ich Leitung, Querschnitt, Nennstrom oder Empfindlichkeit des Fehlerstromschutzschalters ein?</summary>
+      <div class="faq-a">
+      <p>Im Bereich <strong>Eigenschaften</strong> unter der Baumansicht, sobald das Element ausgewählt ist. Schutzeinrichtung: Gerät, Nennstrom, Polzahl, Kennlinie, Schaltvermögen, Empfindlichkeit und Typ des Fehlerstromschutzschalters, Anzahl der Module. Leitung: Typ (VOB, XVB…), Querschnitt, Anzahl der Leiter, Verlegeart, Länge. Geben Sie auch den <strong>Ort</strong> an (den Raum): Er dient dazu, die Punkte im Lageplan zu platzieren. Siehe <a href="guide.html#installation">Die Anlage beschreiben</a>.</p>
+        <p class="faq-link"><a href="#u-proprietes" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-maj">
+      <summary>Wozu dient die Schaltfläche ⟳ Aktualisieren?</summary>
+      <div class="faq-a">
+      <p>Klicken Sie darauf, nachdem Sie die Anlage erstellt oder Stromkreise hinzugefügt haben. Sie setzt neue Geräte auf den ersten freien Platz im Verteiler, ohne die anderen zu verschieben, und neue Punkte im Lageplan in die Nähe ihres Raumnamens; sie schätzt die Leitungslängen, fügt den Unterlagen eine Revision hinzu und berechnet Nummerierung, Beschriftungen, Material und Prüfung neu. Im Ergebnisfenster können Sie alles auf einmal rückgängig machen. Siehe <a href="guide.html#maj">Aktualisieren</a>.</p>
+        <p class="faq-link"><a href="#u-maj" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-fond">
+      <summary>Wie importiere ich einen Planhintergrund und lege den Maßstab fest?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Reiter <strong>Lageplan</strong> → <strong>Planhintergrund (Foto / PDF / DXF)…</strong>. Eine DXF-Datei mit angegebener Einheit wird direkt im richtigen Maßstab eingefügt.</li>
+        <li>Für ein Foto oder ein PDF: <strong>Skalieren</strong>, klicken Sie zwei Punkte an und geben Sie ihren tatsächlichen Abstand ein. <strong>Entzerren (4 Ecken)</strong> korrigiert ein schräg aufgenommenes Foto.</li>
+        <li>Zeichnen Sie Wände, Türen und Fenster darüber, oder versuchen Sie <strong>Wände nachzeichnen</strong> (automatische Erkennung, zu prüfen).</li>
+      </ol>
+      <p>Siehe <a href="guide.html#plan">Lageplan</a>.</p>
+        <p class="faq-link"><a href="#u-fond" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-symboles">
+      <summary>Wie platziere ich Punkte im Lageplan und verbinde sie mit dem Plan?</summary>
+      <div class="faq-a">
+      <p>Für ein Element, das schon im einpoligen Plan steht: <strong>Im Plan platzieren</strong> in seinen Eigenschaften oder die Liste <strong>Noch nicht im Plan</strong> der Palette, dann in den Lageplan klicken. Für ein neues Element: Rechtsklick an der gewünschten Stelle im Lageplan, Element wählen, dann seinen Anschluss im einpoligen Plan (Voltaplan schlägt den Stromkreis des nächstgelegenen Elements vor); es wird dem einpoligen Plan hinzugefügt und im Lageplan platziert. Ziehen Sie ein Symbol, um es zu verschieben. Siehe <a href="guide.html#plan">Lageplan</a>.</p>
+        <p class="faq-link"><a href="#u-symboles" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-piece">
+      <summary>Wie statte ich einen ganzen Raum auf einmal aus?</summary>
+      <div class="faq-a">
+      <ol>
+        <li>Benennen Sie den Raum im Lageplan mit dem Werkzeug <strong>Text</strong> („Schlafzimmer“, „Küche“, „Bad“…), oder lesen Sie die Namen auf dem Planhintergrund mit <strong>Raumnamen lesen</strong>.</li>
+        <li>Wählen Sie diesen Namen: Der Bereich <strong>Raum ausstatten</strong> schlägt die übliche Ausstattung zum Ankreuzen vor, sowie <strong>Typische Möbel hinzufügen</strong>.</li>
+        <li><strong>Zum Raum hinzufügen</strong> setzt die Punkte, <strong>nicht angeschlossen</strong>: Verbinden Sie sie anschließend mit ihren Stromkreisen.</li>
+      </ol>
+      <p>Das ist ein Ausgangspunkt, keine Liste des RGIE. Siehe <a href="guide.html#plan">Lageplan</a>.</p>
+        <p class="faq-link"><a href="#u-piece" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-tableau">
+      <summary>Wie ordne ich den Verteiler an?</summary>
+      <div class="faq-a">
+      <p>Geben Sie in den Eigenschaften des Verteilers die Anzahl der Reihen und der Module pro Reihe an. Ziehen Sie im Reiter <strong>Verteiler</strong> die Geräte zwischen den Reihen und der Reserve, oder klicken Sie auf <strong>Automatische Anordnung</strong> (Reihenfolge der Baumansicht); die tatsächliche Breite jedes Geräts stellen Sie in seinen Eigenschaften ein (Module). Mit einem Foto von vorn: <strong>Foto des Verteilers …</strong>, dann <strong>Foto ausrichten (Reihen)</strong>, dann <strong>Nach Foto anordnen</strong> oder <strong>Mit Foto vergleichen</strong>. Siehe <a href="guide.html#tableau">Verteiler</a> und <a href="guide.html#photo">Foto des Verteilers</a>.</p>
+        <p class="faq-link"><a href="#u-tableau" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-controle">
+      <summary>Wie verwende ich die RGIE-Prüfung?</summary>
+      <div class="faq-a">
+      <p>Öffnen Sie den Reiter <strong>RGIE-Prüfung</strong> (die rote Zahl = Anzahl der Nichtkonformitäten). Jede Feststellung hat einen Status (Nichtkonformität festgestellt, unzureichende Angaben, Empfehlung…), einen Schweregrad und gegebenenfalls den Vermerk blockierend.</p>
+      <ul>
+        <li>Die Schaltflächen <strong>Einpoliger Plan</strong>, <strong>Plan</strong> und <strong>Verteiler</strong> einer Feststellung zeigen das betroffene Element.</li>
+        <li>Ist die Korrektur offensichtlich, schlägt eine Schaltfläche unter der Feststellung sie vor (zum Beispiel <strong>20 A wählen</strong>); <kbd>Strg</kbd>+<kbd>Z</kbd> macht sie rückgängig.</li>
+        <li>Bestehende Installation: Ein nicht gezeichnetes Element (Erdung, Fehlerstromschutzschalter) bestätigen Sie mit <strong>Als vorhanden bestätigen</strong>, <strong>Als fehlend bestätigen</strong> oder <strong>Ich weiß es nicht</strong>.</li>
+        <li><strong>Abweichung…</strong> erfasst eine Abweichung mit ihrer Begründung: Die Feststellung bleibt sichtbar, ist aber nicht mehr blockierend.</li>
+      </ul>
+      <p>Siehe <a href="guide.html#controle">RGIE-Prüfung</a>.</p>
+        <p class="faq-link"><a href="#u-controle" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-mesures">
+      <summary>Wo gebe ich die Messungen ein?</summary>
+      <div class="faq-a">
+      <p>Reiter <strong>Projekt</strong>, Bereich <strong>Messungen</strong>: Erdungswiderstand, Isolation, Potentialausgleich, Prüfung jedes Fehlerstromschutzschalters, Datum und Messgerät. Sie werden geprüft und in den Unterlagen gedruckt. Siehe <a href="guide.html#mesures">Messungen</a>.</p>
+        <p class="faq-link"><a href="#u-mesures" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-materiel">
+      <summary>Wie erhalte ich die Materialliste und die Leitungslängen?</summary>
+      <div class="faq-a">
+      <p>Reiter <strong>Material</strong>: Das Material wird gruppiert und summiert; <strong>Nach Raum</strong> ordnet es Raum für Raum. <strong>Längen schätzen</strong> berechnet die Leitungslängen anhand des Lageplans (platzieren Sie zuerst den Verteiler im Lageplan); eine eingegebene Länge wird nie ersetzt. <strong>Exportieren (CSV, Tabellenkalkulation)</strong> und <strong>Stromkreisliste (CSV)</strong> öffnen sich in einer Tabellenkalkulation. Siehe <a href="guide.html#materiel">Materialliste</a> und <a href="#longueurs">Wie werden die Leitungslängen geschätzt?</a></p>
+        <p class="faq-link"><a href="#u-materiel" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-enregistrer">
+      <summary>Wie speichere, öffne oder rette ich ein Projekt?</summary>
+      <div class="faq-a">
+      <ul>
+        <li><strong>Speichern</strong> (<kbd>Strg</kbd>+<kbd>S</kbd>). <strong>Speichern unter…</strong> wählt den Speicherort: <strong>Dieses Gerät</strong> (Datei <code>.voltaplan</code>), den Browser oder GitHub (unter <strong>Weitere Speicherorte</strong>), oder Drive, OneDrive, Dropbox.</li>
+        <li>Wieder öffnen: die Liste im Bildschirm <strong>Meine Projekte</strong>, <strong>Datei → Öffnen…</strong> (<kbd>Strg</kbd>+<kbd>O</kbd>) oder <strong>Aus der Cloud oder dem Browser öffnen</strong>.</li>
+        <li>Wiederherstellen: Nach einem unerwarteten Schließen wird die nicht gespeicherte Arbeit beim erneuten Öffnen angeboten (<strong>Wiederherstellen</strong>). <strong>Datei → Lokale Versionen …</strong> öffnet eine frühere Version als neues Projekt.</li>
+      </ul>
+      <p>Siehe <a href="guide.html#sauver">Speichern und öffnen</a>.</p>
+        <p class="faq-link"><a href="#u-enregistrer" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-langue">
+      <summary>Wie wechsle ich die Sprache?</summary>
+      <div class="faq-a">
+      <p>Mit der Sprachauswahl in der oberen Leiste (Français, Nederlands, English, Deutsch); auf einem kleinen Bildschirm im Menü <strong>⋯</strong> → <strong>Sprache</strong>. Die Wahl wird auf diesem Gerät gespeichert.</p>
+        <p class="faq-link"><a href="#u-langue" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="u-raccourcis">
+      <summary>Welche Tastenkürzel gibt es?</summary>
+      <div class="faq-a">
+      <p><kbd>Strg</kbd>+<kbd>S</kbd> speichern, <kbd>Strg</kbd>+<kbd>Umschalt</kbd>+<kbd>S</kbd> speichern unter, <kbd>Strg</kbd>+<kbd>O</kbd> öffnen, <kbd>Strg</kbd>+<kbd>P</kbd> drucken / PDF, <kbd>Strg</kbd>+<kbd>Z</kbd> und <kbd>Strg</kbd>+<kbd>Y</kbd> rückgängig und wiederholen, <kbd>Entf</kbd> das ausgewählte Element löschen, <kbd>Esc</kbd> das aktuelle Werkzeug verlassen. In der Baumansicht: Pfeiltasten zum Durchgehen, links und rechts zum Ein- und Ausklappen, <kbd>+</kbd> zum Hinzufügen. Auf dem Mac ersetzt <kbd>Cmd</kbd> die Taste <kbd>Strg</kbd>. Siehe <a href="guide.html#raccourcis">Tastenkürzel</a>.</p>
+        <p class="faq-link"><a href="#u-raccourcis" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fichiers">
+    <h2>Dateien</h2>
+    <details id="fichiers">
+      <summary>Wo werden meine Dateien gespeichert?</summary>
+      <div class="faq-a">
+      <p>Wo Sie möchten: auf Ihrem Gerät (Datei <code>.voltaplan</code>, auch auf einem USB-Stick oder in einem synchronisierten Ordner), im Browser oder in Ihrem eigenen Online-Speicher: <strong>OneDrive, Google Drive, Dropbox oder GitHub</strong>. Kein Voltaplan-Server erhält Ihre Projekte. Im Browser gespeicherte Projekte werden gelöscht, wenn Sie die Browserdaten löschen: Bewahren Sie auch eine Kopie als Datei auf. Siehe <a href="guide.html#sauver">Speichern und öffnen</a>.</p>
+        <p class="faq-link"><a href="#fichiers" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="format">
+      <summary>Ist das Dateiformat offen?</summary>
+      <div class="faq-a">
+      <p>Ja. Eine <code>.voltaplan</code>-Datei ist ein gewöhnliches ZIP-Archiv: das Projektmodell als lesbares JSON (<code>project.json</code>), die Originalfotos und -PDFs unverändert und eine LIESMICH-Datei, die erklärt, wie Sie die Daten ohne Voltaplan wiederherstellen. Das Format ist in <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/file-format.md">docs/file-format.md</a> beschrieben. Sie können auch für Trikker (<code>.trik</code>), Eendraadschema (<code>.eds</code>) und als CSV exportieren.</p>
+        <p class="faq-link"><a href="#format" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="importer">
+      <summary>Welche Dateien kann ich importieren?</summary>
+      <div class="faq-a">
+      <p><strong>Datei → Aus anderer Software importieren…</strong> (oder die Karte auf dem Bildschirm Meine Projekte) erkennt die Quelle am Inhalt, unabhängig von der Dateiendung: Voltaplan-Projekt, Trikker (<code>.trik</code>), Volter (<code>.vschema</code>), Eendraadschema (<code>.eds</code>), Draadwijs, PlanElec Sketch, Condui (<code>.zip</code>-Export) und PDF-Unterlagen anderer Software. Ein <code>.zip</code>-Archiv, das eine dieser Dateien enthält, wird geöffnet. Eine nicht erkannte Datei wird mit einer Erklärung abgelehnt. Einzelheiten: <a href="guide.html#importer">Aus anderer Software importieren</a>.</p>
+        <p class="faq-link"><a href="#importer" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="pdf">
+      <summary>Kann ich die PDF-Unterlagen einer anderen Software übernehmen?</summary>
+      <div class="faq-a">
+      <p>Ja, wenn sie <strong>Text</strong> enthalten: Stromkreistabelle, Unterverteiler, Punkte, Pläne (als Hintergrundplan, mit aus der Zeichnung gelesenen Wänden, Türen und Fenstern), Frontansicht der Verteiler, Angaben aus dem Schriftfeld und Messungen werden übernommen. Das PDF wird in Ihrem Browser gelesen, ohne Übertragung und ohne KI. Ein <strong>gescanntes PDF</strong> oder eines, dessen Text gezeichnet ist (Bilder), kann nicht gelesen werden: Es wird mit einer Erklärung abgelehnt. Was der Text nicht angibt, wird beim Öffnen gemeldet und ist zu ergänzen.</p>
+        <p class="faq-link"><a href="#pdf" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-rgie">
+    <h2>RGIE und Prüfung</h2>
+    <details id="organisme">
+      <summary>Ersetzt Voltaplan die zugelassene Prüfstelle?</summary>
+      <div class="faq-a">
+      <p>Nein. Voltaplan ist eine <strong>Hilfe</strong> beim Zeichnen und Prüfen: Es ist keine Prüfstelle und stellt weder Zertifizierung noch Bescheinigung noch Konformitätsprotokoll aus. „Keine Anomalie festgestellt“ bedeutet nur, dass unter den tatsächlich geprüften Regeln, mit den eingegebenen Angaben, keine Anomalie gefunden wurde. Sie bleiben für die Anlage und die Unterlagen, die Sie unterschreiben, verantwortlich; die Prüfung bleibt Sache der zugelassenen Prüfstelle. Siehe die <a href="terms.html">Nutzungsbedingungen</a>.</p>
+        <p class="faq-link"><a href="#organisme" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="rgie">
+      <summary>Welche Fassung der RGIE wird geprüft?</summary>
+      <div class="faq-a">
+      <p>Die belgische RGIE, <strong>Buch 1</strong> (Niederspannungs- und Kleinspannungsanlagen), in Kraft seit dem 1.6.2020. Je nach angegebenem Ausführungsdatum, Teil für Teil, wendet Voltaplan auch die frühere RGIE (Königlicher Erlass vom 10. März 1981) oder die Regeln für einen alten Teil (vor dem 1.10.1981) an, ebenso die datierten Änderungen von Buch 1. Die Symbole folgen Tabelle 2.23, der einpolige Plan Abbildung 3.1. Nur ein Teil der Regeln wird geprüft, und sie müssen von einer Fachkraft überprüft werden: Die Liste und die offenen Punkte stehen in der <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/docs/audit/REGULATORY-COVERAGE.md">Übersicht der geprüften Vorschriften</a> (auf Französisch).</p>
+        <p class="faq-link"><a href="#rgie" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="neuf-existant">
+      <summary>Neue oder bestehende Anlage?</summary>
+      <div class="faq-a">
+      <p>Beides. Bei einer <strong>neuen Anlage</strong> planen Sie die Anlage: Alle Regeln gelten, und Nichtkonformitäten sind für die Abnahmeunterlagen blockierend. Bei einer <strong>bestehenden Anlage</strong> (Verkauf, Instandsetzung) nehmen Sie auf, was vorhanden ist: Was nicht gesehen wird, bleibt „unbekannt“ und gilt nicht als fehlend; die Sicherheitsregeln bleiben blockierend, die übrigen werden zu Empfehlungen. Eine Anlage kann Teile aus mehreren Epochen umfassen.</p>
+        <p class="faq-link"><a href="#neuf-existant" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="pays">
+      <summary>Und für andere Länder?</summary>
+      <div class="faq-a">
+      <p>Derzeit ist nur die belgische RGIE verfügbar. Die Prüflogik ist für andere Länder ausgelegt (ein Land = ein Regelmodul mit seinen Texten und Listen), aber noch keine andere Vorschrift ist enthalten.</p>
+        <p class="faq-link"><a href="#pays" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-fonctions">
+    <h2>Funktionen</h2>
+    <details id="longueurs">
+      <summary>Wie werden die Leitungslängen geschätzt?</summary>
+      <div class="faq-a">
+      <p>Anhand des Lageplans: vom Verteiler zu den Punkten in der Reihenfolge des Schemas, rechtwinklig, mit Steig- und Fallstrecken je nach Montagehöhe (Schalter auf 1,10 m, tiefe Steckdose auf 0,25 m…), Stockwerkswechseln und 10 % Zuschlag. Die Leitungsverläufe aus Condui werden übernommen; für andere Importe werden rechtwinklige Verläufe anhand des einpoligen Plans erzeugt, gestrichelt, zum Anpassen. Eine eingegebene Länge wird nie ersetzt. Siehe <a href="guide.html#longueurs">Leitungslängen</a>.</p>
+        <p class="faq-link"><a href="#longueurs" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="imprimer">
+      <summary>Wie drucke ich die Unterlagen?</summary>
+      <div class="faq-a">
+      <p><strong>Drucken / PDF</strong> (<kbd>Strg</kbd>+<kbd>P</kbd>): Arbeitsdokument, Abnahmeunterlagen, Mängelbericht oder vollständige technische Unterlagen, in A4 oder A3 quer, mit den Teilen Ihrer Wahl (einpoliger Plan, Lagepläne, Verteiler, Legende, Messungen, Materialliste, Beschriftungen 1:1…). Wählen Sie im Druckdialog „Als PDF speichern“ für ein Vektor-PDF. Die Abnahmeunterlagen tragen einen Entwurfsvermerk, solange noch Punkte zu bearbeiten sind. Siehe <a href="guide.html#imprimer">Unterlagen drucken</a>.</p>
+        <p class="faq-link"><a href="#imprimer" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-vie-privee">
+    <h2>KI und Datenschutz</h2>
+    <details id="ia">
+      <summary>Ist die KI Pflicht?</summary>
+      <div class="faq-a">
+      <p>Nein. Alles funktioniert ohne KI; sie ist standardmäßig ausgeschaltet, und jede Verwendung muss einzeln erlaubt werden. Wenn Sie sie aktivieren, läuft sie über den Anbieter Ihrer Wahl mit <strong>Ihrem eigenen Schlüssel</strong> (Anthropic oder eine OpenAI-kompatible API: OpenAI, Gemini, Mistral) oder über ein <strong>lokales Modell</strong> (Ollama, LM Studio) ohne Schlüssel – dann verlässt nichts den Computer. Nur das betreffende Foto (Verteiler, Zählerschild oder Lageplan) wird gesendet, direkt von Ihrem Gerät an den Anbieter, nie Name oder Adresse des Kunden. Etwaige Kosten tragen Sie. Siehe <a href="guide.html#ia">KI</a> und die <a href="privacy.html">Datenschutzerklärung</a>.</p>
+        <p class="faq-link"><a href="#ia" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="telemetrie">
+      <summary>Gibt es Telemetrie oder Reichweitenmessung?</summary>
+      <div class="faq-a">
+      <p>Nein: keine Telemetrie, keine Statistik, keine Cookies oder Tracker von Voltaplan. Nur der Hoster der Website (GitHub Pages) erhält die üblichen Anfragen zum Herunterladen der App, wie bei jeder Website.</p>
+        <p class="faq-link"><a href="#telemetrie" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <section class="faq-group" id="c-projet">
+    <h2>Das Projekt</h2>
+    <details id="bug">
+      <summary>Wie melde ich einen Fehler oder wirke mit?</summary>
+      <div class="faq-a">
+      <p>Eröffnen Sie ein Ticket im <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub-Repository</a>. Tickets sind öffentlich: Hängen Sie nie Unterlagen, Fotos oder die Adresse eines Kunden an. Eine Sicherheitslücke melden Sie über eine <a href="https://github.com/SebastienBatteur/voltaplan/security/advisories/new">vertrauliche Meldung</a>. Code, Regeln, Übersetzungen und Tests sind willkommen: siehe den <a href="https://github.com/SebastienBatteur/voltaplan/blob/main/CONTRIBUTING.md">Leitfaden für Beiträge</a> (ein Beitrag zu Vorschriften nennt seine Quelle; vor dem ersten Beitrag wird eine Beitragsvereinbarung verlangt).</p>
+        <p class="faq-link"><a href="#bug" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+    <details id="soutenir">
+      <summary>Wie kann ich Voltaplan unterstützen?</summary>
+      <div class="faq-a">
+      <p>Mit einer freiwilligen Spende über <a href="https://github.com/sponsors/SebastienBatteur">GitHub Sponsors</a>: Sie finanziert die Zeit für Entwicklung, Wartung und Überprüfung der Vorschriften und schaltet nichts frei. Einen Fehler zu melden oder eine Regel von einer Fachkraft prüfen zu lassen, hilft genauso.</p>
+        <p class="faq-link"><a href="#soutenir" data-copied="Link kopiert">Link zu dieser Frage</a></p>
+      </div>
+    </details>
+  </section>
+  <p class="faq-empty" hidden>Keine Frage passt. Versuchen Sie ein anderes Wort oder lesen Sie die Anleitung.</p>
+  <section class="faq-more"><h2>Nicht gefunden?</h2><p>Die <a href="guide.html">Anleitung</a> erklärt jeden Bildschirm Schritt für Schritt. Andernfalls stellen Sie Ihre Frage auf <a href="https://github.com/SebastienBatteur/voltaplan/issues">GitHub</a> (öffentlich: ohne Kundendaten).</p></section>
 </main>
 <footer>Voltaplan — kostenlos und Open Source — <a href="https://github.com/sponsors/SebastienBatteur">Projekt unterstützen</a> (freiwillig) — <a href="faq.html">FAQ</a> — <a href="privacy.html">Datenschutz</a> — <a href="terms.html">Nutzungsbedingungen</a> — Lizenz <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU AGPL v3</a> — <a class="repo-link" href="https://github.com/SebastienBatteur/voltaplan">Quellcode</a></footer>
 <script src="../site.js"></script>
+<script src="../search.js"></script>
 </body>
 </html>
