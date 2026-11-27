@@ -17,7 +17,7 @@ const plan = JSON.parse(readFileSync(join(LEARN, 'plan.json'), 'utf8')) as { rgi
 const strip = (s: string) =>
   s
     .replace(/<[^>]+>/g, ' ')
-    .replace(/&nbsp;/g, ' ') // s ci-dessous couvre aussi les espaces insécables
+    .replace(/&nbsp;/g, ' ') // \s ci-dessous couvre aussi les espaces insécables
     .replace(/\s+/g, ' ')
     .trim();
 const num = (s: string) => parseFloat(s.replace(/\s/g, '').replace(',', '.'));
