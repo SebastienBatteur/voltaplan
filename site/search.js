@@ -4,10 +4,10 @@
 (function () {
   var lang = document.documentElement.lang || 'fr';
   var T = {
-    fr: { ph: 'Chercher (ex. PDF, Trikker, hors ligne)…', label: 'Chercher dans le guide et la FAQ', guide: 'Dans le guide', faq: 'Dans la FAQ', none: 'Aucun résultat.', copied: 'Lien copié', toc: 'Sommaire' },
-    nl: { ph: 'Zoeken (bv. pdf, Trikker, offline)…', label: 'Zoeken in de handleiding en de FAQ', guide: 'In de handleiding', faq: 'In de FAQ', none: 'Geen resultaten.', copied: 'Link gekopieerd', toc: 'Inhoud' },
-    en: { ph: 'Search (e.g. PDF, Trikker, offline)…', label: 'Search the guide and the FAQ', guide: 'In the guide', faq: 'In the FAQ', none: 'No results.', copied: 'Link copied', toc: 'Contents' },
-    de: { ph: 'Suchen (z. B. PDF, Trikker, offline)…', label: 'In Anleitung und FAQ suchen', guide: 'In der Anleitung', faq: 'In den FAQ', none: 'Keine Ergebnisse.', copied: 'Link kopiert', toc: 'Inhalt' },
+    fr: { ph: 'Chercher (ex. PDF, Trikker, hors ligne)…', label: 'Chercher dans le guide et la FAQ', guide: 'Dans le guide', faq: 'Dans la FAQ', none: 'Aucun résultat.', copied: 'Lien copié', toc: 'Sommaire', short: 'Chercher…' },
+    nl: { ph: 'Zoeken (bv. pdf, Trikker, offline)…', label: 'Zoeken in de handleiding en de FAQ', guide: 'In de handleiding', faq: 'In de FAQ', none: 'Geen resultaten.', copied: 'Link gekopieerd', toc: 'Inhoud', short: 'Zoeken…' },
+    en: { ph: 'Search (e.g. PDF, Trikker, offline)…', label: 'Search the guide and the FAQ', guide: 'In the guide', faq: 'In the FAQ', none: 'No results.', copied: 'Link copied', toc: 'Contents', short: 'Search…' },
+    de: { ph: 'Suchen (z. B. PDF, Trikker, offline)…', label: 'In Anleitung und FAQ suchen', guide: 'In der Anleitung', faq: 'In den FAQ', none: 'Keine Ergebnisse.', copied: 'Link kopiert', toc: 'Inhalt', short: 'Suchen…' },
   }[lang] || null;
   if (!T) return;
 
@@ -157,6 +157,7 @@
       tocList.innerHTML = '<summary>' + esc(T.toc) + '</summary>';
       while (toc.firstChild) tocList.appendChild(toc.firstChild);
       tocList.open = !window.matchMedia('(max-width: 760px)').matches;
+      input.placeholder = T.short; // sommaire étroit : exemple trop long
       toc.appendChild(box);
       toc.appendChild(tocList);
       tocList.addEventListener('click', function (e) {

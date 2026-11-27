@@ -10,6 +10,8 @@
   accents ignorés, extraits surlignés ; « / » place le curseur dans la recherche ; `?q=` dans l'adresse.
 - Barre du site : la langue se choisit dans un menu déroulant (🌐 FR ▾ : Français, Nederlands, English, Deutsch),
   qui fonctionne sans JavaScript ; liens du menu centrés verticalement.
+- Champ de recherche plus discret : loupe, bordure accent et halo léger au focus (au lieu d'un double contour) ;
+  dans le sommaire du guide, texte court « Chercher… » et halo non coupé.
 - Guide sur téléphone : sommaire replié sous « Sommaire » ; un tableau large défile dans son cadre au lieu
   d'élargir toute la page (la page débordait en largeur).
 

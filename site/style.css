@@ -372,22 +372,49 @@ footer {
 }
 
 /* Recherche (guide et FAQ, site/search.js) */
+/* Champ discret : loupe à gauche, cadre fin ; au focus, bordure accent et halo léger (pas de double contour) */
+.site-search {
+  position: relative;
+}
+.site-search::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  background: var(--muted);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' d='M7 12.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Zm4-1.5 3.5 3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' d='M7 12.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Zm4-1.5 3.5 3.5'/%3E%3C/svg%3E") center / contain no-repeat;
+  pointer-events: none;
+}
 .site-search input {
   width: 100%;
   box-sizing: border-box;
   font: inherit;
-  padding: 10px 12px;
+  font-size: 15px;
+  padding: 9px 12px 9px 36px;
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--panel);
   color: var(--text);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.site-search input::placeholder {
+  color: var(--muted);
 }
 .site-search input:focus {
-  outline: 2px solid var(--accent);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.18);
+}
+.site-search input::-webkit-search-cancel-button {
+  cursor: pointer;
 }
 .toc .site-search {
-  margin-bottom: 10px;
+  /* Marge : le halo du focus n'est pas coupé par le défilement du sommaire */
+  margin: 4px 4px 10px;
 }
 .search-results {
   border: 1px solid var(--border);
