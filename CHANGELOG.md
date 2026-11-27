@@ -8,6 +8,8 @@
   « Tout ouvrir », lien vers une question qui l'ouvre et se copie, « Vous n'avez pas trouvé ? » vers le guide.
 - Recherche dans le guide et la FAQ (même langue, sans service extérieur) : chaque page cherche aussi dans l'autre,
   accents ignorés, extraits surlignés ; « / » place le curseur dans la recherche ; `?q=` dans l'adresse.
+- Barre du site : la langue se choisit dans un menu déroulant (🌐 FR ▾ : Français, Nederlands, English, Deutsch),
+  qui fonctionne sans JavaScript ; liens du menu centrés verticalement.
 - Guide sur téléphone : sommaire replié sous « Sommaire » ; un tableau large défile dans son cadre au lieu
   d'élargir toute la page (la page débordait en largeur).
 

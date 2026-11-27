@@ -31,6 +31,19 @@
       store(a.getAttribute('data-lang'));
     });
   });
+  // Menu des langues : fermé par un clic ailleurs ou Échap
+  var langMenu = document.querySelector('details.lang');
+  if (langMenu) {
+    document.addEventListener('click', function (e) {
+      if (langMenu.open && !langMenu.contains(e.target)) langMenu.open = false;
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && langMenu.open) {
+        langMenu.open = false;
+        langMenu.querySelector('summary').focus();
+      }
+    });
+  }
   document.querySelectorAll('.repo-link').forEach(function (a) {
     a.href = repo;
   });
