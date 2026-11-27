@@ -16,7 +16,7 @@
  * n'est pas dessiné est inconnu tant que l'utilisateur n'a pas confirmé son absence (meta.survey).
  */
 import type { ElNode, Project } from '../../model/types';
-import { DEDICATED_CIRCUIT_APPLIANCES, RCD30_APPLIANCES } from '../../model/schema';
+import { DEDICATED_CIRCUIT_APPLIANCES, DEDICATED_IF_POWERFUL, RCD30_APPLIANCES } from '../../model/schema';
 import { circuitContent, isCircuit, isRcd } from '../../model/tree';
 import type { Finding, FindingStatus, Knowledge, RulePack, Severity, SurveyFact } from '../types';
 import { classify, normDate, partContext, projectContext } from '../context';
@@ -25,24 +25,35 @@ import { BE_EDITIONS, BE_RULES } from './catalog';
 import { calcProject, roundTo } from '../../calc/electrical';
 
 /**
- * Courant maximal de la protection selon la section (cuivre, pose courante encastrée sous tube).
- * Valeurs prudentes usuelles en Belgique — à adapter si le mode de pose ou la longueur l'exige.
+ * Calibre maximal de la protection selon la section du conducteur, pour les installations domestiques :
+ * RGIE Livre 1, sous-section 4.4.1.4, tableau 4.11 (version 07, 15/09/2026, p. 116-117). Deux colonnes : coupe-circuit
+ * à fusible et disjoncteur. Ce sont des maxima : le courant admissible IZ (mode de pose, groupement, température)
+ * peut imposer moins (4.4.1.4) ; Voltaplan ne le calcule pas.
+ * [section mm², fusible A, disjoncteur A]
  */
-export const MAX_PROTECTION_BY_SECTION: [number, number][] = [
-  [1.5, 16],
-  [2.5, 20],
-  [4, 25],
-  [6, 32],
-  [10, 50],
-  [16, 63],
-  [25, 80],
-  [35, 100],
-  [50, 125],
+export const TABLE_4_11: [number, number, number][] = [
+  [0.5, 2, 4],
+  [0.75, 4, 6],
+  [1, 6, 10],
+  [1.5, 10, 16],
+  [2.5, 16, 20],
+  [4, 20, 25],
+  [6, 32, 40],
+  [10, 50, 63],
+  [16, 63, 80],
+  [25, 80, 100],
+  [35, 100, 125],
 ];
 
-export function maxProtectionFor(section: number): number | undefined {
+/**
+ * Calibre maximal (tableau 4.11) pour une section et un type de protection (`fuse` : colonne des fusibles ; sinon
+ * disjoncteur, disjoncteur différentiel compris). Section intermédiaire : ligne inférieure (prudent). Au-delà de
+ * 35 mm² le tableau ne dit rien : pas de maximum (undefined).
+ */
+export function maxProtectionFor(section: number, device: string = 'mcb'): number | undefined {
+  if (section > TABLE_4_11[TABLE_4_11.length - 1][0]) return undefined;
   let best: number | undefined;
-  for (const [s, a] of MAX_PROTECTION_BY_SECTION) if (section >= s) best = a;
+  for (const [s, fuse, mcb] of TABLE_4_11) if (section >= s) best = device === 'fuse' ? fuse : mcb;
   return best;
 }
 
@@ -119,6 +130,55 @@ function sinceDate(project: Project, chain: ElNode[], date: string): 'yes' | 'no
 /** Tableau le plus proche dans la chaîne (celui à qui demander s'il a été fait ou refait avant ou après le 1/6/2023). */
 const boardOf = (chain: ElNode[]) => [...chain].reverse().find((x) => x.kind === 'board');
 
+/** Appareils d'un chauffage électrique à poste fixe : un ou plusieurs circuits dédiés (RGIE 5.2.1.2). */
+const FIXED_HEATING = new Set(['heater', 'storageHeater', 'storageHeaterFan']);
+/** Seuil de puissance d'un appareil à poste fixe qui impose un circuit dédié (RGIE 5.2.1.2). */
+export const DEDICATED_POWER_W = 2600;
+
+/**
+ * Circuit dédié exigé ? `yes` : liste nommée du RGIE (5.2.1.2 ; borne de recharge 7.22.3) ou puissance ≥ 2 600 W ;
+ * `ifPowerKnown` : autre appareil fixe de puissance inconnue (à vérifier) ; `no` : puissance connue < 2 600 W.
+ */
+function dedicatedNeed(ap: ElNode): 'yes' | 'ifPowerKnown' | 'no' {
+  const type = String(ap.props.applianceType);
+  if (DEDICATED_CIRCUIT_APPLIANCES.has(type) || FIXED_HEATING.has(type)) return 'yes';
+  const w = n(ap.props.power);
+  if (w === undefined) return DEDICATED_IF_POWERFUL.has(type) ? 'ifPowerKnown' : 'no';
+  return w >= DEDICATED_POWER_W ? 'yes' : 'no';
+}
+
+const COMMANDS = new Set(['switch', 'pushButton', 'relay', 'detector', 'domotic']);
+/**
+ * Points « appareils fixes » d'un circuit de prises (RGIE 5.3.5.2 b) : chaque appareil fixe (éclairage, appareil,
+ * moteur…) compte pour un socle, sauf ceux commandés ensemble par un même appareil de manœuvre (une chaîne de commandes
+ * : va-et-vient, poussoirs et télérupteur…), qui comptent pour un seul. Un appareil branché sur une prise est déjà
+ * compté avec sa prise.
+ */
+function fixedPoints(circuit: ElNode, content: ElNode[]): Set<string> {
+  const keys = new Set<string>();
+  const inCircuit = new Set(content.map((c) => c.id));
+  const parentOf = new Map<string, ElNode>();
+  const walk = (x: ElNode) => {
+    for (const c of x.children) {
+      parentOf.set(c.id, x);
+      walk(c);
+    }
+  };
+  walk(circuit);
+  for (const c of content) {
+    if (c.kind === 'socket' || !LOAD_KINDS.has(c.kind)) continue;
+    let p = parentOf.get(c.id);
+    if (p?.kind === 'socket') continue;
+    let top: ElNode | undefined;
+    while (p && inCircuit.has(p.id) && (COMMANDS.has(p.kind) || p.kind === 'cable' || p.kind === 'junctionBox')) {
+      if (COMMANDS.has(p.kind)) top = p;
+      p = parentOf.get(p.id);
+    }
+    keys.add(top ? top.id : c.id);
+  }
+  return keys;
+}
+
 /** Constat brut, avant classement (le 2e paramètre des appels `add` est l'ancienne sévérité, ignorée). */
 type Raw = Omit<Finding, 'severity'>;
 type Extra = { status?: FindingStatus; inferred?: boolean; knowledge?: Knowledge; fact?: SurveyFact };
@@ -164,7 +224,8 @@ function checkRgie(project: Project): Finding[] {
   if (!earthDrawn && earthStated === 'present') notDrawn.add('earth');
   const re = project.measurements.earthResistanceOhm;
   if (re !== undefined) {
-    if (re > 100) add('R-EARTH-VALUE', nc, undefined, { value: re });
+    // RGIE 4.2.3.2 : résistance de dispersion « inférieure à 100 Ω » (installations domestiques) → 100 Ω pile n'est pas conforme
+    if (re >= 100) add('R-EARTH-VALUE', nc, undefined, { value: re });
     else if (re > 30) add('R-EARTH-30', 'warning', undefined, { value: re });
   }
   const iso = project.measurements.insulationMOhm;
@@ -202,6 +263,13 @@ function checkRgie(project: Project): Finding[] {
         const upRcd = [...ancestors].reverse().find(isRcd);
         const up = upRcd ? n(upRcd.props.residualCurrent) : undefined;
         if (rc !== undefined && up !== undefined && rc >= up) add('R-RCD-SELECTIVITY', 'warning', node.id, { up, value: rc });
+        // RGIE 5.3.5.3 a : dans une installation domestique, tout différentiel est au moins de type A (le type AC est
+        // signalé ; un type non renseigné n'est pas une violation). Partie existante : recommandation (catalogue), une
+        // éventuelle dérogation pour l'existant restant à confirmer.
+        if (node.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, node.id);
+        // RGIE 5.3.5.3 a : le différentiel placé en tête de l'installation a une intensité nominale d'au moins 40 A.
+        const rating = n(node.props.ratedCurrent);
+        if (!upRcd && rating !== undefined && rating < 40) add('R-RCD-HEAD-RATING', nc, node.id, { value: rating });
       }
     }
 
@@ -221,7 +289,7 @@ function checkRgie(project: Project): Finding[] {
       } else if (!dcSide) {
         if (section < 1.5) add('R-CABLE-MIN', nc, node.id, { section });
         const rating = prot ? n(prot.props.ratedCurrent) : undefined;
-        const max = maxProtectionFor(section);
+        const max = prot ? maxProtectionFor(section, String(prot.props.device)) : undefined;
         if (rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
       }
       // Relevé (partie existante) : section ou calibre inconnus → la coordination section / protection est à vérifier
@@ -278,7 +346,14 @@ function checkRgie(project: Project): Finding[] {
 
     if (!label) add('R-CIRCUIT-NAME', 'info', circuit.id);
 
-    if (sockets.length > 8) add('R-SOCKET-MAX', nc, circuit.id, { count: sockets.length });
+    // RGIE 5.3.5.2 b : 8 socles simples ou multiples au plus par circuit terminal. Un circuit qui alimente des socles
+    // et aussi des appareils fixes (éclairage compris, hors appareils des circuits dédiés) suit les règles des circuits
+    // de prises, « un appareil fixe ou un ensemble d'appareils fixes commandé par un appareil de manœuvre commun »
+    // comptant pour un socle. Un circuit sans socle n'a pas cette limite.
+    if (sockets.length) {
+      const count = sockets.length + fixedPoints(circuit, content).size;
+      if (count > 8) add('R-SOCKET-MAX', nc, circuit.id, { count });
+    }
     if (sockets.length) {
       const minSection = Math.min(...cables.map((c) => n(c.props.section) ?? Infinity));
       if (Number.isFinite(minSection) && minSection < 2.5) add('R-SOCKET-SECTION', nc, circuit.id, { section: minSection });
@@ -288,11 +363,19 @@ function checkRgie(project: Project): Finding[] {
     const appliances = content.filter((c) => c.kind === 'appliance');
     for (const ap of appliances) {
       const type = String(ap.props.applianceType);
-      if (!DEDICATED_CIRCUIT_APPLIANCES.has(type)) continue;
-      // L'appareil et la prise qui l'alimente comptent pour un seul point.
+      const need = dedicatedNeed(ap);
+      if (need === 'no') continue;
+      // L'appareil et la prise qui l'alimente comptent pour un seul point ; les appareils d'un chauffage électrique
+      // fixe peuvent partager leur(s) circuit(s) dédié(s) (« un ou plusieurs circuits dédiés »).
       const parent = byId.get(ap.id)?.ancestors.at(-1);
-      const others = loads.filter((l) => l !== ap && !(parent && l === parent && parent.kind === 'socket'));
-      if (others.length) add('R-DEDICATED-CIRCUIT', nc, ap.id, { appliance: type, others: others.length });
+      const heating = FIXED_HEATING.has(type);
+      const others = loads.filter(
+        (l) => l !== ap && !(parent && l === parent && parent.kind === 'socket') && !(heating && l.kind === 'appliance' && FIXED_HEATING.has(String(l.props.applianceType))),
+      );
+      if (!others.length) continue;
+      // Puissance inconnue d'un appareil qui n'est pas dans la liste nommée : à vérifier, jamais bloquant.
+      if (need === 'ifPowerKnown') add('R-DEDICATED-CIRCUIT', nc, ap.id, { appliance: type, others: others.length }, { status: 'manualCheck' });
+      else add('R-DEDICATED-CIRCUIT', nc, ap.id, { appliance: type, others: others.length });
     }
 
     // Différentiels (ADR-0007). Sensibilité inconnue d'un différentiel dessiné : valeur inconnue (pas une violation).
@@ -331,10 +414,6 @@ function checkRgie(project: Project): Finding[] {
         addPresence('R-RCD30', k, 'rcd30', circuit.id, { reason });
       }
     } else if (wetByName && !(minRcd <= 30) && rcd30Stated !== 'present') add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
-    if (wetAppliance) {
-      const rcd30 = rcds.find((r) => (n(r.props.residualCurrent) ?? Infinity) <= 30);
-      if (rcd30 && rcd30.props.rcdType === 'AC') add('R-RCD-TYPE-A', nc, rcd30.id);
-    }
   }
 
   // Au maximum 8 circuits terminaux par différentiel 30 mA (RGIE 4.2.4.3 b, 6e al., depuis le 1/6/2023)
@@ -403,7 +482,6 @@ export const belgium: RulePack = {
     'cableType.VOB': 'H07V-U / H07V-R',
     'cableType.H07V-U': 'H07V-U',
     'cableType.H07V-K': 'H07V-K',
-    'cableType.VFVB': 'H05VV-F',
     'cableType.XVB': '0,6/1 kV (≈ FR U-1000 R2V, DE N2XY)',
     socket: 'NBN C 61-112-1 (type E)',
   },

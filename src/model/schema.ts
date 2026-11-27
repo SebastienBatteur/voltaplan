@@ -81,19 +81,19 @@ export const APPLIANCE_TYPES = [
   'other',
 ] as const;
 
-/** Appareils qui, selon le RGIE, doivent avoir leur propre circuit (installation domestique). */
-export const DEDICATED_CIRCUIT_APPLIANCES = new Set<string>([
-  'oven',
-  'cooker',
-  'hob',
-  'washingMachine',
-  'dryer',
-  'dishwasher',
-  'waterHeater',
-  'heatPump',
-  'boiler',
-  'evCharger',
-]);
+/**
+ * Appareils qui, selon le RGIE, ont toujours leur propre circuit dans une installation domestique : liste nommée de
+ * la sous-section 5.2.1.2 (lave-linge, lave-vaisselle, sèche-linge, cuisinière, taque, four) et borne de recharge
+ * (7.22.3). Le chauffage électrique fixe a un ou plusieurs circuits dédiés (voir FIXED_HEATING dans rgie.ts) ; tout
+ * autre appareil à poste fixe de 2 600 W ou plus aussi (DEDICATED_POWER_W).
+ */
+export const DEDICATED_CIRCUIT_APPLIANCES = new Set<string>(['oven', 'cooker', 'hob', 'washingMachine', 'dryer', 'dishwasher', 'evCharger']);
+
+/**
+ * Appareils souvent puissants (chauffe-eau, pompe à chaleur, chaudière, climatiseur, sauna) : circuit dédié imposé
+ * seulement à partir de 2 600 W (RGIE 5.2.1.2) ; puissance inconnue → vérification à faire, jamais bloquante.
+ */
+export const DEDICATED_IF_POWERFUL = new Set<string>(['waterHeater', 'electricWaterHeater', 'heatPump', 'boiler', 'airConditioner', 'sauna', 'other']);
 
 /** Appareils pour lesquels un différentiel 30 mA est requis (appareils dans des locaux humides / avec eau). */
 export const RCD30_APPLIANCES = new Set<string>(['washingMachine', 'dryer', 'dishwasher']);
