@@ -3,7 +3,7 @@
  * de comparaison ou une condition réglementaire ; la suite de tests des règles DOIT échouer (mutant « tué »). Un
  * mutant qui survit révèle un test manquant.
  *
- *   npm run test:mutation            (≈ 1 à 2 min ; non lancé à chaque modification, voir .github/workflows/ci.yml)
+ *   npm run test:mutation [-- id…]   (≈ 1,5 min par mutant ; lancé à la main, pas à chaque modification)
  *
  * Sans dépendance : chaque mutant est appliqué au fichier source, la suite ciblée est lancée avec vitest, puis le
  * fichier est restauré (même en cas d'erreur).
@@ -18,7 +18,10 @@ const TESTS = ['test/rules.cases.test.ts', 'test/rules.rgie2026.test.ts', 'test/
 
 let killed = 0;
 const survivors: string[] = [];
-for (const m of MUTANTS) {
+/** `npm run test:mutation -- id…` : seulement ces mutants. */
+const only = process.argv.slice(2).filter((x) => x !== '--');
+const selected = only.length ? MUTANTS.filter((m) => only.includes(m.id)) : MUTANTS;
+for (const m of selected) {
   const file = join(root, m.file);
   const original = readFileSync(file, 'utf8');
   const count = original.split(m.find).length - 1;
@@ -40,7 +43,7 @@ for (const m of MUTANTS) {
   else survivors.push(`${m.id} — ${m.why}`);
   console.log(`${failed ? '✓ tué     ' : '✗ SURVIT  '} ${m.id}`);
 }
-console.log(`\n${killed} / ${MUTANTS.length} mutants tués`);
+console.log(`\n${killed} / ${selected.length} mutants tués`);
 if (survivors.length) {
   console.log('Survivants (tests manquants) :\n- ' + survivors.join('\n- '));
   process.exitCode = 1;

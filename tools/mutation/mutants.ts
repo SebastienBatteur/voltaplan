@@ -29,7 +29,7 @@ export const MUTANTS: Mutant[] = [
   { id: 'type-AC-ignore', file: R, find: "if (node.props.rcdType === 'AC') {", replace: "if (node.props.rcdType === 'X') {", why: 'type A obligatoire' },
   { id: 'date-2023', file: V, find: "rcd30Extended: '2023-06-01'", replace: "rcd30Extended: '2024-06-01'", why: 'date des nouvelles règles 30 mA' },
   { id: 'section-prises-2,5', file: V, find: 'p(2.5, \'mm²\'', replace: 'p(1.5, \'mm²\'', why: '2,5 mm² dès qu\'il y a une prise' },
-  { id: 'prise-sans-terre', file: R, find: 'if (node.props.earth === false) {', replace: 'if (node.props.earth === null) {', why: 'terre des socles' },
+  { id: 'prise-sans-terre', file: R, find: 'node.props.earth === false && ', replace: 'node.props.earth === null && ', why: 'terre des socles' },
   { id: 'neutre-3x230', file: R, find: 'const noNeutral = /3\\s*[x×]\\s*230/i.test(meta_supply(project));', replace: 'const noNeutral = false;', why: 'réseau 3 × 230 V sans neutre' },
   { id: 'terre-30-operateur', file: R, find: 're > EARTH_EXTRA_MEASURES_ABOVE.value', replace: 're >= EARTH_EXTRA_MEASURES_ABOVE.value', why: '30 Ω pile : pas de mesures complémentaires' },
   { id: 'terre-30-deux-differentiels', file: R, find: 'hs.length >= 2 &&', replace: 'hs.length >= 1 &&', why: 'au moins deux différentiels haute sensibilité au-delà de 30 Ω' },
@@ -45,4 +45,9 @@ export const MUTANTS: Mutant[] = [
   { id: 'date-1991', file: V, find: "rcdHead40aFrom: '1991-09-16'", replace: "rcdHead40aFrom: '1992-09-16'", why: 'dérogation du différentiel de tête (8.2.2)' },
   { id: 'date-1981', file: V, find: "pre1981Until: '1981-10-01'", replace: "pre1981Until: '1982-10-01'", why: 'parties anciennes (8.2.1)' },
   { id: 'date-2025', file: V, find: "rgie2025: '2025-03-01'", replace: "rgie2025: '2026-03-01'", why: 'socles IPXX-D (5.3.5.2)' },
+  { id: 'date-borne-2022', file: V, find: "evCharger722: '2022-11-01'", replace: "evCharger722: '2023-11-01'", why: 'chapitre 7.22 des bornes (7.22.1)' },
+  { id: 'date-1986', file: V, find: "oldSection1986: '1986-05-17'", replace: "oldSection1986: '1987-05-17'", why: 'sections réduites de 8.2.2 point 5' },
+  { id: 'pv-10-kVA', file: V, find: "p(10000, 'VA'", replace: "p(20000, 'VA'", why: 'chapitre 7.112 limité à 10 kVA' },
+  { id: 'prise-rasoir', file: R, find: "node.props.socketKind !== 'shaver'", replace: 'true', why: 'socle sur transformateur de séparation individuel (5.3.5.2 b)' },
+  { id: 'terre-30-sensibilite-inconnue', file: R, find: 'if (unknownSensitivity) add(', replace: 'if (false) add(', why: 'différentiel de sensibilité inconnue au-delà de 30 Ω' },
 ];
