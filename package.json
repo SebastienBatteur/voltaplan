@@ -23,7 +23,8 @@
     "symbols:sheet": "vite-node tools/symbols-sheet/run.tsx",
     "site:sitemap": "vite-node tools/site/cli.ts --",
     "learn:build": "vite-node tools/learn/cli.ts",
-    "learn:check": "vite-node tools/learn/check.ts --"
+    "learn:check": "vite-node tools/learn/check.ts --",
+    "test:mutation": "vite-node tools/mutation/run.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",
