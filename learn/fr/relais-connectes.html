@@ -91,13 +91,14 @@
   </tbody>
 </table>
 <p>La terre (vert-jaune) ne passe pas par le module : elle va directement au luminaire. Sur certains modèles, l’entrée doit recevoir une phase ; sur d’autres, elle accepte un contact sec ou une très basse tension. Lisez toujours la notice : une erreur d’entrée peut détruire le module.</p>
-<p>Avant toute intervention, coupez le circuit au tableau et vérifiez l’absence de tension sur tous les fils de la boîte.</p>
+<p>Avant toute intervention, coupez le circuit au tableau, empêchez sa remise en service pendant le travail (étiquette, cadenas si possible) et vérifiez l’absence de tension sur tous les fils de la boîte avec un détecteur adapté.</p>
 
 <h2 id="limites">Respecter les limites du module</h2>
 <ul>
   <li><strong>Courant admissible</strong> : chaque module indique un courant maximal, souvent différent selon le type de charge. Les LED et les transformateurs électroniques provoquent un fort pic de courant à l’allumage ; les moteurs aussi. Gardez de la marge.</li>
   <li><strong>Protection du circuit</strong> : le module ne remplace pas le <a href="disjoncteur.html">disjoncteur</a>. Le circuit reste protégé selon la section : 16 A au plus en 1,5 mm². Un module de 10 A sur un circuit de prises de 20 A ne peut donc pas commander toute la charge que le circuit autorise.</li>
-  <li><strong>Chaleur</strong> : un module enfermé dans une boîte avec plusieurs connecteurs chauffe. Une boîte profonde laisse de la place et facilite le rangement des fils (voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>).</li>
+  <li><strong>Chaleur</strong> : un module enfermé dans une boîte avec plusieurs connecteurs chauffe, et son courant admissible baisse souvent quand la température ambiante monte. Respectez les conditions de montage de la notice (type de boîte, température, charge) ; une boîte profonde laisse de la place et facilite le rangement des fils (voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>). Les connexions doivent rester accessibles (RGIE, 5.1.5.1) : on ne noie pas un module dans le plâtre.</li>
+  <li><strong>Matériel conforme</strong> : le RGIE présume sûr le matériel conforme aux règles belges de mise sur le marché (RGIE, 5.1.3.1). Choisissez un module vendu dans l’Union européenne avec son marquage CE, sa notice et ses caractéristiques complètes ; méfiez-vous des modules sans marque ni documentation.</li>
   <li><strong>Fortes charges</strong> : pour un chauffe-eau ou un chauffage électrique, le module pilote plutôt la bobine d’un <a href="lexique.html#contacteur">contacteur</a> au tableau, dimensionné pour le courant réel.</li>
 </ul>
 
@@ -106,12 +107,12 @@
 <p>Avantages : pas de chaleur ni d’encombrement dans les boîtes murales, un accès facile pour le dépannage, et un schéma clair. Inconvénient : il faut prévoir ce câblage dès les travaux, ce qui est rarement possible en rénovation légère.</p>
 
 <h2 id="schemas">Sur les schémas</h2>
-<p>Un relais ajouté modifie le fonctionnement du circuit : il doit apparaître sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, avec le circuit qu’il commande, et la position du module sur le <a href="plan-de-position.html">plan de position</a> quand il est caché dans une boîte. Le prochain intervenant saura ainsi pourquoi une lampe reste alimentée alors que l’interrupteur est ouvert. Et comme toujours, une installation neuve, comme toute modification ou extension importante, est contrôlée par un organisme agréé.</p>
+<p>Un relais ajouté modifie le fonctionnement du circuit. Le RGIE demande que les boîtes de connexion figurent sur l’unifilaire et sur le <a href="plan-de-position.html">plan de position</a>, et le tableau 2.23 prévoit un symbole d’« unité de commande » domotique (le symbole de l’interrupteur, surmonté du type de commande : sans fil, programmée, par détection). Sur le <a href="lire-unifilaire.html">schéma unifilaire</a>, on représente donc le point commandé avec ce symbole et, par bonne pratique, le module lui-même ; sur le plan, la boîte qui le contient. Le prochain intervenant saura ainsi pourquoi une lampe reste alimentée alors que l’interrupteur est ouvert. Et comme toujours, une installation neuve, comme toute modification ou extension importante, est contrôlée par un organisme agréé.</p>
 
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
   <li><strong>Prendre le retour lampe pour un neutre</strong> : le module semble ne pas fonctionner, ou la lampe reste allumée faiblement. Identifiez chaque fil avant de raccorder.</li>
   <li><strong>Mélanger deux circuits</strong> : prendre la phase d’un circuit et le neutre d’un autre peut faire déclencher un différentiel, et rend la coupure d’un circuit incomplète.</li>
   <li><strong>Supprimer l’interrupteur</strong> : sans commande locale, une panne du réseau sans fil laisse la pièce dans le noir.</li>
-  <li><strong>Utiliser un fil bleu comme commande</strong> : le bleu est réservé au neutre, même pour quelques centimètres.</li>
+  <li><strong>Utiliser un fil bleu comme commande</strong> : dans un circuit qui comporte un neutre, le bleu lui est réservé (RGIE, 5.1.6.2), même pour quelques centimètres. Et la couleur d’un fil ne prouve jamais sa fonction : mesurez avant de raccorder.</li>
 </ul>

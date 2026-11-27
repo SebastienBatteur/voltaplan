@@ -29,7 +29,7 @@
 
 <h2 id="neutre">Un neutre dans chaque boîte d’interrupteur</h2>
 <p>C’est la règle la plus importante. Les <a href="relais-connectes.html">relais connectés</a>, les variateurs électroniques, les interrupteurs à détection et beaucoup de boutons connectés ont besoin d’être alimentés en permanence, donc d’avoir la <a href="lexique.html#phase">phase</a> et le <a href="lexique.html#neutre">neutre</a>. Dans une installation traditionnelle, la boîte d’interrupteur ne reçoit que la phase et le <a href="lexique.html#retour-lampe">retour lampe</a>.</p>
-<p>Tirez donc systématiquement un conducteur bleu jusqu’à chaque boîte de commande, même si l’interrupteur posé aujourd’hui n’en a pas besoin. Le neutre reste en attente dans un connecteur, isolé, prêt pour un futur module. Il doit appartenir au même circuit que la phase présente dans la boîte : mélanger le neutre d’un circuit et la phase d’un autre provoque des déclenchements de différentiel et rend la coupure incomplète.</p>
+<p>Tirez donc systématiquement un conducteur bleu jusqu’à chaque boîte de commande, même si l’interrupteur posé aujourd’hui n’en a pas besoin. Le neutre reste en attente dans un connecteur, isolé, prêt pour un futur module. Il doit appartenir au même circuit que la phase présente dans la boîte : le RGIE demande que chaque circuit ne puisse pas être alimenté involontairement par un autre (RGIE, 3.2.4.1). Mélanger le neutre d’un circuit et la phase d’un autre peut faire déclencher un différentiel et laisse un conducteur sous tension quand on croit avoir coupé le circuit.</p>
 
 <h2 id="etoile">Le câblage en étoile</h2>
 <figure class="illu">
@@ -66,7 +66,7 @@
 </figure>
 <p>Dans un câblage traditionnel, les circuits passent de boîte en boîte : la phase va de l’interrupteur à la lampe, puis à la lampe suivante. Dans un câblage <strong>en étoile</strong>, chaque point lumineux (ou chaque groupe de points commandés ensemble) a son propre câble jusqu’au <a href="lexique.html#tableau-electrique">tableau électrique</a>, et chaque bouton a ses propres conducteurs de commande vers le tableau.</p>
 <p>L’intérêt : tous les organes de puissance sont au tableau. Aujourd’hui, des <a href="telerupteur.html">télérupteurs</a> et des boutons-poussoirs ; demain, des modules sur rail DIN ou des actionneurs de <a href="bus-knx.html">bus</a>, sans toucher aux murs. Le dépannage est aussi plus simple : tout se mesure au tableau.</p>
-<p>Le câblage en étoile reste soumis aux règles habituelles : chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), et les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), avec au plus 8 circuits par différentiel de 30 mA. Les retours qui partent d’une même commande appartiennent au circuit de leur protection : ne mélangez pas des circuits différents dans un même câble sans y avoir réfléchi.</p>
+<p>Le câblage en étoile reste soumis aux règles habituelles : chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), et les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), avec au plus 8 circuits terminaux par différentiel de 30 mA. Le RGIE admet plusieurs circuits dans un même câble ou conduit si tous les conducteurs sont isolés pour la tension la plus élevée présente (RGIE, 5.2.1.3), mais chaque conducteur doit rester rattaché au circuit de sa protection : repérez-les aux deux extrémités pour qu’on sache toujours quoi couper.</p>
 
 <h2 id="boites">Des boîtes profondes</h2>
 <p>Un module domotique mesure souvent deux centimètres d’épaisseur ou plus. Dans une boîte d’encastrement standard déjà remplie de fils et de connecteurs, il ne rentre pas, ou il est écrasé contre les conducteurs et chauffe. Posez des <strong>boîtes profondes</strong> pour les interrupteurs et les points de commande, et des boîtes de dérivation assez grandes pour accueillir un module. Voir <a href="tubes-et-boites.html">Tubes, gaines et boîtes</a>.</p>
@@ -87,7 +87,7 @@
 <ul>
   <li>un emplacement technique, près du tableau ou dans une armoire, avec quelques prises et un câble réseau vers le routeur ;</li>
   <li>des câbles réseau (catégorie 6 ou plus) en étoile vers les pièces de vie, le bureau, les points d’accès Wi-Fi au plafond ;</li>
-  <li>des câbles réseau séparés des câbles 230 V, dans leurs propres tubes.</li>
+  <li>des câbles réseau séparés des câbles 230 V, dans leurs propres tubes. Le RGIE demande une séparation suffisante entre câbles de télécommunication et canalisations d’énergie (RGIE, 3.3.3) ; des tubes distincts sont la façon la plus simple de l’obtenir.</li>
 </ul>
 
 <h2 id="tableau">Un tableau assez grand</h2>
@@ -95,4 +95,4 @@
 
 <h2 id="documenter">Documenter ce qui est posé</h2>
 <p>Un tube vide ou un neutre en attente qu’on ne retrouve plus ne sert à rien. Reportez chaque boîte, chaque tube de réserve et chaque câble réseau sur le <a href="plan-de-position.html">plan de position</a>, et repérez les câbles aux deux extrémités. Le <a href="lire-unifilaire.html">schéma unifilaire</a> montre les circuits, avec leurs télérupteurs, relais ou actionneurs. Une installation neuve, comme toute modification ou extension importante, est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a> sur la base de ces documents.</p>
-<p>Et comme toujours : coupez le courant et vérifiez l’absence de tension avant d’intervenir dans une boîte ou au tableau.</p>
+<p>Et comme toujours : coupez le courant, empêchez sa remise en service pendant le travail et vérifiez l’absence de tension avant d’intervenir dans une boîte ou au tableau.</p>

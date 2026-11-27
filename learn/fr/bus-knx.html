@@ -14,18 +14,18 @@
     "Les circuits de puissance suivent toutes les règles du RGIE : disjoncteur adapté à la section, différentiel, terre."
   ],
   "faq": [
-    { "q": "Peut-on faire passer le câble bus dans le même tube que les câbles 230 V ?", "a": "Cela dépend de l’isolation du câble bus et des consignes du fabricant. En pratique, on garde des tubes séparés et on évite de mélanger les conducteurs dans les boîtes : c’est plus simple à contrôler et à dépanner." },
+    { "q": "Peut-on faire passer le câble bus dans le même tube que les câbles 230 V ?", "a": "Le bus est un circuit en très basse tension de sécurité : le RGIE exige qu’il soit séparé des autres circuits, soit par une distance d’au moins 10 mm, soit par une isolation supplémentaire de ses conducteurs (gaine, conduit), soit par une isolation prévue pour la tension la plus élevée (RGIE, 4.2.5.3 c). Les fabricants précisent ce que leur câble permet. En pratique, on garde des tubes séparés et on ne mélange pas les conducteurs dans les boîtes : c’est plus sûr, plus simple à contrôler et à dépanner." },
     { "q": "Que se passe-t-il si l’alimentation du bus tombe en panne ?", "a": "Les boutons et les capteurs ne communiquent plus, et les actionneurs gardent en général leur dernier état ou adoptent l’état prévu dans leur paramétrage. C’est pourquoi l’alimentation du bus est un appareil de qualité, placé au tableau et protégé par son propre disjoncteur." },
     { "q": "Faut-il un professionnel pour programmer une installation KNX ?", "a": "La programmation se fait avec un logiciel dédié et demande une formation. Beaucoup de particuliers confient cette étape à un intégrateur. L’essentiel est de récupérer le fichier du projet à la fin du chantier." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
-    { "label": "Documentation de l’association KNX et des fabricants d’appareils KNX (câble bus, alimentation, topologie)." }
+    { "label": "Documentation d’installation des fabricants d’appareils KNX (par exemple ABB et Siemens : câble bus, alimentation en TBTS, topologie sans boucle) ; logiciel ETS de l’association KNX." }
   ],
   "updated": "2026-11-27"
 }
 -->
-<p class="lead">Dans une installation classique, chaque interrupteur est relié par des fils 230 V à la lampe qu’il commande. Avec un <a href="lexique.html#bus">bus</a> filaire, tous les boutons, capteurs et modules sont reliés par un <strong>seul câble de communication</strong>, et ce sont des messages qui circulent. Le plus répandu des bus ouverts est <a href="lexique.html#knx">KNX</a>, une norme internationale suivie par de nombreux fabricants.</p>
+<p class="lead">Dans une installation classique, chaque interrupteur est relié par des fils 230 V à la lampe qu’il commande. Avec un <a href="lexique.html#bus">bus</a> filaire, tous les boutons, capteurs et modules sont reliés par un <strong>seul câble de communication</strong>, et ce sont des messages qui circulent. L’un des bus ouverts les plus répandus est <a href="lexique.html#knx">KNX</a>, un système normalisé suivi par de nombreux fabricants.</p>
 
 <h2 id="principe">Le principe du bus</h2>
 <figure class="illu">
@@ -65,24 +65,24 @@
   <li>les <strong>capteurs</strong> : boutons-poussoirs, détecteurs de présence, sondes de température, stations météo, contacts de fenêtre ;</li>
   <li>les <strong>actionneurs</strong> : modules de relais, variateurs, commandes de <a href="volets-domotique.html">volets</a>, vannes de chauffage. Ils sont le plus souvent sur rail DIN au tableau.</li>
 </ul>
-<p>En KNX, l’intelligence est répartie : chaque appareil a sa propre électronique et connaît son rôle. Il n’y a pas d’automate central indispensable ; un appareil en panne n’empêche pas les autres de fonctionner.</p>
+<p>En KNX, l’intelligence est répartie : chaque appareil a sa propre électronique et connaît son rôle. Il n’y a pas d’automate central indispensable ; un appareil en panne n’empêche en général pas les autres de fonctionner (un court-circuit sur le câble, lui, met toute la ligne hors service).</p>
 
 <h2 id="alimentation">L’alimentation du bus</h2>
-<p>Le bus KNX est alimenté en <a href="lexique.html#tbts">très basse tension de sécurité</a>, aux environs de 30 V continu, par une <strong>alimentation dédiée</strong> installée au <a href="lexique.html#tableau-electrique">tableau électrique</a>. Cette tension sert à la fois à transmettre les messages et à alimenter l’électronique des boutons et des capteurs. Les actionneurs, eux, commutent le 230 V des circuits de puissance.</p>
+<p>Selon la documentation des fabricants, le bus KNX est alimenté en <a href="lexique.html#tbts">très basse tension de sécurité</a> (TBTS), aux environs de 30 V continu, par une <strong>alimentation dédiée</strong> installée au <a href="lexique.html#tableau-electrique">tableau électrique</a>. Comme tout circuit TBTS, le bus n’est pas relié à la terre ni aux autres circuits (RGIE, 4.2.5.5 c). Cette tension sert à la fois à transmettre les messages et à alimenter l’électronique des boutons et des capteurs. Les actionneurs, eux, commutent le 230 V des circuits de puissance.</p>
 <p>L’alimentation est elle-même un appareil 230 V : elle est raccordée sur un circuit protégé par un <a href="disjoncteur.html">disjoncteur</a>, souvent en même temps qu’un éventuel serveur ou une passerelle. Une même alimentation ne sert qu’un nombre limité d’appareils ; une grande installation est découpée en plusieurs lignes, chacune avec son alimentation, reliées par des coupleurs.</p>
 
 <h2 id="cable">Le câble bus</h2>
 <p>Le bus utilise un câble spécifique, à paires torsadées, souvent reconnaissable à sa gaine verte. Il contient habituellement deux paires : une paire (rouge pour le plus, noir pour le moins) sert au bus, l’autre reste en réserve. Quelques règles de pose courantes :</p>
 <ul>
-  <li><strong>pas de boucle</strong> : le bus se câble en ligne, en arbre ou en étoile, mais on ne referme jamais le câble sur lui-même ;</li>
+  <li><strong>pas de boucle</strong> : selon les fabricants, le bus se câble en ligne, en arbre ou en étoile, mais on ne referme jamais le câble sur lui-même ;</li>
   <li><strong>longueur limitée</strong> par ligne et distance limitée entre l’alimentation et les appareils, selon les valeurs du fabricant ;</li>
-  <li><strong>séparation du 230 V</strong> : en pratique, tubes distincts et conducteurs non mélangés dans les boîtes, sauf si les consignes du fabricant et l’isolation du câble le permettent ;</li>
+  <li><strong>séparation du 230 V</strong> : le RGIE impose une séparation de protection entre un circuit TBTS et les autres circuits (10 mm au moins, isolation supplémentaire ou isolation pour la tension la plus élevée : RGIE, 4.2.5.3 c) ; en pratique, tubes distincts et conducteurs non mélangés dans les boîtes ;</li>
   <li><strong>repérage</strong> : le câble bus doit pouvoir être distingué des câbles de téléphone ou de réseau informatique, pour éviter qu’un futur intervenant y branche autre chose.</li>
 </ul>
 
 <h2 id="puissance">Les circuits de puissance</h2>
 <p>Avec un bus, chaque point de commande est relié au bus, et chaque point lumineux, groupe de prises commandées ou volet est relié <strong>en étoile</strong> au tableau, par son propre câble 230 V jusqu’à la sortie de l’actionneur. Ces circuits restent des circuits ordinaires : le disjoncteur est adapté à la section (16 A au plus en 1,5 mm², 20 A au plus en 2,5 mm²), les circuits d’éclairage et de prises sont derrière un <a href="differentiel.html">différentiel</a> de 30 mA dans le neuf (RGIE, 4.2.4.3 b), et la terre accompagne chaque câble.</p>
-<p>Chaque sortie d’actionneur a un courant maximal : un module de relais 10 A ne commande pas un four de 3 500 W. Pour les fortes charges, l’actionneur pilote un <a href="lexique.html#contacteur">contacteur</a>. Le <a href="lire-unifilaire.html">schéma unifilaire</a> doit montrer ces actionneurs et les circuits qu’ils commandent ; voir aussi <a href="organiser-tableau.html">Organiser le tableau électrique</a>, car un tableau domotique demande beaucoup de place.</p>
+<p>Chaque sortie d’actionneur a un courant maximal : un module de relais 10 A ne commande pas un four de 3 500 W. Pour les fortes charges, l’actionneur pilote un <a href="lexique.html#contacteur">contacteur</a>. Le <a href="lire-unifilaire.html">schéma unifilaire</a> montre les circuits commandés et leurs protections ; y faire figurer les actionneurs et contacteurs (avec un symbole défini dans la légende) est indispensable pour comprendre l’installation ; voir aussi <a href="organiser-tableau.html">Organiser le tableau électrique</a>, car un tableau domotique demande beaucoup de place.</p>
 
 <h2 id="programmation">La programmation</h2>
 <p>Une installation KNX neuve ne fait rien tant qu’elle n’est pas programmée. On utilise un logiciel spécifique (ETS, édité par l’association KNX) pour :</p>
@@ -103,4 +103,4 @@
 <p>Le principe est le même : un câble de communication en très basse tension, des actionneurs au tableau et des circuits de puissance en étoile. Ce qui change, c’est l’ouverture : avec un système ouvert, des appareils de marques différentes cohabitent et n’importe quel intégrateur formé peut reprendre l’installation.</p>
 
 <h2 id="securite">Sécurité</h2>
-<p>Le bus lui-même est en très basse tension, mais les actionneurs et les circuits de puissance sont en 230 V. Coupez les circuits concernés au tableau et vérifiez l’absence de tension avant d’intervenir. Une installation neuve, comme toute modification ou extension importante, est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>, qui demandera des schémas où figurent les actionneurs.</p>
+<p>Le bus lui-même est en très basse tension, mais les actionneurs et les circuits de puissance sont en 230 V. Coupez les circuits concernés au tableau, empêchez leur remise en service pendant le travail et vérifiez l’absence de tension avant d’intervenir. Une installation neuve, comme toute modification ou extension importante, est contrôlée par un <a href="lexique.html#organisme-agree">organisme agréé</a>, sur la base de schémas qui doivent permettre de suivre chaque circuit.</p>
