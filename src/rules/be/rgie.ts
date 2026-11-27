@@ -23,6 +23,22 @@ import { classify, normDate, partContext, projectContext } from '../context';
 import { presence, surveyStatement } from '../knowledge';
 import { BE_EDITIONS, BE_RULES } from './catalog';
 import { calcProject, roundTo } from '../../calc/electrical';
+import {
+  CIRCUITS_PER_RCD30_MAX,
+  DATES,
+  DEDICATED_POWER,
+  EARTH_EXTRA_MEASURES_ABOVE,
+  EARTH_MAX,
+  INSULATION_MIN,
+  RCD_HEAD_MIN_RATING,
+  RCD_HIGH_SENSITIVITY,
+  RCD_ORIGIN_MAX_SENSITIVITY,
+  RCD_TRIP_MAX,
+  SECTION_MIN_GENERAL,
+  SECTION_MIN_NO_SOCKET,
+  SOCKETS_PER_CIRCUIT_MAX,
+  TABLE_4_11 as TABLE_4_11_PARAM,
+} from '../../regulations/be/values';
 
 /**
  * Calibre maximal de la protection selon la section du conducteur, pour les installations domestiques :
@@ -31,19 +47,7 @@ import { calcProject, roundTo } from '../../calc/electrical';
  * peut imposer moins (4.4.1.4) ; Voltaplan ne le calcule pas.
  * [section mm², fusible A, disjoncteur A]
  */
-export const TABLE_4_11: [number, number, number][] = [
-  [0.5, 2, 4],
-  [0.75, 4, 6],
-  [1, 6, 10],
-  [1.5, 10, 16],
-  [2.5, 16, 20],
-  [4, 20, 25],
-  [6, 32, 40],
-  [10, 50, 63],
-  [16, 63, 80],
-  [25, 80, 100],
-  [35, 100, 125],
-];
+export const TABLE_4_11 = TABLE_4_11_PARAM.value;
 
 /**
  * Calibre maximal (tableau 4.11) pour une section et un type de protection (`fuse` : colonne des fusibles ; sinon
@@ -93,7 +97,7 @@ function meta_supply(p: Project): string {
 }
 
 /** Date d'entrée en vigueur des modifications du Livre 1 (prises et éclairage sous 30 mA, 8 circuits par 30 mA). */
-export const RCD30_2023 = '2023-06-01';
+export const RCD30_2023 = DATES.value.rcd30Extended;
 
 /**
  * RGIE 4.2.4.3 b, 5e et 6e alinéas (modifications du 1/6/2023) applicables à cette partie : exécution commencée le
@@ -106,7 +110,7 @@ function since2023(project: Project, chain: ElNode[]): 'yes' | 'no' | 'unknown' 
 }
 
 /** Modifications du Livre 1 applicables à partir du 1/3/2025 (AR du 3/10/2024 : prises, salles de bain, piscines). */
-export const RGIE_2025 = '2025-03-01';
+export const RGIE_2025 = DATES.value.rgie2025;
 
 /**
  * Règles d'une version du Livre 1 applicables à cette partie : exécution sur place commencée à la date `date` ou
@@ -133,7 +137,7 @@ const boardOf = (chain: ElNode[]) => [...chain].reverse().find((x) => x.kind ===
 /** Appareils d'un chauffage électrique à poste fixe : un ou plusieurs circuits dédiés (RGIE 5.2.1.2). */
 const FIXED_HEATING = new Set(['heater', 'storageHeater', 'storageHeaterFan']);
 /** Seuil de puissance d'un appareil à poste fixe qui impose un circuit dédié (RGIE 5.2.1.2). */
-export const DEDICATED_POWER_W = 2600;
+export const DEDICATED_POWER_W = DEDICATED_POWER.value;
 
 /**
  * Circuit dédié exigé ? `yes` : liste nommée du RGIE (5.2.1.2 ; borne de recharge 7.22.3) ou puissance ≥ 2 600 W ;
@@ -180,7 +184,7 @@ function fixedPoints(circuit: ElNode, content: ElNode[]): Set<string> {
 }
 
 /** Différentiel de tête d'au moins 40 A : exigé pour les parties dont l'exécution a commencé le 16/9/1991 ou après (8.2.2). */
-const RCD_40A_FROM = '1991-09-16';
+const RCD_40A_FROM = DATES.value.rcdHead40aFrom;
 
 /**
  * Exécution de la partie commencée à la date `date` ou après ? Date de la partie (`installedOn`, du plus proche au plus
@@ -245,11 +249,11 @@ function checkRgie(project: Project): Finding[] {
   const re = project.measurements.earthResistanceOhm;
   if (re !== undefined) {
     // RGIE 4.2.3.2 : résistance de dispersion « inférieure à 100 Ω » (installations domestiques) → 100 Ω pile n'est pas conforme
-    if (re >= 100) add('R-EARTH-VALUE', nc, undefined, { value: re });
-    else if (re > 30) add('R-EARTH-30', 'warning', undefined, { value: re });
+    if (re >= EARTH_MAX.value) add('R-EARTH-VALUE', nc, undefined, { value: re });
+    else if (re > EARTH_EXTRA_MEASURES_ABOVE.value) add('R-EARTH-30', 'warning', undefined, { value: re });
   }
   const iso = project.measurements.insulationMOhm;
-  if (iso !== undefined && iso < 0.5) add('R-INSULATION', nc, undefined, { value: iso });
+  if (iso !== undefined && iso < INSULATION_MIN.value) add('R-INSULATION', nc, undefined, { value: iso });
   // Liaisons équipotentielles : « non » saisi = violation constatée ; non saisi = vérification sur place nécessaire.
   if (project.measurements.bondingOk === false) add('R-BONDING', nc);
   else if (project.measurements.bondingOk === undefined) add('R-BONDING', nc, undefined, undefined, { knowledge: 'measureNeeded' });
@@ -258,7 +262,7 @@ function checkRgie(project: Project): Finding[] {
   for (const [id, test] of Object.entries(project.measurements.rcdTests ?? {})) {
     const node = infos.find((i) => i.node.id === id)?.node;
     if (!node) continue;
-    const max = String(node.props.rcdType ?? '').toUpperCase().includes('S') ? 500 : 300;
+    const max = String(node.props.rcdType ?? '').toUpperCase().includes('S') ? RCD_TRIP_MAX.value.selective : RCD_TRIP_MAX.value.general;
     if (test.ok === false) add('R-RCD-TEST', nc, id);
     // 300 / 500 ms : valeurs des normes de produit (EN 61008 / 61009, non consultées), pas du RGIE → avertissement non
     // bloquant tant qu'un spécialiste ne l'a pas confirmé (dossier de validation, question 13).
@@ -297,7 +301,7 @@ function checkRgie(project: Project): Finding[] {
         // Dérogations : 8.2.1 (parties d'avant le 1/10/1981) et 8.2.2 (exécution entamée avant le 16/9/1991) laissent en
         // service un différentiel de moins de 40 A. Date inconnue d'une partie existante : vérification, non bloquante.
         const rating = n(node.props.ratedCurrent);
-        if (!upRcd && rating !== undefined && rating < 40) {
+        if (!upRcd && rating !== undefined && rating < RCD_HEAD_MIN_RATING.value) {
           const when = executedSince(project, [...ancestors, node], RCD_40A_FROM);
           if (when === 'yes') add('R-RCD-HEAD-RATING', nc, node.id, { value: rating });
           else if (when === 'unknown') add('R-RCD-HEAD-RATING', nc, node.id, { value: rating }, { status: 'manualCheck' });
@@ -319,7 +323,7 @@ function checkRgie(project: Project): Finding[] {
       if (section === undefined) {
         if (isStart && !dcSide) add(node.props.cableType || node.props.conductors ? 'R-CABLE-SECTION-MISSING' : 'R-CABLE-DATA-MISSING', nc, node.id);
       } else if (!dcSide) {
-        if (section < 1.5) add('R-CABLE-MIN', nc, node.id, { section });
+        if (section < SECTION_MIN_NO_SOCKET.value) add('R-CABLE-MIN', nc, node.id, { section });
         const rating = prot ? n(prot.props.ratedCurrent) : undefined;
         const max = prot ? maxProtectionFor(section, String(prot.props.device)) : undefined;
         if (rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
@@ -365,7 +369,7 @@ function checkRgie(project: Project): Finding[] {
     const b = boardOf(chain);
     if (b) dateNeeded.set(b.id, (dateNeeded.get(b.id) ?? 0) + 1);
   };
-  const rcd300Drawn = infos.some((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= 300);
+  const rcd300Drawn = infos.some((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= RCD_ORIGIN_MAX_SENSITIVITY.value);
   for (const { node: circuit, ancestors } of infos) {
     if (!isCircuit(circuit)) continue;
     const content = circuitContent(circuit);
@@ -384,11 +388,11 @@ function checkRgie(project: Project): Finding[] {
     // comptant pour un socle. Un circuit sans socle n'a pas cette limite.
     if (sockets.length) {
       const count = sockets.length + fixedPoints(circuit, content).size;
-      if (count > 8) add('R-SOCKET-MAX', nc, circuit.id, { count });
+      if (count > SOCKETS_PER_CIRCUIT_MAX.value) add('R-SOCKET-MAX', nc, circuit.id, { count });
     }
     if (sockets.length) {
       const minSection = Math.min(...cables.map((c) => n(c.props.section) ?? Infinity));
-      if (Number.isFinite(minSection) && minSection < 2.5) add('R-SOCKET-SECTION', nc, circuit.id, { section: minSection });
+      if (Number.isFinite(minSection) && minSection < SECTION_MIN_GENERAL.value) add('R-SOCKET-SECTION', nc, circuit.id, { section: minSection });
     }
 
     // Appareils devant avoir un circuit spécialisé
@@ -414,7 +418,7 @@ function checkRgie(project: Project): Finding[] {
     // Aucun différentiel adéquat dessiné : conception → absent ; relevé → inconnu, sauf déclaration (meta.survey).
     const design = partContext(project, belgium, [...ancestors, circuit]).isNew;
     const unknownSens = rcds.some((r) => n(r.props.residualCurrent) === undefined);
-    if (!(minRcd <= 300)) {
+    if (!(minRcd <= RCD_ORIGIN_MAX_SENSITIVITY.value)) {
       if (unknownSens) add('R-RCD-MAIN', nc, circuit.id, undefined, { knowledge: 'unknown' });
       else {
         const stated = surveyStatement(project, 'rcd');
@@ -436,8 +440,8 @@ function checkRgie(project: Project): Finding[] {
     const lighting = content.some((c) => c.kind === 'light');
     const when = generalSocket || lighting ? since2023(project, [...ancestors, circuit]) : 'no';
     const rule2023 = when === 'yes';
-    if (when === 'unknown' && !(minRcd <= 30)) askDate([...ancestors, circuit]);
-    if ((wet || wetAppliance || rule2023) && !(minRcd <= 30)) {
+    if (when === 'unknown' && !(minRcd <= RCD_HIGH_SENSITIVITY.value)) askDate([...ancestors, circuit]);
+    if ((wet || wetAppliance || rule2023) && !(minRcd <= RCD_HIGH_SENSITIVITY.value)) {
       const reason = wet ? 'wetRoom' : wetAppliance ? String(wetAppliance.props.applianceType) : generalSocket ? 'sockets' : 'lighting';
       if (unknownSens) add('R-RCD30', nc, circuit.id, { reason }, { knowledge: 'unknown' });
       else {
@@ -445,14 +449,14 @@ function checkRgie(project: Project): Finding[] {
         if (k === 'present') notDrawn.add('rcd30');
         addPresence('R-RCD30', k, 'rcd30', circuit.id, { reason });
       }
-    } else if (wetByName && !(minRcd <= 30) && rcd30Stated !== 'present') add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
+    } else if (wetByName && !(minRcd <= RCD_HIGH_SENSITIVITY.value) && rcd30Stated !== 'present') add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
   }
 
   // Au maximum 8 circuits terminaux par différentiel 30 mA (RGIE 4.2.4.3 b, 6e al., depuis le 1/6/2023)
   for (const { node: rcd, ancestors } of infos) {
-    if (!isRcd(rcd) || !((n(rcd.props.residualCurrent) ?? Infinity) <= 30)) continue;
+    if (!isRcd(rcd) || !((n(rcd.props.residualCurrent) ?? Infinity) <= RCD_HIGH_SENSITIVITY.value)) continue;
     const count = collect(rcd.children).filter((i) => isCircuit(i.node)).length;
-    if (count <= 8) continue;
+    if (count <= CIRCUITS_PER_RCD30_MAX.value) continue;
     const when = since2023(project, [...ancestors, rcd]);
     if (when === 'yes') add('R-RCD30-MAX', nc, rcd.id, { count });
     else if (when === 'unknown') askDate([...ancestors, rcd]);

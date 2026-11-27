@@ -566,6 +566,7 @@ export const nl: Partial<Dict> = {
   'project.measuredOn': "Datum van de metingen",
   'project.instrument': "Meettoestel",
   'meas.ok': "Conform",
+  'meas.earthRequirement': '< {max} Ω (boven {extra} Ω: aanvullende maatregelen)',
   'meas.ko': "Niet conform",
   'meas.rcd': "Differentieel",
   'meas.tripMs': "Uitschakeling (ms)",

@@ -4,6 +4,7 @@
  * existant). Chaque correction est une fonction pure du projet, appliquée par `applyProject` : elle s'annule par
  * « Annuler » comme toute autre modification, et le contrôle se relance tout seul.
  */
+import { CIRCUITS_PER_RCD30_MAX, RCD_HIGH_SENSITIVITY } from '../regulations/be/values';
 import type { ElNode, Project } from '../model/types';
 import { createNode, walk } from '../model/tree';
 import type { Finding } from './types';
@@ -38,7 +39,7 @@ const patchNode = (id: string, fn: (n: ElNode, chain: ElNode[]) => void) => (p: 
   return q;
 };
 
-const isRcd30 = (n: ElNode) => n.kind === 'protection' && Number(n.props.residualCurrent) > 0 && Number(n.props.residualCurrent) <= 30;
+const isRcd30 = (n: ElNode) => n.kind === 'protection' && Number(n.props.residualCurrent) > 0 && Number(n.props.residualCurrent) <= RCD_HIGH_SENSITIVITY.value;
 const OVERCURRENT = new Set(['mcb', 'rcbo', 'fuse']);
 const isCircuitProt = (n: ElNode) => n.kind === 'protection' && OVERCURRENT.has(String(n.props.device ?? 'mcb'));
 
@@ -89,7 +90,7 @@ export function fixesFor(f: Finding, project: Project): Fix[] {
       if (f.knowledge === 'unknown' || chain.some(isRcd30)) return [];
       const board = [...chain].reverse().find((a) => a.kind === 'board');
       if (!board) return [];
-      const candidates = board.children.filter((c) => isRcd30(c) && circuitsUnder(c) < 8);
+      const candidates = board.children.filter((c) => isRcd30(c) && circuitsUnder(c) < CIRCUITS_PER_RCD30_MAX.value);
       const move = (target: ElNode | null) => (p: Project) => {
         const q = clone(p);
         const me = locate(q, id);

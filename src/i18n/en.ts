@@ -566,6 +566,7 @@ export const en: Partial<Dict> = {
   'project.measuredOn': "Measurement date",
   'project.instrument': "Test instrument",
   'meas.ok': "Compliant",
+  'meas.earthRequirement': '< {max} Ω (above {extra} Ω: additional measures)',
   'meas.ko': "Not compliant",
   'meas.rcd': "RCD",
   'meas.tripMs': "Trip time (ms)",

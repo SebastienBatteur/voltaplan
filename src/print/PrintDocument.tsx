@@ -26,6 +26,7 @@ import { BomTable } from '../ui/BomPanel';
 import { QrCode } from '../ui/QrCode';
 import { isHttpsUrl, qrLabelPayload } from './qrLabel';
 import { circuitRows } from './circuitList';
+import { EARTH_EXTRA_MEASURES_ABOVE, EARTH_MAX, INSULATION_MIN, RCD_TRIP_MAX } from '../regulations/be/values';
 
 export type PaperFormat = 'A4' | 'A3';
 export interface PrintSections {
@@ -472,8 +473,8 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
     const m = project.measurements;
     const okKo = (ok: boolean | undefined) => (ok === undefined ? '—' : ok ? t('meas.ok') : t('meas.ko'));
     const rows: [string, string, string, string][] = [
-      [t('project.earthResistance'), m.earthResistanceOhm !== undefined ? `${m.earthResistanceOhm} Ω` : '—', '≤ 30 Ω', m.earthResistanceOhm === undefined ? '—' : okKo(m.earthResistanceOhm <= 30)],
-      [t('project.insulation'), m.insulationMOhm !== undefined ? `${m.insulationMOhm} MΩ` : '—', '≥ 0,5 MΩ', m.insulationMOhm === undefined ? '—' : okKo(m.insulationMOhm >= 0.5)],
+      [t('project.earthResistance'), m.earthResistanceOhm !== undefined ? `${m.earthResistanceOhm} Ω` : '—', t('meas.earthRequirement', { max: EARTH_MAX.value, extra: EARTH_EXTRA_MEASURES_ABOVE.value }), m.earthResistanceOhm === undefined ? '—' : okKo(m.earthResistanceOhm < EARTH_MAX.value)],
+      [t('project.insulation'), m.insulationMOhm !== undefined ? `${m.insulationMOhm} MΩ` : '—', `≥ ${String(INSULATION_MIN.value).replace('.', ',')} MΩ`, m.insulationMOhm === undefined ? '—' : okKo(m.insulationMOhm >= INSULATION_MIN.value)],
       [t('project.bonding'), '', '', okKo(m.bondingOk)],
     ];
     const covered = (r: ElNode) => {
@@ -483,7 +484,7 @@ export function buildPages(ctx: Ctx, format: PaperFormat, sec: PrintSections): P
     for (const { node } of walk(project.roots)) {
       if (node.kind !== 'protection' || !(Number(node.props.residualCurrent) > 0)) continue;
       const test = m.rcdTests?.[node.id];
-      const max = String(node.props.rcdType ?? '').toUpperCase().includes('S') ? 500 : 300;
+      const max = String(node.props.rcdType ?? '').toUpperCase().includes('S') ? RCD_TRIP_MAX.value.selective : RCD_TRIP_MAX.value.general;
       rows.push([
         `${t('meas.rcd')} ${node.props.ratedCurrent ? node.props.ratedCurrent + ' A ' : ''}${node.props.residualCurrent} mA${node.props.rcdType ? ' ' + node.props.rcdType : ''}${covered(node)}`,
         test?.tripMs !== undefined ? `${test.tripMs} ms` : '—',

@@ -565,6 +565,7 @@ export const fr = {
   'project.measuredOn': "Date des mesures",
   'project.instrument': "Appareil de mesure",
   'meas.ok': "Conforme",
+  'meas.earthRequirement': '< {max} Ω (au-delà de {extra} Ω : mesures complémentaires)',
   'meas.ko': "Non conforme",
   'meas.rcd': "Différentiel",
   'meas.tripMs': "Déclenchement (ms)",

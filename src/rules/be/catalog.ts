@@ -14,6 +14,7 @@
  * La gravité (`hazard`) est une appréciation de Voltaplan, pas une classification du RGIE.
  */
 import type { Edition, RuleMeta } from '../types';
+import { DATES } from '../../regulations/be/values';
 
 const LIVRE1 = 'RGIE Livre 1 — AR du 8 septembre 2019 (SPF Économie)';
 
@@ -34,7 +35,11 @@ export const BE_EDITIONS: Edition[] = [
     id: '2020',
     from: '2020-06-01',
     legal: 'AR du 8 septembre 2019 (Livre 1)',
-    amendments: [{ date: '2023-06-01', note: 'Modifications du Livre 1' }],
+    amendments: [
+      { date: DATES.value.rcd30Extended, note: 'Modifications du Livre 1 (30 mA, 8 circuits)' },
+      { date: DATES.value.rgie2025, note: 'Modifications du Livre 1 (socles IPXX-D, salles de bain)' },
+      { date: DATES.value.v07, note: 'Version 07 du Livre 1 (15/09/2026)' },
+    ],
     label: { fr: 'RGIE Livre 1 (depuis le 1/6/2020)', nl: 'AREI Boek 1 (sinds 1/6/2020)', en: 'RGIE Book 1 (since 1/6/2020)', de: 'AREI Buch 1 (seit 1.6.2020)' },
   },
 ];

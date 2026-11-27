@@ -9,6 +9,7 @@
  *   usuelle selon l'appareil et le nombre de pôles. Un disjoncteur 1P+N peut faire 1 ou 2 modules selon la
  *   gamme : à préciser sur l'appareil.
  */
+import { RCD_HIGH_SENSITIVITY } from '../regulations/be/values';
 import type { BoardLayout, ElNode } from '../model/types';
 
 export interface Enclosure {
@@ -140,7 +141,7 @@ export function autoLayout(enc: Enclosure, rows: number, perRow: number): BoardL
 
 /** Différentiel 30 mA (ou moins), tête d'un groupe de circuits. */
 export const isRcd30 = (n: ElNode) =>
-  n.kind === 'protection' && String(n.props.device ?? '') === 'rcd' && Number(n.props.residualCurrent) > 0 && Number(n.props.residualCurrent) <= 30;
+  n.kind === 'protection' && String(n.props.device ?? '') === 'rcd' && Number(n.props.residualCurrent) > 0 && Number(n.props.residualCurrent) <= RCD_HIGH_SENSITIVITY.value;
 const isMultiPhase = (n: ElNode) => /^[34]/.test(String(n.props.poles ?? ''));
 
 /**

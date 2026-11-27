@@ -594,6 +594,7 @@ export const de: Partial<Dict> = {
   "project.measuredOn": "Messdatum",
   "project.instrument": "Messgerät",
   "meas.ok": "Konform",
+  "meas.earthRequirement": "< {max} Ω (über {extra} Ω: zusätzliche Maßnahmen)",
   "meas.ko": "Nicht konform",
   "meas.rcd": "FI-Schutzschalter",
   "meas.tripMs": "Auslösung (ms)",
