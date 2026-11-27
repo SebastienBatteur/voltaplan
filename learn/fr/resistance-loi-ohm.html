@@ -19,7 +19,8 @@
     { "q": "Que mesure-t-on avec un ohmmètre sur une installation ?", "a": "La continuité des conducteurs (une résistance très faible, par exemple celle du fil de terre) et, avec un appareil spécial, la résistance d’isolement entre conducteurs, qui doit au contraire être très élevée. Ces mesures se font toujours circuit coupé." }
   ],
   "sources": [
-    { "label": "Manuels d’électrotechnique de base (loi d’Ohm, résistivité du cuivre, effet Joule)." }
+    { "label": "Manuels d’électrotechnique de base (loi d’Ohm, résistivité du cuivre, effet Joule)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
   ],
   "updated": "2026-11-27"
 }
@@ -69,10 +70,10 @@
 <h2 id="bouilloire">Exemple 1 : la bouilloire</h2>
 <p>Une bouilloire de 2 000 W sous 230 V appelle environ 8,7 A (voir <a href="courant.html">Le courant</a>). Sa résistance chauffante vaut donc :</p>
 <p>R = U ÷ I = 230 ÷ 8,7 ≈ <strong>26 Ω</strong></p>
-<p>Si on branchait cette même résistance sur 115 V, le courant serait divisé par deux (4,35 A), et la puissance par quatre : l’eau mettrait quatre fois plus de temps à chauffer. C’est pour cela qu’un appareil doit être utilisé à sa tension nominale.</p>
+<p>Si on branchait cette même résistance sur 115 V, le courant serait divisé par deux (4,35 A), et la puissance par quatre : l’eau mettrait environ quatre fois plus de temps à chauffer. C’est pour cela qu’un appareil doit être utilisé à sa tension nominale.</p>
 
 <h2 id="cable">Exemple 2 : la résistance d’un câble</h2>
-<p>La résistance d’un fil dépend de trois choses : le matériau, la longueur et la <a href="lexique.html#section">section</a>. Pour le cuivre, on retient une résistivité d’environ 0,0175 Ω pour un fil de 1 m de long et de 1 mm² de section. D’où la formule :</p>
+<p>La résistance d’un fil dépend de trois choses : le matériau, la longueur et la <a href="lexique.html#section">section</a>. Pour le cuivre, on retient une résistivité d’environ 0,0175 Ω pour un fil de 1 m de long et de 1 mm² de section, à 20 °C. D’où la formule :</p>
 <p>R ≈ 0,0175 × longueur (m) ÷ section (mm²)</p>
 <p>Prenons un circuit en 1,5 mm² long de 20 m. Le courant fait l’aller par la phase et le retour par le neutre, soit 40 m de fil :</p>
 <p>R ≈ 0,0175 × 40 ÷ 1,5 ≈ <strong>0,47 Ω</strong></p>
@@ -85,12 +86,12 @@
 <p>C’est des dizaines de fois le courant normal d’un circuit. Le <a href="disjoncteur.html">disjoncteur</a> doit couper en une fraction de seconde, avant que les câbles ne soient endommagés. Plus la résistance de la boucle est faible, plus ce courant est élevé.</p>
 
 <h2 id="corps">Exemple 4 : le corps humain</h2>
-<p>Le corps humain conduit le courant, avec une résistance qui varie beaucoup : plus élevée avec une peau sèche, bien plus faible avec une peau mouillée ou une large surface de contact. Retenons un ordre de grandeur de 1 000 Ω. Sous 230 V :</p>
+<p>Le corps humain conduit le courant, avec une résistance qui varie beaucoup : plus élevée avec une peau sèche, bien plus faible avec une peau mouillée ou une large surface de contact. Ce n’est qu’un ordre de grandeur, pas une valeur sûre : retenons 1 000 Ω. Sous 230 V :</p>
 <p>I = 230 ÷ 1 000 = <strong>0,23 A</strong>, soit 230 mA</p>
 <p>C’est bien au-dessus des quelques dizaines de milliampères qui peuvent être mortels. C’est la raison d’être des <a href="differentiel.html">différentiels</a> de 30 mA et de la <a href="lexique.html#terre">terre</a>, et la raison pour laquelle on travaille toujours hors tension.</p>
 
 <h2 id="chaleur">Résistance et chaleur</h2>
-<p>Toute résistance traversée par un courant chauffe. La puissance transformée en chaleur vaut <strong>P = R × I²</strong> (effet Joule). Le carré compte : doubler le courant multiplie la chaleur par quatre. Dans le câble de l’exemple 2, à 10 A : 0,47 × 10 × 10 ≈ 47 W perdus en chaleur le long des murs. À 20 A, ce serait près de 190 W : c’est pour cela qu’un câble de 1,5 mm² est limité à 16 A.</p>
+<p>Toute résistance traversée par un courant chauffe. La puissance transformée en chaleur vaut <strong>P = R × I²</strong> (effet Joule). Le carré compte : doubler le courant multiplie la chaleur par quatre. Dans le câble de l’exemple 2, à 10 A : 0,47 × 10 × 10 ≈ 47 W perdus en chaleur le long des murs. À 20 A, ce serait près de 190 W. C’est pour limiter cet échauffement que le calibre est plafonné selon la section : 16 A au plus pour un disjoncteur sur un circuit en 1,5 mm² (RGIE, 4.4.1.4).</p>
 
 <h2 id="mesurer">Mesurer une résistance</h2>
 <p>On mesure une résistance avec un ohmmètre (ou un multimètre en position Ω), qui envoie lui-même un petit courant. La mesure se fait donc <strong>toujours sur un circuit coupé et vérifié hors tension</strong>, sinon l’appareil peut être détruit et la mesure est fausse. Sur une installation, on vérifie ainsi la <a href="continuite.html">continuité</a> des conducteurs de protection et, avec un appareil spécial, la <a href="resistance-isolement.html">résistance d’isolement</a>.</p>

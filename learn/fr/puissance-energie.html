@@ -16,10 +16,11 @@
   "faq": [
     { "q": "Quelle est la différence entre kW et kWh ?", "a": "Le kW est une puissance, une vitesse de consommation à un instant donné. Le kWh est une quantité d’énergie : un appareil de 1 kW qui fonctionne pendant une heure consomme 1 kWh. On paie l’énergie (les kWh) ; le câble et le disjoncteur doivent supporter la puissance (les kW, donc le courant)." },
     { "q": "Un appareil puissant consomme-t-il forcément beaucoup ?", "a": "Pas forcément : tout dépend de la durée. Une bouilloire de 2 000 W utilisée 3 minutes consomme 0,1 kWh, autant qu’une lampe LED de 8 W allumée plus de 12 heures. À l’inverse, un petit appareil en veille toute l’année finit par compter." },
-    { "q": "Comment connaître la consommation réelle d’un appareil ?", "a": "La puissance indiquée sur l’étiquette est un maximum. Pour connaître la consommation réelle, on peut brancher l’appareil sur une prise wattmètre pendant quelques jours, ou relever le compteur avant et après son utilisation." }
+    { "q": "Comment connaître la consommation réelle d’un appareil ?", "a": "La puissance indiquée sur l’étiquette est la puissance nominale, souvent atteinte seulement par moments. Pour connaître la consommation réelle, on peut brancher l’appareil sur une prise wattmètre pendant quelques jours, ou relever le compteur avant et après son utilisation." }
   ],
   "sources": [
     { "label": "Manuels d’électrotechnique de base (puissance, énergie, effet Joule)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
     { "label": "Unités électriques (W, kW, Wh, kWh, VA) : sbg-energy.com", "url": "https://sbg-energy.com/unites-electriques" }
   ],
   "updated": "2026-11-27"
@@ -45,7 +46,7 @@
 <p>Avec la <a href="resistance-loi-ohm.html">loi d’Ohm</a>, on obtient deux autres formes : P = R × I² et P = U² ÷ R. La première explique pourquoi un câble chauffe davantage quand le courant augmente.</p>
 
 <h2 id="circuit">Additionner les puissances d’un circuit</h2>
-<p>Les appareils branchés sur un même circuit s’additionnent. Sur un circuit de prises protégé à 20 A, la puissance maximale vaut 230 × 20 = <strong>4 600 W</strong>. Une bouilloire (2 000 W), un grille-pain (900 W) et un micro-ondes (1 200 W) font 4 100 W : ça passe. Ajoutez un radiateur de 2 000 W et le disjoncteur finira par couper. C’est pour cela que les gros appareils (four, lave-linge, lave-vaisselle) ont souvent leur propre circuit.</p>
+<p>Les appareils branchés sur un même circuit s’additionnent. Sur un circuit de prises protégé à 20 A, la puissance maximale vaut 230 × 20 = <strong>4 600 W</strong>. Une bouilloire (2 000 W), un grille-pain (900 W) et un micro-ondes (1 200 W) font 4 100 W : ça passe. Ajoutez un radiateur de 2 000 W et le disjoncteur finira par couper. C’est aussi pour cela que, dans une habitation, le RGIE impose un circuit dédié pour le lave-linge, le sèche-linge, le lave-vaisselle, la cuisinière, la taque de cuisson, le four et tout appareil à poste fixe de 2 600 W ou plus ; le chauffage électrique fixe a lui aussi son ou ses circuits (RGIE, 5.2.1.2).</p>
 
 <h2 id="energie">L’énergie : puissance × durée</h2>
 <figure class="illu">

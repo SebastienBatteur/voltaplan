@@ -9,18 +9,18 @@
   "retenir": [
     "Le courant (I) est la quantité de charges qui passe chaque seconde ; il se mesure en <strong>ampères</strong> (A).",
     "C’est l’appareil qui « appelle » le courant : I = P ÷ U, soit environ 8,7 A pour une bouilloire de 2 000 W en 230 V.",
-    "Le courant chauffe les câbles : la <strong>section</strong> et le <strong>calibre du disjoncteur</strong> se choisissent ensemble (1,5 mm² → 16 A, 2,5 mm² → 20 A).",
+    "Le courant chauffe les câbles : la <strong>section</strong> et le <strong>calibre du disjoncteur</strong> se choisissent ensemble (maximum en disjoncteur : 1,5 mm² → 16 A, 2,5 mm² → 20 A).",
     "Le même courant entre par la phase et revient par le neutre : le différentiel surveille cette égalité.",
-    "Quelques dizaines de milliampères à travers le corps peuvent tuer, d’où les différentiels de 30 mA."
+    "Quelques dizaines de milliampères à travers le corps peuvent tuer, d’où les différentiels de 30 mA, qui réduisent ce risque sans le supprimer."
   ],
   "faq": [
     { "q": "Un appareil de 2 000 W et un de 20 W sur la même prise reçoivent-ils le même courant ?", "a": "Non. Ils reçoivent la même tension (230 V), mais chacun appelle le courant dont il a besoin : environ 8,7 A pour l’appareil de 2 000 W, moins de 0,1 A pour celui de 20 W. Le circuit, lui, porte la somme des deux." },
-    { "q": "Pourquoi le disjoncteur saute-t-il quand j’allume le four et la bouilloire en même temps ?", "a": "Les courants s’additionnent sur le circuit. Un four de 3 000 W (environ 13 A) et une bouilloire de 2 000 W (environ 8,7 A) font ensemble près de 22 A, plus que les 20 A d’un circuit de prises habituel : le disjoncteur coupe pour protéger le câble." },
+    { "q": "Pourquoi le disjoncteur saute-t-il quand j’allume le radiateur d’appoint et la bouilloire en même temps ?", "a": "Les courants s’additionnent sur le circuit. Un radiateur d’appoint de 2 000 W (environ 8,7 A), une bouilloire de 2 000 W (environ 8,7 A) et un grille-pain de 900 W (environ 3,9 A) font ensemble plus de 21 A, plus que les 20 A d’un circuit de prises habituel : le disjoncteur coupe pour protéger le câble. Le four, lui, doit de toute façon avoir son propre circuit (RGIE, 5.2.1.2)." },
     { "q": "Peut-on mettre un disjoncteur plus gros pour qu’il ne saute plus ?", "a": "Non. Le calibre du disjoncteur dépend de la section du câble : un disjoncteur trop gros laisserait le câble surchauffer sans couper. Il faut répartir les appareils sur plusieurs circuits, ou tirer un circuit dédié avec la bonne section." }
   ],
   "sources": [
     { "label": "Manuels d’électrotechnique de base (intensité, effets du courant)." },
-    { "label": "Correspondance section ↔ calibre maximal utilisée par l’application Voltaplan (règles belges)." }
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026, tableau 4.11 (calibre maximal selon la section) : texte officiel publié par le SPF Économie." }
   ],
   "updated": "2026-11-27"
 }
@@ -63,30 +63,31 @@
   </tbody>
 </table>
 <p>Ces valeurs sont approchées : pour les appareils à moteur ou à électronique, le courant réel peut être un peu plus élevé (voir le facteur de puissance dans <a href="alternatif-mono-tri.html">Courant alternatif, monophasé et triphasé</a>).</p>
-<p>Sur un circuit, les courants des appareils branchés en <a href="serie-et-parallele.html">parallèle</a> s’additionnent. Quatre lampes LED de 8 W ne font que 0,14 A ; une bouilloire et un four sur le même circuit de prises font plus de 21 A.</p>
+<p>Sur un circuit, les courants des appareils branchés en <a href="serie-et-parallele.html">parallèle</a> s’additionnent. Quatre lampes LED de 8 W ne font que 0,14 A ; une bouilloire, un radiateur d’appoint de 2 000 W et un grille-pain sur le même circuit de prises font plus de 21 A.</p>
 
 <h2 id="aller-retour">Le même courant à l’aller et au retour</h2>
 <p>Dans un circuit, le courant ne disparaît pas en route. Celui qui part par la <a href="lexique.html#phase">phase</a> revient entièrement par le <a href="lexique.html#neutre">neutre</a>. C’est ce principe qu’utilise le <a href="differentiel.html">différentiel</a> : il compare en permanence le courant aller et le courant retour. S’il manque quelques dizaines de milliampères au retour, c’est qu’ils s’échappent ailleurs, par la terre ou à travers une personne, et il coupe.</p>
 
 <h2 id="chaleur">Le courant chauffe les câbles</h2>
 <p>Tout conducteur oppose une petite <a href="resistance-loi-ohm.html">résistance</a> au courant, et cette résistance transforme une partie de l’énergie en chaleur. C’est voulu dans un radiateur ou une bouilloire, mais pas dans un câble encastré dans un mur. Plus le courant est fort et plus le câble est fin, plus il chauffe. Un câble trop chargé vieillit vite, son isolant se dégrade, et il peut provoquer un incendie.</p>
-<p>C’est pourquoi chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> dont le <a href="lexique.html#calibre">calibre</a> est adapté à la <a href="lexique.html#section">section</a> du câble. Les valeurs utilisées par Voltaplan pour les installations belges :</p>
+<p>C’est pourquoi chaque circuit est protégé par un <a href="disjoncteur.html">disjoncteur</a> dont le <a href="lexique.html#calibre">calibre</a> est adapté à la <a href="lexique.html#section">section</a> du câble. Pour les installations domestiques, le RGIE fixe le calibre maximal selon la section (RGIE, 4.4.1.4, tableau 4.11) :</p>
 <table>
-  <thead><tr><th>Section du câble</th><th>Calibre maximal du disjoncteur</th><th>Exemple d’usage</th></tr></thead>
+  <thead><tr><th>Section du câble</th><th>Disjoncteur : calibre maximal</th><th>Fusible : calibre maximal</th><th>Exemple d’usage</th></tr></thead>
   <tbody>
-    <tr><td>1,5 mm²</td><td>16 A</td><td>Éclairage</td></tr>
-    <tr><td>2,5 mm²</td><td>20 A</td><td>Prises de courant</td></tr>
-    <tr><td>4 mm²</td><td>25 A</td><td>Gros appareils</td></tr>
-    <tr><td>6 mm²</td><td>32 A</td><td>Cuisinière, borne de recharge</td></tr>
-    <tr><td>10 mm²</td><td>50 A</td><td>Alimentation de sous-tableau</td></tr>
+    <tr><td>1,5 mm²</td><td>16 A</td><td>10 A</td><td>Éclairage</td></tr>
+    <tr><td>2,5 mm²</td><td>20 A</td><td>16 A</td><td>Prises de courant</td></tr>
+    <tr><td>4 mm²</td><td>25 A</td><td>20 A</td><td>Gros appareils</td></tr>
+    <tr><td>6 mm²</td><td>40 A</td><td>32 A</td><td>Cuisinière</td></tr>
+    <tr><td>10 mm²</td><td>63 A</td><td>50 A</td><td>Alimentation de sous-tableau</td></tr>
   </tbody>
 </table>
+<p>Ce sont des maxima. Le câble doit aussi supporter le courant selon sa pose : encastré dans un isolant thermique, groupé avec d’autres câbles ou dans un local chaud, il évacue moins bien sa chaleur et peut demander un calibre plus faible. Voltaplan applique d’ailleurs des valeurs plus prudentes à partir de 6 mm² (32 A en 6 mm², 50 A en 10 mm²).</p>
 <p>Voir <a href="section-des-cables.html">La section des câbles</a> pour le détail.</p>
 
 <h2 id="defauts">Surcharge et court-circuit</h2>
 <p>Le disjoncteur réagit à deux situations différentes :</p>
 <ul>
-  <li>la <a href="lexique.html#surcharge">surcharge</a> : trop d’appareils sur le circuit, le courant dépasse un peu le calibre pendant longtemps. Le disjoncteur coupe après quelques secondes ou minutes, avant que le câble ne surchauffe ;</li>
+  <li>la <a href="lexique.html#surcharge">surcharge</a> : trop d’appareils sur le circuit, le courant dépasse un peu le calibre pendant longtemps. Le disjoncteur coupe après quelques secondes à près d’une heure, d’autant plus vite que la surcharge est forte, avant que le câble ne surchauffe ;</li>
   <li>le <a href="lexique.html#court-circuit">court-circuit</a> : la phase touche directement le neutre ou une autre phase, sans appareil entre les deux. Le courant devient énorme, des centaines voire des milliers d’ampères, et le disjoncteur coupe instantanément.</li>
 </ul>
 <p>Ces deux cas sont détaillés dans <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a>.</p>
@@ -95,4 +96,4 @@
 <p>Un ampèremètre classique se place <strong>en série</strong> : on doit ouvrir le circuit pour faire passer le courant à travers l’appareil de mesure. En pratique, on utilise plutôt une <strong>pince ampèremétrique</strong>, qui mesure le courant sans contact en entourant un seul conducteur. Attention : si on entoure tout le câble (phase et neutre ensemble), les courants aller et retour s’annulent et la pince affiche presque zéro.</p>
 
 <h2 id="corps">Le courant et le corps humain</h2>
-<p>Ce qui blesse, c’est le courant qui traverse le corps. Quelques milliampères se sentent déjà ; quelques dizaines de milliampères peuvent bloquer les muscles, empêcher de lâcher le fil ou perturber le cœur. C’est pour cette raison que les circuits des pièces de vie sont protégés par des différentiels de 30 mA, qui coupent avant que le courant ne devienne mortel. Le différentiel ne remplace pas la prudence : <strong>coupez le circuit et vérifiez l’absence de tension</strong> avant toute intervention.</p>
+<p>Ce qui blesse, c’est le courant qui traverse le corps. Quelques milliampères se sentent déjà ; quelques dizaines de milliampères peuvent bloquer les muscles, empêcher de lâcher le fil ou perturber le cœur. C’est pour cette raison que, dans les installations domestiques, les prises, l’éclairage, la salle de bain, le lave-linge, le sèche-linge et le lave-vaisselle sont placés derrière un différentiel de 30 mA (RGIE, 4.2.4.3 b). Ce différentiel coupe très vite quand du courant s’échappe vers la terre, ce qui réduit fortement le risque, mais il ne protège pas d’un contact entre deux conducteurs (phase et neutre, ou deux phases) et ne remplace pas la prudence : <strong>coupez le circuit, empêchez sa remise sous tension et vérifiez l’absence de tension</strong> avant toute intervention.</p>
