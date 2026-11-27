@@ -76,12 +76,13 @@
   </svg>
   <figcaption>Le détecteur 3 fils reçoit la phase (L) et le neutre (N) pour alimenter son électronique ; quand il voit un mouvement, il relie L à sa sortie, qui alimente la lampe par le retour lampe.</figcaption>
 </figure>
-<p>La lampe reçoit le retour depuis la sortie du détecteur, le <a href="lexique.html#neutre">neutre</a> et la terre. Le détecteur coupe ainsi la <a href="lexique.html#phase">phase</a>, comme un interrupteur. Le point clé est qu’il faut un neutre à l’emplacement du détecteur : à prévoir dès le câblage, en amenant jusqu’à lui la phase, le neutre et le retour lampe (et la terre si son boîtier en demande une).</p>
+<p>La lampe reçoit le retour depuis la sortie du détecteur, le <a href="lexique.html#neutre">neutre</a> et la terre. Le détecteur coupe ainsi la <a href="lexique.html#phase">phase</a>, comme un interrupteur. Le point clé est qu’il faut un neutre à l’emplacement du détecteur : à prévoir dès le câblage, en amenant jusqu’à lui la phase, le neutre et le retour lampe. Prévoyez aussi la terre dans le câble : elle est indispensable si le détecteur est de classe I (avec borne de terre), et un câble qui la comporte laisse toutes les options ouvertes.</p>
 <p>Attention : le détecteur ne commute que s’il est alimenté. Sans neutre, il reste inerte. L’exercice le simule : tant que L et N ne sont pas correctement reliés, le mouvement n’allume rien.</p>
 
 <h2 id="deux-fils">Le détecteur 2 fils</h2>
 <p>Le détecteur 2 fils se branche exactement à la place d’un interrupteur simple : la phase arrive sur une borne, le retour lampe part de l’autre. Pas besoin de neutre, ce qui le rend pratique en rénovation, quand on remplace un interrupteur existant.</p>
 <p>Pour alimenter son électronique, il laisse passer un petit courant permanent à travers la lampe, même éteinte. Avec une lampe à incandescence, ce courant ne se voyait pas. Avec des LED de faible puissance, il peut les faire luire ou clignoter. Les fabricants indiquent donc une <strong>charge minimale</strong>, par exemple quelques watts, et proposent parfois un module de compensation à placer en parallèle sur la lampe. Lisez la notice avant d’acheter : c’est la source d’ennuis la plus fréquente.</p>
+<p>Conséquence pour la sécurité : avec un détecteur 2 fils, la lampe éteinte reste reliée à la phase à travers l’électronique du détecteur. Avant de toucher la lampe ou sa douille, coupez le circuit au tableau, comme pour tout autre montage.</p>
 <p>En résumé : si vous avez un neutre au point de commande, préférez le 3 fils ; sinon, choisissez un 2 fils compatible avec vos LED.</p>
 
 <h2 id="reglages">Les réglages</h2>
@@ -102,7 +103,7 @@
 
 <h2 id="etapes">Câbler un détecteur 3 fils pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette par erreur, puis vérifier l’absence de tension avec un testeur adapté.</li>
   <li>Raccorder la phase (brun) à la borne L du détecteur et le neutre (bleu) à sa borne N.</li>
   <li>Relier la sortie du détecteur à la borne L de la lampe (retour noir ou gris).</li>
   <li>Amener le neutre et la terre (vert-jaune) à la lampe.</li>

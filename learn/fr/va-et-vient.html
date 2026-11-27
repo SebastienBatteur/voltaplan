@@ -105,11 +105,11 @@
     <tr><td>Terre</td><td>Tableau → point lumineux</td><td>Vert-jaune, uniquement</td></tr>
   </tbody>
 </table>
-<p>Le <a href="lexique.html#neutre">neutre</a> ne passe jamais par les interrupteurs : il va directement à la lampe.</p>
+<p>Le <a href="lexique.html#neutre">neutre</a> ne passe jamais par les interrupteurs : il va directement à la lampe. Les couleurs des navettes et du retour ne sont qu’un usage, sauf deux règles du RGIE : jamais de vert-jaune, et pas de bleu dans un circuit qui comporte un neutre (RGIE, 5.1.6.2).</p>
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette par erreur, puis vérifier l’absence de tension avec un testeur adapté.</li>
   <li>Repérer le <strong>commun</strong> de chaque interrupteur (marquage ou notice).</li>
   <li>Amener la phase au commun de l’interrupteur 1.</li>
   <li>Tirer les deux navettes entre les bornes 1 et 2 des deux interrupteurs.</li>
@@ -130,9 +130,9 @@
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
   <li><strong>Commun mal repéré</strong> : la phase ou le retour lampe arrive sur une borne de navette. La lampe ne fonctionne alors que dans certaines positions, ou un seul interrupteur la commande.</li>
-  <li><strong>Neutre envoyé dans les interrupteurs</strong> : les interrupteurs commutent alors le neutre au lieu de la phase, et la lampe éteinte peut rester sous tension. Le neutre va directement à la lampe.</li>
+  <li><strong>Neutre envoyé dans les interrupteurs</strong> : les interrupteurs commutent alors le neutre au lieu de la phase, et la lampe éteinte peut rester sous tension. C’est interdit (RGIE, 5.3.3.2 c) : le neutre va directement à la lampe.</li>
   <li><strong>Phase et neutre réunis</strong> par erreur dans le même connecteur : c’est un <a href="lexique.html#court-circuit">court-circuit</a>, et le disjoncteur déclenche à la remise sous tension.</li>
-  <li><strong>Navettes en bleu</strong> : le montage fonctionne, mais ce fil sous tension passe pour un neutre.</li>
+  <li><strong>Navettes en bleu</strong> : le montage fonctionne, mais ce fil sous tension passe pour un neutre. Dans un circuit qui comporte un neutre, le RGIE réserve le bleu au neutre (RGIE, 5.1.6.2).</li>
 </ul>
 
 <h2 id="plus-de-points">Et pour trois endroits ou plus ?</h2>

@@ -28,7 +28,7 @@ export const exercise: Exercise = {
     { a: 'src.N', b: 'tl.A2', color: 'blue' },
     { a: 'src.L', b: 'tl.1', color: 'brown' },
     { a: 'tl.2', b: 'lamp.L', color: 'grey' },
-    { a: 'tl.A2', b: 'lamp.N', color: 'blue' },
+    { a: 'src.N', b: 'lamp.N', color: 'blue' },
     { a: 'src.PE', b: 'lamp.PE', color: 'gy' },
   ],
 };

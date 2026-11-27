@@ -94,11 +94,11 @@
     <tr><td>Terre</td><td>Tableau → chaque point lumineux</td><td>Vert-jaune, uniquement</td></tr>
   </tbody>
 </table>
-<p>Les deux fils qui sortent de l’interrupteur sont des <a href="lexique.html#retour-lampe">retours lampe</a>. Utiliser deux couleurs différentes (noir et gris, par exemple) évite de les confondre dans la boîte du plafond, et aide la personne qui interviendra dans dix ans. Le bleu reste réservé au neutre et le vert-jaune à la terre : voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
+<p>Les deux fils qui sortent de l’interrupteur sont des <a href="lexique.html#retour-lampe">retours lampe</a>. Utiliser deux couleurs différentes (noir et gris, par exemple) évite de les confondre dans la boîte du plafond, et aide la personne qui interviendra dans dix ans. Le bleu reste réservé au neutre, puisque le circuit en comporte un, et le vert-jaune à la terre (RGIE, 5.1.6.2) : voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>.</p>
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avec un testeur adapté.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette par erreur, puis vérifier l’absence de tension avec un testeur adapté.</li>
   <li>Amener la <strong>phase</strong> (brun) à la borne L de l’interrupteur double.</li>
   <li>Relier la borne 1 à la borne L de la lampe 1 (retour noir).</li>
   <li>Relier la borne 2 à la borne L de la lampe 2 (retour gris).</li>
@@ -122,8 +122,8 @@
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
   <li><strong>Retours inversés</strong> : la touche de gauche allume la lampe de droite. Ce n’est pas dangereux, mais c’est déroutant ; repérez les fils avant de fermer les boîtes.</li>
-  <li><strong>Neutre passé par l’interrupteur</strong> : une touche couperait le neutre au lieu de la phase, et la lampe éteinte resterait sous tension.</li>
-  <li><strong>Phase sur une borne de sortie</strong> : la touche correspondante n’a plus d’effet et l’autre lampe ne s’allume jamais.</li>
+  <li><strong>Neutre passé par l’interrupteur</strong> : une touche couperait le neutre au lieu de la phase, et la lampe éteinte resterait sous tension. Le RGIE l’interdit (RGIE, 5.3.3.2 c).</li>
+  <li><strong>Phase sur une borne de sortie</strong> au lieu de la borne L : la lampe de cette sortie reste allumée en permanence, et l’autre lampe ne s’allume que si les deux touches sont enfoncées.</li>
   <li><strong>Terre oubliée</strong> sur l’un des deux points lumineux, souvent le second, ajouté après coup.</li>
 </ul>
 <p>Comme pour tout circuit d’éclairage, le contrôle d’une installation neuve, comme celui d’une modification ou extension importante, est réalisé par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

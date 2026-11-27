@@ -121,7 +121,7 @@
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette par erreur, puis vérifier l’absence de tension avec un testeur adapté, sur les boutons comme sur la lampe : dans une installation existante, la commande est parfois alimentée par un autre circuit que la lampe.</li>
   <li>Relier le neutre à la borne A2 de la bobine.</li>
   <li>Amener la phase à une borne de chaque bouton-poussoir.</li>
   <li>Relier l’autre borne de chaque bouton à la borne A1 (fil de commande commun à tous les boutons).</li>
@@ -137,13 +137,14 @@
 
 <h2 id="ou-placer">Où placer le télérupteur ?</h2>
 <p>Le plus souvent, le télérupteur est un appareil modulaire fixé sur un rail du <a href="organiser-tableau.html">tableau électrique</a>, à côté du disjoncteur du circuit. Il existe aussi des modèles à encastrer dans une boîte, derrière un bouton ou près de la lampe. Au tableau, il est accessible et facile à remplacer ; son petit claquement à chaque commutation n’y dérange personne.</p>
-<p>La bobine fonctionne le plus souvent en 230 V, mais il existe des télérupteurs à bobine basse tension, alimentée par un transformateur de sécurité (<a href="lexique.html#tbts">TBTS</a>) : les boutons ne sont alors pas en 230 V. Suivez la notice pour la tension de bobine. Le contact, lui, coupe toujours la phase de la lampe. Beaucoup de modèles ont aussi un levier en façade pour commuter à la main, utile pour essayer le circuit de puissance.</p>
+<p>La bobine fonctionne le plus souvent en 230 V, mais il existe des télérupteurs à bobine en très basse tension (par exemple 12 ou 24 V), alimentée par un transformateur de sécurité (<a href="lexique.html#tbts">TBTS</a>) : les boutons ne sont alors pas en 230 V. Le circuit de commande TBTS doit rester séparé du 230 V : conducteurs écartés d’au moins 10 mm, ou munis d’une isolation supplémentaire (gaine, conduit), ou isolés pour la tension la plus élevée s’ils partagent un câble ou un tube (RGIE, 4.2.5.3 c). Il n’est relié ni à la terre ni à un autre circuit (RGIE, 4.2.5.5 c). Suivez la notice pour la tension de bobine. Le contact, lui, se place sur la phase de la lampe, comme un interrupteur. Beaucoup de modèles ont aussi un levier en façade pour commuter à la main, utile pour essayer le circuit de puissance.</p>
 
 <h2 id="erreurs">Les erreurs fréquentes</h2>
 <ul>
   <li><strong>Boutons en série</strong> au lieu d’en parallèle : il faudrait appuyer sur tous les boutons à la fois.</li>
   <li><strong>Lampe branchée sur le circuit de commande</strong> : elle ne s’allume que pendant l’appui.</li>
   <li><strong>A2 oubliée</strong> : la bobine n’est jamais alimentée, le télérupteur reste muet.</li>
+  <li><strong>Boutons placés côté neutre</strong> (phase permanente sur A1, boutons entre A2 et le neutre) : le télérupteur fonctionne, mais la bobine et les boutons restent sous tension au repos. Le RGIE interdit de placer un dispositif de commande unipolaire sur le neutre (RGIE, 5.3.3.2 c).</li>
   <li><strong>Trop de poussoirs lumineux</strong> : leur petit courant permanent peut faire vibrer ou coller la bobine ; respectez le nombre indiqué par le fabricant.</li>
 </ul>
 <p>Le télérupteur est aussi la porte d’entrée de la commande centralisée et des <a href="relais-connectes.html">relais connectés</a>. Pour une lampe qui s’éteint seule après quelques minutes, voir <a href="minuterie.html">La minuterie d’escalier</a>. Toute installation neuve, comme toute modification ou extension importante, est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>

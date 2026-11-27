@@ -14,7 +14,7 @@
     "Au-delà de trois points, le télérupteur est en général plus simple et moins coûteux à câbler."
   ],
   "faq": [
-    { "q": "Inverseur, permutateur, croisement : est-ce le même appareil ?", "a": "Dans le langage courant, oui : selon les catalogues et les régions, l’interrupteur intermédiaire à quatre bornes s’appelle inverseur, permutateur ou interrupteur de croisement. Vérifiez sur la fiche technique qu’il a bien quatre bornes et sert à commander depuis trois endroits ou plus." },
+    { "q": "Inverseur, permutateur, croisement : est-ce le même appareil ?", "a": "Dans le langage courant, oui : selon les catalogues et les régions, l’interrupteur intermédiaire à quatre bornes s’appelle inverseur, permutateur ou interrupteur de croisement ; les symboles du RGIE le nomment « commutateur intermédiaire pour va-et-vient ». Vérifiez sur la fiche technique qu’il a bien quatre bornes et sert à commander depuis trois endroits ou plus." },
     { "q": "Peut-on placer l’inverseur au début ou à la fin de la chaîne ?", "a": "Non. Les deux extrémités doivent être des va-et-vient : l’un reçoit la phase sur son commun, l’autre envoie le retour lampe depuis son commun. Les inverseurs se placent toujours entre les deux, sur les navettes." },
     { "q": "Combien d’inverseurs peut-on mettre ?", "a": "Autant que de points de commande supplémentaires, en théorie. En pratique, chaque inverseur ajoute des navettes à tirer et des connexions à faire ; dès quatre points, la plupart des électriciens choisissent un télérupteur." }
   ],
@@ -147,8 +147,8 @@
   <thead><tr><th>Fil</th><th>De → vers</th><th>Couleur habituelle</th></tr></thead>
   <tbody>
     <tr><td>Phase</td><td>Tableau → commun du va-et-vient 1</td><td>Brun (ou noir, gris)</td></tr>
-    <tr><td>Navettes (2)</td><td>Va-et-vient 1 → inverseur (paire d’entrée)</td><td>Noir et gris</td></tr>
-    <tr><td>Navettes (2)</td><td>Inverseur (paire de sortie) → va-et-vient 2</td><td>Noir et gris</td></tr>
+    <tr><td>Navettes (2)</td><td>Va-et-vient 1 → inverseur (paire d’entrée)</td><td>Noir et gris, par exemple</td></tr>
+    <tr><td>Navettes (2)</td><td>Inverseur (paire de sortie) → va-et-vient 2</td><td>Noir et gris, par exemple ; jamais bleu ni vert-jaune</td></tr>
     <tr><td>Retour lampe</td><td>Commun du va-et-vient 2 → lampe</td><td>Noir, gris ou brun</td></tr>
     <tr><td>Neutre et terre</td><td>Tableau → lampe</td><td>Bleu ; vert-jaune</td></tr>
   </tbody>
@@ -156,7 +156,7 @@
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher qu’on le remette par erreur, puis vérifier l’absence de tension avec un testeur adapté.</li>
   <li>Placer les deux va-et-vient aux extrémités et l’inverseur entre eux.</li>
   <li>Amener la phase au commun du va-et-vient 1.</li>
   <li>Relier ses bornes 1 et 2 à la paire d’entrée de l’inverseur.</li>
@@ -177,6 +177,6 @@
 <ul>
   <li><strong>Paires mal identifiées</strong> sur l’inverseur : les deux navettes du même va-et-vient arrivent sur une borne d’entrée et une borne de sortie. L’inverseur relie alors les navettes entre elles dans une position, et la lampe ne réagit plus correctement.</li>
   <li><strong>Inverseur en bout de chaîne</strong> : il ne peut ni recevoir la phase ni alimenter la lampe correctement.</li>
-  <li><strong>Neutre dans les interrupteurs</strong> : aucun interrupteur ne doit commuter le neutre, qui va directement à la lampe.</li>
+  <li><strong>Neutre dans les interrupteurs</strong> : aucun interrupteur ne doit commuter le neutre (RGIE, 5.3.3.2 c), qui va directement à la lampe.</li>
 </ul>
 <p>Dans un <a href="lire-unifilaire.html">schéma unifilaire</a>, le montage se lit comme une chaîne : va-et-vient, inverseur, va-et-vient, puis le point lumineux. Toute installation neuve, comme toute modification ou extension importante, est contrôlée par un <a href="controle-organisme-agree.html">organisme agréé</a>.</p>
