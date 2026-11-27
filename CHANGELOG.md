@@ -12,6 +12,9 @@
 - Site : pages en allemand (accueil, guide, confidentialité, conditions ; la version française fait foi pour les
   textes juridiques), nouvelle page « Questions fréquentes » en quatre langues, guides alignés sur l'application
   (un seul Importer, longueur des câbles, IA, statuts du contrôle, mentions du dossier imprimé).
+- FAQ : groupe « Utiliser l'application » (15 questions pas à pas, liées au guide).
+- Confidentialité (site, quatre langues) : l'IA peut aussi recevoir la photo d'une plaque de compteur ou d'un plan,
+  seulement pour les usages cochés ; lecture locale des photos et imports sans envoi.
 - Documentation (README, CONTRIBUTING, PRIVACY, docs/) alignée sur le code.
 - Pied de page de l'application en allemand : liens vers les pages allemandes.
 

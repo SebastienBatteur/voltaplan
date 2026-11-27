@@ -35,6 +35,22 @@
     <a href="#bureau">Browser or desktop app?</a>
     <a href="#hors-ligne">Offline?</a>
     <a href="#langues">Languages</a>
+    <a href="#c-utiliser">Using the app</a>
+    <a href="#u-nouveau">Starting a project</a>
+    <a href="#u-schema">Drawing the single-line diagram</a>
+    <a href="#u-modifier">Move, duplicate, delete, undo</a>
+    <a href="#u-proprietes">Cable, rating, RCD</a>
+    <a href="#u-maj">The Update button</a>
+    <a href="#u-fond">Background plan and scale</a>
+    <a href="#u-symboles">Placing points on the plan</a>
+    <a href="#u-piece">Equipping a room</a>
+    <a href="#u-tableau">Arranging the board</a>
+    <a href="#u-controle">Using the RGIE check</a>
+    <a href="#u-mesures">Entering measurements</a>
+    <a href="#u-materiel">Materials and lengths</a>
+    <a href="#u-enregistrer">Save, reopen, recover</a>
+    <a href="#u-langue">Changing the language</a>
+    <a href="#u-raccourcis">Keyboard shortcuts</a>
     <a href="#c-fichiers">Files</a>
     <a href="#fichiers">Where are my files?</a>
     <a href="#format">File format</a>
@@ -75,6 +91,81 @@
 
     <h3 id="langues">Which languages?</h3>
     <p>The app and this website are available in French, Dutch, English and German. PDF import also recognises files written in these four languages.</p>
+
+    <h2 id="c-utiliser">Using the app</h2>
+
+    <h3 id="u-nouveau">How do I start a new project?</h3>
+    <p>On the <strong>My projects</strong> screen, click <strong>New project</strong>, or <strong>Survey an existing installation</strong> for an installation that is already in place. The wizard has 4 steps: <strong>Type</strong> (new or existing installation, project name; for a new installation, start from an <em>Empty project</em> or a <em>Typical house, to adapt</em>), <strong>Site</strong> (client and address), <strong>Installer</strong> and <strong>Supply</strong> (voltage, earthing system, rating of the main breaker). <strong>Create now</strong> skips the remaining steps: everything can be completed later in the <strong>Project</strong> tab. To pick up a file from other software, see <a href="#importer">Which files can I import?</a> Details: <a href="guide.html#demarrer">Getting started</a>.</p>
+
+    <h3 id="u-schema">How do I draw the single-line diagram?</h3>
+    <p>You do not draw it: you describe the installation in the <strong>Installation</strong> tree on the left, and the single-line diagram draws itself.</p>
+    <ol>
+      <li>Select the element to add under (board, RCD, circuit breaker…).</li>
+      <li>Add with the <strong>＋</strong> at the end of its row, the <strong>＋ Add…</strong> button in the properties, the <strong>Elements</strong> palette, or right-click its symbol → <strong>Add to</strong>. Only what can be connected there is offered.</li>
+      <li>Example of a socket circuit: board → protective device (20 A circuit breaker) → cable (VOB 3G2.5) → sockets.</li>
+    </ol>
+    <p>The RGIE numbering (A, B… then A1, A2…) follows. See <a href="guide.html#installation">Describing the installation</a>.</p>
+
+    <h3 id="u-modifier">How do I move, duplicate or delete an element? And undo?</h3>
+    <p>Select the element in the tree, the single-line diagram, the plan or the board: it is selected everywhere. Under its properties, <strong>↑</strong> and <strong>↓</strong> change its place among its siblings, <strong>Duplicate</strong> makes a copy and <strong>Delete</strong> removes it (<kbd>Del</kbd> key). On the plan and in the board, drag it to move it. <strong>Undo</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) and <strong>Redo</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) are in the top bar. See <a href="guide.html#ecran">The screen</a>.</p>
+
+    <h3 id="u-proprietes">Where do I set the cable, cross-section, rating or RCD sensitivity?</h3>
+    <p>In the <strong>Properties</strong> panel, under the tree, once the element is selected. Protective device: device, rating, poles, curve, breaking capacity, RCD sensitivity and type, number of modules. Cable: type (VOB, XVB…), cross-section, number of conductors, installation method, length. Also fill in the <strong>Location</strong> (the room): it is used to place the points on the plan. See <a href="guide.html#installation">Describing the installation</a>.</p>
+
+    <h3 id="u-maj">What does the ⟳ Update button do?</h3>
+    <p>Click it after creating the installation or adding circuits. It places new devices in the first free slot of the board, without moving the others, and new points on the plan near their room name; it estimates cable lengths, adds a revision to the file and recalculates numbering, labels, materials and the check. The result window lets you undo it all at once. See <a href="guide.html#maj">Update</a>.</p>
+
+    <h3 id="u-fond">How do I import a background plan and set its scale?</h3>
+    <ol>
+      <li><strong>Floor plan</strong> tab → <strong>Background plan (photo / PDF / DXF)…</strong>. A DXF that states its unit is placed to scale straight away.</li>
+      <li>For a photo or a PDF: <strong>Set scale</strong>, click two points and enter their real distance. <strong>Straighten (4 corners)</strong> corrects a photo taken at an angle.</li>
+      <li>Draw the walls, doors and windows over it, or try <strong>Trace walls</strong> (automatic detection, to check).</li>
+    </ol>
+    <p>See <a href="guide.html#plan">Layout plan</a>.</p>
+
+    <h3 id="u-symboles">How do I place points on the plan and link them to the diagram?</h3>
+    <p>For an element already in the single-line diagram: <strong>Place on plan</strong> in its properties, or the palette's <strong>Not yet on the plan</strong> list, then click on the plan. For a new element: right-click the plan where you want it, choose the element, then where it connects in the single-line diagram (Voltaplan suggests the circuit of the nearest element); it is added to the diagram and placed on the plan. Drag a symbol to move it. See <a href="guide.html#plan">Layout plan</a>.</p>
+
+    <h3 id="u-piece">How do I equip a whole room at once?</h3>
+    <ol>
+      <li>Name the room on the plan with the <strong>Text</strong> tool (“Bedroom”, “Kitchen”, “Bathroom”…), or read the names written on the background with <strong>Read room names</strong>.</li>
+      <li>Select that name: the <strong>Equip the room</strong> panel offers the usual equipment, to tick, and <strong>Add typical furniture</strong>.</li>
+      <li><strong>Add to the room</strong> places the points, <strong>not connected</strong>: then link them to their circuits.</li>
+    </ol>
+    <p>It is a starting point, not an RGIE list. See <a href="guide.html#plan">Layout plan</a>.</p>
+
+    <h3 id="u-tableau">How do I arrange the board?</h3>
+    <p>In the board's properties, set the number of rows and modules per row. In the <strong>Board</strong> tab, drag devices between the rows and the reserve, or click <strong>Automatic layout</strong> (tree order); each device's real width is set in its properties (modules). With a photo taken from the front: <strong>Board photo…</strong>, then <strong>Align photo (rows)</strong>, then <strong>Arrange from photo</strong> or <strong>Compare with photo</strong>. See <a href="guide.html#tableau">Distribution board</a> and <a href="guide.html#photo">Board photo</a>.</p>
+
+    <h3 id="u-controle">How do I use the RGIE check?</h3>
+    <p>Open the <strong>RGIE check</strong> tab (the red number = number of non-conformities). Each finding has a status (non-conformity detected, insufficient information, recommendation…), a severity and, where relevant, the blocking mark.</p>
+    <ul>
+      <li>A finding's <strong>Single-line</strong>, <strong>Plan</strong> and <strong>Board</strong> buttons show the element concerned.</li>
+      <li>When the fix is obvious, a button under the finding offers it (for example <strong>Choose 20 A</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> takes it back.</li>
+      <li>Existing installation: an element that is not drawn (earth, RCD) is confirmed with <strong>Confirm present</strong>, <strong>Confirm absent</strong> or <strong>I don’t know</strong>.</li>
+      <li><strong>Derogation…</strong> records a derogation with its reason: the finding stays visible but is no longer blocking.</li>
+    </ul>
+    <p>See <a href="guide.html#controle">RGIE check</a>.</p>
+
+    <h3 id="u-mesures">Where do I enter measurements?</h3>
+    <p><strong>Project</strong> tab, <strong>Measurements</strong> section: earth resistance, insulation, equipotential bonding, test of each RCD, date and measuring instrument. They are checked and printed in the file. See <a href="guide.html#mesures">Measurements</a>.</p>
+
+    <h3 id="u-materiel">How do I get the bill of materials and cable lengths?</h3>
+    <p><strong>Materials</strong> tab: materials are grouped and added up; <strong>By room</strong> sorts them room by room. <strong>Estimate lengths</strong> calculates cable lengths from the plan (place the board on the plan first); a length you entered is never replaced. <strong>Export (CSV, spreadsheet)</strong> and <strong>Circuit list (CSV)</strong> open in a spreadsheet. See <a href="guide.html#materiel">Bill of materials</a> and <a href="#longueurs">How are cable lengths estimated?</a></p>
+
+    <h3 id="u-enregistrer">How do I save, reopen or recover a project?</h3>
+    <ul>
+      <li><strong>Save</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Save as…</strong> chooses the location: <strong>This device</strong> (<code>.voltaplan</code> file), the browser or GitHub (under <strong>Other locations</strong>), or Drive, OneDrive, Dropbox.</li>
+      <li>Reopen: the list on the <strong>My projects</strong> screen, <strong>File → Open…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) or <strong>Open from the cloud or the browser</strong>.</li>
+      <li>Recover: after an unexpected close, unsaved work is offered when you reopen (<strong>Recover</strong>). <strong>File → Local versions…</strong> reopens an earlier version as a new project.</li>
+    </ul>
+    <p>See <a href="guide.html#sauver">Saving and opening</a>.</p>
+
+    <h3 id="u-langue">How do I change the language?</h3>
+    <p>With the language selector in the top bar (Français, Nederlands, English, Deutsch); on a small screen, in the <strong>⋯</strong> menu → <strong>Language</strong>. The choice is remembered on this device.</p>
+
+    <h3 id="u-raccourcis">What are the keyboard shortcuts?</h3>
+    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> save, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> save as, <kbd>Ctrl</kbd>+<kbd>O</kbd> open, <kbd>Ctrl</kbd>+<kbd>P</kbd> print / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd> undo and redo, <kbd>Del</kbd> delete the selected element, <kbd>Esc</kbd> exit the current tool. In the tree: arrows to browse, left and right to collapse and expand, <kbd>+</kbd> to add inside. On a Mac, <kbd>Cmd</kbd> replaces <kbd>Ctrl</kbd>. See <a href="guide.html#raccourcis">Shortcuts</a>.</p>
 
     <h2 id="c-fichiers">Files</h2>
 

@@ -1,6 +1,6 @@
 # Symboles électriques — planche de contrôle
 
-`planche-symboles.html` montre chaque élément de `src/unifilar/symbols.tsx` (20 éléments, 88 variantes) en forme
+`planche-symboles.html` montre chaque élément de `src/unifilar/symbols.tsx` (22 éléments, 165 variantes) en forme
 **unifilaire** et en forme **plan de position**, une variante par propriété qui change le dessin. Régénérer après
 toute modification des symboles :
 

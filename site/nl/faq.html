@@ -35,6 +35,22 @@
     <a href="#bureau">Browser of desktopprogramma?</a>
     <a href="#hors-ligne">Offline?</a>
     <a href="#langues">Talen</a>
+    <a href="#c-utiliser">De app gebruiken</a>
+    <a href="#u-nouveau">Een project beginnen</a>
+    <a href="#u-schema">Het eendraadschema tekenen</a>
+    <a href="#u-modifier">Verplaatsen, dupliceren, verwijderen, ongedaan maken</a>
+    <a href="#u-proprietes">Kabel, kaliber, verliesstroomschakelaar</a>
+    <a href="#u-maj">De knop Bijwerken</a>
+    <a href="#u-fond">Achtergrondplan en schaal</a>
+    <a href="#u-symboles">Punten op het plan plaatsen</a>
+    <a href="#u-piece">Een ruimte uitrusten</a>
+    <a href="#u-tableau">Het verdeelbord schikken</a>
+    <a href="#u-controle">De AREI-controle gebruiken</a>
+    <a href="#u-mesures">Metingen invullen</a>
+    <a href="#u-materiel">Materiaal en lengtes</a>
+    <a href="#u-enregistrer">Opslaan, openen, herstellen</a>
+    <a href="#u-langue">Van taal veranderen</a>
+    <a href="#u-raccourcis">Sneltoetsen</a>
     <a href="#c-fichiers">Bestanden</a>
     <a href="#fichiers">Waar staan mijn bestanden?</a>
     <a href="#format">Bestandsformaat</a>
@@ -75,6 +91,81 @@
 
     <h3 id="langues">In welke talen?</h3>
     <p>De toepassing en deze site bestaan in het Frans, Nederlands, Engels en Duits. Het importeren van pdf-dossiers herkent ook dossiers in die vier talen.</p>
+
+    <h2 id="c-utiliser">De app gebruiken</h2>
+
+    <h3 id="u-nouveau">Hoe begin ik een nieuw project?</h3>
+    <p>Klik op het scherm <strong>Mijn projecten</strong> op <strong>Nieuw project</strong>, of op <strong>Een bestaande installatie opnemen</strong> voor een installatie die er al is. De assistent telt 4 stappen: <strong>Type</strong> (nieuwe of bestaande installatie, naam van het project; voor een nieuwe installatie vertrekt u van een <em>Leeg project</em> of een <em>Typewoning, aan te passen</em>), <strong>Plaats</strong> (klant en adres), <strong>Installateur</strong> en <strong>Voeding</strong> (spanning, aardingsstelsel, kaliber van de aansluitautomaat). <strong>Nu aanmaken</strong> slaat de overige stappen over: alles kan later aangevuld worden in het tabblad <strong>Project</strong>. Om het dossier van een ander programma over te nemen, zie <a href="#importer">Welke bestanden kan ik importeren?</a> Details: <a href="guide.html#demarrer">Aan de slag</a>.</p>
+
+    <h3 id="u-schema">Hoe teken ik het eendraadschema?</h3>
+    <p>U tekent het niet zelf: u beschrijft de installatie in de boomstructuur <strong>Installatie</strong>, links, en het eendraadschema tekent zichzelf.</p>
+    <ol>
+      <li>Selecteer het element waaronder u iets toevoegt (verdeelbord, verliesstroomschakelaar, automaat…).</li>
+      <li>Voeg toe met de <strong>＋</strong> aan het einde van zijn regel, de knop <strong>＋ Toevoegen…</strong> in de eigenschappen, het palet <strong>Elementen</strong>, of een rechtsklik op zijn symbool → <strong>Toevoegen in</strong>. Enkel wat daaronder kan worden aangesloten, wordt voorgesteld.</li>
+      <li>Voorbeeld van een kring met contactdozen: verdeelbord → beveiliging (automaat 20 A) → leiding (VOB 3G2,5) → contactdozen.</li>
+    </ol>
+    <p>De AREI-nummering (A, B… en dan A1, A2…) volgt vanzelf. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
+
+    <h3 id="u-modifier">Hoe verplaats, dupliceer of verwijder ik een element? En hoe maak ik iets ongedaan?</h3>
+    <p>Selecteer het element in de boomstructuur, het eendraadschema, het situatieschema of het verdeelbord: het wordt overal geselecteerd. Onder de eigenschappen veranderen <strong>↑</strong> en <strong>↓</strong> zijn plaats tussen de andere elementen op hetzelfde niveau, maakt <strong>Dupliceren</strong> een kopie en haalt <strong>Verwijderen</strong> het weg (toets <kbd>Del</kbd>). Op het plan en in het verdeelbord sleept u het om het te verplaatsen. <strong>Ongedaan maken</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) en <strong>Opnieuw</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) staan in de bovenbalk. Zie <a href="guide.html#ecran">Het scherm</a>.</p>
+
+    <h3 id="u-proprietes">Waar stel ik de kabel, de doorsnede, het kaliber of de gevoeligheid van de verliesstroomschakelaar in?</h3>
+    <p>In het paneel <strong>Eigenschappen</strong>, onder de boomstructuur, zodra het element geselecteerd is. Beveiliging: toestel, nominale stroom, polen, curve, kortsluitvermogen, gevoeligheid en type van de verliesstroomschakelaar, aantal modules. Leiding: type (VOB, XVB…), doorsnede, aantal geleiders, plaatsing, lengte. Vul ook de <strong>Locatie</strong> in (de ruimte): die dient om de punten op het plan te plaatsen. Zie <a href="guide.html#installation">De installatie beschrijven</a>.</p>
+
+    <h3 id="u-maj">Waarvoor dient de knop ⟳ Bijwerken?</h3>
+    <p>Klik erop nadat u de installatie hebt aangemaakt of kringen hebt toegevoegd. Hij zet nieuwe toestellen op de eerste vrije plaats in het verdeelbord, zonder de andere te verschuiven, en nieuwe punten op het plan bij de naam van hun ruimte; hij schat de kabellengtes, voegt een revisie toe aan het dossier en berekent nummering, etiketten, materiaal en controle opnieuw. In het resultaatvenster maakt u alles in één keer ongedaan. Zie <a href="guide.html#maj">Bijwerken</a>.</p>
+
+    <h3 id="u-fond">Hoe importeer ik een achtergrondplan en zet ik het op schaal?</h3>
+    <ol>
+      <li>Tabblad <strong>Situatieschema</strong> → <strong>Achtergrondplan (foto / PDF / DXF)…</strong>. Een DXF waarin de eenheid vermeld staat, komt meteen op de juiste schaal.</li>
+      <li>Voor een foto of een PDF: <strong>Op schaal zetten</strong>, klik op twee punten en geef hun werkelijke afstand. <strong>Rechtzetten (4 hoeken)</strong> corrigeert een schuin genomen foto.</li>
+      <li>Teken de muren, deuren en ramen erover, of probeer <strong>Muren overtrekken</strong> (automatische herkenning, na te kijken).</li>
+    </ol>
+    <p>Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+
+    <h3 id="u-symboles">Hoe plaats ik punten op het plan en koppel ik ze aan het schema?</h3>
+    <p>Voor een element dat al in het eendraadschema staat: <strong>Op plan plaatsen</strong> in de eigenschappen, of de lijst <strong>Nog niet op het plan</strong> in het palet, en klik daarna op het plan. Voor een nieuw element: rechtsklik op het plan op de gewenste plaats, kies het element en daarna waar het aansluit in het eendraadschema (Voltaplan stelt de kring van het dichtste element voor); het wordt aan het schema toegevoegd en op het plan geplaatst. Sleep een symbool om het te verplaatsen. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+
+    <h3 id="u-piece">Hoe rust ik een hele ruimte in één keer uit?</h3>
+    <ol>
+      <li>Geef de ruimte een naam op het plan met het werktuig <strong>Tekst</strong> („Slaapkamer”, „Keuken”, „Badkamer”…), of lees de namen op het achtergrondplan met <strong>Ruimtenamen lezen</strong>.</li>
+      <li>Selecteer die naam: het paneel <strong>Ruimte uitrusten</strong> stelt de gebruikelijke uitrusting voor, aan te vinken, en <strong>Standaardmeubilair toevoegen</strong>.</li>
+      <li><strong>Aan de ruimte toevoegen</strong> plaatst de punten, <strong>niet aangesloten</strong>: verbind ze daarna met hun kringen.</li>
+    </ol>
+    <p>Het is een vertrekpunt, geen lijst uit het AREI. Zie <a href="guide.html#plan">Situatieschema</a>.</p>
+
+    <h3 id="u-tableau">Hoe schik ik het verdeelbord?</h3>
+    <p>Geef in de eigenschappen van het verdeelbord het aantal rijen en modules per rij op. Sleep in het tabblad <strong>Verdeelbord</strong> de toestellen tussen de rijen en de reserve, of klik op <strong>Automatische indeling</strong> (volgorde van de boomstructuur); de werkelijke breedte van elk toestel stelt u in bij zijn eigenschappen (modules). Met een foto van voren: <strong>Foto van het bord…</strong>, dan <strong>Foto uitlijnen (rijen)</strong>, dan <strong>Schikken volgens de foto</strong> of <strong>Vergelijken met de foto</strong>. Zie <a href="guide.html#tableau">Verdeelbord</a> en <a href="guide.html#photo">Foto van het bord</a>.</p>
+
+    <h3 id="u-controle">Hoe gebruik ik de AREI-controle?</h3>
+    <p>Open het tabblad <strong>AREI-controle</strong> (het rode cijfer = aantal non-conformiteiten). Elke vaststelling heeft een status (non-conformiteit vastgesteld, onvoldoende informatie, aanbeveling…), een ernst en, indien van toepassing, de vermelding blokkerend.</p>
+    <ul>
+      <li>De knoppen <strong>Eendraadschema</strong>, <strong>Plan</strong> en <strong>Bord</strong> van een vaststelling tonen het betrokken element.</li>
+      <li>Als de correctie voor de hand ligt, stelt een knop onder de vaststelling ze voor (bijvoorbeeld <strong>20 A kiezen</strong>); <kbd>Ctrl</kbd>+<kbd>Z</kbd> maakt ze ongedaan.</li>
+      <li>Bestaande installatie: een element dat niet getekend is (aarding, verliesstroomschakelaar) bevestigt u met <strong>Aanwezig bevestigen</strong>, <strong>Afwezig bevestigen</strong> of <strong>Ik weet het niet</strong>.</li>
+      <li><strong>Afwijking…</strong> legt een afwijking vast met haar reden: de vaststelling blijft zichtbaar, maar is niet langer blokkerend.</li>
+    </ul>
+    <p>Zie <a href="guide.html#controle">AREI-controle</a>.</p>
+
+    <h3 id="u-mesures">Waar vul ik de metingen in?</h3>
+    <p>Tabblad <strong>Project</strong>, deel <strong>Metingen</strong>: aardingsweerstand, isolatie, equipotentiaalverbindingen, test van elke verliesstroomschakelaar, datum en meettoestel. Ze worden gecontroleerd en in het dossier afgedrukt. Zie <a href="guide.html#mesures">Metingen</a>.</p>
+
+    <h3 id="u-materiel">Hoe krijg ik de materiaallijst en de kabellengtes?</h3>
+    <p>Tabblad <strong>Materiaal</strong>: het materiaal wordt gegroepeerd en opgeteld; <strong>Per ruimte</strong> rangschikt het per ruimte. <strong>Lengtes schatten</strong> berekent de kabellengtes volgens het plan (zet eerst het verdeelbord op het plan); een ingevulde lengte wordt nooit vervangen. <strong>Exporteren (CSV, rekenblad)</strong> en <strong>Lijst van de kringen (CSV)</strong> openen in een rekenblad. Zie <a href="guide.html#materiel">Materiaallijst</a> en <a href="#longueurs">Hoe wordt de kabellengte geschat?</a></p>
+
+    <h3 id="u-enregistrer">Hoe sla ik een project op, open ik het opnieuw of herstel ik het?</h3>
+    <ul>
+      <li><strong>Opslaan</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Opslaan als…</strong> kiest de locatie: <strong>Dit toestel</strong> (bestand <code>.voltaplan</code>), de browser of GitHub (onder <strong>Andere locaties</strong>), of Drive, OneDrive, Dropbox.</li>
+      <li>Opnieuw openen: de lijst op het scherm <strong>Mijn projecten</strong>, <strong>Bestand → Openen…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) of <strong>Openen vanuit de cloud of de browser</strong>.</li>
+      <li>Herstellen: na een onverwachte afsluiting wordt het niet-opgeslagen werk voorgesteld bij het heropenen (<strong>Herstellen</strong>). <strong>Bestand → Lokale versies…</strong> opent een vorige versie als nieuw project.</li>
+    </ul>
+    <p>Zie <a href="guide.html#sauver">Opslaan en openen</a>.</p>
+
+    <h3 id="u-langue">Hoe verander ik van taal?</h3>
+    <p>Met de taalkeuze in de bovenbalk (Français, Nederlands, English, Deutsch); op een klein scherm in het menu <strong>⋯</strong> → <strong>Taal</strong>. De keuze wordt op dit toestel onthouden.</p>
+
+    <h3 id="u-raccourcis">Welke sneltoetsen zijn er?</h3>
+    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> opslaan, <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> opslaan als, <kbd>Ctrl</kbd>+<kbd>O</kbd> openen, <kbd>Ctrl</kbd>+<kbd>P</kbd> afdrukken / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> en <kbd>Ctrl</kbd>+<kbd>Y</kbd> ongedaan maken en opnieuw, <kbd>Del</kbd> het geselecteerde element verwijderen, <kbd>Esc</kbd> het huidige werktuig verlaten. In de boomstructuur: pijltjes om te doorlopen, links en rechts om in en uit te klappen, <kbd>+</kbd> om iets toe te voegen. Op een Mac vervangt <kbd>Cmd</kbd> de <kbd>Ctrl</kbd>. Zie <a href="guide.html#raccourcis">Sneltoetsen</a>.</p>
 
     <h2 id="c-fichiers">Bestanden</h2>
 

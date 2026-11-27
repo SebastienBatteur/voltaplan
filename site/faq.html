@@ -35,6 +35,22 @@
     <a href="#bureau">Navigateur ou application de bureau ?</a>
     <a href="#hors-ligne">Hors connexion ?</a>
     <a href="#langues">Langues</a>
+    <a href="#c-utiliser">Utiliser l'application</a>
+    <a href="#u-nouveau">Commencer un projet</a>
+    <a href="#u-schema">Dessiner l'unifilaire</a>
+    <a href="#u-modifier">Déplacer, dupliquer, supprimer, annuler</a>
+    <a href="#u-proprietes">Câble, calibre, différentiel</a>
+    <a href="#u-maj">Le bouton Mettre à jour</a>
+    <a href="#u-fond">Fond de plan et échelle</a>
+    <a href="#u-symboles">Placer les points sur le plan</a>
+    <a href="#u-piece">Équiper une pièce</a>
+    <a href="#u-tableau">Organiser le tableau</a>
+    <a href="#u-controle">Utiliser le contrôle RGIE</a>
+    <a href="#u-mesures">Saisir les mesures</a>
+    <a href="#u-materiel">Matériel et longueurs</a>
+    <a href="#u-enregistrer">Enregistrer, rouvrir, récupérer</a>
+    <a href="#u-langue">Changer de langue</a>
+    <a href="#u-raccourcis">Raccourcis clavier</a>
     <a href="#c-fichiers">Fichiers</a>
     <a href="#fichiers">Où sont mes fichiers ?</a>
     <a href="#format">Format de fichier</a>
@@ -75,6 +91,81 @@
 
     <h3 id="langues">Dans quelles langues ?</h3>
     <p>L'application et ce site existent en français, néerlandais, anglais et allemand. L'import de dossiers PDF reconnaît aussi les dossiers rédigés dans ces quatre langues.</p>
+
+    <h2 id="c-utiliser">Utiliser l'application</h2>
+
+    <h3 id="u-nouveau">Comment commencer un nouveau projet ?</h3>
+    <p>Sur l'écran <strong>Mes projets</strong>, cliquez <strong>Nouveau projet</strong>, ou <strong>Relever une installation existante</strong> pour une installation déjà en place. L'assistant compte 4 étapes : <strong>Type</strong> (installation neuve ou existante, nom du projet ; pour une installation neuve, départ d'un <em>Projet vide</em> ou d'une <em>Maison type, à adapter</em>), <strong>Lieu</strong> (client et adresse), <strong>Installateur</strong> et <strong>Alimentation</strong> (tension, schéma de terre, calibre du disjoncteur de branchement). <strong>Créer maintenant</strong> saute les étapes restantes : tout se complète ensuite dans l'onglet <strong>Projet</strong>. Pour reprendre le dossier d'un autre logiciel, voir <a href="#importer">Quels fichiers puis-je importer ?</a> Détails : <a href="guide.html#demarrer">Démarrer</a>.</p>
+
+    <h3 id="u-schema">Comment dessiner le schéma unifilaire ?</h3>
+    <p>Vous ne le dessinez pas : vous décrivez l'installation dans l'arborescence <strong>Installation</strong>, à gauche, et l'unifilaire se dessine tout seul.</p>
+    <ol>
+      <li>Sélectionnez l'élément sous lequel ajouter (tableau, différentiel, disjoncteur…).</li>
+      <li>Ajoutez avec le <strong>＋</strong> au bout de sa ligne, le bouton <strong>＋ Ajouter…</strong> des propriétés, la palette <strong>Éléments</strong>, ou un clic droit sur son symbole → <strong>Ajouter dans</strong>. Seul ce qui peut s'y brancher est proposé.</li>
+      <li>Exemple de circuit de prises : tableau → protection (disjoncteur 20 A) → canalisation (VOB 3G2,5) → prises.</li>
+    </ol>
+    <p>La numérotation RGIE (A, B… puis A1, A2…) suit. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
+
+    <h3 id="u-modifier">Comment déplacer, dupliquer ou supprimer un élément ? Et annuler ?</h3>
+    <p>Sélectionnez l'élément dans l'arborescence, l'unifilaire, le plan ou le tableau : il est sélectionné partout. Sous ses propriétés, <strong>↑</strong> et <strong>↓</strong> changent sa place parmi ses voisins, <strong>Dupliquer</strong> en fait une copie et <strong>Supprimer</strong> le retire (touche <kbd>Suppr</kbd>). Sur le plan et dans le tableau, glissez-le pour le déplacer. <strong>Annuler</strong> (<kbd>Ctrl</kbd>+<kbd>Z</kbd>) et <strong>Rétablir</strong> (<kbd>Ctrl</kbd>+<kbd>Y</kbd>) sont dans la barre du haut. Voir <a href="guide.html#ecran">L'écran</a>.</p>
+
+    <h3 id="u-proprietes">Où régler le câble, la section, le calibre ou la sensibilité du différentiel ?</h3>
+    <p>Dans le panneau <strong>Propriétés</strong>, sous l'arborescence, une fois l'élément sélectionné. Protection : appareil, calibre, pôles, courbe, pouvoir de coupure, sensibilité et type du différentiel, nombre de modules. Canalisation : type (VOB, XVB…), section, nombre de conducteurs, mode de pose, longueur. Indiquez aussi l'<strong>Emplacement</strong> (la pièce) : il sert à poser les points sur le plan. Voir <a href="guide.html#installation">Décrire l'installation</a>.</p>
+
+    <h3 id="u-maj">À quoi sert le bouton ⟳ Mettre à jour ?</h3>
+    <p>Cliquez-le après avoir créé l'installation ou ajouté des circuits. Il pose les nouveaux appareils dans le premier emplacement libre du tableau, sans déplacer les autres, et les nouveaux points sur le plan près du nom de leur pièce ; il estime la longueur des câbles, ajoute une révision au dossier et recalcule numérotation, étiquettes, matériel et contrôle. La fenêtre de résultat permet de tout annuler en une fois. Voir <a href="guide.html#maj">Mettre à jour</a>.</p>
+
+    <h3 id="u-fond">Comment importer un fond de plan et le mettre à l'échelle ?</h3>
+    <ol>
+      <li>Onglet <strong>Plan</strong> → <strong>Fond de plan (photo / PDF / DXF)…</strong>. Un DXF dont l'unité est indiquée est posé directement à la bonne échelle.</li>
+      <li>Pour une photo ou un PDF : <strong>Mettre à l'échelle</strong>, cliquez deux points et donnez leur distance réelle. <strong>Redresser (4 coins)</strong> corrige une photo prise de biais.</li>
+      <li>Dessinez les murs, portes et fenêtres par-dessus, ou essayez <strong>Tracer les murs</strong> (détection automatique, à vérifier).</li>
+    </ol>
+    <p>Voir <a href="guide.html#plan">Plan de position</a>.</p>
+
+    <h3 id="u-symboles">Comment placer les points sur le plan et les relier au schéma ?</h3>
+    <p>Pour un élément déjà dans l'unifilaire : <strong>Placer sur le plan</strong> dans ses propriétés, ou la liste <strong>Pas encore sur le plan</strong> de la palette, puis cliquez sur le plan. Pour un nouvel élément : clic droit sur le plan à l'endroit voulu, choisissez l'élément puis où il se branche dans l'unifilaire (Voltaplan propose le circuit de l'élément le plus proche) ; il est ajouté au schéma et posé sur le plan. Glissez un symbole pour le déplacer. Voir <a href="guide.html#plan">Plan de position</a>.</p>
+
+    <h3 id="u-piece">Comment équiper une pièce d'un coup ?</h3>
+    <ol>
+      <li>Nommez la pièce sur le plan avec l'outil <strong>Texte</strong> (« Chambre », « Cuisine », « Salle de bain »…), ou lisez les noms écrits sur le fond avec <strong>Lire les noms de pièces</strong>.</li>
+      <li>Sélectionnez ce nom : le panneau <strong>Équiper la pièce</strong> propose l'équipement habituel, à cocher, et <strong>Ajouter le mobilier type</strong>.</li>
+      <li><strong>Ajouter à la pièce</strong> pose les points, <strong>non raccordés</strong> : reliez-les ensuite à leurs circuits.</li>
+    </ol>
+    <p>C'est un point de départ, pas une liste du RGIE. Voir <a href="guide.html#plan">Plan de position</a>.</p>
+
+    <h3 id="u-tableau">Comment organiser le tableau ?</h3>
+    <p>Dans les propriétés du tableau, indiquez le nombre de rangées et de modules par rangée. Dans l'onglet <strong>Tableau</strong>, glissez les appareils entre les rangées et la réserve, ou cliquez <strong>Disposition automatique</strong> (ordre de l'arborescence) ; la largeur réelle de chaque appareil se règle dans ses propriétés (modules). Avec une photo prise de face : <strong>Photo du tableau…</strong>, puis <strong>Caler la photo (rangées)</strong>, puis <strong>Disposer d'après la photo</strong> ou <strong>Comparer à la photo</strong>. Voir <a href="guide.html#tableau">Tableau</a> et <a href="guide.html#photo">Photo du tableau</a>.</p>
+
+    <h3 id="u-controle">Comment utiliser le contrôle RGIE ?</h3>
+    <p>Ouvrez l'onglet <strong>Contrôle RGIE</strong> (le chiffre rouge = nombre de non-conformités). Chaque constat a un statut (non-conformité détectée, informations insuffisantes, recommandation…), une gravité et, s'il y a lieu, la mention bloquant.</p>
+    <ul>
+      <li>Les boutons <strong>Unifilaire</strong>, <strong>Plan</strong> et <strong>Tableau</strong> d'un constat montrent l'élément concerné.</li>
+      <li>Quand la correction est évidente, un bouton la propose sous le constat (par exemple <strong>Choisir 20 A</strong>) ; <kbd>Ctrl</kbd>+<kbd>Z</kbd> revient en arrière.</li>
+      <li>Installation existante : un élément non dessiné (terre, différentiel) se confirme avec <strong>Confirmer présent</strong>, <strong>Confirmer absent</strong> ou <strong>Je ne sais pas</strong>.</li>
+      <li><strong>Dérogation…</strong> enregistre une dérogation avec son motif : le constat reste visible, mais n'est plus bloquant.</li>
+    </ul>
+    <p>Voir <a href="guide.html#controle">Contrôle RGIE</a>.</p>
+
+    <h3 id="u-mesures">Où saisir les mesures ?</h3>
+    <p>Onglet <strong>Projet</strong>, partie <strong>Mesures</strong> : résistance de terre, isolement, liaisons équipotentielles, essai de chaque différentiel, date et appareil de mesure. Elles sont contrôlées et imprimées dans le dossier. Voir <a href="guide.html#mesures">Mesures</a>.</p>
+
+    <h3 id="u-materiel">Comment obtenir la liste du matériel et la longueur des câbles ?</h3>
+    <p>Onglet <strong>Matériel</strong> : le matériel est groupé et additionné ; <strong>Par pièce</strong> le range pièce par pièce. <strong>Estimer les longueurs</strong> calcule la longueur des câbles d'après le plan (posez d'abord le tableau sur le plan) ; une longueur saisie n'est jamais remplacée. <strong>Exporter (CSV, tableur)</strong> et <strong>Liste des circuits (CSV)</strong> s'ouvrent dans un tableur. Voir <a href="guide.html#materiel">Liste du matériel</a> et <a href="#longueurs">Comment la longueur des câbles est-elle estimée ?</a></p>
+
+    <h3 id="u-enregistrer">Comment enregistrer, rouvrir ou récupérer un projet ?</h3>
+    <ul>
+      <li><strong>Enregistrer</strong> (<kbd>Ctrl</kbd>+<kbd>S</kbd>). <strong>Enregistrer sous…</strong> choisit l'emplacement : <strong>Cet appareil</strong> (fichier <code>.voltaplan</code>), le navigateur ou GitHub (sous <strong>Autres emplacements</strong>), ou Drive, OneDrive, Dropbox.</li>
+      <li>Rouvrir : la liste de l'écran <strong>Mes projets</strong>, <strong>Fichier → Ouvrir…</strong> (<kbd>Ctrl</kbd>+<kbd>O</kbd>) ou <strong>Ouvrir depuis le cloud ou le navigateur</strong>.</li>
+      <li>Récupérer : après une fermeture inattendue, le travail non enregistré est proposé à la réouverture (<strong>Récupérer</strong>). <strong>Fichier → Versions locales…</strong> rouvre une version précédente comme nouveau projet.</li>
+    </ul>
+    <p>Voir <a href="guide.html#sauver">Enregistrer et ouvrir</a>.</p>
+
+    <h3 id="u-langue">Comment changer de langue ?</h3>
+    <p>Avec le choix de langue de la barre du haut (Français, Nederlands, English, Deutsch) ; sur petit écran, dans le menu <strong>⋯</strong> → <strong>Langue</strong>. Le choix est retenu sur cet appareil.</p>
+
+    <h3 id="u-raccourcis">Quels sont les raccourcis clavier ?</h3>
+    <p><kbd>Ctrl</kbd>+<kbd>S</kbd> enregistrer, <kbd>Ctrl</kbd>+<kbd>Maj</kbd>+<kbd>S</kbd> enregistrer sous, <kbd>Ctrl</kbd>+<kbd>O</kbd> ouvrir, <kbd>Ctrl</kbd>+<kbd>P</kbd> imprimer / PDF, <kbd>Ctrl</kbd>+<kbd>Z</kbd> et <kbd>Ctrl</kbd>+<kbd>Y</kbd> annuler et rétablir, <kbd>Suppr</kbd> supprimer l'élément sélectionné, <kbd>Échap</kbd> quitter l'outil en cours. Dans l'arborescence : flèches pour parcourir, gauche et droite pour replier et déplier, <kbd>+</kbd> pour ajouter dedans. Sur Mac, <kbd>Cmd</kbd> remplace <kbd>Ctrl</kbd>. Voir <a href="guide.html#raccourcis">Raccourcis</a>.</p>
 
     <h2 id="c-fichiers">Fichiers</h2>
 
