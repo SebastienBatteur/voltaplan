@@ -15,12 +15,12 @@
   ],
   "faq": [
     { "q": "Mon disjoncteur saute quand j’allume la bouilloire et le radiateur ensemble : est-ce normal ?", "a": "Oui, si les deux sont sur le même circuit : leurs puissances s’additionnent et dépassent ce que le circuit peut fournir. Branchez-les sur des circuits différents. Si cela arrive souvent, un électricien peut ajouter un circuit." },
-    { "q": "Puis-je mettre un disjoncteur de 20 A à la place du 16 A qui saute ?", "a": "Seulement si le câble du circuit le permet. Dans Voltaplan, un câble de 1,5 mm² est protégé par 16 A au plus, et un câble de 2,5 mm² par 20 A au plus. Un calibre trop fort laisserait le câble chauffer sans couper : c’est un risque d’incendie." },
+    { "q": "Puis-je mettre un disjoncteur de 20 A à la place du 16 A qui saute ?", "a": "Seulement si le câble du circuit le permet, et c’est une décision d’électricien. Dans une installation domestique, le RGIE limite un câble de 1,5 mm² à un disjoncteur de 16 A, et un câble de 2,5 mm² à 20 A (RGIE, 4.4.1.4, tableau 4.11). Un calibre trop fort laisserait le câble chauffer sans couper : c’est un risque d’incendie." },
     { "q": "Le disjoncteur saute quand une ampoule grille : pourquoi ?", "a": "Avec certaines ampoules anciennes, la rupture du filament peut provoquer un bref court-circuit dans l’ampoule. Remplacez l’ampoule et réarmez. Si cela se répète avec des ampoules neuves, faites vérifier le luminaire." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
-    { "label": "Voltaplan : correspondance entre section des câbles et calibre maximal des disjoncteurs." },
+    { "label": "Voltaplan : correspondance entre section des câbles et calibre maximal des protections." },
     { "label": "Documentation des fabricants de disjoncteurs." }
   ],
   "updated": "2026-11-27"
@@ -39,8 +39,8 @@
 <h2 id="deux-causes">Deux causes : surcharge ou court-circuit</h2>
 <p>Un disjoncteur contient deux protections :</p>
 <ul>
-  <li>contre la <a href="lexique.html#surcharge">surcharge</a> : le courant dépasse un peu le calibre pendant un certain temps. Le disjoncteur laisse passer quelques instants, voire quelques minutes, puis coupe pour éviter que le câble ne chauffe ;</li>
-  <li>contre le <a href="lexique.html#court-circuit">court-circuit</a> : la phase touche directement le neutre (ou la terre), le courant devient énorme, et le disjoncteur coupe instantanément.</li>
+  <li>contre la <a href="lexique.html#surcharge">surcharge</a> : le courant dépasse le calibre pendant un certain temps. Plus le dépassement est fort, plus le disjoncteur coupe vite : un léger dépassement peut être toléré longtemps, une forte surcharge le fait couper en quelques minutes, pour éviter que le câble ne chauffe ;</li>
+  <li>contre le <a href="lexique.html#court-circuit">court-circuit</a> : la phase touche directement le neutre (ou une autre phase), le courant devient énorme, et le disjoncteur coupe instantanément. Un contact entre la phase et la terre fait en général réagir le <a href="differentiel.html">différentiel</a> plutôt que le disjoncteur.</li>
 </ul>
 <p>Voir <a href="surcharge-court-circuit.html">Surcharge et court-circuit</a> pour le détail.</p>
 <table>
@@ -90,7 +90,7 @@
   <figcaption>Surcharge ou court-circuit : les questions à se poser avant de relever le disjoncteur. Si le disjoncteur saute sans aucun appareil branché, on ne le relève pas à répétition : c’est le travail d’un électricien.</figcaption>
 </figure>
 <h2 id="surcharge">En cas de surcharge</h2>
-<p>Un circuit protégé par un disjoncteur de 16 A sous 230 V peut fournir environ 230 × 16 = 3 680 W. Branchez sur ce même circuit une bouilloire de 2 000 W et un radiateur d’appoint de 2 000 W : 4 000 W, soit plus de 17 A. Le disjoncteur finit par couper, et c’est exactement ce qu’on attend de lui. Voir <a href="puissance-energie.html">Puissance et énergie</a>.</p>
+<p>Un circuit protégé par un disjoncteur de 16 A sous 230 V peut fournir environ 230 × 16 = 3 680 W. Branchez sur ce même circuit une bouilloire de 2 000 W, un radiateur d’appoint de 2 000 W et un fer à repasser de 1 500 W : 5 500 W, soit environ 24 A, une fois et demie le calibre. Le disjoncteur finit par couper, et c’est exactement ce qu’on attend de lui. Un dépassement plus faible (4 000 W, environ 17 A) peut être toléré longtemps avant la coupure, sans être une raison de surcharger le circuit. Voir <a href="puissance-energie.html">Puissance et énergie</a>.</p>
 <ol>
   <li>Éteignez ou débranchez une partie des appareils du circuit.</li>
   <li>Relevez le disjoncteur.</li>
@@ -108,17 +108,18 @@
 <p>Si le disjoncteur saute même sans aucun appareil branché, le court-circuit se trouve dans l’installation : une prise ou un interrupteur endommagé, un fil desserré dans une boîte, un câble percé lors d’un perçage, de l’eau dans un luminaire. Ne relevez pas le disjoncteur à répétition : chaque court-circuit abîme un peu plus les conducteurs et les contacts. Laissez-le abaissé et faites appel à un électricien.</p>
 
 <h2 id="calibre">Ne jamais augmenter le calibre</h2>
-<p>Le disjoncteur ne protège pas d’abord les appareils : il protège le <strong>câble</strong> contre l’échauffement. Son calibre est donc choisi selon la <a href="lexique.html#section">section</a> du câble. Les valeurs utilisées par Voltaplan :</p>
+<p>Le disjoncteur ne protège pas d’abord les appareils : il protège le <strong>câble</strong> contre l’échauffement. Son calibre est donc choisi selon la <a href="lexique.html#section">section</a> du câble. Pour les installations domestiques, le RGIE fixe un calibre maximal par section, plus bas pour un fusible que pour un disjoncteur (RGIE, 4.4.1.4, tableau 4.11) :</p>
 <table>
-  <thead><tr><th>Section du câble</th><th>Calibre maximal</th></tr></thead>
+  <thead><tr><th>Section du câble</th><th>Disjoncteur : calibre maximal (RGIE)</th><th>Fusible : calibre maximal (RGIE)</th><th>Disjoncteur : valeur retenue par Voltaplan</th></tr></thead>
   <tbody>
-    <tr><td>1,5 mm²</td><td>16 A</td></tr>
-    <tr><td>2,5 mm²</td><td>20 A</td></tr>
-    <tr><td>4 mm²</td><td>25 A</td></tr>
-    <tr><td>6 mm²</td><td>32 A</td></tr>
-    <tr><td>10 mm²</td><td>50 A</td></tr>
+    <tr><td>1,5 mm²</td><td>16 A</td><td>10 A</td><td>16 A</td></tr>
+    <tr><td>2,5 mm²</td><td>20 A</td><td>16 A</td><td>20 A</td></tr>
+    <tr><td>4 mm²</td><td>25 A</td><td>20 A</td><td>25 A</td></tr>
+    <tr><td>6 mm²</td><td>40 A</td><td>32 A</td><td>32 A</td></tr>
+    <tr><td>10 mm²</td><td>63 A</td><td>50 A</td><td>50 A</td></tr>
   </tbody>
 </table>
+<p>Ces maxima ne dispensent pas de vérifier le courant admissible du câble selon son mode de pose, sa longueur et la température (RGIE, 4.4.1.4) : c’est pourquoi Voltaplan reste prudent pour les grosses sections. Un vieux tableau à fusibles se juge avec la colonne des fusibles : un fusible de 16 A sur un câble de 1,5 mm² est trop fort.</p>
 <p>Remplacer un 16 A qui saute par un 25 A sur un câble de 1,5 mm², c’est laisser le câble chauffer dans le mur sans que rien ne coupe : un risque d’incendie. De même, on ne bloque jamais la manette d’un disjoncteur et on ne le shunte pas. Voir <a href="section-des-cables.html">La section des câbles</a>.</p>
 
 <h2 id="electricien">Quand appeler un électricien</h2>
@@ -128,4 +129,4 @@
   <li>Une prise, un interrupteur ou une boîte présente des traces de brûlure ou une odeur.</li>
   <li>Les surcharges sont fréquentes et un nouveau circuit semble nécessaire.</li>
 </ul>
-<p>Toute intervention sur l’installation se fait après avoir <strong>coupé le courant et vérifié l’absence de tension</strong>. L’ouverture du tableau, des prises ou des boîtes est un travail pour une personne compétente. Et si l’installation est modifiée (nouveau circuit, nouveau tableau), elle devra être contrôlée par un organisme agréé : voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>
+<p>Toute intervention sur l’installation se fait après avoir <strong>coupé le courant, empêché sa remise en service (consignation) et vérifié l’absence de tension</strong> sur tous les conducteurs actifs avec un appareil adapté (RGIE, 9.3.4.2 a). L’ouverture du tableau, des prises ou des boîtes est un travail pour une personne compétente. Et si l’installation est modifiée de façon importante (nouveau circuit, remplacement non identique du tableau), la partie modifiée devra être contrôlée par un organisme agréé avant sa mise en usage (RGIE, 6.4.7.3) : voir <a href="controle-organisme-agree.html">Le contrôle par un organisme agréé</a>.</p>

@@ -9,14 +9,14 @@
   "retenir": [
     "La résistance de dispersion indique la facilité avec laquelle le courant de défaut passe de la prise de terre au sol.",
     "Plus elle est <strong>faible</strong>, plus la tension qui apparaît sur une masse en défaut reste basse.",
-    "Dans Voltaplan : jusqu’à <strong>30 Ω</strong>, conforme ; de 30 à 100 Ω, des mesures complémentaires sont exigées ; au-delà de <strong>100 Ω</strong>, la terre doit être améliorée.",
-    "La prise de terre est une boucle dans les fondations ou un ou plusieurs piquets ; la valeur varie avec l’humidité du sol.",
+    "Le RGIE exige moins de <strong>100 Ω</strong> dans une installation domestique ; au-delà de <strong>30 Ω</strong>, des différentiels supplémentaires sont exigés. Voltaplan applique ces deux seuils.",
+    "La prise de terre est une boucle à fond de fouille (obligatoire dans un nouveau bâtiment aux fondations assez profondes) ou des piquets ; la valeur varie avec l’humidité du sol.",
     "La mesure se fait avec un appareil dédié, par l’installateur ou l’organisme agréé."
   ],
   "faq": [
-    { "q": "Ma terre fait 45 Ω : est-ce grave ?", "a": "Dans Voltaplan, une valeur entre 30 et 100 Ω n’est pas une non-conformité mais un avertissement : des mesures complémentaires sont exigées, comme des différentiels 30 mA supplémentaires. Vérifiez les conditions du RGIE avec votre installateur ou l’organisme agréé, et voyez s’il est possible d’améliorer la prise de terre." },
+    { "q": "Ma terre fait 45 Ω : est-ce grave ?", "a": "Une valeur entre 30 et 100 Ω reste admise par le RGIE à condition d’avoir les différentiels supplémentaires prévus pour ce cas (RGIE, 4.2.4.3 b) ; sans eux, l’installation n’est pas conforme. Voltaplan affiche un avertissement. Vérifiez les conditions du RGIE avec votre installateur ou l’organisme agréé, et voyez s’il est possible d’améliorer la prise de terre." },
     { "q": "Comment améliorer une terre trop élevée ?", "a": "Le plus souvent en ajoutant un ou plusieurs piquets de terre reliés entre eux, en vérifiant les connexions du conducteur de terre, ou en reprenant une prise de terre corrodée. C’est un travail d’électricien, suivi d’une nouvelle mesure." },
-    { "q": "Peut-on relier la terre à une conduite d’eau ?", "a": "Non, une canalisation n’est pas une prise de terre. Les canalisations métalliques sont reliées à la terre par les liaisons équipotentielles, mais la prise de terre elle-même est une boucle ou des piquets prévus à cet effet." }
+    { "q": "Peut-on relier la terre à une conduite d’eau ?", "a": "Non, une canalisation n’est pas une prise de terre : dans une installation domestique, le RGIE n’admet que les prises de terre qu’il décrit (boucle, conducteur enfoui, barres ou piquets) (RGIE, 5.4.2.1). Les canalisations métalliques sont reliées à la barrette de terre par les liaisons équipotentielles." }
   ],
   "sources": [
     { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." },
@@ -62,7 +62,8 @@
   </svg>
   <figcaption>En cas de défaut, le courant passe par le conducteur de protection et la prise de terre, puis se disperse dans le sol. Plus la résistance de dispersion est faible, plus la tension prise par la carcasse reste basse.</figcaption>
 </figure>
-<h2 id="seuils">Les seuils utilisés par Voltaplan</h2>
+<h2 id="seuils">Ce que dit le RGIE, et comment Voltaplan l’applique</h2>
+<p>Le RGIE demande une résistance de dispersion « aussi faible que possible » et, pour une installation domestique, <strong>inférieure à 100 Ω</strong> (RGIE, 4.2.3.2). Au-delà de 30 Ω, l’installation reste admissible, mais avec des différentiels supplémentaires (RGIE, 4.2.4.3 b). Une prise de terre commune à un immeuble à appartements (obligatoire pour ceux construits à partir du 1er juin 2020) doit, elle, rester à 30 Ω au plus (RGIE, 5.4.2.1 c).</p>
 <p>Dans l’onglet Projet de Voltaplan, vous encodez la « résistance de dispersion de la terre » en ohms. L’application la juge ainsi :</p>
 <table>
   <thead><tr><th>Valeur mesurée</th><th>Ce qu’affiche Voltaplan</th></tr></thead>
@@ -92,13 +93,13 @@
   </svg>
   <figcaption>Les trois zones appliquées par Voltaplan (échelle non proportionnelle). Entre 30 et 100 Ω, c’est l’organisme agréé qui tranche selon les conditions du RGIE.</figcaption>
 </figure>
-<p>Ces seuils sont ceux qu’applique l’application pour vous aider à préparer le contrôle. Le cas intermédiaire, entre 30 et 100 Ω, dépend de conditions précises du RGIE : c’est l’organisme agréé qui tranche, au vu de l’ensemble de l’installation.</p>
+<p>Ces seuils sont ceux qu’applique l’application pour vous aider à préparer le contrôle. Le cas intermédiaire, entre 30 et 100 Ω, dépend des différentiels réellement installés : c’est l’organisme agréé qui tranche, puisque son rapport certifie l’adéquation entre les différentiels et la résistance de terre mesurée (RGIE, 6.4.6.4).</p>
 
 <h2 id="prise-de-terre">La prise de terre elle-même</h2>
 <p>Deux réalisations sont courantes dans une maison :</p>
 <ul>
-  <li>la <a href="lexique.html#boucle-de-terre">boucle de terre</a> : un conducteur nu posé en fond de fouille, sous les fondations, au moment de la construction. C’est la solution habituelle en construction neuve, car elle offre un grand contact avec le sol ;</li>
-  <li>le <a href="lexique.html#piquet-de-terre">piquet de terre</a> : une tige métallique enfoncée dans le sol, souvent utilisée dans les bâtiments existants, ou en complément. Plusieurs piquets reliés entre eux et suffisamment écartés abaissent la résistance.</li>
+  <li>la <a href="lexique.html#boucle-de-terre">boucle de terre</a> : un conducteur en cuivre nu (35 mm² au moins) posé à fond de fouille, à la verticale des murs extérieurs, au moment de la construction. Elle est <strong>obligatoire</strong> pour tout nouveau bâtiment dont les fondations descendent à 60 cm au moins (RGIE, 5.4.2.1 b), et offre un grand contact avec le sol ;</li>
+  <li>le <a href="lexique.html#piquet-de-terre">piquet de terre</a> : une tige métallique enfoncée dans le sol (1,50 m au moins). Le RGIE en fait une prise de terre complémentaire, utilisée quand une boucle ne peut pas être posée, souvent dans les bâtiments existants, ou quand la boucle ne donne pas une valeur assez basse. Plusieurs piquets reliés entre eux et suffisamment écartés abaissent la résistance.</li>
 </ul>
 <p>La prise de terre est reliée à la barrette de terre du tableau par le conducteur de terre, en passant par un sectionneur de terre (une borne démontable) qui permet de la séparer de l’installation pour la mesurer. Voir <a href="mise-a-la-terre.html">La mise à la terre</a>.</p>
 
@@ -111,7 +112,7 @@
 </ul>
 
 <h2 id="mesure">Comment on la mesure</h2>
-<p>La mesure se fait avec un <strong>appareil dédié</strong> (un mesureur de terre ou un testeur d’installation), par l’installateur ou l’organisme agréé. Plusieurs méthodes existent : avec des électrodes auxiliaires plantées dans le sol à distance de la prise de terre, ou avec une pince de mesure. Le principe reste le même : faire circuler un courant connu entre la prise de terre et le sol, mesurer la tension qui en résulte, et en déduire la résistance.</p>
+<p>La mesure se fait avec un <strong>appareil dédié</strong> (un mesureur de terre ou un testeur d’installation), par l’installateur et, lors de chaque contrôle de conformité, par l’organisme agréé (RGIE, 6.4.5.2). Plusieurs méthodes existent : avec des électrodes auxiliaires plantées dans le sol à distance de la prise de terre, ou avec une pince de mesure. Le principe reste le même : faire circuler un courant connu entre la prise de terre et le sol, mesurer la tension qui en résulte, et en déduire la résistance.</p>
 <p>Ce n’est pas une mesure à faire soi-même : ouvrir le sectionneur de terre prive toute l’installation de sa protection pendant la mesure, et une mesure mal faite donne une valeur trompeuse.</p>
 
 <h2 id="ameliorer">Si la terre est trop élevée</h2>
