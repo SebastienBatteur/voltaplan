@@ -20,7 +20,7 @@
   ],
   "sources": [
     { "label": "Notices des fabricants de coupoles, fenêtres de toit et moteurs d’ouvrants." },
-    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie ; 4.2.5.3 (sources de la TBTS), 5.2.1.3 (circuits de tensions différentes dans un même câble ou conduit), 5.3.3.2 e (redémarrage automatique des moteurs), 5.5.7.3 (moteurs d’évacuation de fumée et de chaleur)." }
   ],
   "updated": "2026-11-27"
 }
@@ -29,12 +29,12 @@
 
 <h2 id="types">Les types d’ouvrants motorisés</h2>
 <ul>
-  <li><strong>Coupole</strong> (ou lanterneau) sur toit plat : un vérin ou un moteur à chaîne soulève le dôme. Fréquent en salle de bain, cage d’escalier ou couloir.</li>
+  <li><strong>Coupole</strong> (ou lanterneau) sur toit plat : un vérin ou un moteur à chaîne soulève le dôme. Fréquent en salle de bain, cage d’escalier ou couloir. Dans une salle de bain, l’emplacement du moteur et de la commande doit respecter les volumes définis par le RGIE (chapitre 7.1).</li>
   <li><strong>Fenêtre de toit</strong> : moteur intégré au châssis, souvent fourni avec un boîtier de commande et une télécommande.</li>
   <li><strong>Ouvrant de façade ou de véranda</strong> : moteur à chaîne ou à bras fixé sur le dormant, pour la ventilation.</li>
   <li><strong>Store extérieur ou intérieur</strong> sur une fenêtre : moteur tubulaire comme celui d’un volet.</li>
 </ul>
-<p>Deux grandes familles d’alimentation coexistent. Certains moteurs fonctionnent en <strong>230 V</strong>, avec deux fils de sens, un neutre et une terre, comme un moteur de volet. D’autres fonctionnent en <a href="lexique.html#tbts">très basse tension</a> (souvent en courant continu) : le sens dépend alors de la polarité des deux fils, et le moteur se raccorde à l’alimentation ou au boîtier du fabricant. Cet article et son exercice traitent du premier cas.</p>
+<p>Deux grandes familles d’alimentation coexistent. Certains moteurs fonctionnent en <strong>230 V</strong>, avec deux fils de sens, un neutre et une terre, comme un moteur de volet. D’autres fonctionnent en très basse tension (souvent en courant continu) : le sens dépend alors de la polarité des deux fils, et le moteur se raccorde à l’alimentation ou au boîtier du fabricant. Très basse tension ne veut pas forcément dire <a href="lexique.html#tbts">TBTS</a> : cela dépend de la source qui la produit (RGIE, 4.2.5.3). Cet article et son exercice traitent du premier cas.</p>
 
 <h2 id="principe">Le principe</h2>
 <figure class="illu">
@@ -85,7 +85,7 @@
 
 <h2 id="etapes">Câbler pas à pas</h2>
 <ol>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher sa remise sous tension et vérifier l’absence de tension avec un appareil adapté.</li>
   <li>Dans la boîte, relier la phase de l’arrivée au fil qui monte vers la borne L de la commande.</li>
   <li>Relier les sorties ouvrir et fermer de la commande aux fils de sens du moteur, chacune par sa propre connexion.</li>
   <li>Relier le neutre de l’arrivée au neutre du moteur, et la terre de l’arrivée à la terre du moteur.</li>
@@ -96,11 +96,12 @@
 <h2 id="erreurs">Les erreurs à éviter</h2>
 <ul>
   <li><strong>Ouvrir et fermer alimentés ensemble</strong> : avec un double interrupteur, ou en reliant par erreur les deux fils de sens dans la boîte. Le moteur force dans les deux sens et chauffe. Dans l’exercice, la vérification l’affiche : « Moteur de la coupole reçoit montée et descente en même temps : le moteur peut être endommagé ».</li>
-  <li><strong>Un moteur très basse tension raccordé au 230 V</strong> : il est détruit immédiatement, et l’isolation n’est pas prévue pour cette tension.</li>
+  <li><strong>Un moteur très basse tension raccordé au 230 V</strong> : il est détruit, et son isolation n’est pas prévue pour cette tension.</li>
+  <li><strong>Fils très basse tension mêlés au 230 V</strong> dans un même câble ou un même tube, alors qu’ils ne sont pas isolés pour 230 V : c’est interdit (RGIE, 5.2.1.3). Tirez-les à part, ou utilisez des conducteurs isolés pour la tension la plus élevée.</li>
   <li><strong>Deux ouvrants en parallèle</strong> sur la même commande, sans accord du fabricant : voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</li>
-  <li><strong>Terre oubliée</strong> sur un moteur qui en a une.</li>
+  <li><strong>Terre oubliée</strong> sur un moteur qui en a une : les masses d’un appareil de classe I doivent être reliées au conducteur de protection (RGIE, 4.2.4.3 a).</li>
 </ul>
 
 <h2 id="securite">Sécurité d’usage</h2>
-<p>Un ouvrant motorisé exerce une force réelle. Placez la commande à un endroit d’où l’on voit l’ouvrant, pour ne pas fermer sur une main ou un objet. Beaucoup de moteurs ont une sécurité anti-pincement ou un arrêt sur effort ; ne la désactivez pas. Un capteur de pluie, raccordé à un boîtier de commande ou à un module domotique, ferme la coupole automatiquement en cas d’averse (voir <a href="volets-domotique.html">Volets et domotique</a>).</p>
-<p>Les exutoires de désenfumage obéissent à des règles propres et dépassent le cadre de cet article. Pour une installation neuve, comme pour une modification ou extension importante, le contrôle par un organisme agréé reste obligatoire.</p>
+<p>Un ouvrant motorisé exerce une force réelle. Placez la commande à un endroit d’où l’on voit l’ouvrant, pour ne pas fermer sur une main ou un objet. Beaucoup de moteurs ont une sécurité anti-pincement ou un arrêt sur effort ; ne la désactivez pas. Le RGIE demande aussi que, sauf raison de sécurité prépondérante, un moteur dont le redémarrage peut mettre une personne en danger ne se remette pas en marche tout seul après un arrêt (RGIE, 5.3.3.2 e) : pensez-y pour une fermeture automatique. Un capteur de pluie, raccordé à un boîtier de commande ou à un module domotique, ferme la coupole automatiquement en cas d’averse (voir <a href="volets-domotique.html">Volets et domotique</a>).</p>
+<p>Les exutoires de fumée et de chaleur (désenfumage) font partie des installations de sécurité : le RGIE leur consacre des règles particulières (par exemple RGIE, 5.5.7.3), et d’autres réglementations s’y ajoutent. Ils dépassent le cadre de cet article. Pour une installation neuve, comme pour une modification ou extension importante, le contrôle par un organisme agréé reste obligatoire.</p>

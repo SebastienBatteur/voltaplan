@@ -18,8 +18,8 @@
     { "q": "Le moteur ne repart pas après plusieurs montées et descentes : est-il en panne ?", "a": "Pas forcément. Beaucoup de moteurs tubulaires ont une protection thermique qui les coupe après un usage prolongé. Il suffit souvent d’attendre qu’il refroidisse ; si le problème revient à chaque usage, faites vérifier le moteur." }
   ],
   "sources": [
-    { "label": "Notices de raccordement et de réglage des fabricants de moteurs tubulaires." },
-    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie." }
+    { "label": "Notices de raccordement et de réglage des fabricants de moteurs tubulaires ; ordre de grandeur des puissances : brochure Somfy Oximo RTS (moteurs de 50 mm, 90 à 270 W, 0,45 à 1,2 A sous 230 V ; version radio raccordée par 3 fils)." },
+    { "label": "RGIE, Livre 1 (installations à basse et très basse tension), version 2026 : texte officiel publié par le SPF Économie ; 4.2.4.3 a (masses de classe I reliées au conducteur de protection), 5.1.6.2 (couleurs bleue et vert-jaune)." }
   ],
   "updated": "2026-11-27"
 }
@@ -36,7 +36,7 @@
   <li>les <strong>fins de course</strong>, qui coupent le moteur en position haute et basse ;</li>
   <li>souvent une <strong>protection thermique</strong> qui coupe le moteur s’il chauffe trop, après une longue série de manœuvres.</li>
 </ul>
-<p>Pour un volet de maison, la puissance électrique est couramment de l’ordre de 100 à 250 W, soit un courant d’environ 0,5 à 1 A sous 230 V : bien moins qu’une bouilloire de 2 000 W.</p>
+<p>Pour un volet de maison, la puissance électrique est de l’ordre de 100 à 300 W selon la force du moteur, soit un courant d’environ 0,5 à 1,2 A sous 230 V (ordre de grandeur tiré de fiches de fabricants ; la valeur exacte figure sur l’étiquette du moteur) : bien moins qu’une bouilloire de 2 000 W.</p>
 
 <h2 id="quatre-fils">Les quatre fils</h2>
 <table>
@@ -48,7 +48,7 @@
     <tr><td>Terre</td><td><a href="lexique.html#conducteur-de-protection">Conducteur de protection</a>, relié au corps du moteur</td><td>Vert-jaune</td></tr>
   </tbody>
 </table>
-<p>Ces couleurs sont celles que l’on rencontre <strong>souvent</strong>, pas une règle : certains fabricants utilisent d’autres couleurs ou numérotent les fils. La notice du moteur fait foi. Le bleu reste le neutre et le vert-jaune reste la terre, comme partout dans l’installation (voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>).</p>
+<p>Ces couleurs sont celles que l’on rencontre <strong>souvent</strong>, pas une règle : certains fabricants utilisent d’autres couleurs ou numérotent les fils. La notice du moteur fait foi. Le bleu est normalement le neutre et le vert-jaune la terre, couleurs que le RGIE réserve à ces conducteurs dans l’installation (RGIE, 5.1.6.2). Mais une couleur ne prouve jamais la fonction d’un fil : en cas de doute, repérez les fils hors tension et vérifiez (voir <a href="couleurs-des-fils.html">Les couleurs des fils</a>).</p>
 <p>Le fil brun ne fait pas toujours monter le volet : tout dépend du côté où le moteur est glissé dans l’axe. Monté à gauche, il tourne dans un sens ; monté à droite, le même fil le fait tourner dans l’autre. C’est pourquoi on essaie après raccordement, et on échange les deux fils de sens si nécessaire, toujours hors tension.</p>
 
 <h2 id="fins-de-course">Les fins de course</h2>
@@ -86,14 +86,14 @@
 
 <h2 id="deux-sens">Pourquoi jamais les deux sens en même temps</h2>
 <p>Si la phase arrive à la fois sur le fil de montée et sur le fil de descente, les deux enroulements reçoivent la tension en même temps, et le condensateur, normalement placé entre les deux, est court-circuité. Le moteur ne sait pas dans quel sens tourner : il grogne, reste bloqué ou tourne mal, et chauffe. Selon la durée, le condensateur ou les enroulements peuvent être détruits.</p>
-<p>C’est pourquoi on commande un volet avec une <strong>commande de volet verrouillée</strong>, jamais avec un double interrupteur ordinaire dont on pourrait enfoncer les deux touches. Les fabricants recommandent aussi souvent de marquer un court arrêt avant de changer de sens. Dans l’exercice de l’article <a href="volet-roulant.html">Câbler un volet roulant</a>, la vérification signale cette erreur si le moteur reçoit les deux sens.</p>
-<p>Le même phénomène explique pourquoi on ne branche pas deux moteurs en parallèle sur une seule commande : par le condensateur de l’un, l’autre peut recevoir la tension sur ses deux sens. Voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</p>
+<p>C’est pourquoi on commande un volet avec une <strong>commande de volet verrouillée</strong>, jamais avec un double interrupteur ordinaire dont on pourrait enfoncer les deux touches. Certaines notices demandent aussi de marquer un court arrêt avant de changer de sens. Dans l’exercice de l’article <a href="volet-roulant.html">Câbler un volet roulant</a>, la vérification signale cette erreur si le moteur reçoit les deux sens.</p>
+<p>Le même phénomène explique pourquoi on ne branche pas deux moteurs en parallèle sur une seule commande, sauf si la notice l’autorise explicitement : par le condensateur de l’un, l’autre peut recevoir la tension sur ses deux sens. Voir <a href="commande-groupee-volets.html">Commander plusieurs volets ensemble</a>.</p>
 
 <h2 id="raccordement">Raccordement et sécurité</h2>
 <ul>
-  <li><strong>Couper le circuit</strong> au tableau et vérifier l’absence de tension avant de toucher au câble du moteur.</li>
+  <li><strong>Couper le circuit</strong> au tableau, empêcher sa remise sous tension et vérifier l’absence de tension avec un appareil adapté avant de toucher au câble du moteur.</li>
   <li>Raccorder dans une <a href="lexique.html#boite-de-derivation">boîte de dérivation</a> qui reste accessible : on aura besoin d’y revenir pour un réglage ou un remplacement.</li>
-  <li>Raccorder la <a href="lexique.html#terre">terre</a> : le corps du moteur est métallique.</li>
+  <li>Raccorder la <a href="lexique.html#terre">terre</a> : le corps du moteur est métallique, et les masses d’un appareil de classe I doivent être reliées au conducteur de protection (RGIE, 4.2.4.3 a).</li>
   <li>Ne pas rallonger ou couper le câble du moteur n’importe où : certains câbles sont débrochables, et la notice indique comment les remplacer.</li>
 </ul>
 <p>Les moteurs radio ou à commande intégrée n’ont pas toujours quatre fils : ils reçoivent souvent une alimentation permanente (phase, neutre, terre) et reçoivent les ordres par radio ou par un bus. Voir <a href="volets-domotique.html">Volets et domotique</a>.</p>
