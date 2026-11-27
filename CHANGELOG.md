@@ -2,6 +2,21 @@
 
 ## Non publié (audit de fiabilisation, novembre 2026)
 
+### Moteur réglementaire : corrections issues de l'audit, contre-audit et validation externe (2026-11-27)
+
+- Contre-audit indépendant des articles : 213 affirmations citant le RGIE relues contre la section citée (167
+  soutenues, 46 partielles corrigées, aucune contraire) ; 42 corrections P0/P1 du premier audit revues.
+- Moteur : calibre maximal selon le tableau 4.11 du RGIE (fusible et disjoncteur) ; type A exigé pour tout différentiel
+  domestique ; différentiel de tête d'au moins 40 A (nouvelle règle, dérogations 8.2.1 / 8.2.2) ; circuits mixtes
+  (appareils fixes comptés dans les 8 points) ; circuits dédiés selon 5.2.1.2 (seuil de 2 600 W) ; terre « inférieure
+  à 100 Ω » ; équivalence VFVB retirée. Interprétations incertaines non bloquantes (temps de déclenchement,
+  disjoncteur différentiel 1P+N en 3 × 230 V). Des projets existants peuvent recevoir de nouveaux constats, notamment
+  les tableaux à fusibles.
+- Contrôle CI de cohérence moteur ↔ articles, règles sans test et références du catalogue.
+- Documents : `docs/audit/MOTEUR-CORRECTIONS-2026.md`, `CONTRE-AUDIT-RGIE-2026.md`, `VALIDATION-EXTERNE-RGIE.md`,
+  `TRACABILITE-RGIE-2026.md`, `RISQUES-RESIDUELS-2026.md`, ADR-0009 (proposé) et
+  `docs/architecture/source-verite-reglementaire.md`.
+
 ### Apprendre : audit réglementaire et technique complet (2026-11-27)
 
 - Les 54 articles, 58 schémas, 12 exercices, le simulateur, le lexique et l'encadré commun relus affirmation par
