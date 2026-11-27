@@ -171,7 +171,8 @@ passages, boîtes) peut être plus long.
 - Défaut à la terre en schéma TT : non calculé ; la protection des personnes est assurée par le
   différentiel (contrôlé par d'autres règles). En TN/IT, la boucle de défaut n'est pas calculée.
 - Courant admissible des câbles (mode de pose, groupement, température) : non calculé ici ; la règle
-  `R-CABLE-PROT` utilise un tableau prudent section → calibre maximal.
+  `R-CABLE-PROT` utilise le tableau 4.11 du RGIE (4.4.1.4 : calibre maximal du fusible ou du disjoncteur selon la
+  section, installations domestiques), qui reste un maximum : le mode de pose peut imposer moins.
 - Réactance négligée dans la méthode conservative (cos φ = 1, cas le plus défavorable pour les petites
   sections) ; réactance par défaut 0,08 mΩ/m dans la méthode détaillée.
 - Charges triphasées supposées équilibrées ; harmoniques et courant de neutre non pris en compte.

@@ -57,7 +57,7 @@ manque, est déduite ou contradictoire.
 | R-DOC-INSTALLER / ADDRESS / SUPPLY | Mentions obligatoires sur les documents | D | — | info insuffisante | (donnée manquante = le constat lui-même) |
 | R-DOC-NOT-DRAWN | Équipement confirmé présent mais non dessiné | D | — | info insuffisante | n'existe que sur déclaration « présent » |
 | R-EARTH-MISSING | Prise de terre | P | élevée | non conforme (absence confirmée) | relevé non dessiné → inconnu (+ question) ; dessinée et déclarée absente → contradictoire ; conception non dessinée → non conforme |
-| R-EARTH-VALUE / R-EARTH-30 | Résistance de terre > 100 Ω / > 30 Ω | P | élevée / modérée | non conforme / avertissement | non mesurée → R-MEAS-MISSING (mesure nécessaire) |
+| R-EARTH-VALUE / R-EARTH-30 | Résistance de terre ≥ 100 Ω (RGIE 4.2.3.2 : « inférieure à 100 Ω ») / > 30 Ω | P | élevée / modérée | non conforme / avertissement | non mesurée → R-MEAS-MISSING (mesure nécessaire) |
 | R-INSULATION | Isolement < 0,5 MΩ | P | élevée | non conforme | non mesuré → R-MEAS-MISSING |
 | R-MEAS-MISSING | Résistance de terre ou isolement non notés | P | — | vérification (mesure nécessaire) | — |
 | R-BONDING | Liaisons équipotentielles | P | élevée | non conforme (« non » saisi) | non saisi → vérification (mesure nécessaire) |
@@ -70,19 +70,19 @@ manque, est déduite ou contradictoire.
 | R-RCD30-MAX | ≤ 8 circuits terminaux par différentiel 30 mA — RGIE 4.2.4.3 b, 6e al. (p. 101) ; même dérogation avant le 1/6/2023 | P | modérée | non conforme | compte des circuits dessinés (fait connu) |
 | R-RCD30-DATE | Existant sans date : « tableau fait ou refait avant ou après le 1/6/2023 ? » (propriété `rgie2023` du tableau), une question par tableau | P | élevée | informations insuffisantes (non bloquant en existant) | réponse ou date → R-RCD30 / R-RCD30-MAX appliquées ou dérogation |
 | R-WETROOM-NAME | Nom de pièce évoquant une salle de bain, non confirmé | P | élevée | anomalie potentielle (déduite) | `wetRoom` « oui » / « non » règle le cas ; 30 mA déclaré présent → plus de constat |
-| R-RCD-TYPE-A | Type A pour lave-linge / lave-vaisselle / sèche-linge | P | modérée | recommandation | type non renseigné : pas de constat (valeur explicite seulement) |
+| R-RCD-TYPE-A | Tout différentiel domestique au moins de type A (RGIE 5.3.5.3 a) : le type AC est signalé | P | modérée | recommandation | type non renseigné : pas de constat (valeur explicite seulement) |
 | R-RCD-SELECTIVITY | Sensibilité aval < amont | P | faible | avertissement | sensibilités connues seulement |
 | R-POLES-NO-NEUTRAL | 3 × 230 V : protection 2P | P | élevée | non conforme | pôles et alimentation explicites seulement (alimentation inconnue → R-DOC-SUPPLY) |
-| R-CABLE-PROT | Calibre ≤ maximum pour la section | P | élevée | non conforme | relevé : section ou calibre inconnus → inconnu ; conception : la donnée manquante (bloquante) suffit |
+| R-CABLE-PROT | Calibre ≤ maximum du tableau 4.11 (RGIE 4.4.1.4), colonne fusible ou disjoncteur selon l’appareil | P | élevée | non conforme | relevé : section ou calibre inconnus → inconnu ; conception : la donnée manquante (bloquante) suffit |
 | R-CABLE-MIN | Section ≥ 1,5 mm² | P | élevée | non conforme | section connue seulement |
 | R-CABLE-SECTION-MISSING / DATA-MISSING | Section / données du câble non renseignées | D | modérée | info insuffisante | — |
 | R-CABLE-NO-OVERCURRENT | Protection contre les surintensités en amont | P | élevée | non conforme | protection amont de nature inconnue (appareil non renseigné) → inconnu |
 | R-SOCKET-EARTH | Prise avec terre | P | élevée | non conforme (« sans terre » indiqué) | valeur absente = symbole avec terre (présent dans le dessin) ; valeur non confirmée → anomalie potentielle ; contradiction → contradictoire |
 | R-SOCKET-CHILD | Sécurité enfant (travaux commencés avant le 1/3/2025 ou date inconnue) | P | modérée | recommandation | idem R-SOCKET-EARTH |
 | R-SOCKET-IPXXD | Prise ≤ 16 A sans IPXX-D, travaux commencés le 1/3/2025 ou après (RGIE 5.3.5.2 a, PDF p. 179) ; exception : prise réservée à un appareil précis | P | modérée | non conforme | dispositions transitoires 6.5.8.1, 2 et 6.5.8.2, 3 (prises posées avant le 1/3/2025 conformément au Livre 1 d'alors) |
-| R-SOCKET-MAX | ≤ 8 points de prise par circuit | P | faible | recommandation | compte des points dessinés (fait connu) |
+| R-SOCKET-MAX | ≤ 8 points par circuit de prises ; dans un circuit mixte, chaque appareil fixe ou groupe commandé ensemble compte (RGIE 5.3.5.2 b) | P | faible | recommandation | compte des points dessinés (fait connu) |
 | R-SOCKET-SECTION | Prises en 2,5 mm² minimum | P | modérée | non conforme | sections connues seulement |
-| R-DEDICATED-CIRCUIT | Circuit spécialisé (four, taque, lave-linge…) | P | faible | recommandation | points dessinés (faits connus) |
+| R-DEDICATED-CIRCUIT | Circuit dédié : appareils nommés (RGIE 5.2.1.2), borne (7.22.3), chauffage fixe, tout appareil fixe ≥ 2 600 W ; puissance inconnue d’un chauffe-eau, PAC… → vérification | P | faible | recommandation | points dessinés (faits connus) |
 | R-CIRCUIT-NAME | Circuit sans nom | D | — | recommandation | — |
 | R-VDROP / R-VDROP-RATING / R-ICC-LMAX | Chute de tension, longueur maximale (estimation, voir docs/calc.md) | P | faible / faible / élevée | avertissement | longueurs connues seulement ; hypothèses affichées |
 | R-EV-MANUAL / R-PV-MANUAL | Borne de recharge, photovoltaïque | P | modérée | vérification | — |
@@ -117,16 +117,18 @@ ou d'une valeur :
 
 ## Points nécessitant une expertise réglementaire
 
-1. **Calibres maximaux par section** (`MAX_PROTECTION_BY_SECTION`) : valeurs prudentes usuelles, sans distinction
-   **fusible / disjoncteur** ni mode de pose. Le RGIE distingue ces cas ; un fichier réel (4 mm² protégé par 32 A)
-   est signalé alors qu'il peut être admis pour un disjoncteur. À valider avant de passer ces règles en « vérifiées ».
+1. **Calibres maximaux par section** : corrigé le 27/11/2026, `TABLE_4_11` reprend le tableau 4.11 du RGIE (4.4.1.4),
+   colonnes fusible et disjoncteur. Le courant admissible selon le mode de pose (IZ) n'est toujours pas calculé : le
+   tableau est un maximum. Ajout de `R-RCD-HEAD-RATING` (différentiel de tête ≥ 40 A, 5.3.5.3 a). Détail :
+   docs/audit/MOTEUR-CORRECTIONS-2026.md.
 2. **Applicabilité aux installations existantes** : la colonne « Existant » est une décision de Voltaplan
    (sécurité = non conforme, conception = recommandation), pas une lecture article par article des dispositions
    pour installations existantes du Livre 1.
 3. **Résistance de terre** entre 30 et 100 Ω : conditions complémentaires à préciser.
 4. **Locaux humides** : volumes 0 à 3, liaison équipotentielle supplémentaire, IP des appareils : non vérifiés.
-5. **Numéros d'articles** : aucun n'est encore renseigné dans le catalogue ; ils seront ajoutés après vérification
-   dans le texte consolidé.
+5. **Numéros d'articles** : renseignés (`article`, `verifiedOn`) pour les règles corrigées en 2026 (R-CABLE-PROT,
+   R-RCD-TYPE-A, R-RCD-HEAD-RATING, R-SOCKET-MAX, R-DEDICATED-CIRCUIT, R-EARTH-VALUE) ; les autres restent à faire.
+   Toutes les règles restent `needsReview` tant qu'un spécialiste ne les a pas validées.
 
 ## Non couvert (à faire)
 
