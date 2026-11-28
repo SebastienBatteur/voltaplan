@@ -18,6 +18,7 @@ const sim = loadSim(ROOT) as ReturnType<typeof loadSim> & {
 describe('Apprendre : sources', () => {
   it('les balises sont retirées jusqu’au bout, même imbriquées', () => {
     expect(stripTags('Le <strong>différentiel</strong>')).toBe('Le différentiel');
+    expect(stripTags('Circuit <> commande')).toBe('Circuit <> commande');
     for (const s of ['<<script>script>alert(1)', '<scr<b>ipt>alert(1)</scr</b>ipt>', '<<a>a>']) expect(stripTags(s)).not.toMatch(/<[a-z/!]/i);
   });
 

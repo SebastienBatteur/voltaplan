@@ -34,7 +34,7 @@ export function stripTags(s: string): string {
   let prev: string;
   do {
     prev = s;
-    s = s.replace(/<[^>]*>/g, '');
+    s = s.replace(/<[^>]+>/g, '');
   } while (s !== prev);
   return s;
 }
