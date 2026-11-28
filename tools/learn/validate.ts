@@ -8,7 +8,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { runInNewContext } from 'node:vm';
-import type { Article } from './build';
+import { stripTags, type Article } from './build';
 import type { Exercise, ExerciseModule } from './types';
 
 interface Plan {
@@ -34,7 +34,7 @@ export function checkArticle(a: Article, plan: Plan): string[] {
   if (!p) return [`${a.slug} : article absent de learn/fr/plan.json`];
   if (a.rubrique !== p.rubrique || a.order !== p.order) e.push(`rubrique/ordre différents du plan (${p.rubrique} ${p.order})`);
   if ((a.exercise ?? undefined) !== (p.exercise ?? undefined)) e.push(`exercice attendu : ${p.exercise ?? 'aucun'}`);
-  const tab = a.pageTitle ?? `${a.title.replace(/<[^>]+>/g, '')} — Voltaplan`;
+  const tab = a.pageTitle ?? `${stripTags(a.title)} — Voltaplan`;
   if (tab.length > 70 || tab.length < 10) e.push(`titre d’onglet de ${tab.length} caractères (10 à 70) : ${tab}`);
   if (a.description.length < 70 || a.description.length > 160) e.push(`description de ${a.description.length} caractères (70 à 160)`);
   if (!a.retenir?.length) e.push('« retenir » vide');

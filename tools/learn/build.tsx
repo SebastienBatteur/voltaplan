@@ -26,8 +26,20 @@ export interface Article extends ArticleMeta {
 }
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+/**
+ * Retire les balises d'un texte. Répété jusqu'à ce que rien ne change : un retrait en une passe laisserait une balise
+ * reconstituée (« <scr<b>ipt> » donne « <script> »). Un « < » resté seul est ensuite échappé par esc() là où il sort.
+ */
+export function stripTags(s: string): string {
+  let prev: string;
+  do {
+    prev = s;
+    s = s.replace(/<[^>]+>/g, '');
+  } while (s !== prev);
+  return s;
+}
 /** Texte d'un champ qui peut contenir du HTML simple (liens, <strong>) : retiré pour les attributs et les données. */
-const plain = (s: string) => s.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ');
+const plain = (s: string) => stripTags(s).replace(/&nbsp;/g, ' ');
 
 export function readArticles(root: string): Article[] {
   const dir = join(root, 'learn', LANG);

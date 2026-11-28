@@ -217,7 +217,9 @@ const clean = (o: Record<string, PropValue>) => {
  * précédents existent aussi.
  */
 export function countPoints(items: PdfText[], code: string): number {
-  const re = new RegExp(`^${code.replace(/[-]/g, '\\-')}\\.?(\\d{1,2})$`);
+  // Le code vient du PDF : tous les caractères spéciaux des expressions régulières sont échappés, barre oblique
+  // inverse comprise.
+  const re = new RegExp(`^${code.replace(/[\\^$.*+?()[\]{}|-]/g, '\\$&')}\\.?(\\d{1,2})$`);
   const seen = new Set<number>();
   for (const it of items) {
     const m = re.exec(it.str.trim());

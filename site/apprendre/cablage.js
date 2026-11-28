@@ -401,21 +401,28 @@
       }
     }
 
+    // Le résultat est construit nœud par nœud (textContent) : les noms d'appareils viennent des données de la page
+    // et ne sont jamais réinterprétés comme du HTML.
     function verify() {
-      out.innerHTML = '';
+      out.textContent = '';
+      var add = function (parent, tag, cls, text) {
+        var n = document.createElement(tag);
+        if (cls) n.className = cls;
+        if (text != null) n.textContent = text;
+        parent.appendChild(n);
+        return n;
+      };
       if (!wires.length) {
-        out.innerHTML = '<p class="muted">' + T.empty + '</p>';
+        add(out, 'p', 'muted', T.empty);
         return;
       }
       var r = Sim.check(ex, wires);
       var fmt = function (m) { return T.msg[m.code].replace('{dev}', m.dev ? nameOf(m.dev) : ''); };
-      var html = '';
-      if (r.ok && !r.warnings.length) html = '<p class="good">✓ ' + T.ok + '</p>';
-      else if (r.ok) html = '<p class="good">✓ ' + T.okWarn + '</p>';
-      var items = r.errors.map(function (m) { return '<li class="bad">' + fmt(m) + '</li>'; })
-        .concat(r.warnings.map(function (m) { return '<li class="warn">' + fmt(m) + '</li>'; }));
-      if (items.length) html += '<ul>' + items.join('') + '</ul>';
-      out.innerHTML = html;
+      if (r.ok) add(out, 'p', 'good', '✓ ' + (r.warnings.length ? T.okWarn : T.ok));
+      if (!r.errors.length && !r.warnings.length) return;
+      var ul = add(out, 'ul', '');
+      r.errors.forEach(function (m) { add(ul, 'li', 'bad', fmt(m)); });
+      r.warnings.forEach(function (m) { add(ul, 'li', 'warn', fmt(m)); });
     }
 
     render();
