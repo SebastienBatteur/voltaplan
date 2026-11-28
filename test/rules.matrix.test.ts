@@ -11,7 +11,7 @@
  */
 import { BE_RULES } from '../src/rules/be/catalog';
 import { checkProject, draftLevel, DRAFT_KEYS, isBlocking } from '../src/rules';
-import { createNode as baseNode, emptyProject } from '../src/model/tree';
+import { createNode as baseNode, emptyProject, walk } from '../src/model/tree';
 import type { ElNode, NodeKind, Project } from '../src/model/types';
 import { emptyEvidence } from '../src/assist/evidence';
 import { surveyQuestions } from '../src/assist/unconfirmed';
@@ -518,10 +518,11 @@ describe('matrice RGIE — exigences documentaires / physiques et mention du dos
     for (const f of doc) expect(f.status).not.toBe('nonCompliant');
   });
 
-  /** Projet neuf sans aucun point à traiter (essai du différentiel noté). */
+  /** Projet neuf sans aucun point à traiter (essai du différentiel noté, longueurs connues pour les calculs). */
   const clean = () => {
     const c = compliant();
     c.p.measurements.rcdTests = { ...c.p.measurements.rcdTests, [mainRcd(c.p).id]: { tripMs: 25, ok: true } };
+    for (const { node } of walk(c.p.roots)) if (node.kind === 'cable') node.props.length = 10;
     return c;
   };
 

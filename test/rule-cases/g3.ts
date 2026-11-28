@@ -736,7 +736,6 @@ export const CASES: RuleCase[] = [
       return existing(project(...cs), '2021-01-01').p;
     },
     expect: { status: 'nonCompliant', blocking: false },
-    knownIssue: 'la date est lue sur la chaîne du différentiel, pas sur les circuits comptés : le 9e circuit de 2024 n’est pas signalé (audit g3, R-RCD30-MAX point 7)',
   },
   {
     rule: 'R-RCD30-MAX',

@@ -668,6 +668,8 @@ export const en: Partial<Dict> = {
   'rule.R-VDROP': "Voltage drop of {value} % from the origin (known feeder cables included) to the farthest point of the circuit ({length} m), above {max} %.",
   'advice.R-VDROP': "Increase the cross-section, shorten the circuit or split it (calculated at the protective device rating, IEC 60364-5-52).",
   'rule.R-ICC-LMAX': "Short-circuit current at the end of the circuit ({icc} A) below the breaker magnetic threshold ({magnetic} A): {length} m for {lmax} m maximum.",
+  'rule.R-ICC-LMAX.unknown': 'Length protected against short circuits not checked for {count} circuit(s) (unknown length, or fuse protection: {fuses}): to check.',
+  'rule.R-VDROP.unknown': 'Voltage drop not calculated for {count} circuit(s) (unknown length): to check.',
   'advice.R-ICC-LMAX': "Increase the cross-section, choose curve B or a lower rating, or shorten the circuit.",
   'calc.title': "Calculations per circuit",
   'calc.help': "Conventional IEC 60364 method (estimate, not a protection study): ρ = 0.0225 Ω·mm²/m (copper) or 0.036 (aluminium) at operating temperature, current = protective device rating, board feeder cables added, 80 % voltage for short-circuit. When every load has a power, the drop is also computed with the actual current. Enter the length (m) of each cable to get values.",

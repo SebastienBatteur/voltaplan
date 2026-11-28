@@ -428,10 +428,12 @@ function checkRgie(project: Project): Finding[] {
           }
         }
         const max = prot ? maxProtectionFor(section, String(prot.props.device)) : undefined;
-        // En aval d'un transformateur (sonnerie, TBT) : la protection du primaire ne protège pas ce câble au sens du
-        // tableau 4.11 ; sa protection propre n'est pas modélisée (comparer au calibre du primaire serait un faux constat).
+        // En aval d'un transformateur : le calibre du primaire ne se compare pas au câble du secondaire (tableau 4.11).
+        // La présence d'un transformateur n'établit pourtant ni la TBTS ni la protection du secondaire (type de
+        // transformateur et protection propre non modélisés) : protection contre les surintensités « à vérifier ».
         const belowTransformer = prot !== undefined && ancestors.slice(ancestors.indexOf(prot)).some((a) => a.kind === 'transformer');
-        if (!belowTransformer && rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
+        if (belowTransformer) add('R-CABLE-NO-OVERCURRENT', nc, node.id, undefined, { knowledge: 'unknown', status: 'manualCheck' });
+        else if (rating !== undefined && max !== undefined && rating > max) add('R-CABLE-PROT', nc, node.id, { section, rating, max });
         // Hors du tableau 4.11 (au-delà de 35 mm²) : pas de maximum réglementaire tabulé → courant admissible à vérifier.
         if (prot && rating !== undefined && max === undefined) add('R-CABLE-IZ', nc, node.id, { section, rating });
       }
@@ -486,7 +488,8 @@ function checkRgie(project: Project): Finding[] {
   // Tableaux dont la date (avant / après le 1/6/2023) décide des règles 30 mA de 2023 : une question par tableau
   const dateNeeded = new Map<string, number>();
   const askDate = (chain: ElNode[]) => {
-    const b = boardOf(chain);
+    // Sans tableau dans la chaîne (circuit sous le différentiel général), la question est posée au premier élément.
+    const b = boardOf(chain) ?? chain[0];
     if (b) dateNeeded.set(b.id, (dateNeeded.get(b.id) ?? 0) + 1);
   };
   const rcd300Drawn = infos.some((i) => isRcd(i.node) && (n(i.node.props.residualCurrent) ?? Infinity) <= RCD_ORIGIN_MAX_SENSITIVITY.value);
@@ -581,15 +584,22 @@ function checkRgie(project: Project): Finding[] {
         if (k === 'present') notDrawn.add('rcd30');
         addPresence('R-RCD30', k, 'rcd30', circuit.id, { reason });
       }
-    } else if (wetByName && !(minRcd <= RCD_HIGH_SENSITIVITY.value) && rcd30Stated !== 'present') add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
+    // La déclaration globale « 30 mA présent » (relevé) ne dit pas quels circuits il protège : l'indice reste.
+    } else if (wetByName && !(minRcd <= RCD_HIGH_SENSITIVITY.value)) add('R-WETROOM-NAME', 'info', circuit.id, undefined, { knowledge: 'deduced' });
   }
 
   // Au maximum 8 circuits terminaux par différentiel 30 mA (RGIE 4.2.4.3 b, 6e al., depuis le 1/6/2023)
   for (const { node: rcd, ancestors } of infos) {
     if (!isRcd(rcd) || !((n(rcd.props.residualCurrent) ?? Infinity) <= RCD_HIGH_SENSITIVITY.value)) continue;
-    const count = collect(rcd.children).filter((i) => isCircuit(i.node)).length;
+    const counted = collect(rcd.children).filter((i) => isCircuit(i.node));
+    const count = counted.length;
     if (count <= CIRCUITS_PER_RCD30_MAX.value) continue;
-    const when = since2023(project, [...ancestors, rcd]);
+    // Un circuit ajouté à partir du 1/6/2023 suit la règle, même sous un différentiel plus ancien (6.5.8.1, 1).
+    const circuitDates = counted.map((i) => {
+      const full = byId.get(i.node.id);
+      return since2023(project, full ? [...full.ancestors, full.node] : [...ancestors, rcd, i.node]);
+    });
+    const when = circuitDates.includes('yes') ? 'yes' : since2023(project, [...ancestors, rcd]);
     if (when === 'yes') add('R-RCD30-MAX', nc, rcd.id, { count });
     else if (when === 'unknown') askDate([...ancestors, rcd]);
   }
@@ -607,7 +617,15 @@ function checkRgie(project: Project): Finding[] {
   // Comparaisons sur les valeurs brutes ; arrondi seulement pour le message.
   // Chute : totale depuis l'origine si l'amont est connu, détaillée si toutes les puissances sont connues
   // (voir src/calc/electrical.ts) ; un dépassement au calibre non confirmé par le détail reste signalé (info).
-  for (const c of calcProject(project)) {
+  // Circuits non calculés (longueur inconnue ; fusible : caractéristique non modélisée) : jamais un silence qui se
+  // lirait comme « conforme » ; un constat « à vérifier » par calcul, avec le nombre de circuits.
+  const calcs = calcProject(project);
+  const noLength = calcs.filter((c) => c.length === undefined).length;
+  const fuseCircuits = calcs.filter((c) => byId.get(c.circuitId)?.node.props.device === 'fuse').length;
+  if (noLength) add('R-VDROP', 'info', undefined, { count: noLength }, { knowledge: 'unknown', status: 'manualCheck' });
+  const iccUnchecked = calcs.filter((c) => c.length === undefined || byId.get(c.circuitId)?.node.props.device === 'fuse').length;
+  if (iccUnchecked) add('R-ICC-LMAX', 'info', undefined, { count: iccUnchecked, fuses: fuseCircuits }, { knowledge: 'unknown', status: 'manualCheck' });
+  for (const c of calcs) {
     const len = roundTo(c.length, 1) ?? 0;
     if (c.checkDropPct !== undefined && c.checkDropPct > c.dropLimit)
       add('R-VDROP', 'warning', c.circuitId, { value: roundTo(c.checkDropPct, 2)!, max: c.dropLimit, length: len });

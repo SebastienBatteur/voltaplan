@@ -1117,7 +1117,6 @@ export const CASES: RuleCase[] = [
       return prj(c);
     },
     expect: { status: 'manualCheck', blocking: false },
-    knownIssue: 'circuit non calculable (longueur manquante) : aucun constat, ce qui peut se lire comme « conforme »',
   },
   {
     rule: 'R-VDROP',
@@ -1237,7 +1236,6 @@ export const CASES: RuleCase[] = [
     title: 'protection par fusible (pas de seuil magnétique) : longueur protégée non vérifiée → vérification',
     build: () => prj(long(circuit('fuse', 16, 2.5), 100)),
     expect: { status: 'manualCheck', blocking: false },
-    knownIssue: 'fusible : aucun calcul et aucun constat ; attendu une information « longueur protégée non vérifiée » (4.4.2.2 c)',
   },
   {
     rule: 'R-ICC-LMAX',
@@ -1249,6 +1247,5 @@ export const CASES: RuleCase[] = [
       return prj(c);
     },
     expect: { status: 'manualCheck', blocking: false },
-    knownIssue: 'circuit non calculable (longueur manquante) : aucun constat de longueur protégée',
   },
 ];

@@ -667,6 +667,8 @@ export const fr = {
   'rule.R-VDROP': "Chute de tension de {value} % depuis l'origine (câbles d'alimentation connus compris) jusqu'au point le plus éloigné du circuit ({length} m), au-delà de {max} %.",
   'advice.R-VDROP': "Augmentez la section, raccourcissez le circuit ou partagez-le en deux (calcul au calibre de la protection, IEC 60364-5-52).",
   'rule.R-ICC-LMAX': "Court-circuit en bout de circuit ({icc} A) inférieur au seuil magnétique du disjoncteur ({magnetic} A) : {length} m pour {lmax} m maximum.",
+  'rule.R-ICC-LMAX.unknown': 'Longueur protégée contre les courts-circuits non vérifiée pour {count} circuit(s) (longueur inconnue, ou protection par fusible : {fuses}) : à vérifier.',
+  'rule.R-VDROP.unknown': 'Chute de tension non calculée pour {count} circuit(s) (longueur inconnue) : à vérifier.',
   'advice.R-ICC-LMAX': "Augmentez la section, choisissez une courbe B ou un calibre plus faible, ou raccourcissez le circuit.",
   'calc.title': "Calculs par circuit",
   'calc.help': "Méthode conventionnelle IEC 60364 (estimation, pas une étude de protection) : ρ = 0,0225 Ω·mm²/m (cuivre) ou 0,036 (aluminium) à la température de service, courant = calibre de la protection, câbles d'alimentation des tableaux ajoutés, tension réduite à 80 % pour le court-circuit. Si toutes les charges ont une puissance, la chute est aussi calculée avec le courant réel. Saisissez la longueur (m) de chaque canalisation pour obtenir les valeurs.",

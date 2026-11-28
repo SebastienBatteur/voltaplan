@@ -733,7 +733,6 @@ export const CASES: RuleCase[] = [
       return b.p;
     },
     expect: { status: 'potential', blocking: false },
-    knownIssue: 'la déclaration globale meta.survey.rcd30 supprime l’indice pour tous les circuits, même ceux dessinés hors 30 mA',
   },
 
   // ===================== R-EV-MANUAL (7.22) =====================
@@ -998,7 +997,6 @@ export const CASES: RuleCase[] = [
       return b.p;
     },
     expect: { status: 'insufficientData', blocking: false },
-    knownIssue: 'sans tableau dans la chaîne, askDate ne pose aucune question : la date inconnue reste muette',
   },
   {
     rule: 'R-RCD30-DATE',

@@ -668,6 +668,8 @@ export const nl: Partial<Dict> = {
   'rule.R-VDROP': "Spanningsval van {value} % vanaf de oorsprong (gekende voedingskabels inbegrepen) tot het verste punt van de kring ({length} m), meer dan {max} %.",
   'advice.R-VDROP': "Vergroot de sectie, verkort de kring of splits hem (berekend op de nominale stroom van de beveiliging, IEC 60364-5-52).",
   'rule.R-ICC-LMAX': "Kortsluitstroom op het einde van de kring ({icc} A) kleiner dan de magnetische drempel van de automaat ({magnetic} A): {length} m voor maximaal {lmax} m.",
+  'rule.R-ICC-LMAX.unknown': 'Kortsluitbeveiligde lengte niet gecontroleerd voor {count} kring(en) (lengte onbekend, of beveiliging met smeltveiligheid: {fuses}): te controleren.',
+  'rule.R-VDROP.unknown': 'Spanningsval niet berekend voor {count} kring(en) (lengte onbekend): te controleren.',
   'advice.R-ICC-LMAX': "Vergroot de sectie, kies curve B of een lagere nominale stroom, of verkort de kring.",
   'calc.title': "Berekeningen per kring",
   'calc.help': "Conventionele methode IEC 60364 (schatting, geen beveiligingsstudie): ρ = 0,0225 Ω·mm²/m (koper) of 0,036 (aluminium) bij bedrijfstemperatuur, stroom = nominale stroom van de beveiliging, voedingskabels van de borden meegeteld, 80 % spanning voor de kortsluiting. Als alle verbruikers een vermogen hebben, wordt de spanningsval ook met de werkelijke stroom berekend. Vul de lengte (m) van elke leiding in om de waarden te krijgen.",

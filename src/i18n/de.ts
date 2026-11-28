@@ -695,6 +695,8 @@ export const de: Partial<Dict> = {
   "rule.R-VDROP": "Spannungsfall von {value} % vom Ursprung (einschließlich bekannter Zuleitungen) bis zum entferntesten Punkt des Stromkreises ({length} m), über {max} %.",
   "advice.R-VDROP": "Vergrößern Sie den Querschnitt, verkürzen Sie den Stromkreis oder teilen Sie ihn in zwei (Berechnung mit dem Nennstrom der Schutzeinrichtung, IEC 60364-5-52).",
   "rule.R-ICC-LMAX": "Kurzschlussstrom am Stromkreisende ({icc} A) unter der magnetischen Auslöseschwelle des Leitungsschutzschalters ({magnetic} A): {length} m bei höchstens {lmax} m.",
+  "rule.R-ICC-LMAX.unknown": "Gegen Kurzschluss geschützte Länge für {count} Stromkreis(e) nicht geprüft (Länge unbekannt oder Schutz durch Schmelzsicherung: {fuses}): zu prüfen.",
+  "rule.R-VDROP.unknown": "Spannungsfall für {count} Stromkreis(e) nicht berechnet (Länge unbekannt): zu prüfen.",
   "advice.R-ICC-LMAX": "Vergrößern Sie den Querschnitt, wählen Sie eine B-Charakteristik oder einen kleineren Nennstrom oder verkürzen Sie den Stromkreis.",
   "calc.title": "Berechnungen je Stromkreis",
   "calc.help": "Konventionelle Methode nach IEC 60364 (Schätzung, keine Schutzstudie): ρ = 0,0225 Ω·mm²/m (Kupfer) oder 0,036 (Aluminium) bei Betriebstemperatur, Strom = Nennstrom der Schutzeinrichtung, Zuleitungen der hinzugefügten Verteiler, auf 80 % reduzierte Spannung für den Kurzschluss. Haben alle Lasten eine Leistung, wird der Spannungsfall zusätzlich mit dem tatsächlichen Strom berechnet. Geben Sie die Länge (m) jeder Leitung ein, um die Werte zu erhalten.",
