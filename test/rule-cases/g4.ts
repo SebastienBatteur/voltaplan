@@ -482,6 +482,22 @@ export const CASES: RuleCase[] = [
   // --- R-CABLE-NO-OVERCURRENT : protection contre les surintensités à l'origine du circuit (4.4.2.2 a, 4.4.3.1) ---
   {
     rule: 'R-CABLE-NO-OVERCURRENT',
+    kind: 'exception',
+    title: 'câble au secondaire d’un transformateur : ni TBTS ni protection du secondaire établies → à vérifier, non bloquant',
+    build: () =>
+      prj(circuit('mcb', 16, 1.5, [node('transformer', {}, [node('cable', { section: 0.5, length: 5 }, [node('bell', {})])])], 'Sonnerie')),
+    expect: { status: 'manualCheck', blocking: false },
+  },
+  {
+    rule: 'R-CABLE-NO-OVERCURRENT',
+    kind: 'exception',
+    title: 'transformateur « de sécurité » déclaré : la présence ne suffit toujours pas à conclure → à vérifier',
+    build: () =>
+      prj(circuit('mcb', 16, 1.5, [node('transformer', { safety: true }, [node('cable', { section: 0.5, length: 5 }, [node('bell', {})])])], 'Sonnerie')),
+    expect: { status: 'manualCheck', blocking: false },
+  },
+  {
+    rule: 'R-CABLE-NO-OVERCURRENT',
     kind: 'compliant',
     title: 'circuit protégé par un disjoncteur',
     build: () => prj(circuit('mcb', 20, 2.5)),

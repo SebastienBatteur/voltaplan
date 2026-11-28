@@ -50,4 +50,10 @@ export const MUTANTS: Mutant[] = [
   { id: 'pv-10-kVA', file: V, find: "p(10000, 'VA'", replace: "p(20000, 'VA'", why: 'chapitre 7.112 limité à 10 kVA' },
   { id: 'prise-rasoir', file: R, find: "node.props.socketKind !== 'shaver'", replace: 'true', why: 'socle sur transformateur de séparation individuel (5.3.5.2 b)' },
   { id: 'terre-30-sensibilite-inconnue', file: R, find: 'if (unknownSensitivity) add(', replace: 'if (false) add(', why: 'différentiel de sensibilité inconnue au-delà de 30 Ω' },
+  { id: 'date-30mA-sans-tableau', file: R, find: 'const b = boardOf(chain) ?? chain[0];', replace: 'const b = boardOf(chain);', why: 'question de date sans tableau dans la chaîne' },
+  { id: 'salle-de-bain-declaration-globale', file: R, find: "} else if (wetByName && !(minRcd <= RCD_HIGH_SENSITIVITY.value)) add(", replace: "} else if (wetByName && !(minRcd <= RCD_HIGH_SENSITIVITY.value) && surveyStatement(project, 'rcd30') !== 'present') add(", why: 'indice salle de bain malgré une déclaration globale' },
+  { id: '8-circuits-date-des-circuits', file: R, find: "circuitDates.includes('yes') ? 'yes' :", replace: '', why: 'circuit ajouté après le 1/6/2023 sous un différentiel ancien' },
+  { id: 'calcul-longueur-inconnue', file: R, find: 'if (noLength) add(', replace: 'if (false) add(', why: 'chute de tension non calculée signalée' },
+  { id: 'icc-fusible-non-verifie', file: R, find: 'if (iccUnchecked) add(', replace: 'if (false) add(', why: 'longueur protégée non vérifiée signalée' },
+  { id: 'transformateur-tbts', file: R, find: "if (belowTransformer) add('R-CABLE-NO-OVERCURRENT'", replace: "if (false) add('R-CABLE-NO-OVERCURRENT'", why: 'un transformateur ne suffit pas à conclure' },
 ];
