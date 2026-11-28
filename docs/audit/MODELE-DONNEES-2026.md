@@ -27,12 +27,12 @@ FN = faux négatif (non-conformité masquée), FP = faux positif. « Modèle » 
 
 | # | Règle | Cause | Risque | Criticité | Correction envisagée | Dépend du modèle |
 |---|---|---|---|---|---|---|
-| 1 | R-RCD30-DATE | sans tableau dans la chaîne, aucune question de date n'est posée | **FN** : prises sans 30 mA non signalées sur un relevé non daté | **Haute** | poser la question au niveau du projet quand aucun tableau n'est dans la chaîne | non |
-| 2 | R-WETROOM-NAME | la déclaration globale « 30 mA présent » efface l'indice pour tous les circuits | **FN** : salle de bain hors 30 mA non signalée | **Haute** | ne retenir la déclaration que pour les circuits sans 30 mA dessiné… à condition qu'elle les vise ; sinon indice maintenu | non |
-| 3 | R-ICC-LMAX | fusible : aucun calcul, aucun constat | **FN** : longueur protégée non vérifiée en silence | Haute | constat « à vérifier » (fusible : caractéristique non modélisée) | non |
-| 4 | R-ICC-LMAX | longueur inconnue : aucun constat | FN silencieux (le registre dit déjà « données insuffisantes ») | Moyenne | constat « données insuffisantes » non bloquant, regroupé | non |
-| 5 | R-VDROP | longueur inconnue : aucun constat | idem (avertissement, pas sécurité) | Basse | idem #4 | non |
-| 6 | R-RCD30-MAX | date lue sur le différentiel, pas sur les circuits comptés | **FN** : 9e circuit ajouté après 2023 non signalé | Moyenne | date la plus récente des circuits comptés | non |
+| 1 | R-RCD30-DATE | sans tableau dans la chaîne, aucune question de date n'est posée | **FN** : prises sans 30 mA non signalées sur un relevé non daté | **Haute** | poser la question au niveau du projet quand aucun tableau n'est dans la chaîne | non — **corrigée le 28/11 (1fae249)** |
+| 2 | R-WETROOM-NAME | la déclaration globale « 30 mA présent » efface l'indice pour tous les circuits | **FN** : salle de bain hors 30 mA non signalée | **Haute** | ne retenir la déclaration que pour les circuits sans 30 mA dessiné… à condition qu'elle les vise ; sinon indice maintenu | non — **corrigée le 28/11 (1fae249)** |
+| 3 | R-ICC-LMAX | fusible : aucun calcul, aucun constat | **FN** : longueur protégée non vérifiée en silence | Haute | constat « à vérifier » (fusible : caractéristique non modélisée) | non — **corrigée le 28/11 (1fae249)** |
+| 4 | R-ICC-LMAX | longueur inconnue : aucun constat | FN silencieux (le registre dit déjà « données insuffisantes ») | Moyenne | constat « données insuffisantes » non bloquant, regroupé | non — **corrigée le 28/11 (1fae249)** |
+| 5 | R-VDROP | longueur inconnue : aucun constat | idem (avertissement, pas sécurité) | Basse | idem #4 | non — **corrigée le 28/11 (1fae249)** |
+| 6 | R-RCD30-MAX | date lue sur le différentiel, pas sur les circuits comptés | **FN** : 9e circuit ajouté après 2023 non signalé | Moyenne | date la plus récente des circuits comptés | non — **corrigée le 28/11 (1fae249)** |
 | 7 | R-PROT-RATING-MISSING | calibre par défaut 20 A | **FN** : calibre inconnu non signalé | **Haute** | ADR-0010 | **oui** |
 | 8 | R-RCD-HEAD-RATING | calibre par défaut 20 A | **FP** : « < 40 A » sur une valeur jamais saisie | Moyenne | ADR-0010 | **oui** |
 | 9 | R-OLD-RGIE | contexte du projet seulement | information manquante sur une partie ancienne | Basse | contexte par partie | non |
@@ -41,12 +41,11 @@ FN = faux négatif (non-conformité masquée), FP = faux positif. « Modèle » 
 | 12 | R-DOC-INSTALLER | constat classé selon le projet | mention non bloquante pour une extension neuve | Basse (documentaire) | classement par partie | non |
 | 13 | R-DOC-SUPPLY | seul un champ non vide est vérifié | nature du courant non contrôlée (3.1.2.1) | Basse (documentaire) | valeur structurée (réseau + nature) | **oui** (format de `supply`) |
 
-**Priorité (peuvent masquer une non-conformité, sans dépendre du modèle)** : #1, #2, #3, puis #6, #4. Ce sont des
-corrections du moteur seul ; elles peuvent être faites avant ou pendant l'ADR-0010. Limite actuelle du
-runner : un cas « doit échouer » est exécuté avec `it.fails`, qui est aussi satisfait par une exception pendant la
+**Priorité (peuvent masquer une non-conformité, sans dépendre du modèle)** : #1, #2, #3, puis #6, #4 — **corrigées le 28/11** avec #5 (commit 1fae249), cas devenus tests de non-régression, 6 mutants tués. Effet visible : un projet sans longueurs de câbles reçoit « vérifications à faire ». Corrigé aussi : un transformateur ne suffit plus à conclure (TBTS ou secondaire protégé non établis → « à vérifier »), voir ADR-0010, décision 5. Ce sont des
+corrections du moteur seul ; elles peuvent être faites avant ou pendant l'ADR-0010. Limite du runner (corrigée le 28/11, commit 762b56c) : un cas « doit échouer » était exécuté avec `it.fails`, aussi satisfait par une exception pendant la
 construction du projet, pas seulement par l'écart documenté. Les auteurs des cas ont vérifié l'échec par sondage, mais
-rien ne le garantit : à renforcer à l'étape 2 (construire le projet hors de `it.fails`, puis n'attendre l'échec que sur
-la comparaison du statut).
+rien ne le garantissait. Désormais, le projet est construit hors de toute attente d’échec et seul le résultat comparé
+peut différer : une exception fait échouer le test.
 
 ## 3. Les 19 cas non modélisés, par priorité
 
