@@ -148,7 +148,7 @@ Retour arrière : `git revert` des deux commits ; aucun fichier n'est migré.
 | Confirmation élément par élément : « Vérifié sur place » dans les propriétés (une étape d'annulation) ; jamais en bloc | — | — |
 | Duplication : provenance et valeurs historiques copiées avec les nouveaux identifiants | Une copie d'une valeur non confirmée reste non confirmée | — |
 | Import Eendraadschema : réseau vide s'il n'est pas dans le fichier (oubli de l'étape 3) | — | — |
-| Essai de compatibilité réel : `npm run test:compat [-- <ref>]` (version précédente exécutée dans un arbre de travail git temporaire) | — | Technique : vérifiée contre `main` 002b23a. Sémantique : une prise de relevé sans terre renseignée est silencieuse dans la version précédente ; `minReaderVersion` à décider |
+| Essai de compatibilité réel : `npm run test:compat [-- <ref>]` (version précédente exécutée dans un arbre de travail git temporaire) | — | Technique : vérifiée contre `main` 002b23a. Sémantique : une prise de relevé sans terre renseignée est silencieuse dans la version précédente ; `minReaderVersion` non relevé (décision du 28/11, à revoir avant une version de bureau) |
 
 Incident pendant l'écriture de l'outil : la première version retirait l'arbre temporaire sans retirer d'abord la
 jonction vers `node_modules`, ce qui a vidé en partie le `node_modules` de la copie de travail (dossier temporaire,

@@ -102,8 +102,9 @@ schéma et l'intégrité ; deux systèmes de provenance en parallèle.
    Résultat contre `main` (002b23a) : compatibilité technique vérifiée (ouverture, aucune valeur inventée ni
    perdue, provenance et marqueur conservés après réenregistrement). Écart sémantique constaté : une prise de
    relevé dont la terre n'est pas renseignée (étape 3) est silencieuse dans la version précédente (absence lue
-   comme « présente ») et « informations insuffisantes » dans la version courante. Relever `minReaderVersion` est
-   **à décider** avant publication (aucune version publiée à ce jour).
+   comme « présente ») et « informations insuffisantes » dans la version courante. **Décidé le 28/11/2026 :
+   `minReaderVersion` n'est pas relevé** (l'application web se met à jour d'elle-même, aucune version de bureau
+   publiée ; un refus d'ouverture gênerait plus que l'écart). À réexaminer avant la première version de bureau.
 5. **Transformateurs.** La présence d'un transformateur ne suffit jamais à conclure qu'un circuit relève de la TBTS
    ni que le secondaire est protégé (corrigé le 28/11 : « à vérifier », non bloquant). Le type sera modélisé :
    transformateur de sécurité, d'isolement, autotransformateur, inconnu (défaut : inconnu). Le booléen `safety`
