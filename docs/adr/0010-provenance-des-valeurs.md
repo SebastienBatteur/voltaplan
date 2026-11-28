@@ -1,6 +1,7 @@
 # ADR-0010 — Provenance des valeurs : une valeur proposée n'est jamais une caractéristique confirmée
 
-Date : 2026-11-28 · Statut : **proposé** (à valider avant toute modification du modèle de données) · Complète
+Date : 2026-11-28 · Statut : **accepté dans son principe (A + B)** le 28/11/2026, révisé après relecture (décisions
+1 à 10 ci-dessous) ; implémentation progressive sur la branche `data-provenance` · Complète
 ADR-0007 (états de connaissance) et ADR-0009 (registre réglementaire)
 
 ## Contexte
@@ -52,53 +53,85 @@ migration lourde du format v2, intégrité et annulation à revoir. Disproportio
 + suit le nœud partout (duplication, annulation, export sans perte). − mélange données et métadonnées, contourne le
 schéma et l'intégrité ; deux systèmes de provenance en parallèle.
 
-## Décision proposée
 
-**A + B**, par étapes :
+## Décision
 
-1. **Relevé : plus de défaut écrit** (option A). Partie existante (projet existant, ou nœud `oldPart` / `installedOn`
-   ancien) : `createNode` ne pose aucune valeur ayant un effet réglementaire ; l'interface montre la proposition comme
-   une suggestion à accepter d'un geste. Les imports n'écrivent plus que ce que contient le fichier et posent
-   `installationKind: 'existing'` quand le format décrit une installation existante, sinon « inconnu » (jamais
-   « neuf » par défaut).
-2. **Conception : défaut tracé** (option B). Les défauts restent écrits, avec la base `default` dans le dossier de
-   preuves ; l'interface les distingue (« proposé ») tant qu'ils ne sont pas modifiés ou confirmés. Pour le moteur, un
-   défaut en conception est un choix de conception (pas de constat supplémentaire).
-3. **Vocabulaire minimal**, celui qui change un résultat : *inconnue* (absente), *proposée* (`default`, `proposed`,
-   `aiInferred`, `deduced`, `imported` non vérifiée), *déclarée* (`manual`, `observed`), *mesurée* (`measured`),
-   *confirmée* (`confirmed`). Source, date et méthode restent dans l'entrée du dossier de preuves. « Documentation
-   technique » est une observation (`observed`, méthode `document`) : pas d'état à part.
-4. **Moteur.** Sur une partie existante, une propriété réglementaire *proposée* est traitée comme *inconnue* :
-   « données insuffisantes » ou « à vérifier », jamais une conformité ni une non-conformité certaine.
-5. **Corrections en un clic sur un relevé** : elles ne réécrivent plus le fait relevé ; elles produisent une
-   proposition de travaux (dossier « à faire »), et le constat reste jusqu'à la confirmation de l'exécution.
-   (À valider : comportement exact et texte de l'interface.)
+**A + B**, par étapes : un relevé n'écrit plus de valeur par défaut réglementaire ; le dossier de preuves existant
+(`Project.evidence.provenance`) est étendu à tous les chemins de création. Décisions précisées après relecture :
+
+1. **Origine et confirmation sont deux axes distincts.** Chaque entrée garde son *origine* (`basis` et `method`
+   existants, étendus : `default`, `imported`, `measured`, `calculated`, `historicUnknown`) et un *statut de
+   confirmation* séparé (`unconfirmed` | `confirmed`, avec auteur et date de la confirmation). Une lecture photo, un
+   import ou une mesure n'ont pas le même niveau de confirmation : une mesure est « mesurée » mais peut rester à
+   confirmer (appareil, date). On réutilise les champs existants (`observations`, `confidence`, `at`) ; pas de
+   nouvelle structure dans `props`.
+   Pour le moteur, il n'y a que trois lectures : *inconnue*, *non confirmée* (traitée comme inconnue sur une partie
+   existante), *établie* (déclarée, mesurée ou confirmée).
+2. **Migration : provenance historique inconnue.** Une valeur d'un projet enregistré avant cette version, sans entrée
+   de provenance, reçoit l'origine `historicUnknown`, **quelle que soit sa valeur** (égale ou non au défaut : on ne sait
+   pas si elle a été saisie). Elle n'est jamais promue en « confirmée ». Sur une partie existante, une propriété
+   réglementaire `historicUnknown` donne « à confirmer » (non bloquant). Toutes les valeurs sont conservées. L'impact
+   (nombre de constats avant / après) est mesuré sur les projets d'essai avant publication.
+3. **Relevé et travaux sont séparés.** Le modèle distingue : *état relevé* (ce qui existe), *correction proposée*
+   (par le contrôle ou l'utilisateur), *état projeté* (relevé + corrections retenues), *travaux réalisés*, *exécution
+   confirmée*. Une correction en un clic sur un relevé ne modifie jamais l'état relevé : elle crée une correction
+   proposée ; le constat reste sur l'état relevé jusqu'à la confirmation de l'exécution. Ce découpage prépare un
+   rapport avant / après et une liste de travaux de mise en conformité (étape ultérieure).
+4. **Compatibilité des fichiers vérifiée, pas supposée.** Avant publication, un fichier écrit par la nouvelle version
+   est ouvert par la version précédente (test automatisé sur un commit antérieur, pas une hypothèse sur zod). On
+   distingue la compatibilité **technique** (le fichier s'ouvre sans erreur) de la compatibilité **sémantique** (la
+   version précédente ignore la provenance et peut présenter une valeur non confirmée comme une saisie). Si ce second
+   risque est jugé inacceptable, le manifeste relève `minReaderVersion` : une ancienne version refuse alors d'ouvrir
+   le fichier plutôt que de l'analyser à tort.
+5. **Transformateurs.** La présence d'un transformateur ne suffit jamais à conclure qu'un circuit relève de la TBTS
+   ni que le secondaire est protégé (corrigé le 28/11 : « à vérifier », non bloquant). Le type sera modélisé :
+   transformateur de sécurité, d'isolement, autotransformateur, inconnu (défaut : inconnu). Le booléen `safety`
+   (défaut `true` aujourd'hui) est remplacé par ce type, migré en « inconnu » pour les anciens projets.
+6. **Différentiels sélectifs.** La caractéristique temporelle (instantané, sélectif S, retardé) est une propriété
+   **indépendante** du type de courant résiduel détecté (AC, A, F, B), pas une valeur de plus de `rcdType`.
+7. **Valeurs implicites à la lecture.** Les remplacements à la lecture (`device ?? 'mcb'`, `inverterType ?? 'dcAc'`,
+   booléens absents lus comme vrais — terre, obturateurs —, caractéristiques supposées dans les calculs, valeurs
+   inventées dans les symboles, rapports et exports) sont audités et supprimés : une donnée inconnue reste inconnue de
+   bout en bout. Le dessin peut garder un symbole neutre mais montre l'inconnu ; un calcul qui suppose une valeur la
+   déclare dans `assumptions` (mécanisme existant).
+8. **Criticité.** Ordre de traitement : différentiel général inventé par l'import PDF ; terre et obturateurs supposés
+   présents ; corrections automatiques qui effacent une non-conformité ; section, calibre, courbe et nature de
+   protection supposés ; perte de provenance à la duplication ; mauvaise identification du réseau (imports en
+   `2 x 230V` et « neuf ») ; transformateurs assimilés à la TBTS (fait). Une propriété classée basse ou moyenne est
+   remontée quand elle décide de l'applicabilité d'une exception réglementaire (`inBoard`, `socketKind`, `count`,
+   `threePhase`, `applianceType`).
+9. **Tests.** Runner des anomalies connues renforcé (fait : une exception ne satisfait plus un cas « doit échouer »).
+   Tests par chemin : création, chaque import, photo, série, duplication, modification, correction, sauvegarde et
+   relecture `.voltaplan` (une donnée inconnue reste inconnue après un aller-retour), migration, export, impression.
+   Mutation étendue à chaque nouvelle protection contre un faux résultat.
+10. **Exécution.** Étapes et commits atomiques sur `data-provenance`, chacune documentée avec son impact ; typage,
+    lint, tests, build, CI et CI multi-OS à chaque étape ; aucune fusion dans `main` sans accord. La relecture
+    documentaire assistée par IA n'est jamais présentée comme une validation humaine.
 
 ## Compatibilité et migration
 
-- **Aucune promotion automatique** : une valeur d'un ancien projet n'est jamais marquée « confirmée ».
-- **Anciens projets existants** (relevés enregistrés avant cette version, sans entrée de provenance) : une valeur
-  égale au défaut du schéma, sur une propriété réglementaire, est marquée *proposée (héritée)* à l'ouverture, en
-  mémoire et dans `sources.json` au prochain enregistrement. Le contrôle affiche alors « à confirmer » (non
-  bloquant) au lieu de la conclure. Les autres valeurs restent *déclarées* (convention actuelle).
-- **Anciens projets en conception** : rien ne change à l'ouverture.
-- **Format** : `.voltaplan` v2 inchangé dans sa structure (nouvelles bases dans `sources.json`, champ déjà
-  extensible) ; un fichier enregistré s'ouvre dans la version précédente (bases inconnues ignorées par le lecteur
-  zod `looseObject`, à vérifier par un test).
-- **Annulation, sauvegarde automatique** : la provenance fait partie du projet ; rien à ajouter.
+- **Aucune promotion automatique** : aucune valeur d'un ancien projet n'est marquée « confirmée ».
+- **Anciens projets** : toutes les valeurs sans provenance deviennent `historicUnknown` (décision 2). En conception,
+  le contrôle ne change pas (un défaut de conception est un choix) ; sur une partie existante : « à confirmer ».
+- **Format** : `.voltaplan` v2 ; provenance dans `sources.json`. Compatibilité technique testée sur la version
+  précédente ; compatibilité sémantique : décision 4.
+- **Annulation, sauvegarde automatique** : la provenance fait partie du projet (instantanés complets) ; à tester.
 - **Duplication** : copier les entrées de provenance avec les nouveaux identifiants.
-- **Rapports PDF** : une valeur *proposée* d'un relevé est imprimée avec une marque (« ? » ou « à confirmer ») ; la
-  légende l'explique. Quatre langues.
-- **Photo** : une lecture IA reste `aiInferred` jusqu'à confirmation ; la comparaison photo ne compare plus une lecture
-  à une valeur par défaut.
+- **Rapports PDF, unifilaire, liste de matériel** : une valeur non confirmée d'un relevé porte une marque (« ? »)
+  expliquée en légende, dans les quatre langues. Le résumé distingue non-conformités établies, recommandations,
+  données manquantes et exigences non évaluées ; l'absence de constat n'est jamais présentée comme une preuve de
+  conformité globale.
+- **Photo** : une lecture reste `aiInferred` non confirmée jusqu'à confirmation ; elle n'est plus comparée à une
+  valeur par défaut.
 
 ## Conséquences
 
-- Plus de « données insuffisantes » sur les relevés : c'est l'effet voulu (le silence d'aujourd'hui est faux).
-- Interface : un état visuel de plus (proposé), à concevoir pour rester lisible.
-- Tests : migration d'anciens fichiers, provenance par chemin de création, non-régression du moteur sur les cas
-  « valeur par défaut » (anomalies connues R-PROT-RATING-MISSING et R-RCD-HEAD-RATING), mutation.
+- Plus de « données insuffisantes » et de « à confirmer » sur les relevés : c'est l'effet voulu (le silence était
+  faux). Déjà visible : un projet sans longueurs de câbles reçoit « vérifications à faire » (longueur protégée et
+  chute de tension non calculées).
+- Interface : deux états visuels de plus (non confirmée, correction proposée), à concevoir pour rester lisibles.
 
 ## Non-objectifs
 
-Pas de huit états affichés, pas de valeur enrichie dans `props`, pas de nouvelle règle bloquante.
+Pas de valeur enrichie dans `props`, pas de huit états affichés à l'utilisateur, pas de nouvelle règle bloquante
+fondée sur une interprétation non établie.
