@@ -115,3 +115,26 @@ cette source.
 Ce document et l'ADR ne changent pas le code. Pour les étapes suivantes : chaque étape sur des commits séparés ; la
 migration n'écrit la provenance qu'au prochain enregistrement et ne modifie jamais une valeur, de sorte qu'un retour
 à la version précédente relit les fichiers (bases inconnues ignorées, à couvrir par un test).
+
+## 8. Journal de réalisation
+
+### Étape 2 — moteur seul (28/11, commits 762b56c, 1fae249, d93e41a)
+
+Voir §2 : runner renforcé, anomalies #1 à #6 corrigées, transformateur ≠ TBTS, 6 mutants tués.
+
+### Étape 3 — relevé sans valeur par défaut, imports (28/11, commits d5f281c, 3e6ba12)
+
+| Changement | Impact sur les projets | Compatibilité |
+|---|---|---|
+| Création dans une partie existante (relevé) sans les valeurs de `SURVEY_UNSET` : appareil, calibre, pôles, courbe, pouvoir de coupure ; type, section, conducteurs du câble ; terre et obturateurs de la prise ; transformateur « de sécurité ». Chemins : ajout dans l'arbre, appareil en série (n'hérite plus du calibre du dessus), ajout depuis le plan, pictogrammes lus par l'IA, appareil vu sur la photo | Relevés **nouvellement saisis** : plus de « données insuffisantes » tant que les valeurs ne sont pas renseignées. Conception : inchangée. Projets existants : inchangés (valeurs déjà écrites ; traitées à l'étape 4, provenance historique) | aucun changement de format |
+| Moteur : dans un relevé, prise sans terre ou sans obturateurs renseignés → « informations insuffisantes » (non bloquant) au lieu d'être supposée conforme | idem ; en conception, une valeur absente reste le symbole par défaut | — |
+| Import PDF : plus de différentiel général inventé ; seules les valeurs lues | Dossiers PDF réimportés : le tableau est sous le compteur, « différentiel général » à dessiner ; le contrôle le signale (R-RCD-MAIN : « informations insuffisantes », vérifié) | — |
+| Imports (Condui, Draadwijs, PlanElec, Volter, Trikker, PDF) : éléments sans valeur par défaut, réseau vide s'il n'est pas dans le fichier, projet « installation existante » avec un avertissement | Un import devient un relevé : plus de constats « données insuffisantes », moins de non-conformités bloquantes. L'utilisateur repasse le projet en « neuf » s'il s'agit d'une conception | `installationKind` reste `new` ou `existing` : une valeur « inconnu » ferait refuser le fichier par les versions publiées (énumération stricte, `src/model/migrate.ts`) |
+
+Non traité à cette étape (suite du plan) : corrections en un clic sur un relevé (ADR-0010, décision 3), provenance
+historique et dossier de preuves (décisions 1 et 2), duplication, valeurs implicites à la lecture (décision 7 :
+`device ?? 'mcb'` dans le moteur, les calculs, les étiquettes), types de transformateur et caractéristique S, essai
+d'ouverture dans la version précédente. Les kits de pièce (`plan/roomKit.ts`) et les modèles (`model/templates.ts`)
+gardent des valeurs de conception : ce sont des aides à la conception.
+
+Retour arrière : `git revert` des deux commits ; aucun fichier n'est migré.
