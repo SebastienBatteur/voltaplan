@@ -62,4 +62,11 @@ export const MUTANTS: Mutant[] = [
   { id: 'moteur-obturateurs-inconnus', file: R, find: 'const childUnknown = surveyPart && node.props.childSafety === undefined;', replace: 'const childUnknown = false;', why: 'obturateurs non renseignés d’un relevé = inconnus' },
   { id: 'pdf-differentiel-invente', file: 'src/import/pdfDossier.ts', find: '  else meter.children = [mainBoard];', replace: '', why: 'différentiel général non inventé à l’import PDF' },
   { id: 'import-reseau-suppose', file: 'src/import/pdfDossier.ts', find: "supply: supply ?? '', installationKind: 'existing' };", replace: "supply: supply ?? '2 x 230V ~ 50Hz', installationKind: 'existing' };", why: 'réseau non supposé à l’import' },
+  { id: 'historique-conception', file: 'src/assist/historic.ts', find: '      if (isSurvey(c))', replace: '      if (true)', why: 'valeurs historiques : seulement les parties existantes' },
+  { id: 'historique-signalement', file: 'src/assist/unconfirmed.ts', find: 'if (historic.size)', replace: 'if (false)', why: 'valeurs historiques signalées « à confirmer »' },
+  { id: 'historique-migration', file: 'src/model/migrate.ts', find: 'const historic = markHistoric(project, (chain) => isSurveyPart(project, chain));', replace: 'const historic = { project, marked: 0 };', why: 'ancien projet marqué à l’ouverture' },
+  { id: 'historique-marqueur-nouveau', file: 'src/model/tree.ts', find: '      provenanceSince: new Date().toISOString(),\n', replace: '', why: 'nouveau projet : rien d’historique' },
+  { id: 'historique-correction-main', file: 'src/assist/apply.ts', find: ' || !!e0.historic?.some((h) => h.nodeId === nodeId && h.prop === k)', replace: '', why: 'valeur historique corrigée à la main : plus à confirmer' },
+  { id: 'confirmation-origine', file: 'src/assist/apply.ts', find: "  ...(p.basis !== 'confirmed' ? { origin: p.basis } : {}),\n", replace: '', why: 'origine gardée à la confirmation' },
+  { id: 'duplication-provenance', file: 'src/store.ts', find: 'commit((p) => copyProvenance({ ...p, roots: insertChild(p.roots, parent.id, copy, idx + 1) }, ids));', replace: 'commit((p) => ({ ...p, roots: insertChild(p.roots, parent.id, copy, idx + 1) }));', why: 'la copie garde la provenance' },
 ];
