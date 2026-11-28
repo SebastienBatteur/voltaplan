@@ -138,3 +138,26 @@ d'ouverture dans la version précédente. Les kits de pièce (`plan/roomKit.ts`)
 gardent des valeurs de conception : ce sont des aides à la conception.
 
 Retour arrière : `git revert` des deux commits ; aucun fichier n'est migré.
+
+### Étape 4 — origine et confirmation, anciens projets, duplication, compatibilité (28/11)
+
+| Changement | Impact sur les projets | Compatibilité |
+|---|---|---|
+| Origine et confirmation séparées : une confirmation garde l'origine (`origin`), l'auteur (`by` = installateur) et la date ; une correction à la main rend l'origine « manuelle ». Nouvelles origines : `default`, `imported`, `measured`, `calculated`, `historicUnknown` | Aucun changement visible pour les valeurs de l'assistant. Correction : une valeur de l'assistant modifiée dans les propriétés restait « non confirmée » (la fonction existait mais n'était pas branchée) ; elle devient « manuelle » | `basis` garde l'état en vigueur : les versions précédentes lisent la confirmation comme avant |
+| Anciens projets (sans `meta.provenanceSince`) : à l'ouverture, les valeurs utiles au contrôle des parties existantes sont inscrites « historiques » (`evidence.historic`), égales ou non au défaut ; avertissement ; rien n'est modifié ni confirmé | Un constat « à confirmer » (R-HISTORIC, non bloquant) : le projet passe en « vérifications à faire » au lieu d'un silence. Mesure sur les 438 cas du moteur ouverts comme anciens fichiers : 162 reçoivent « à confirmer », **aucun autre constat ne change** (test `historicMigration`). Les non-conformités ne sont pas reclassées | Liste à part, ignorée des versions précédentes : elles présentent ces valeurs comme avant (vérifié par l'essai) |
+| Confirmation élément par élément : « Vérifié sur place » dans les propriétés (une étape d'annulation) ; jamais en bloc | — | — |
+| Duplication : provenance et valeurs historiques copiées avec les nouveaux identifiants | Une copie d'une valeur non confirmée reste non confirmée | — |
+| Import Eendraadschema : réseau vide s'il n'est pas dans le fichier (oubli de l'étape 3) | — | — |
+| Essai de compatibilité réel : `npm run test:compat [-- <ref>]` (version précédente exécutée dans un arbre de travail git temporaire) | — | Technique : vérifiée contre `main` 002b23a. Sémantique : une prise de relevé sans terre renseignée est silencieuse dans la version précédente ; `minReaderVersion` à décider |
+
+Incident pendant l'écriture de l'outil : la première version retirait l'arbre temporaire sans retirer d'abord la
+jonction vers `node_modules`, ce qui a vidé en partie le `node_modules` de la copie de travail (dossier temporaire,
+réinstallé depuis le fichier de verrouillage). Corrigé : la jonction est retirée d'abord, et rien n'est supprimé si
+elle subsiste.
+
+Limites : un élément ajouté plus tard par une version précédente n'est pas reconnu (elle n'écrit pas de
+provenance) ; les données du projet (réseau, schéma de liaison à la terre d'un ancien fichier) ne sont pas
+marquées ; les valeurs importées ne reçoivent pas encore d'entrée `imported`.
+
+Retour arrière : `git revert` des commits ; les fichiers enregistrés gardent `meta.provenanceSince` et
+`evidence.historic`, ignorés par les versions qui ne les connaissent pas.

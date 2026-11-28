@@ -67,11 +67,25 @@ schéma et l'intégrité ; deux systèmes de provenance en parallèle.
    nouvelle structure dans `props`.
    Pour le moteur, il n'y a que trois lectures : *inconnue*, *non confirmée* (traitée comme inconnue sur une partie
    existante), *établie* (déclarée, mesurée ou confirmée).
+   *Réalisé (étape 4)* : `basis` garde l'état en vigueur (lu par les versions précédentes) ; une confirmation écrit
+   `basis: confirmed` **et** garde l'origine dans `origin`, avec l'auteur (`by`, nom de l'installateur s'il est
+   renseigné) et la date. Une correction à la main rend l'origine « manuelle ».
 2. **Migration : provenance historique inconnue.** Une valeur d'un projet enregistré avant cette version, sans entrée
    de provenance, reçoit l'origine `historicUnknown`, **quelle que soit sa valeur** (égale ou non au défaut : on ne sait
    pas si elle a été saisie). Elle n'est jamais promue en « confirmée ». Sur une partie existante, une propriété
    réglementaire `historicUnknown` donne « à confirmer » (non bloquant). Toutes les valeurs sont conservées. L'impact
    (nombre de constats avant / après) est mesuré sur les projets d'essai avant publication.
+   *Réalisé (étape 4), avec deux précisions :*
+   - les valeurs historiques sont rangées dans une liste à part (`evidence.historic`), **pas** dans `provenance` :
+     l'essai réel (décision 4) a montré qu'une version précédente lirait une entrée `historicUnknown` de
+     `provenance` comme une valeur non confirmée de l'assistant et rétrograderait une non-conformité bloquante en
+     « anomalie potentielle ». Avec la liste à part, la version précédente présente ces valeurs exactement comme
+     avant ;
+   - un seul signalement « à confirmer » (R-HISTORIC, nombre d'éléments et de valeurs), non bloquant, qui empêche
+     toute conclusion silencieuse ; les constats des éléments concernés **ne sont pas reclassés** : une
+     non-conformité établie sur une valeur du fichier reste une non-conformité (le danger est le silence, pas
+     l'excès de prudence). La confirmation se fait élément par élément (« Vérifié sur place » dans les propriétés),
+     jamais en bloc.
 3. **Relevé et travaux sont séparés.** Le modèle distingue : *état relevé* (ce qui existe), *correction proposée*
    (par le contrôle ou l'utilisateur), *état projeté* (relevé + corrections retenues), *travaux réalisés*, *exécution
    confirmée*. Une correction en un clic sur un relevé ne modifie jamais l'état relevé : elle crée une correction
@@ -83,6 +97,13 @@ schéma et l'intégrité ; deux systèmes de provenance en parallèle.
    version précédente ignore la provenance et peut présenter une valeur non confirmée comme une saisie). Si ce second
    risque est jugé inacceptable, le manifeste relève `minReaderVersion` : une ancienne version refuse alors d'ouvrir
    le fichier plutôt que de l'analyser à tort.
+   *Réalisé (étape 4)* : `npm run test:compat [-- <ref>]` écrit un fichier avec la version courante, le fait ouvrir,
+   contrôler, réenregistrer et rouvrir par la version précédente (arbre de travail git temporaire), puis compare.
+   Résultat contre `main` (002b23a) : compatibilité technique vérifiée (ouverture, aucune valeur inventée ni
+   perdue, provenance et marqueur conservés après réenregistrement). Écart sémantique constaté : une prise de
+   relevé dont la terre n'est pas renseignée (étape 3) est silencieuse dans la version précédente (absence lue
+   comme « présente ») et « informations insuffisantes » dans la version courante. Relever `minReaderVersion` est
+   **à décider** avant publication (aucune version publiée à ce jour).
 5. **Transformateurs.** La présence d'un transformateur ne suffit jamais à conclure qu'un circuit relève de la TBTS
    ni que le secondaire est protégé (corrigé le 28/11 : « à vérifier », non bloquant). Le type sera modélisé :
    transformateur de sécurité, d'isolement, autotransformateur, inconnu (défaut : inconnu). Le booléen `safety`
@@ -111,12 +132,16 @@ schéma et l'intégrité ; deux systèmes de provenance en parallèle.
 ## Compatibilité et migration
 
 - **Aucune promotion automatique** : aucune valeur d'un ancien projet n'est marquée « confirmée ».
-- **Anciens projets** : toutes les valeurs sans provenance deviennent `historicUnknown` (décision 2). En conception,
-  le contrôle ne change pas (un défaut de conception est un choix) ; sur une partie existante : « à confirmer ».
+- **Anciens projets** : les valeurs utiles au contrôle des parties existantes, sans provenance, sont inscrites
+  dans `evidence.historic` à l'ouverture (décision 2), avec le marqueur `meta.provenanceSince` (un projet créé par
+  cette version le porte dès sa création ; l'opération n'est jamais refaite). En conception, le contrôle ne change
+  pas (un défaut de conception est un choix) ; sur une partie existante : « à confirmer ». Limite : un élément
+  ajouté ensuite par une version précédente n'est pas reconnu comme tel (cette version n'écrit pas de provenance).
 - **Format** : `.voltaplan` v2 ; provenance dans `sources.json`. Compatibilité technique testée sur la version
   précédente ; compatibilité sémantique : décision 4.
 - **Annulation, sauvegarde automatique** : la provenance fait partie du projet (instantanés complets) ; à tester.
-- **Duplication** : copier les entrées de provenance avec les nouveaux identifiants.
+- **Duplication** : les entrées de provenance et les valeurs historiques sont copiées avec les nouveaux
+  identifiants (fait, étape 4).
 - **Rapports PDF, unifilaire, liste de matériel** : une valeur non confirmée d'un relevé porte une marque (« ? »)
   expliquée en légende, dans les quatre langues. Le résumé distingue non-conformités établies, recommandations,
   données manquantes et exigences non évaluées ; l'absence de constat n'est jamais présentée comme une preuve de

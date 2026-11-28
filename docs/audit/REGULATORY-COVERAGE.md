@@ -91,6 +91,7 @@ manque, est déduite ou contradictoire.
 | R-COUNTRY-OPTION | Désignation qui n'existe pas dans le pays | D | — | avertissement | — |
 | R-RULESET-UNKNOWN | Référentiel inconnu : aucune règle appliquée | P | — | règle non évaluée, bloquant | — |
 | R-UNCONFIRMED (assistant) | Valeurs reprises d'une photo, non confirmées | P | — | vérification (déduit) | les constats de l'élément deviennent « anomalie potentielle » |
+| R-HISTORIC (provenance) | Valeurs d'un relevé enregistré avant le suivi de la provenance, non confirmées (ADR-0010) | P | — | vérification (inconnu) | un seul constat pour le projet ; les constats des éléments ne sont pas reclassés |
 | R-CONTRADICTION (assistant) | Question « contradiction » ouverte | P | — | informations contradictoires | les constats de l'élément deviennent « contradictoires » |
 
 ### Audit « absent du dessin ⇒ violation » (novembre 2026)
