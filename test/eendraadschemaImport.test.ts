@@ -166,6 +166,7 @@ describe('import Eendraadschema : fichiers fabriqués', () => {
     expect(byKind(project, 'light')[0].props).toEqual({ count: 2 });
     expect(cable.children[1].props).toEqual({});
     expect(project.meta.client).toEqual({ name: 'Jan Peeters', address: { street: 'Kerkstraat 5', postalCode: '9000', city: 'Gent' } });
+    expect(project.meta.supply).toBe(''); // réseau non écrit : jamais le « 2 × 230 V » du modèle
     const keys = warnings.map((w) => w.key);
     expect(keys).toEqual(expect.arrayContaining(['eds.warn.sitplan', 'eds.warn.orphans', 'eds.warn.unknown', 'eds.warn.texts', 'eds.warn.cables', 'eds.warn.info', 'eds.warn.checkSupply']));
     expect(warnings.find((w) => w.key === 'eds.warn.texts')?.params?.list).toBe('Nota');

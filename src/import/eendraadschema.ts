@@ -795,7 +795,9 @@ export function parseEdsJson(json: string, version: number, fileName = 'Eendraad
   const meta = metaFrom(props, ctx);
   // Titre : nom du fichier ouvert ; à défaut, celui gardé dans le fichier par Eendraadschema
   const title = (fileName !== 'Eendraadschema' ? fileName : (str(props.filename) ?? fileName)).replace(/\.eds$/i, '');
-  project.meta = { ...project.meta, ...meta, title, installationKind: 'existing' } as Project['meta'];
+  // Réseau non écrit dans le fichier : laissé vide (jamais le « 2 × 230 V » du modèle de projet, ADR-0010). Le schéma
+  // de liaison à la terre garde la valeur du modèle (énumération obligatoire du format) : l'avertissement le signale.
+  project.meta = { ...project.meta, ...meta, supply: meta.supply ?? '', title, installationKind: 'existing' } as Project['meta'];
 
   const sit = doc.sitplanjson as Raw | undefined;
   if (sit && Array.isArray(sit.elements) && sit.elements.length) ctx.warnings.push({ key: 'eds.warn.sitplan', params: { n: sit.elements.length } });
