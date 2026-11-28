@@ -38,6 +38,16 @@ describe('reprise d’un dossier PDF (texte)', () => {
     expect(countPoints(items, 'B')).toBe(0);
   });
 
+  it('prend le code du circuit à la lettre, caractères spéciaux compris', () => {
+    const items = ['E-A1', 'E-A2', 'A.1', 'X+1', 'X\\1'].map((str) => ({ page: 2, x: 0, y: 0, str, size: 6 }));
+    expect(countPoints(items, 'E-A')).toBe(2);
+    expect(countPoints(items, 'A.')).toBe(1);
+    expect(countPoints(['A1'].map((str) => ({ page: 2, x: 0, y: 0, str, size: 6 })), '.')).toBe(0);
+    expect(countPoints(items, 'X+')).toBe(1);
+    expect(countPoints(items, 'X\\')).toBe(1);
+    expect(countPoints(items, '(')).toBe(0);
+  });
+
   it('en-têtes en français, néerlandais, anglais et allemand', () => {
     const rows = [
       ['A', 'Éclairage salon', 'C16A · 2P', 'XVB Cca 3G1,5'],
