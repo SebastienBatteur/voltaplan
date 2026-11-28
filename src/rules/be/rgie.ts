@@ -470,16 +470,23 @@ function checkRgie(project: Project): Finding[] {
         const rcd30 = chain.some((a) => isRcd(a) && (n(a.props.residualCurrent) ?? Infinity) <= RCD_HIGH_SENSITIVITY.value);
         add('R-SOCKET-EARTH', nc, node.id, undefined, { knowledge: 'absent', ...derogationExtra('R-SOCKET-EARTH', regimeOf(project, chain), rcd30 ? undefined : false) });
       }
+      // Relevé : une prise dont la terre n'est pas renseignée n'est pas supposée en avoir une (ADR-0010) ; en conception,
+      // la valeur absente reste le symbole par défaut (prise avec terre).
+      const surveyPart = !partContext(project, belgium, [...ancestors, node]).isNew;
+      if (surveyPart && node.props.earth === undefined && node.props.socketKind !== 'shaver') add('R-SOCKET-EARTH', nc, node.id, undefined, { knowledge: 'unknown' });
       // Depuis le 1/3/2025 (RGIE 5.3.5.2 a) : socles ≤ 16 A / 250 V au moins IPXX-D (obturateurs), sauf socle réservé à
       // un ou plusieurs appareils d'un usage spécifique (prise d'un appareil dessiné sous elle). Avant cette date, la
       // vérification de Voltaplan reste celle d'avant (prise sans sécurité enfant signalée).
       // Dérogations de 5.3.5.2 a : socle réservé à des appareils d'un usage spécifique, placé dans ou sur un tableau, ou
       // muni d'un verrouillage qui met le socle hors tension après le retrait de la fiche.
       const reserved = node.children.some((c) => c.kind === 'appliance') || node.props.inBoard === true || node.props.socketKind === 'switchedLocked';
-      if (node.props.childSafety === false && !node.props.threePhase) {
+      // Relevé : obturateurs non renseignés → inconnus, pas présents (ADR-0010).
+      const childUnknown = surveyPart && node.props.childSafety === undefined;
+      if ((node.props.childSafety === false || childUnknown) && !node.props.threePhase) {
+        const knowledge = childUnknown ? 'unknown' : 'absent';
         const when = sinceDate(project, [...ancestors, node], RGIE_2025);
-        if (when !== 'yes') add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge: 'absent' });
-        else if (!reserved) add('R-SOCKET-IPXXD', nc, node.id, undefined, { knowledge: 'absent' });
+        if (when !== 'yes') add('R-SOCKET-CHILD', nc, node.id, undefined, { knowledge });
+        else if (!reserved) add('R-SOCKET-IPXXD', nc, node.id, undefined, { knowledge });
       }
     }
   }

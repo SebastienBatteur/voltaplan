@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { useDerived } from './derived';
 import { ALLOWED_CHILDREN } from '../model/schema';
-import { ancestors, createNode, insertChild, walk } from '../model/tree';
+import { ancestors, createNode, findNode, insertChild, walk } from '../model/tree';
+import { isSurveyPart } from '../rules';
 import { orientSymbols } from '../plan/geometry';
 import { isWallMounted } from '../unifilar/symbols';
 import { FAMILIES, PLACEABLE } from './families';
@@ -83,13 +84,18 @@ export function PlanAddDialog({
   };
 
   const add = () => {
-    const node = createNode(kind);
+    const cur = useStore.getState().project;
+    const parentId = parent.startsWith(NEW_CIRCUIT) ? parent.slice(NEW_CIRCUIT.length) : parent;
+    const parentNode = findNode(cur.roots, parentId);
+    // Relevé d'une partie existante : pas de valeur par défaut réglementaire (ADR-0010)
+    const survey = isSurveyPart(cur, [...ancestors(cur.roots, parentId), ...(parentNode ? [parentNode] : [])]);
+    const node = createNode(kind, {}, { survey });
     useStore.getState().applyProject((p) => {
       let roots = p.roots;
       if (parent.startsWith(NEW_CIRCUIT)) {
         // Nouveau circuit : disjoncteur sous le tableau, câble, puis l'élément
-        const prot = createNode('protection', { device: 'mcb' });
-        const cable = createNode('cable');
+        const prot = survey ? createNode('protection', {}, { survey }) : createNode('protection', { device: 'mcb' });
+        const cable = createNode('cable', {}, { survey });
         cable.children = [node];
         prot.children = [cable];
         roots = insertChild(roots, parent.slice(NEW_CIRCUIT.length), prot);

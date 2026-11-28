@@ -2,6 +2,7 @@ import { NumberField } from './NumberField';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from '../store';
 import { ancestors, createNode, insertChild, insertInSeries, isCircuit, mapTree, uid } from '../model/tree';
+import { isSurveyPart } from '../rules';
 import { useChain, useDerived } from './derived';
 import { usePanZoom } from './usePanZoom';
 import type { BoardLayout, ElNode, Pt } from '../model/types';
@@ -625,17 +626,23 @@ export function BoardView() {
     const up = enc.devices.find((n) => n.id === upId);
     if (!up) return;
     const read = protectionFromReading(x.seen);
-    // Calibre : celui du circuit (le seuil réglé ne dépasse pas la protection au-dessus), à corriger au besoin
-    const node = createNode('protection', {
-      device: read.device === 'rcbo' ? 'rcbo' : 'mcb',
-      poles: up.props.poles,
-      ratedCurrent: up.props.ratedCurrent,
-      curve: up.props.curve,
-      phase: up.props.phase,
-      modules: read.modules,
-      ...(read.reference ? { reference: read.reference } : {}),
-      series: true,
-    });
+    const { project: cur } = useStore.getState();
+    // Relevé : les caractéristiques du disjoncteur du dessus ne sont pas celles de l'appareil vu (inconnues, ADR-0010).
+    const survey = isSurveyPart(cur, [...ancestors(cur.roots, up.id), up]);
+    // Conception : calibre du circuit (le seuil réglé ne dépasse pas la protection au-dessus), à corriger au besoin
+    const inherited = survey ? {} : { poles: up.props.poles, ratedCurrent: up.props.ratedCurrent, curve: up.props.curve };
+    const node = createNode(
+      'protection',
+      {
+        device: read.device === 'rcbo' ? 'rcbo' : 'mcb',
+        ...inherited,
+        phase: up.props.phase,
+        modules: read.modules,
+        ...(read.reference ? { reference: read.reference } : {}),
+        series: true,
+      },
+      { survey },
+    );
     applyProject((p) => ({
       ...p,
       roots: insertInSeries(p.roots, upId, node),

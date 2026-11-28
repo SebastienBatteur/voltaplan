@@ -2,7 +2,7 @@
  * Registre des référentiels. Pour ajouter un pays : créer src/rules/<pays>/… qui exporte un RulePack,
  * puis l'ajouter ici. Rien d'autre à modifier.
  */
-import type { Project } from '../model/types';
+import type { ElNode, Project } from '../model/types';
 import { walk } from '../model/tree';
 import { addMessages, type Lang } from '../i18n';
 import { belgium } from './be/rgie';
@@ -85,4 +85,12 @@ export function summarize(findings: Finding[]): Record<Severity, number> {
   const s: Record<Severity, number> = { error: 0, warning: 0, info: 0 };
   for (const f of findings) s[f.severity]++;
   return s;
+}
+
+/**
+ * Un élément créé sous `chain` (racine → parent) appartient-il au relevé d'une partie existante ? Alors il est créé sans
+ * les valeurs par défaut qui décident d'un résultat de conformité (createNode `survey`, ADR-0010).
+ */
+export function isSurveyPart(project: Project, chain: ElNode[]): boolean {
+  return !partContext(project, belgium, chain).isNew;
 }

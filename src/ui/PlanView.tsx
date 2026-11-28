@@ -7,6 +7,7 @@ import { useCoarsePointer } from './touch';
 import { isWallMounted, Symbol, symbolSize } from '../unifilar/symbols';
 import type { ElNode, PlanPage, Pt } from '../model/types';
 import { createNode, uid } from '../model/tree';
+import { isSurveyPart } from '../rules';
 import { photoAdviceText } from './PhotoAdvice';
 import {
   alignBackground,
@@ -615,7 +616,9 @@ export function PlanView() {
                 const roomAt = (p: { x: number; y: number }) =>
                   [...page.labels.map((l) => ({ text: l.text, pos: l.pos })), ...fresh].sort((a, b) => Math.hypot(a.pos.x - p.x, a.pos.y - p.y) - Math.hypot(b.pos.x - p.x, b.pos.y - p.y))[0]?.text;
                 const nodes = out.symbols.map((s) => {
-                  const n = createNode(s.kind, s.kind === 'socket' && s.count ? { count: s.count } : s.kind === 'appliance' ? { applianceType: 'other' } : {});
+                  const n = createNode(s.kind, s.kind === 'socket' && s.count ? { count: s.count } : s.kind === 'appliance' ? { applianceType: 'other' } : {}, {
+                    survey: isSurveyPart(useStore.getState().project, []),
+                  });
                   const room = roomAt(s.pos);
                   if (room) n.location = room;
                   return { node: n, pos: round(s.pos) };

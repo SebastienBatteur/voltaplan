@@ -7,8 +7,12 @@ export function uid(): string {
   return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
 }
 
-export function createNode(kind: NodeKind, props: ElNode['props'] = {}): ElNode {
-  return { id: uid(), kind, props: { ...defaultProps(kind), ...props }, children: [] };
+/**
+ * Nouvel élément avec les valeurs par défaut du schéma. `survey` : élément d'un relevé d'installation existante, sans
+ * les valeurs par défaut qui décident d'un résultat de conformité (SURVEY_UNSET, ADR-0010) : elles restent inconnues.
+ */
+export function createNode(kind: NodeKind, props: ElNode['props'] = {}, opts: { survey?: boolean } = {}): ElNode {
+  return { id: uid(), kind, props: { ...defaultProps(kind, opts), ...props }, children: [] };
 }
 
 export function* walk(nodes: ElNode[], parent: ElNode | null = null, depth = 0): Generator<{ node: ElNode; parent: ElNode | null; depth: number }> {

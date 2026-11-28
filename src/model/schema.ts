@@ -294,8 +294,22 @@ export const ALLOWED_CHILDREN: Record<NodeKind, NodeKind[]> = {
   other: ['cable', 'other'],
 };
 
-export function defaultProps(kind: NodeKind): Record<string, PropValue> {
+/**
+ * Propriétés dont la valeur par défaut décide d'un résultat de conformité ou d'un calcul (ADR-0010). Dans un relevé
+ * d'installation existante, elles ne sont jamais écrites d'office : une valeur proposée par l'application n'est pas une
+ * caractéristique de l'installation. En conception, la valeur par défaut reste une proposition que l'auteur accepte.
+ */
+export const SURVEY_UNSET: Partial<Record<NodeKind, readonly string[]>> = {
+  protection: ['device', 'ratedCurrent', 'poles', 'curve', 'breakingCapacity'],
+  cable: ['cableType', 'section', 'conductors'],
+  socket: ['earth', 'childSafety'],
+  transformer: ['safety'],
+};
+
+/** Valeurs par défaut d'un nouvel élément ; `survey` : relevé d'une partie existante (sans les valeurs ci-dessus). */
+export function defaultProps(kind: NodeKind, opts: { survey?: boolean } = {}): Record<string, PropValue> {
   const out: Record<string, PropValue> = {};
-  for (const d of PROP_SCHEMAS[kind] ?? []) if (d.default !== undefined) out[d.key] = d.default;
+  const unset = opts.survey ? (SURVEY_UNSET[kind] ?? []) : [];
+  for (const d of PROP_SCHEMAS[kind] ?? []) if (d.default !== undefined && !unset.includes(d.key)) out[d.key] = d.default;
   return out;
 }

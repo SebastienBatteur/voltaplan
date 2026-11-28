@@ -1,11 +1,12 @@
 import { STORAGE_PREFIX } from './brand';
 import { create } from 'zustand';
 import type { BoardLayout, ElNode, NodeKind, Project, ProjectMeta, Measurements, PlanPage, Pt, PropValue } from './model/types';
-import { cloneWithNewIds, createNode, emptyPage, emptyProject, findNode, findParent, insertChild, insertInSeries, moveSibling, removeNode, updateNode, autoDocNumber } from './model/tree';
+import { ancestors, cloneWithNewIds, createNode, emptyPage, emptyProject, findNode, findParent, insertChild, insertInSeries, moveSibling, removeNode, updateNode, autoDocNumber } from './model/tree';
 import { detectLang, translate, type Lang } from './i18n';
 import { pruneReferences } from './model/integrity';
 import { orientSymbols } from './plan/geometry';
 import { isWallMounted } from './unifilar/symbols';
+import { isSurveyPart } from './rules';
 
 export type View = 'unifilar' | 'plan' | 'board' | 'bom' | 'project' | 'check';
 
@@ -129,21 +130,29 @@ export const useStore = create<State>((set, get) => {
         return { ...p, roots: upd(p.roots), loose: upd(p.loose) };
       }),
     addChild: (parentId, kind) => {
-      const node = createNode(kind);
+      const { roots } = get().project;
+      const parent = findNode(roots, parentId);
+      const survey = isSurveyPart(get().project, [...ancestors(roots, parentId), ...(parent ? [parent] : [])]);
+      const node = createNode(kind, {}, { survey });
       commit((p) => ({ ...p, roots: insertChild(p.roots, parentId, node) }));
       set({ selectedId: node.id });
     },
     insertSeries: (protectionId, props = {}) => {
-      const up = findNode(get().project.roots, protectionId);
-      const node = createNode('protection', {
-        device: 'mcb',
-        poles: up?.props.poles,
-        ratedCurrent: up?.props.ratedCurrent,
-        curve: up?.props.curve,
-        phase: up?.props.phase,
-        ...props,
-        series: true,
-      });
+      const { roots } = get().project;
+      const up = findNode(roots, protectionId);
+      // Relevé : l'appareil en série n'hérite pas des caractéristiques de celui du dessus (elles restent inconnues).
+      const survey = isSurveyPart(get().project, [...ancestors(roots, protectionId), ...(up ? [up] : [])]);
+      const node = survey
+        ? createNode('protection', { phase: up?.props.phase, ...props, series: true }, { survey: true })
+        : createNode('protection', {
+            device: 'mcb',
+            poles: up?.props.poles,
+            ratedCurrent: up?.props.ratedCurrent,
+            curve: up?.props.curve,
+            phase: up?.props.phase,
+            ...props,
+            series: true,
+          });
       commit((p) => ({ ...p, roots: insertInSeries(p.roots, protectionId, node) }));
       set({ selectedId: node.id });
       return node.id;
