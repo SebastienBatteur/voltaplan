@@ -3,7 +3,8 @@
  *  - chaque règle : au moins un cas où elle se déclenche et un cas où elle reste muette ;
  *  - exigence avec paramètres → un cas aux valeurs limites ; avec données nécessaires → un cas de données manquantes ;
  *    avec exceptions → un cas d'exception ; avec dispositions transitoires → un cas transitoire (sauf exigence « tool »).
- * Un cas `knownIssue` décrit le comportement attendu d'une anomalie connue (exécuté comme « doit échouer ») ; un cas
+ * Un cas `knownIssue` décrit le comportement attendu d'une anomalie connue : le test vérifie que le projet se construit et
+ * que le moteur donne un autre résultat (il échoue dès que l'anomalie est corrigée, ou sur toute autre erreur) ; un cas
  * `notModelled` documente une limite du modèle (non exécuté). Les deux sont listés dans le rapport final.
  */
 import { checkProject } from '../src/rules';
@@ -17,8 +18,12 @@ import { CASES as G4 } from './rule-cases/g4';
 
 export const ALL_CASES: RuleCase[] = [...G1, ...G2, ...G3, ...G4];
 
+function findings(c: RuleCase) {
+  return checkProject(c.build()).filter((f) => f.ruleId === c.rule);
+}
+
 function run(c: RuleCase) {
-  const fs = checkProject(c.build()).filter((f) => f.ruleId === c.rule);
+  const fs = findings(c);
   if (c.expect === 'silent') expect(fs, JSON.stringify(fs.map((f) => f.status))).toEqual([]);
   else {
     expect(fs.length, 'aucun constat').toBeGreaterThan(0);
@@ -26,11 +31,28 @@ function run(c: RuleCase) {
   }
 }
 
+/** Le moteur donne-t-il le résultat attendu par le cas ? (sans assertion : pour les anomalies connues) */
+function meetsExpectation(c: RuleCase, fs: ReturnType<typeof findings>): boolean {
+  if (c.expect === 'silent') return fs.length === 0;
+  const want = c.expect;
+  const f = fs[0];
+  if (!f) return false;
+  if (f.status !== want.status) return false;
+  if (want.blocking !== undefined && f.blocking !== want.blocking) return false;
+  return Object.entries(want.params ?? {}).every(([k, v]) => f.params?.[k] === v);
+}
+
 describe('Cas fonctionnels des règles', () => {
   for (const c of ALL_CASES) {
     const name = `${c.rule} [${c.kind}] ${c.title}`;
     if (c.notModelled) it.skip(`${name} — non modélisé : ${c.notModelled}`, () => undefined);
-    else if (c.knownIssue) it.fails(`${name} — anomalie connue : ${c.knownIssue}`, () => run(c));
+    else if (c.knownIssue)
+      // Anomalie connue : le projet se construit et le moteur s'exécute sans erreur (une exception ferait échouer le
+      // test), et le résultat diffère bien de l'attendu. Si l'anomalie est corrigée, ce test échoue : retirer knownIssue.
+      it(`${name} — anomalie connue : ${c.knownIssue}`, () => {
+        const fs = findings(c);
+        expect(meetsExpectation(c, fs), 'anomalie corrigée : retirer `knownIssue` du cas').toBe(false);
+      });
     else it(name, () => run(c));
   }
 });
