@@ -14,7 +14,7 @@ import { join } from 'node:path';
 import { MUTANTS } from './mutants';
 
 const root = join(__dirname, '..', '..');
-const TESTS = ['test/rules.cases.test.ts', 'test/rules.rgie2026.test.ts', 'test/rules.matrix.test.ts', 'test/regulatory-consistency.test.ts', 'test/regulations.test.ts'];
+const TESTS = ['test/rules.cases.test.ts', 'test/rules.rgie2026.test.ts', 'test/rules.matrix.test.ts', 'test/regulatory-consistency.test.ts', 'test/regulations.test.ts', 'test/valueProvenance.test.ts'];
 
 let killed = 0;
 const survivors: string[] = [];
