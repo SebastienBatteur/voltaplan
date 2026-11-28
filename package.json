@@ -24,7 +24,8 @@
     "site:sitemap": "vite-node tools/site/cli.ts --",
     "learn:build": "vite-node tools/learn/cli.ts",
     "learn:check": "vite-node tools/learn/check.ts --",
-    "test:mutation": "vite-node tools/mutation/run.ts"
+    "test:mutation": "vite-node tools/mutation/run.ts",
+    "test:compat": "vite-node tools/compat/previous.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "1.12.0",
