@@ -278,6 +278,7 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
     throw new I18nError('imp.trikker.invalid', undefined, "Ce fichier n'est pas un fichier Trikker valide.");
   }
   const ctx: Ctx = { foldedNotes: new Set(), warnings: new Warnings() };
+  ctx.warnings.add('imp.kindExisting');
   const project = emptyProject();
   project.roots = [];
   project.loose = [];
@@ -311,7 +312,9 @@ export function importTrikker(xml: string, fileName = 'Projet Trikker'): Trikker
   project.meta = {
     ...project.meta,
     title: fileName.replace(/\.trik$/i, ''),
-    supply: root.getAttribute('Stroomtype') ?? project.meta.supply,
+    supply: root.getAttribute('Stroomtype') ?? '',
+    // Fichier d'un autre logiciel : installation existante (relevé) tant que le porteur ne dit pas « neuf » (ADR-0010)
+    installationKind: 'existing',
     date: (root.getAttribute('Datum') ?? '').slice(0, 10) || project.meta.date,
     client: { name: text(klant, 'Naam'), email: text(klant, 'Email'), address: address(child(klant, 'Adres')) },
     site: address(child(klant, 'Werfadres')),

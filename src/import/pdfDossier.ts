@@ -314,16 +314,21 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   const project = emptyProject();
   const all = items.map((i) => i.str).join(' ');
   const supply = detectSupply(all);
-  project.meta = { ...project.meta, title: fileName.replace(/\.pdf$/i, '').replace(/_+/g, ' ').trim(), supply: supply ?? project.meta.supply };
+  // Installation existante (dossier d'une installation) sauf mention contraire dans le PDF (applyPdfInfo) ; réseau
+  // inconnu s'il n'est pas écrit (jamais « 2 × 230 V » supposé).
+  project.meta = { ...project.meta, title: fileName.replace(/\.pdf$/i, '').replace(/_+/g, ' ').trim(), supply: supply ?? '', installationKind: 'existing' };
   const ean = /\b(54\d{16})\b/.exec(all.replace(/\s/g, ' '))?.[1];
   if (ean) project.meta.ean = ean;
   // Cartouche, page de garde, fiche : adresse, client, installateur, date, numéro, calibre du branchement…
   const got = applyPdfInfo(project, readPdfInfo(items));
   for (const f of got) warnings.add('imp.pdf.info.' + f);
+  if (!got.includes('kindExisting') && !got.includes('kindNew')) warnings.add('imp.kindExisting');
   const meter = project.roots[0].children[0];
   const mainRcd = meter.children[0];
   const mainBoard = mainRcd.children[0];
-  // Le différentiel général n'est pas dans le tableau des circuits : celui du modèle (300 mA) est gardé, à vérifier
+  // Le différentiel général n'est pas dans le tableau des circuits : il n'est dessiné que s'il est lu ailleurs dans le
+  // PDF (schéma, face avant) ; sinon le tableau est raccordé au compteur et le différentiel reste à dessiner (ADR-0010 :
+  // jamais celui du modèle, qui serait une caractéristique inventée).
   warnings.add('imp.pdf.mainDefault');
   const otherKids = mainBoard.children.filter((n) => n.kind !== 'protection');
   mainBoard.children = [];
@@ -349,18 +354,19 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
     const diffMa = residualMa(r.diff);
     const label = [r.name, r.type].filter(Boolean).join(' ');
     const isSpare = SPARE.test(fold(label));
-    const mcb = createNode('protection', {
-      device: prot.residualCurrent !== undefined ? 'rcbo' : 'mcb',
-      circuitName: r.name ?? r.type,
-      fixedLetter: r.code,
-      ...prot,
-    });
-    if (prot.curve === undefined) delete mcb.props.curve;
-    if (prot.breakingCapacity === undefined) delete mcb.props.breakingCapacity;
-    if (prot.poles === undefined) delete mcb.props.poles;
-    if (prot.ratedCurrent === undefined) delete mcb.props.ratedCurrent;
-    const cable = createNode('cable', parseCable(r.cable));
-    for (const k of ['cableType', 'section', 'conductors', 'inConduit', 'method'] as const) if (!(k in parseCable(r.cable))) delete cable.props[k];
+    // Seulement ce que le PDF dit : aucune valeur par défaut (createNode `survey`)
+    const mcb = createNode(
+      'protection',
+      {
+        device: prot.residualCurrent !== undefined ? 'rcbo' : 'mcb',
+        circuitName: r.name ?? r.type,
+        fixedLetter: r.code,
+        ...prot,
+      },
+      { survey: true },
+    );
+    const cable = createNode('cable', parseCable(r.cable), { survey: true });
+    for (const k of ['inConduit', 'method'] as const) if (!(k in parseCable(r.cable))) delete cable.props[k];
     mcb.children.push(cable);
     nodesByCode.set(r.code, mcb);
     const points: ElNode[] = [];
@@ -377,7 +383,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
       const count = usage.kind === 'appliance' ? Math.max(1, Math.min(n, 1)) : n;
       for (let i = 0; i < count; i++) {
         const kind: NodeKind = usage.kind === 'board' ? 'other' : (usage.kind as NodeKind);
-        const p = createNode(kind, usage.kind === 'appliance' ? { applianceType: usage.applianceType } : {});
+        const p = createNode(kind, usage.kind === 'appliance' ? { applianceType: usage.applianceType } : {}, { survey: true });
         if (room) p.location = room;
         cable.children.push(p);
         points.push(p);
@@ -387,10 +393,7 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
     // Différentiel de groupe : circuits consécutifs avec le même 30 mA (colonne « différentiel ») ; 300 mA = général
     if (diffMa !== undefined && diffMa < 100 && prot.residualCurrent === undefined) {
       if (!lastRcd || lastRcd.board !== board || lastRcd.ma !== diffMa) {
-        const rcd = createNode('protection', { device: 'rcd', residualCurrent: diffMa, poles: prot.poles ?? '2P' });
-        delete rcd.props.curve;
-        delete rcd.props.breakingCapacity;
-        delete rcd.props.ratedCurrent;
+        const rcd = createNode('protection', { device: 'rcd', residualCurrent: diffMa, ...(prot.poles ? { poles: prot.poles } : {}) }, { survey: true });
         const t = /\btype\s?(AC|A|F|B)\b/i.exec(r.diff ?? '')?.[1];
         if (t) rcd.props.rcdType = t.toUpperCase();
         board.children.push(rcd);
@@ -423,14 +426,17 @@ export function importPdfDossier(items: PdfText[], pages: PdfPageSize[], fileNam
   const main = readMainProtection(items, parseProtection);
   if (main) {
     const device = main.curve ? 'rcbo' : 'rcd';
-    mainRcd.props = { ...mainRcd.props, ...main, device };
+    // Seulement les caractéristiques lues : aucune valeur du modèle (type A, 2P, 40 A…) n'est gardée.
+    mainRcd.props = { ...main, device };
     if (device === 'rcd') delete mainRcd.props.curve;
-    if (main.breakingCapacity === undefined) delete mainRcd.props.breakingCapacity;
+    for (const k of Object.keys(mainRcd.props)) if (mainRcd.props[k] === undefined) delete mainRcd.props[k];
     warnings.delete('imp.pdf.mainDefault');
     const mp = { rated: String(main.ratedCurrent), residual: String(main.residualCurrent) };
     if (main.rcdType) warnings.add('imp.pdf.mainReadType', { ...mp, type: String(main.rcdType) });
     else warnings.add('imp.pdf.mainRead', mp);
   }
+  // Différentiel général non lu : le tableau principal est raccordé directement au compteur.
+  else meter.children = [mainBoard];
   // Mesures (terre, isolement) et longueurs des câbles
   const meas = readMeasurements(items);
   if (meas.earthResistanceOhm !== undefined || meas.insulationMOhm !== undefined) {

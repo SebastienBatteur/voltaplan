@@ -2,8 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { distToWalls, planFromShapes, scaleFromDoors, shapesFromOperatorList, wallsInPolygon, type PdfShape } from '../src/import/pdfPlan';
 import { importPdfDossier, type PdfText } from '../src/import/pdfDossier';
 import { noWallZones } from '../src/import/pdfInfo';
-import type { Pt } from '../src/model/types';
+import type { Project, Pt } from '../src/model/types';
 import { frWarnings } from './warnText';
+import { walk } from '../src/model/tree';
+
+/** Tableau principal (sous le compteur, ou sous le différentiel général quand le PDF le décrit). */
+const mainBoardOf = (p: Project) => [...walk(p.roots)].find((w) => w.node.kind === 'board')!.node;
 
 const P = (x: number, y: number): Pt => ({ x, y });
 const BLACK: [number, number, number] = [30, 30, 30];
@@ -151,7 +155,7 @@ describe('plan lu dans le dessin du PDF', () => {
     const { project } = importPdfDossier(items, pages, 'p.pdf', [[], room()]);
     const pg = project.plan.pages[0];
     expect(pg.labels.map((l) => l.text)).toEqual(['Keuken']);
-    const node = project.roots[0].children[0].children[0].children[0].children.find((n) => n.props.fixedLetter === 'A')!.children[0].children[0];
+    const node = mainBoardOf(project).children.find((n) => n.props.fixedLetter === 'A')!.children[0].children[0];
     expect(node.location).toBe('Keuken');
   });
 
@@ -176,7 +180,7 @@ describe('plan lu dans le dessin du PDF', () => {
       t(2, 160, 325, 'C20'),
     ];
     const { project, warnings } = importPdfDossier(items, [{ width: 595, height: 842 }, { width: 595, height: 842 }], 'p.pdf');
-    const board = project.roots[0].children[0].children[0].children[0];
+    const board = mainBoardOf(project);
     const slots = project.boards![board.id].slots;
     const at = (c: string) => slots[board.children.find((n) => n.props.fixedLetter === c)!.id];
     // 2P = 2 modules ; une case de 78 pt = 2 modules : A en colonne 2 (le différentiel garde les colonnes 0-1)

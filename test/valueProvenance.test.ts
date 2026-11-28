@@ -1,10 +1,12 @@
+// @vitest-environment node
 /**
  * Provenance des valeurs (ADR-0010) : dans un relevé d'installation existante, une valeur proposée par l'application
  * n'est jamais une caractéristique de l'installation. Chemins de création, contrôle et aller-retour du fichier.
  */
 import { describe, expect, it } from 'vitest';
 import { SURVEY_UNSET } from '../src/model/schema';
-import { createNode, emptyProject, findNode } from '../src/model/tree';
+import { createNode, emptyProject, findNode, walk } from '../src/model/tree';
+import { importPdfDossier, type PdfText } from '../src/import/pdfDossier';
 import type { ElNode, Project } from '../src/model/types';
 import { checkProject, isSurveyPart } from '../src/rules';
 
@@ -124,5 +126,83 @@ describe('Contrôle : terre et obturateurs d’une prise de relevé non renseign
     const s = withSocket(p, {});
     delete s.props.earth;
     expect(checkProject(p).find((x) => x.ruleId === 'R-SOCKET-EARTH' && x.nodeId === s.id)).toBeUndefined();
+  });
+});
+
+describe('Imports : seulement ce que dit le fichier (ADR-0010)', () => {
+  const t = (page: number, x: number, y: number, str: string): PdfText => ({ page, x, y, str, size: 7 });
+  const table = (): PdfText[] => [
+    t(1, 50, 90, 'Circuit'),
+    t(1, 100, 90, 'Description'),
+    t(1, 300, 90, 'Protection'),
+    t(1, 400, 90, 'Points'),
+    ...['A', 'B'].map((c, i) => [t(1, 50, 108 + 18 * i, c), t(1, 100, 108 + 18 * i, 'Prises'), t(1, 300, 108 + 18 * i, 'C20'), t(1, 400, 108 + 18 * i, '2')]).flat(),
+  ];
+  const nodes = (p: Project) => [...walk(p.roots)].map((w) => w.node);
+
+  it('PDF sans différentiel général lisible : aucun différentiel inventé, tableau sous le compteur', () => {
+    const { project, warnings } = importPdfDossier(table(), [{ width: 595, height: 842 }], 'dossier.pdf');
+    expect(nodes(project).filter((n) => n.props.device === 'rcd')).toEqual([]);
+    const meter = project.roots[0].children[0];
+    expect(meter.children[0].kind).toBe('board');
+    expect(warnings.map((w) => w.key)).toContain('imp.pdf.mainDefault');
+  });
+
+  it('PDF : installation existante, réseau inconnu s’il n’est pas écrit, avertissement', () => {
+    const { project, warnings } = importPdfDossier(table(), [{ width: 595, height: 842 }], 'dossier.pdf');
+    expect(project.meta.installationKind).toBe('existing');
+    expect(project.meta.supply).toBe('');
+    expect(warnings.map((w) => w.key)).toContain('imp.kindExisting');
+  });
+
+  it('PDF : pôles, pouvoir de coupure, section et terre des prises non écrits restent inconnus', () => {
+    const { project } = importPdfDossier(table(), [{ width: 595, height: 842 }], 'dossier.pdf');
+    const prot = nodes(project).filter((n) => n.kind === 'protection');
+    expect(prot.length).toBeGreaterThan(0);
+    for (const n of prot) {
+      expect(n.props.ratedCurrent).toBe(20);
+      expect(n.props.poles).toBeUndefined();
+      expect(n.props.breakingCapacity).toBeUndefined();
+    }
+    for (const c of nodes(project).filter((n) => n.kind === 'cable')) expect(c.props.section).toBeUndefined();
+    const sockets = nodes(project).filter((n) => n.kind === 'socket');
+    expect(sockets.length).toBeGreaterThan(0);
+    for (const s of sockets) {
+      expect(s.props.earth).toBeUndefined();
+      expect(s.props.childSafety).toBeUndefined();
+    }
+  });
+
+  it('PDF importé puis contrôlé : prises sans terre renseignée → informations insuffisantes, jamais « conforme »', () => {
+    const { project } = importPdfDossier(table(), [{ width: 595, height: 842 }], 'dossier.pdf');
+    const earth = checkProject(project).filter((f) => f.ruleId === 'R-SOCKET-EARTH');
+    expect(earth.length).toBeGreaterThan(0);
+    expect(earth.every((f) => f.status === 'insufficientData')).toBe(true);
+  });
+});
+
+describe('Aller-retour .voltaplan : une donnée inconnue reste inconnue', () => {
+  it('protection et prise de relevé sans valeurs : rien n’apparaît après enregistrement et relecture', async () => {
+    const { AssetStore, MemoryAssetBackend } = await import('../src/format/assets');
+    const { AssetSession } = await import('../src/format/session');
+    const { openProjectData, serializeProject } = await import('../src/io/projectData');
+    const session = () => {
+      const store = new AssetStore(new MemoryAssetBackend());
+      return new AssetSession(() => store);
+    };
+    const buildArchive = async (pr: Project) => (await serializeProject(pr, undefined, session()))!;
+    const readArchive = async (b: Blob) => (await openProjectData(b, 'releve.voltaplan', session(), { background: false })).project;
+    const p = existingProject();
+    const prot = createNode('protection', { circuitName: 'P' }, { survey: true });
+    const cable = createNode('cable', {}, { survey: true });
+    const sock = createNode('socket', {}, { survey: true });
+    cable.children.push(sock);
+    prot.children.push(cable);
+    boardOf(p).children.push(prot);
+    const back = await readArchive(await buildArchive(p));
+    const q = (id: string) => findNode(back.roots, id)!;
+    for (const k of SURVEY_UNSET.protection!) expect(q(prot.id).props[k], k).toBeUndefined();
+    for (const k of SURVEY_UNSET.cable!) expect(q(cable.id).props[k], k).toBeUndefined();
+    for (const k of SURVEY_UNSET.socket!) expect(q(sock.id).props[k], k).toBeUndefined();
   });
 });

@@ -110,6 +110,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
   if (!isObj(data) || data.format !== 'planelec-sketch' || !isObj(data.singleLine) || !isObj(data.singleLine.root))
     throw new I18nError('imp.planelec.invalid', undefined, "Ce fichier n'est pas un projet PlanElec Sketch valide.");
   const warnings = new Warnings();
+  warnings.add('imp.kindExisting');
   if (data.version !== 2) warnings.add('imp.planelec.version', { version: String(data.version) });
   const meta = isObj(data.meta) ? data.meta : {};
   const root = data.singleLine.root;
@@ -128,7 +129,9 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
     site: meta.siteSameAsCustomer === true ? customerAddress : parseAddress(str(meta.siteAddress)),
     installer: { name: str(meta.installerName), vat: str(meta.installerVat), phone: str(meta.installerPhone), email: email(meta.installerEmail), address: parseAddress(str(meta.installerAddress)) },
     inspectionBodyName: str(meta.inspectionBodyName),
-    supply: supply ?? project.meta.supply,
+    supply: supply ?? '',
+    // Fichier d'un autre logiciel : installation existante (relevé) tant que le porteur ne dit pas « neuf » (ADR-0010)
+    installationKind: 'existing',
     earthing: rp.earthing === 'TN' ? 'TN' : rp.earthing === 'IT' ? 'IT' : 'TT',
     ean: str(meta.ean),
   };
@@ -139,7 +142,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
   const nodeOf = new Map<string, ElNode>();
   const allowed = (parent: ElNode, child: ElNode) => ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
   const make = (src: Obj, kind: NodeKind, props: Props, location?: string): ElNode => {
-    const n = createNode(kind, clean(props));
+    const n = createNode(kind, clean(props), { survey: true });
     n.id = str(src.id) ?? n.id;
     if (location) n.location = location;
     const attrs: Record<string, string> = {};
@@ -431,6 +434,7 @@ export function importPlanelec(text: string, fileName = 'Projet PlanElec'): Plan
           ...(isLock ? { relayType: 'lockControl', inBoard: false } : {}),
           ...(hit?.[1] === 'appliance' ? { applianceType: 'other' } : {}),
         }),
+        { survey: true },
       );
       if (str(el.label)) n.location = str(el.label);
       n.source = { format: 'planelec', tag: sid, attrs: {} };

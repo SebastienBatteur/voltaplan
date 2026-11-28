@@ -143,6 +143,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
   }
   if (!isObj(data) || !isObj(data.disciplines) || !isObj(data.disciplines.electrical) || !isObj(data.building)) throw new I18nError('imp.condui.invalid', undefined, "Ce fichier n'est pas un projet Condui valide.");
   const warnings = new Warnings();
+  warnings.add('imp.kindExisting');
   if (data.schemaVersion !== '2.3.0') warnings.add('imp.condui.version', { version: String(data.schemaVersion) });
   const el = data.disciplines.electrical;
   const inst = isObj(el.installation) ? el.installation : {};
@@ -172,7 +173,9 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
     },
     site: addr(site.address ?? inst.address),
     installer: { name: str(installer.name), address: addr(installer.address) },
-    supply: supply ?? project.meta.supply,
+    supply: supply ?? '',
+    // Fichier d'un autre logiciel : installation existante (relevé) tant que le porteur ne dit pas « neuf » (ADR-0010)
+    installationKind: 'existing',
     ean: str(pj.meterEanCode),
   };
   const year = num(pj.yearOfConstruction);
@@ -181,7 +184,7 @@ export function importCondui(text: string, fileName = 'Projet Condui'): ConduiIm
   // ——— Schéma ———
   const nodeOf = new Map<string, ElNode>();
   const make = (src: Obj, kind: NodeKind, props: Props, tag: string): ElNode => {
-    const n = createNode(kind, clean(props));
+    const n = createNode(kind, clean(props), { survey: true });
     n.id = str(src.id) ?? n.id;
     if (nodeOf.has(n.id)) n.id = uid();
     const attrs: Record<string, string> = {};

@@ -200,6 +200,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
   }
   if (!isObj(data) || !isObj(data.project) || !Array.isArray(data.boards)) throw new I18nError('imp.volter.invalid', undefined, "Ce fichier n'est pas une sauvegarde Volter valide.");
   const warnings = new Warnings();
+  warnings.add('imp.kindExisting');
   if (data.version !== 2) warnings.add('imp.volter.version', { version: String(data.version) });
   const vp = data.project;
   const project = emptyProject();
@@ -222,7 +223,9 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       email: email?.includes('@') ? email : undefined,
       address: { street: str(inst.straat), city: str(inst.gemeente) },
     },
-    supply: supply ?? project.meta.supply,
+    supply: supply ?? '',
+    // Fichier d'un autre logiciel : installation existante (relevé) tant que le porteur ne dit pas « neuf » (ADR-0010)
+    installationKind: 'existing',
     ean,
   };
   const updated = str(vp.updatedAt);
@@ -253,7 +256,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
       if (type === 'solarPanel' && num(c.wattpiek)) props.name = `${num(c.wattpiek)} Wc`;
       if (k.kind === 'inverter' && num(c.maximaalVermogen)) props.power = num(c.maximaalVermogen)! * 1000;
       if (isObj(c.ledmaat)) props.lightType = 'led';
-      const node = createNode(k.kind, clean(props));
+      const node = createNode(k.kind, clean(props), { survey: true });
       node.id = id;
       const label = str(c.label);
       if (label) node.location = label;
@@ -358,7 +361,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
     const order = (m: Obj) => (num(m.rijIndex) ?? 0) * 1000 + (num(m.kolom) ?? num(m.position) ?? 0);
     const sorted = [...modules].sort((a, c) => order(a) - order(c));
     const protection = (m: Obj, props: Props): ElNode => {
-      const n = createNode('protection', clean(props));
+      const n = createNode('protection', clean(props), { survey: true });
       n.id = str(m.id) ?? n.id;
       n.source = { format: 'volter', tag: str(m.moduleType) ?? 'module', attrs: attrs(m) };
       return n;
@@ -393,6 +396,7 @@ export function importVolter(text: string, fileName = 'Projet Volter'): VolterIm
           method: METHODS[str(m.kabelLocatie) ?? ''] ?? undefined,
           reference: str(m.cprClass) ? `CPR ${str(m.cprClass)}` : undefined,
         }),
+        { survey: true },
       );
       cable.children = circuitItems(byCircuit.get(n.id) ?? []);
       const feedsBoard = str(m.feedsBoardId);

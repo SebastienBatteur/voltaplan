@@ -128,6 +128,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
   }
   if (!isObj(data) || !isObj(data.project) || !isObj(data.root)) throw new I18nError('imp.draadwijs.invalid', undefined, "Ce fichier n'est pas un projet Draadwijs valide.");
   const warnings = new Warnings();
+  warnings.add('imp.kindExisting');
   if (data.version !== 3) warnings.add('imp.draadwijs.version', { version: String(data.version) });
   const dp = data.project;
   const root = data.root;
@@ -144,7 +145,9 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
     client: { name: str(dp.klant), email: email?.includes('@') ? email : undefined, address: parseAddress(str(dp.klantAdres)) },
     site: parseAddress(str(dp.adres)),
     installer: { name: str(dp.installateur), quality: str(dp.hoedanigheid), vat: str(dp.btw), address: {} },
-    supply: supply ?? project.meta.supply,
+    supply: supply ?? '',
+    // Fichier d'un autre logiciel : installation existante (relevé) tant que le porteur ne dit pas « neuf » (ADR-0010)
+    installationKind: 'existing',
     earthing: rp.netsysteem === 'TN' ? 'TN' : rp.netsysteem === 'IT' ? 'IT' : 'TT',
     mainCurrent: num(rp.In),
     ean: str(dp.ean),
@@ -172,7 +175,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
   let nextLetter = 0;
   const allowed = (parent: ElNode, child: ElNode) => ALLOWED_CHILDREN[parent.kind]?.includes(child.kind) ?? false;
   const make = (src: Obj, kind: NodeKind, props: Props, location?: string): ElNode => {
-    const n = createNode(kind, clean(props));
+    const n = createNode(kind, clean(props), { survey: true });
     n.id = str(src.id) ?? n.id;
     const where = cap(location);
     if (where) n.location = where;
@@ -234,6 +237,7 @@ export function importDraadwijs(text: string, fileName = 'Projet Draadwijs'): Dr
             length: num(p.lengte) ? num(p.lengte) : undefined,
             reference: [str(p.kabelAnders), str(p.brandklasse) ? `CPR ${str(p.brandklasse)}` : undefined].filter(Boolean).join(' · ') || undefined,
           }),
+          { survey: true },
         );
         prot.children.push(c);
         for (const k of kids) convert(k, c, c);
