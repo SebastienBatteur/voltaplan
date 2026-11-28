@@ -2,7 +2,7 @@
 // et simulateur de câblage (site/apprendre/cablage-sim.js) sur des montages justes et faux.
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { build, readArticles, readLexique } from '../tools/learn/build';
+import { build, readArticles, readLexique, stripTags } from '../tools/learn/build';
 import { checkArticle, checkExercise, loadSim, readPlan } from '../tools/learn/validate';
 import type { Exercise, ExoWire } from '../tools/learn/types';
 
@@ -16,6 +16,11 @@ const sim = loadSim(ROOT) as ReturnType<typeof loadSim> & {
 };
 
 describe('Apprendre : sources', () => {
+  it('les balises sont retirées jusqu’au bout, même imbriquées', () => {
+    expect(stripTags('Le <strong>différentiel</strong>')).toBe('Le différentiel');
+    for (const s of ['<<script>script>alert(1)', '<scr<b>ipt>alert(1)</scr</b>ipt>', '<<a>a>']) expect(stripTags(s)).not.toMatch(/<[a-z/!]/i);
+  });
+
   it('chaque article prévu existe, et rien d’autre', () => {
     expect(articles.map((a) => a.slug).sort()).toEqual(plan.articles.map((a) => a.slug).sort());
   });
