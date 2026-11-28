@@ -79,8 +79,31 @@ export interface Observation {
   note?: string;
 }
 
-/** Base épistémique d'une valeur. `confirmed` n'est attribué que par une action de l'utilisateur. */
-export type Basis = 'observed' | 'deduced' | 'aiInferred' | 'proposed' | 'confirmed' | 'manual';
+/**
+ * Base épistémique d'une valeur. `confirmed` n'est attribué que par une action de l'utilisateur.
+ * Origines ajoutées par l'ADR-0010 : `default` (valeur par défaut d'un modèle), `imported` (fichier d'un autre
+ * logiciel), `measured` (mesure), `calculated` (calcul), `historicUnknown` (valeur d'un projet enregistré avant le
+ * suivi de la provenance : on ne sait pas si elle a été saisie, reprise ou laissée par défaut).
+ */
+export type Basis =
+  | 'observed'
+  | 'deduced'
+  | 'aiInferred'
+  | 'proposed'
+  | 'confirmed'
+  | 'manual'
+  | 'default'
+  | 'imported'
+  | 'measured'
+  | 'calculated'
+  | 'historicUnknown';
+
+/**
+ * Origines non confirmées qui rendent indicatif le contrôle d'un élément (R-UNCONFIRMED, constats « potentiels »).
+ * Les valeurs historiques ne sont pas dans `provenance` mais dans `Evidence.historic` (R-HISTORIC) : une
+ * non-conformité établie sur une valeur historique reste une non-conformité (src/assist/unconfirmed.ts).
+ */
+export const UNCONFIRMED_BASES: ReadonlySet<Basis> = new Set<Basis>(['observed', 'deduced', 'aiInferred', 'proposed', 'imported']);
 
 export type ProposalChange =
   | { op: 'createNode'; tempKey: string; parent: { nodeId: string } | { tempKey: string }; kind: string; props: Record<string, PropValue>; location?: string }
@@ -130,10 +153,39 @@ export interface Provenance {
   nodeId: string;
   /** Propriété, ou « @node » pour l'existence du nœud lui-même. */
   prop: string;
+  /**
+   * État en vigueur : l'origine de la valeur, ou `confirmed` après confirmation par l'utilisateur. Gardé ainsi pour
+   * les versions précédentes, qui ne lisent que ce champ.
+   */
   basis: Basis;
+  /**
+   * Origine de la valeur quand elle a été confirmée (ADR-0010, décision 1 : origine et confirmation sont deux axes).
+   * Absent : l'origine est `basis` (ou inconnue pour une confirmation antérieure à ce champ).
+   */
+  origin?: Basis;
+  /** Auteur de la confirmation (nom de l'installateur du projet), si connu. */
+  by?: string;
   observations: string[];
   confidence: number;
+  /** Date de la dernière modification de l'entrée (lecture, confirmation, correction). */
   at: string;
+}
+
+/** Origine d'une valeur, quel que soit son état de confirmation (undefined : confirmée sans origine connue). */
+export const originOf = (p: Provenance): Basis | undefined => (p.basis === 'confirmed' ? p.origin : p.basis);
+
+/** Valeur confirmée par l'utilisateur ? */
+export const isConfirmed = (p: Provenance): boolean => p.basis === 'confirmed';
+
+/**
+ * Valeur d'un relevé enregistré avant le suivi de la provenance, pas encore confirmée (ADR-0010, décision 2). Rangée
+ * à part de `provenance`, que les versions précédentes lisent : elles ignorent cette liste et présentent ces valeurs
+ * exactement comme avant (essai : npm run test:compat). Confirmée, elle devient une entrée de `provenance`
+ * (`confirmed`, origine `historicUnknown`) ; corrigée à la main, elle quitte la liste.
+ */
+export interface HistoricValue {
+  nodeId: string;
+  prop: string;
 }
 
 export interface HistoryEntry {
@@ -153,6 +205,8 @@ export interface Evidence {
   proposals: Proposal[];
   questions: Question[];
   provenance: Provenance[];
+  /** Valeurs historiques non confirmées (facultatif ; absent dans les fichiers antérieurs). */
+  historic?: HistoricValue[];
   history: HistoryEntry[];
 }
 
@@ -185,6 +239,7 @@ export const evidenceSchema = loose({
   proposals: z.array(loose({ id: z.string(), batch: z.string(), purpose: z.string(), status: z.string(), basis: z.string(), change: loose({ op: z.string() }) })),
   questions: z.array(loose({ id: z.string(), kind: z.string(), status: z.string() })),
   provenance: z.array(loose({ nodeId: z.string(), prop: z.string(), basis: z.string() })),
+  historic: z.array(loose({ nodeId: z.string(), prop: z.string() })).optional(),
   history: z.array(loose({ at: z.string(), actor: z.string(), action: z.string() })),
 });
 
@@ -213,6 +268,7 @@ export function pruneEvidence(ev: Evidence, alive: Set<string>): Evidence {
   };
   let changed = false;
   const provenance = ev.provenance.filter((p) => alive.has(p.nodeId) || !(changed = true));
+  const historic = ev.historic?.filter((h) => alive.has(h.nodeId) || !(changed = true));
   const proposals = ev.proposals.map((p) => {
     if (p.status !== 'pending' || targets(p.change).every((id) => alive.has(id))) return p;
     changed = true;
@@ -223,7 +279,7 @@ export function pruneEvidence(ev: Evidence, alive: Set<string>): Evidence {
     changed = true;
     return { ...q, status: 'dismissed' as const };
   });
-  return changed ? { ...ev, provenance, proposals, questions } : ev;
+  return changed ? { ...ev, provenance, ...(historic ? { historic } : {}), proposals, questions } : ev;
 }
 
 // ---------------------------------------------------------------------------

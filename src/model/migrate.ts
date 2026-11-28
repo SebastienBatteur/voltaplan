@@ -9,6 +9,8 @@
  * message explicite plutôt qu'ouvert partiellement.
  */
 import { parseEvidence } from '../assist/evidence';
+import { markHistoric } from '../assist/historic';
+import { isSurveyPart } from '../rules';
 import { z } from 'zod';
 import { FILE_FORMAT, LEGACY_FORMATS } from '../brand';
 import { validateProject, type Issue } from './integrity';
@@ -146,10 +148,15 @@ export function migrateProject(data: unknown): { project: Project; warnings: Mig
     warnings.push({ key: 'file.evidenceUnreadable' });
   }
   if (LEGACY_FORMATS.includes(format)) warnings.push({ key: 'file.legacyFormat', params: { format } });
-  const issues = validateProject(project);
+  // Projet enregistré avant le suivi de la provenance : valeurs des parties existantes « historiques », à confirmer
+  // (ADR-0010, décision 2). Aucune valeur n'est modifiée.
+  const historic = markHistoric(project, (chain) => isSurveyPart(project, chain));
+  if (historic.marked) warnings.push({ key: 'file.historicValues', params: { n: historic.marked } });
+  const migrated = historic.project;
+  const issues = validateProject(migrated);
   const errors = issues.filter((i) => i.level === 'error').length;
   if (errors) warnings.push({ key: 'file.integrityIssues', params: { n: errors } });
-  return { project, warnings, issues };
+  return { project: migrated, warnings, issues };
 }
 
 /** Lecture d'un texte JSON de projet. */

@@ -8,6 +8,10 @@
  *    une non-conformité qui repose sur une valeur non confirmée n'est pas établie ;
  *  - informations CONTRADICTOIRES : une question « contradiction » encore ouverte sur un élément donne un constat
  *    « R-CONTRADICTION », et les constats de cet élément passent au statut « Informations contradictoires » ;
+ *  - valeurs HISTORIQUES (ADR-0010, décision 2) : valeurs d'un relevé enregistré avant le suivi de la provenance,
+ *    pas encore confirmées → un constat « R-HISTORIC » (vérification, jamais bloquant) qui compte les éléments et les
+ *    valeurs à confirmer. Les constats de ces éléments ne sont PAS reclassés : une non-conformité établie sur une
+ *    valeur du fichier reste une non-conformité (le risque est le silence, pas l'excès de prudence) ;
  *  - informations INCONNUES : les constats « inconnu » portant sur un fait du relevé (terre, différentiel général,
  *    différentiel 30 mA) peuvent devenir des questions de l'assistant (`surveyQuestions`, crochet pour l'assistant ;
  *    rien n'est écrit ici dans le dossier de preuves).
@@ -19,6 +23,7 @@ import type { Finding, FindingStatus, SurveyFact } from '../rules/types';
 import { severityOf } from '../rules/context';
 import type { Question } from './evidence';
 import { unconfirmed } from './apply';
+import { historicByNode } from './historic';
 
 /** Propriétés qui influencent le contrôle réglementaire ou les calculs. */
 export const REGULATORY_PROPS = new Set([
@@ -74,12 +79,16 @@ function reclassify(f: Finding, status: FindingStatus, knowledge: 'deduced' | 'c
   return g;
 }
 
-/** Ajoute les signalements et reclasse les constats concernés. Sans dossier de preuves : inchangé. */
-export function withUnconfirmed(project: Project, findings: Finding[]): Finding[] {
+/**
+ * Ajoute les signalements et reclasse les constats concernés. Sans dossier de preuves : inchangé.
+ * @param surveyIds éléments des parties existantes (relevé) : seuls leurs valeurs historiques sont signalées.
+ */
+export function withUnconfirmed(project: Project, findings: Finding[], surveyIds: Set<string> = new Set()): Finding[] {
   if (!project.evidence) return findings;
   const deduced = unconfirmedByNode(project);
   const contra = contradictionsByNode(project);
-  if (!deduced.size && !contra.size) return findings;
+  const historic = historicByNode(project, surveyIds);
+  if (!deduced.size && !contra.size && !historic.size) return findings;
   const marked = findings.map((f) => {
     if (!f.nodeId || f.status === 'derogation' || f.requirement === 'documentary') return f;
     if (contra.has(f.nodeId) && UNSETTLED.includes(f.status ?? 'warning')) return reclassify(f, 'contradictory', 'contradictory');
@@ -118,6 +127,17 @@ export function withUnconfirmed(project: Project, findings: Finding[]): Finding[
       }),
     ),
   ];
+  if (historic.size)
+    extra.push({
+      ruleId: 'R-HISTORIC',
+      severity: 'info',
+      status: 'manualCheck',
+      hazard: 'none',
+      blocking: false,
+      requirement: 'physical',
+      knowledge: 'unknown',
+      params: { count: historic.size, values: [...historic.values()].reduce((n, l) => n + l.length, 0) },
+    });
   return [...marked, ...extra];
 }
 

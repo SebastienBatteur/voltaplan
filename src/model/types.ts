@@ -110,6 +110,11 @@ export interface ProjectMeta {
   dossierUrl?: string;
   /** Référentiel (pays et règlement), voir src/rules. Absent = « BE-RGIE ». */
   ruleset?: string;
+  /**
+   * Début du suivi de la provenance des valeurs (ISO, ADR-0010). Absent : projet enregistré avant ce suivi ; à
+   * l'ouverture, les valeurs des parties existantes reçoivent l'origine « historique inconnue » (src/assist/historic.ts).
+   */
+  provenanceSince?: string;
   /** Sens de l'unifilaire : 'up' (défaut, alimentation en bas comme la figure 3.1 du RGIE) ou 'down'. */
   unifilarDirection?: 'up' | 'down';
   rgieVersion: RgieVersion;

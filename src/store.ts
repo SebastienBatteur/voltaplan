@@ -7,6 +7,7 @@ import { pruneReferences } from './model/integrity';
 import { orientSymbols } from './plan/geometry';
 import { isWallMounted } from './unifilar/symbols';
 import { isSurveyPart } from './rules';
+import { copyProvenance, noteManualEdit } from './assist/apply';
 
 export type View = 'unifilar' | 'plan' | 'board' | 'bom' | 'project' | 'check';
 
@@ -114,6 +115,7 @@ export const useStore = create<State>((set, get) => {
 
     setProps: (id, patch) =>
       commit((p) => {
+        const before = (findNode(p.roots, id) ?? findNode(p.loose, id))?.props ?? {};
         const upd = (list: ElNode[]) =>
           updateNode(list, id, (n) => {
             const props = { ...n.props, ...patch };
@@ -122,7 +124,8 @@ export const useStore = create<State>((set, get) => {
             for (const k of Object.keys(props)) if (props[k] === undefined || props[k] === '') delete props[k];
             return { ...n, props };
           });
-        return { ...p, roots: upd(p.roots), loose: upd(p.loose) };
+        // Valeur d'origine connue (assistant, ancien enregistrement) changée à la main : elle devient « manuelle »
+        return noteManualEdit({ ...p, roots: upd(p.roots), loose: upd(p.loose) }, id, patch, before);
       }),
     setLocation: (id, location) =>
       commit((p) => {
@@ -170,9 +173,11 @@ export const useStore = create<State>((set, get) => {
       const n = findNode(project.roots, id);
       const parent = findParent(project.roots, id);
       if (!n || !parent) return;
-      const copy = cloneWithNewIds(n);
+      const ids = new Map<string, string>();
+      const copy = cloneWithNewIds(n, ids);
       const idx = parent.children.findIndex((c) => c.id === id);
-      commit((p) => ({ ...p, roots: insertChild(p.roots, parent.id, copy, idx + 1) }));
+      // La copie garde l'origine des valeurs copiées (une valeur non confirmée le reste)
+      commit((p) => copyProvenance({ ...p, roots: insertChild(p.roots, parent.id, copy, idx + 1) }, ids));
       set({ selectedId: copy.id });
     },
     move: (id, delta) => commit((p) => ({ ...p, roots: moveSibling(p.roots, id, delta) })),

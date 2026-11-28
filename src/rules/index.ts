@@ -10,6 +10,7 @@ import type { Finding, RulePack, Severity } from './types';
 import { classify, partContext, projectContext } from './context';
 import { ancestors } from '../model/tree';
 import { withUnconfirmed } from '../assist/unconfirmed';
+import { hasHistoric } from '../assist/historic';
 
 export type { Derogation, Edition, Finding, FindingStatus, Hazard, Knowledge, Requirement, RuleMeta, RulePack, Severity, SurveyFact } from './types';
 export { severityOf } from './context';
@@ -45,8 +46,23 @@ export function checkProject(project: Project): Finding[] {
     return [{ ruleId: 'R-RULESET-UNKNOWN', severity: 'error', status: 'notEvaluated', blocking: true, hazard: 'none', params: { id: String(project.meta.ruleset) } }];
   // Un référentiel tiers qui ne fournit que la sévérité reste accepté : le statut en est déduit.
   const own = pack.check(project).map((f) => (f.status ? f : { ...f, status: f.severity === 'error' ? 'nonCompliant' : f.severity === 'warning' ? 'warning' : 'recommendation', blocking: f.severity === 'error' } as Finding));
-  // Valeurs reprises par l'assistant et non confirmées : signalées, et constats concernés marqués « déduits » (A6)
-  return withUnconfirmed(project, [...own, ...countryOptionFindings(project, pack)]);
+  // Valeurs reprises par l'assistant et non confirmées : signalées, et constats concernés marqués « déduits » (A6) ;
+  // valeurs historiques des parties existantes : à confirmer (ADR-0010)
+  return withUnconfirmed(project, [...own, ...countryOptionFindings(project, pack)], hasHistoric(project) ? surveyNodeIds(project) : undefined);
+}
+
+/** Éléments des parties existantes (relevé) du projet. */
+export function surveyNodeIds(project: Project): Set<string> {
+  const out = new Set<string>();
+  const visit = (nodes: ElNode[], chain: ElNode[]) => {
+    for (const n of nodes) {
+      const c = [...chain, n];
+      if (isSurveyPart(project, c)) out.add(n.id);
+      visit(n.children, c);
+    }
+  };
+  visit(project.roots, []);
+  return out;
 }
 
 /**

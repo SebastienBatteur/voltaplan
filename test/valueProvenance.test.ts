@@ -8,7 +8,11 @@ import { SURVEY_UNSET } from '../src/model/schema';
 import { createNode, emptyProject, findNode, walk } from '../src/model/tree';
 import { importPdfDossier, type PdfText } from '../src/import/pdfDossier';
 import type { ElNode, Project } from '../src/model/types';
-import { checkProject, isSurveyPart } from '../src/rules';
+import { checkProject, isSurveyPart, needsVerification } from '../src/rules';
+import { markHistoric } from '../src/assist/historic';
+import { emptyEvidence, isConfirmed, originOf } from '../src/assist/evidence';
+import { confirmHistoric, historicProps, unconfirmed } from '../src/assist/apply';
+import { parseProjectText } from '../src/model/migrate';
 
 const existingProject = (date = '1998-01-01'): Project => {
   const p = emptyProject();
@@ -204,5 +208,191 @@ describe('Aller-retour .voltaplan : une donnée inconnue reste inconnue', () => 
     for (const k of SURVEY_UNSET.protection!) expect(q(prot.id).props[k], k).toBeUndefined();
     for (const k of SURVEY_UNSET.cable!) expect(q(cable.id).props[k], k).toBeUndefined();
     for (const k of SURVEY_UNSET.socket!) expect(q(sock.id).props[k], k).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Étape 4 : origine et confirmation, provenance historique, duplication (ADR-0010, décisions 1 et 2)
+// ---------------------------------------------------------------------------
+
+/** Projet d'avant le suivi de la provenance : relevé avec un circuit de prises (valeurs égales aux défauts). */
+const oldSurvey = () => {
+  const p = existingProject();
+  delete p.meta.provenanceSince;
+  p.meta.installer = { name: 'Installateur Test', address: {} };
+  const prot = createNode('protection', { device: 'mcb', ratedCurrent: 16, curve: 'C', poles: '1P+N', circuitName: 'P' });
+  const cable = createNode('cable', { cableType: 'XVB', section: 2.5, conductors: 3 });
+  const sock = createNode('socket', { earth: true, childSafety: true });
+  cable.children.push(sock);
+  prot.children.push(cable);
+  boardOf(p).children.push(prot);
+  return { p, prot, cable, sock };
+};
+const entries = (p: Project, nodeId: string) => (p.evidence?.provenance ?? []).filter((e) => e.nodeId === nodeId);
+const hist = (p: Project, nodeId: string) => historicProps(p, nodeId);
+
+describe('Provenance historique inconnue (anciens projets)', () => {
+  it('un nouveau projet porte le marqueur de suivi : rien n’est historique', () => {
+    expect(emptyProject().meta.provenanceSince).toBeTruthy();
+    const { project, marked } = markHistoric(existingProject(), () => true);
+    expect(marked).toBe(0);
+    expect(project.evidence).toBeUndefined();
+  });
+
+  it('ancien relevé : chaque valeur utile au contrôle devient « historique », égale ou non au défaut, sans être modifiée', () => {
+    const { p, prot, sock } = oldSurvey();
+    const before = JSON.stringify(p.roots);
+    const { project, marked } = markHistoric(p, (chain) => isSurveyPart(p, chain), '2026-11-28T00:00:00.000Z');
+    expect(marked).toBeGreaterThan(0);
+    expect(JSON.stringify(project.roots)).toBe(before);
+    expect(project.meta.provenanceSince).toBe('2026-11-28T00:00:00.000Z');
+    // Y compris les valeurs que l'ancien modèle avait mises d'office (pouvoir de coupure…)
+    expect(hist(project, prot.id)).toEqual(expect.arrayContaining(['breakingCapacity', 'curve', 'device', 'poles', 'ratedCurrent']));
+    expect(hist(project, sock.id)).toEqual(expect.arrayContaining(['childSafety', 'earth']));
+    // Seulement les valeurs présentes
+    for (const e of project.evidence!.historic!) expect(findNode(project.roots, e.nodeId)!.props[e.prop], e.prop).toBeDefined();
+    // Rangées à part de la provenance (que les versions précédentes lisent) ; jamais « confirmées », jamais promues
+    expect(project.evidence!.provenance).toEqual([]);
+  });
+
+  it('ancien projet en conception : rien n’est marqué (une valeur par défaut y est un choix)', () => {
+    const { p } = oldSurvey();
+    p.meta.installationKind = 'new';
+    delete p.meta.installationDate;
+    const { project, marked } = markHistoric(p, (chain) => isSurveyPart(p, chain));
+    expect(marked).toBe(0);
+    expect(project.evidence).toBeUndefined();
+    expect(project.meta.provenanceSince).toBeTruthy();
+  });
+
+  it('une provenance existante (photo lue par l’assistant) n’est pas remplacée ; deuxième ouverture : rien de plus', () => {
+    const { p, prot } = oldSurvey();
+    p.evidence = { ...emptyEvidence(), provenance: [{ nodeId: prot.id, prop: 'ratedCurrent', basis: 'aiInferred', observations: [], confidence: 0.8, at: 'x' }] };
+    const once = markHistoric(p, (chain) => isSurveyPart(p, chain)).project;
+    expect(entries(once, prot.id).find((e) => e.prop === 'ratedCurrent')?.basis).toBe('aiInferred');
+    expect(hist(once, prot.id)).not.toContain('ratedCurrent');
+    expect(hist(once, prot.id)).toContain('curve');
+    const twice = markHistoric(once, () => true);
+    expect(twice.marked).toBe(0);
+    expect(twice.project).toBe(once);
+  });
+
+  it('ouverture d’un fichier ancien : migration avec avertissement, valeurs intactes', () => {
+    const { p, sock } = oldSurvey();
+    const { project, warnings } = parseProjectText(JSON.stringify(p));
+    expect(warnings.map((w) => w.key)).toContain('file.historicValues');
+    expect(findNode(project.roots, sock.id)!.props).toEqual(sock.props);
+    expect(hist(project, sock.id)).toEqual(expect.arrayContaining(['earth', 'childSafety']));
+  });
+
+  it('contrôle : « à confirmer » (non bloquant, projet « vérifications à faire »), jamais « conforme » en silence', () => {
+    const { p } = oldSurvey();
+    const project = parseProjectText(JSON.stringify(p)).project;
+    const f = checkProject(project).find((x) => x.ruleId === 'R-HISTORIC');
+    expect(f).toMatchObject({ status: 'manualCheck', blocking: false, knowledge: 'unknown' });
+    expect(Number(f!.params!.count)).toBeGreaterThan(0);
+    expect(needsVerification(f!)).toBe(true);
+    // Le même ancien projet sans marquage (comportement précédent) ne demandait rien
+    const plain = { ...p, meta: { ...p.meta, provenanceSince: 'x' } };
+    expect(checkProject(plain).some((x) => x.ruleId === 'R-HISTORIC')).toBe(false);
+  });
+
+  it('une non-conformité établie sur une valeur historique reste une non-conformité bloquante (pas reclassée)', () => {
+    const { p, sock } = oldSurvey();
+    sock.props.earth = false;
+    const project = parseProjectText(JSON.stringify(p)).project;
+    const f = checkProject(project).find((x) => x.ruleId === 'R-SOCKET-EARTH' && x.nodeId === sock.id);
+    expect(f).toMatchObject({ status: 'nonCompliant', blocking: true });
+    expect(f!.knowledge).not.toBe('deduced');
+  });
+
+  it('projet repassé en conception : plus de « à confirmer » (seules les parties existantes sont concernées)', () => {
+    const { p } = oldSurvey();
+    const project = parseProjectText(JSON.stringify(p)).project;
+    const design = { ...project, meta: { ...project.meta, installationKind: 'new' as const, installationDate: undefined } };
+    expect(checkProject(design).some((x) => x.ruleId === 'R-HISTORIC')).toBe(false);
+  });
+
+  it('confirmation par l’utilisateur : origine gardée à côté, auteur et date ; le signalement disparaît pour cet élément', () => {
+    const { p, prot, sock } = oldSurvey();
+    let project = parseProjectText(JSON.stringify(p)).project;
+    const count = () => Number(checkProject(project).find((x) => x.ruleId === 'R-HISTORIC')?.params?.count ?? 0);
+    const n0 = count();
+    const nSock = historicProps(project, sock.id).length;
+    project = confirmHistoric(project, sock.id, '2026-11-28T10:00:00.000Z');
+    expect(entries(project, sock.id)).toHaveLength(nSock);
+    for (const e of entries(project, sock.id)) {
+      expect(e).toMatchObject({ basis: 'confirmed', origin: 'historicUnknown', by: 'Installateur Test', at: '2026-11-28T10:00:00.000Z' });
+      expect(originOf(e)).toBe('historicUnknown');
+      expect(isConfirmed(e)).toBe(true);
+    }
+    expect(historicProps(project, sock.id)).toEqual([]);
+    expect(historicProps(project, prot.id).length).toBeGreaterThan(0);
+    expect(count()).toBe(n0 - 1);
+    expect(project.evidence!.history.filter((h) => h.refs.nodeId === sock.id && h.note === 'confirmé')).toHaveLength(nSock);
+  });
+
+  it('valeur historique ou lue par l’assistant : exclue ou non des valeurs « non confirmées » de l’assistant', () => {
+    const { p, prot } = oldSurvey();
+    const project = parseProjectText(JSON.stringify(p)).project;
+    expect(unconfirmed(project)).toEqual([]);
+    const withImport = { ...project, evidence: { ...project.evidence!, provenance: [...project.evidence!.provenance, { nodeId: prot.id, prop: 'section', basis: 'imported' as const, observations: [], confidence: 1, at: 'x' }] } };
+    expect(unconfirmed(withImport).map((e) => e.basis)).toEqual(['imported']);
+  });
+});
+
+describe('Store : correction à la main et duplication gardent une provenance juste', () => {
+  it('valeur historique corrigée à la main : « manuelle » ; les autres restent à confirmer', async () => {
+    const { useStore } = await import('../src/store');
+    const { p, prot } = oldSurvey();
+    useStore.getState().loadProject(parseProjectText(JSON.stringify(p)).project, 'ancien.voltaplan');
+    useStore.getState().setProps(prot.id, { ratedCurrent: 20 });
+    const project = useStore.getState().project;
+    expect(hist(project, prot.id)).not.toContain('ratedCurrent');
+    expect(hist(project, prot.id)).toContain('curve');
+    expect(project.evidence!.history.some((h) => h.refs.nodeId === prot.id && h.before === 16 && h.after === 20)).toBe(true);
+  });
+
+  it('même valeur réécrite : rien ne change (pas de confirmation implicite)', async () => {
+    const { useStore } = await import('../src/store');
+    const { p, prot } = oldSurvey();
+    useStore.getState().loadProject(parseProjectText(JSON.stringify(p)).project, 'ancien.voltaplan');
+    useStore.getState().setProps(prot.id, { ratedCurrent: 16 });
+    expect(hist(useStore.getState().project, prot.id)).toContain('ratedCurrent');
+  });
+
+  it('duplication : la copie garde l’origine des valeurs copiées (une valeur non confirmée le reste)', async () => {
+    const { useStore } = await import('../src/store');
+    const { p, prot, sock } = oldSurvey();
+    useStore.getState().loadProject(parseProjectText(JSON.stringify(p)).project, 'ancien.voltaplan');
+    useStore.getState().duplicate(prot.id);
+    const project = useStore.getState().project;
+    const copyId = useStore.getState().selectedId!;
+    expect(copyId).not.toBe(prot.id);
+    const copy = findNode(project.roots, copyId)!;
+    const copySock = [...walk([copy])].find((x) => x.node.kind === 'socket')!.node;
+    expect(hist(project, copyId).sort()).toEqual(hist(project, prot.id).sort());
+    expect(hist(project, copySock.id).sort()).toEqual(hist(project, sock.id).sort());
+    // L'original n'est pas touché, et confirmer la copie ne confirme pas l'original
+    const confirmedCopy = confirmHistoric(project, copySock.id);
+    expect(historicProps(confirmedCopy, copySock.id)).toEqual([]);
+    expect(historicProps(confirmedCopy, sock.id)).toEqual(historicProps(project, sock.id));
+  });
+});
+
+describe('Aller-retour .voltaplan : provenance historique et marqueur conservés', () => {
+  it('ancien projet ouvert, enregistré, rouvert : mêmes entrées, pas de nouveau marquage', async () => {
+    const { AssetStore, MemoryAssetBackend } = await import('../src/format/assets');
+    const { AssetSession } = await import('../src/format/session');
+    const { openProjectData, serializeProject } = await import('../src/io/projectData');
+    const session = () => new AssetSession(() => new AssetStore(new MemoryAssetBackend()));
+    const { p } = oldSurvey();
+    const opened = parseProjectText(JSON.stringify(p)).project;
+    const blob = (await serializeProject(opened, undefined, session()))!;
+    const back = await openProjectData(blob, 'ancien.voltaplan', session(), { background: false });
+    expect(back.project.meta.provenanceSince).toBe(opened.meta.provenanceSince);
+    const key = (e: { nodeId: string; prop: string }) => `${e.nodeId}|${e.prop}`;
+    expect(back.project.evidence!.historic!.map(key).sort()).toEqual(opened.evidence!.historic!.map(key).sort());
+    expect(back.warnings.map((w) => (typeof w === 'string' ? w : w.key))).not.toContain('file.historicValues');
   });
 });

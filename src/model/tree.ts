@@ -84,8 +84,10 @@ export function moveSibling(nodes: ElNode[], id: string, delta: number): ElNode[
   return nodes.map((n) => ({ ...n, children: moveSibling(n.children, id, delta) }));
 }
 
-export function cloneWithNewIds(node: ElNode): ElNode {
-  return { ...node, id: uid(), props: { ...node.props }, source: undefined, children: node.children.map(cloneWithNewIds) };
+export function cloneWithNewIds(node: ElNode, ids: Map<string, string> = new Map()): ElNode {
+  const id = uid();
+  ids.set(node.id, id);
+  return { ...node, id, props: { ...node.props }, source: undefined, children: node.children.map((c) => cloneWithNewIds(c, ids)) };
 }
 
 /**
@@ -261,6 +263,8 @@ export function emptyProject(): Project {
       earthing: 'TT',
       installationKind: 'new',
       rgieVersion: 'new',
+      // Projet créé avec le suivi de la provenance : aucune valeur n'est « historique » (ADR-0010)
+      provenanceSince: new Date().toISOString(),
     },
     roots: [origin],
     loose: [],

@@ -8,7 +8,7 @@
 import type { BoardLayout, ElNode, Project, PropValue } from '../model/types';
 import { ALLOWED_CHILDREN } from '../model/schema';
 import { ancestors, findNode, insertChild, mapTree, removeNode, uid } from '../model/tree';
-import { emptyEvidence, evidenceId, type Basis, type Evidence, type HistoryEntry, type Proposal, type Provenance, type Question } from './evidence';
+import { emptyEvidence, evidenceId, UNCONFIRMED_BASES, type Basis, type Evidence, type HistoryEntry, type Proposal, type Provenance, type Question } from './evidence';
 
 const ev = (p: Project): Evidence => p.evidence ?? emptyEvidence();
 
@@ -275,11 +275,45 @@ export function answerUsage(
   return { ...project, roots, evidence: { ...e0, provenance, questions, history } };
 }
 
+/** Entrée confirmée par l'utilisateur : l'origine est gardée à côté (ADR-0010, décision 1), avec l'auteur s'il est connu. */
+const confirmedEntry = (p: Provenance, now: string, by: string | undefined): Provenance => ({
+  ...p,
+  basis: 'confirmed',
+  ...(p.basis !== 'confirmed' ? { origin: p.basis } : {}),
+  ...(by ? { by } : {}),
+  at: now,
+});
+
+/** Auteur d'une confirmation : l'installateur du projet, s'il est renseigné. */
+const confirmer = (project: Project) => project.meta.installer?.name?.trim() || undefined;
+
 /** L'utilisateur confirme qu'une valeur issue de l'assistant est exacte (vérifiée sur place). */
 export function confirmValue(project: Project, nodeId: string, prop: string, now = new Date().toISOString()): Project {
   const e0 = ev(project);
-  const provenance = e0.provenance.map((p) => (p.nodeId === nodeId && p.prop === prop ? { ...p, basis: 'confirmed' as const, at: now } : p));
+  const by = confirmer(project);
+  const provenance = e0.provenance.map((p) => (p.nodeId === nodeId && p.prop === prop ? confirmedEntry(p, now, by) : p));
   return { ...project, evidence: { ...e0, provenance, history: [...e0.history, { at: now, actor: 'user', action: 'edit', refs: { nodeId, prop }, note: 'confirmé' }] } };
+}
+
+/** Propriétés d'un élément reprises d'un ancien enregistrement et pas encore confirmées (`evidence.historic`). */
+export function historicProps(project: Project, nodeId: string): string[] {
+  return (project.evidence?.historic ?? []).filter((p) => p.nodeId === nodeId).map((p) => p.prop);
+}
+
+/**
+ * L'utilisateur confirme, après vérification sur place, les valeurs d'un élément reprises d'un ancien enregistrement
+ * (ADR-0010, décision 2). Seule cette action les rend « confirmées » ; l'origine `historicUnknown` reste lisible.
+ */
+export function confirmHistoric(project: Project, nodeId: string, now = new Date().toISOString()): Project {
+  const props = historicProps(project, nodeId);
+  if (!props.length) return project;
+  const e0 = ev(project);
+  const by = confirmer(project);
+  const base = { nodeId, basis: 'historicUnknown' as const, observations: [], confidence: 1 };
+  const provenance = [...e0.provenance.filter((p) => !(p.nodeId === nodeId && props.includes(p.prop))), ...props.map((prop) => confirmedEntry({ ...base, prop, at: now }, now, by))];
+  const historic = (e0.historic ?? []).filter((h) => h.nodeId !== nodeId);
+  const history: HistoryEntry[] = [...e0.history, ...props.map((prop): HistoryEntry => ({ at: now, actor: 'user', action: 'edit', refs: { nodeId, prop }, note: 'confirmé' }))];
+  return { ...project, evidence: { ...e0, provenance, historic, history } };
 }
 
 /**
@@ -290,11 +324,32 @@ export function confirmValue(project: Project, nodeId: string, prop: string, now
 export function noteManualEdit(project: Project, nodeId: string, patch: Record<string, PropValue>, before: Record<string, PropValue>, now = new Date().toISOString()): Project {
   const e0 = project.evidence;
   if (!e0) return project;
-  const touched = Object.keys(patch).filter((k) => e0.provenance.some((p) => p.nodeId === nodeId && p.prop === k) && patch[k] !== before[k]);
+  const tracked = (k: string) => e0.provenance.some((p) => p.nodeId === nodeId && p.prop === k) || !!e0.historic?.some((h) => h.nodeId === nodeId && h.prop === k);
+  const touched = Object.keys(patch).filter((k) => tracked(k) && patch[k] !== before[k]);
   if (!touched.length) return project;
-  const provenance = e0.provenance.map((p) => (p.nodeId === nodeId && touched.includes(p.prop) ? { ...p, basis: 'manual' as const, at: now } : p));
+  // Valeur historique corrigée : elle quitte la liste « à confirmer » (la nouvelle valeur est une saisie)
+  const historic = e0.historic?.filter((h) => !(h.nodeId === nodeId && touched.includes(h.prop)));
+  // Valeur changée à la main : son origine devient « manuelle » (l'ancienne origine ne la décrit plus).
+  const provenance = e0.provenance.map((p): Provenance => {
+    if (p.nodeId !== nodeId || !touched.includes(p.prop)) return p;
+    const { origin: _origin, by: _by, ...rest } = p;
+    return { ...rest, basis: 'manual', at: now };
+  });
   const history: HistoryEntry[] = [...e0.history, ...touched.map((k): HistoryEntry => ({ at: now, actor: 'user', action: 'edit', refs: { nodeId, prop: k }, before: before[k] ?? null, after: patch[k] ?? null }))];
-  return { ...project, evidence: { ...e0, provenance, history } };
+  return { ...project, evidence: { ...e0, provenance, ...(historic ? { historic } : {}), history } };
+}
+
+/**
+ * Copie d'éléments (duplication) : chaque entrée de provenance d'un élément copié est reprise pour sa copie, avec la
+ * même origine et le même état de confirmation (ADR-0010). `ids` : ancien identifiant → nouveau.
+ */
+export function copyProvenance(project: Project, ids: Map<string, string>): Project {
+  const e0 = project.evidence;
+  if (!e0) return project;
+  const copies = e0.provenance.filter((p) => ids.has(p.nodeId)).map((p) => ({ ...p, nodeId: ids.get(p.nodeId)! }));
+  const hist = (e0.historic ?? []).filter((h) => ids.has(h.nodeId)).map((h) => ({ ...h, nodeId: ids.get(h.nodeId)! }));
+  if (!copies.length && !hist.length) return project;
+  return { ...project, evidence: { ...e0, provenance: [...e0.provenance, ...copies], ...(hist.length ? { historic: [...(e0.historic ?? []), ...hist] } : {}) } };
 }
 
 /**
@@ -316,9 +371,12 @@ export function snapshotSurvey(project: Project, description: string, now = new 
 /** Vrai si un relevé a déjà été figé. */
 export const surveyFrozen = (p: Project) => !!p.evidence?.history.some((h) => h.action === 'snapshot');
 
-/** Valeurs de l'arbre issues de l'assistant et pas encore confirmées par l'utilisateur. */
+/**
+ * Valeurs de l'arbre issues de l'assistant (ou d'un import) et pas encore confirmées par l'utilisateur. Les valeurs
+ * historiques (`evidence.historic`) n'en font pas partie : elles ont leur propre signalement (R-HISTORIC).
+ */
 export function unconfirmed(project: Project): Provenance[] {
-  return (project.evidence?.provenance ?? []).filter((p) => p.basis !== 'confirmed' && p.basis !== 'manual' && p.prop !== '@node');
+  return (project.evidence?.provenance ?? []).filter((p) => UNCONFIRMED_BASES.has(p.basis) && p.prop !== '@node');
 }
 
 // ---------------------------------------------------------------------------

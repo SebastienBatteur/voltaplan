@@ -5,7 +5,9 @@ import { useDerived } from './derived';
 import { ALLOWED_CHILDREN, PROP_SCHEMAS, type PropDef } from '../model/schema';
 import type { ElNode, PropValue } from '../model/types';
 import { FindingItem } from './CheckPanel';
-import { getRulePack } from '../rules';
+import { getRulePack, isSurveyPart } from '../rules';
+import { ancestors } from '../model/tree';
+import { confirmHistoric, historicProps } from '../assist/apply';
 import { isModularInBoard } from '../board/model';
 import { PV_STUDY_URL } from '../brand';
 
@@ -69,7 +71,7 @@ export function PropsPanel() {
   const project = useStore((s) => s.project);
   const t = useStore((s) => s.t);
   const view = useStore((s) => s.view);
-  const { setLocation, remove, duplicate, move, setView, startPlacing, insertSeries } = useStore.getState();
+  const { setLocation, remove, duplicate, move, setView, startPlacing, insertSeries, applyProject } = useStore.getState();
   const { find, numbering, byNode, labelFn } = useDerived();
   const node = selectedId ? find(selectedId) : undefined;
   const [adding, setAdding] = useState<{ x: number; y: number } | null>(null);
@@ -79,6 +81,9 @@ export function PropsPanel() {
   const ref = numbering.get(node.id);
   const findings = byNode.get(node.id) ?? [];
   const canHaveSymbol = node.kind !== 'cable' && node.kind !== 'origin';
+  // Valeurs reprises d'un ancien enregistrement (relevé) : à confirmer sur place, par l'utilisateur seulement (ADR-0010)
+  const historic = historicProps(project, node.id);
+  const showHistoric = historic.length > 0 && isSurveyPart(project, [...ancestors(project.roots, node.id), node]);
 
   return (
     <div className="props">
@@ -106,6 +111,15 @@ export function PropsPanel() {
             <FindingItem key={i} f={f} compact />
           ))}
         </div>
+      )}
+
+      {showHistoric && (
+        <p className="hint props-historic">
+          {t('props.historic', { props: historic.map((k) => t('prop.' + k)).join(', ') })}{' '}
+          <button type="button" onClick={() => applyProject((p) => confirmHistoric(p, node.id))}>
+            {t('props.historic.confirm')}
+          </button>
+        </p>
       )}
 
       {(PROP_SCHEMAS[node.kind] ?? []).map((d) => (
